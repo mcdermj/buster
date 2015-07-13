@@ -8,7 +8,13 @@
 
 #import "AppDelegate.h"
 
-@interface AppDelegate ()
+#import "DMYGatewayHandler.h"
+#import "DMYDV3KVocoder.h"
+
+@interface AppDelegate () {
+    DMYGatewayHandler *network;
+    DMYDV3KVocoder *vocoder;
+}
 
 @end
 
@@ -16,6 +22,15 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
+    
+    network = [[DMYGatewayHandler alloc] initWithRemoteAddress:@"127.0.0.1" remotePort:20010 localPort:20011];
+    [network start];
+    
+    vocoder = [[DMYDV3KVocoder alloc] initWithPort:@"/dev/cu.usbserial-DA016UVB"];
+    [vocoder start];
+    
+    network.vocoder = vocoder;
+    
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

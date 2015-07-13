@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 47;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,6 +13,8 @@
 		093B9AFF1B50E2D500C2ABD0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 093B9AFE1B50E2D500C2ABD0 /* Images.xcassets */; };
 		093B9B021B50E2D500C2ABD0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 093B9B001B50E2D500C2ABD0 /* Main.storyboard */; };
 		093B9B0E1B50E2D500C2ABD0 /* DummyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B0D1B50E2D500C2ABD0 /* DummyTests.m */; };
+		093B9B191B50E3BD00C2ABD0 /* DMYGatewayHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B181B50E3BD00C2ABD0 /* DMYGatewayHandler.m */; };
+		093B9B1D1B52DBA000C2ABD0 /* DMYDV3KVocoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B1C1B52DBA000C2ABD0 /* DMYDV3KVocoder.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +40,11 @@
 		093B9B071B50E2D500C2ABD0 /* DummyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DummyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		093B9B0C1B50E2D500C2ABD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		093B9B0D1B50E2D500C2ABD0 /* DummyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DummyTests.m; sourceTree = "<group>"; };
+		093B9B171B50E3BD00C2ABD0 /* DMYGatewayHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYGatewayHandler.h; sourceTree = "<group>"; };
+		093B9B181B50E3BD00C2ABD0 /* DMYGatewayHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYGatewayHandler.m; sourceTree = "<group>"; };
+		093B9B1A1B5214C700C2ABD0 /* DMYVocoderProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DMYVocoderProtocol.h; sourceTree = "<group>"; };
+		093B9B1B1B52DBA000C2ABD0 /* DMYDV3KVocoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYDV3KVocoder.h; sourceTree = "<group>"; };
+		093B9B1C1B52DBA000C2ABD0 /* DMYDV3KVocoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYDV3KVocoder.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +88,11 @@
 			children = (
 				093B9AF61B50E2D500C2ABD0 /* AppDelegate.h */,
 				093B9AF71B50E2D500C2ABD0 /* AppDelegate.m */,
+				093B9B171B50E3BD00C2ABD0 /* DMYGatewayHandler.h */,
+				093B9B181B50E3BD00C2ABD0 /* DMYGatewayHandler.m */,
+				093B9B1B1B52DBA000C2ABD0 /* DMYDV3KVocoder.h */,
+				093B9B1C1B52DBA000C2ABD0 /* DMYDV3KVocoder.m */,
+				093B9B1A1B5214C700C2ABD0 /* DMYVocoderProtocol.h */,
 				093B9AFB1B50E2D500C2ABD0 /* ViewController.h */,
 				093B9AFC1B50E2D500C2ABD0 /* ViewController.m */,
 				093B9AFE1B50E2D500C2ABD0 /* Images.xcassets */,
@@ -160,6 +172,7 @@
 		093B9AE91B50E2D400C2ABD0 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				CLASSPREFIX = DMY;
 				LastUpgradeCheck = 0640;
 				ORGANIZATIONNAME = NH6Z;
 				TargetAttributes = {
@@ -173,7 +186,7 @@
 				};
 			};
 			buildConfigurationList = 093B9AEC1B50E2D400C2ABD0 /* Build configuration list for PBXProject "Dummy" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 6.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -215,6 +228,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				093B9B191B50E3BD00C2ABD0 /* DMYGatewayHandler.m in Sources */,
+				093B9B1D1B52DBA000C2ABD0 /* DMYDV3KVocoder.m in Sources */,
 				093B9AFD1B50E2D500C2ABD0 /* ViewController.m in Sources */,
 				093B9AFA1B50E2D500C2ABD0 /* main.m in Sources */,
 				093B9AF81B50E2D500C2ABD0 /* AppDelegate.m in Sources */,
