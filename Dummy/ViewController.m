@@ -17,39 +17,43 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [[NSNotificationCenter defaultCenter] addObserverForName: DMYNetworkHeaderReceived
+    
+    __weak ViewController *weakSelf = self;
+    /*[[NSNotificationCenter defaultCenter] addObserverForName: DMYNetworkHeaderReceived
                                                       object: nil
                                                        queue: [NSOperationQueue mainQueue]
                                                   usingBlock:^(NSNotification *notification) {
                                                       DMYGatewayHandler *networkObject = [notification object];
-                                                      myCall.stringValue = networkObject.myCall;
-                                                      urCall.stringValue = networkObject.urCall;
-                                                      rpt1Call.stringValue = networkObject.rpt1Call;
-                                                      rpt2Call.stringValue = networkObject.rpt2Call;
+                                                      weakSelf.myCall.stringValue = networkObject.myCall;
+                                                      weakSelf.urCall.stringValue = networkObject.urCall;
+                                                      weakSelf.rpt1Call.stringValue = networkObject.rpt1Call;
+                                                      weakSelf.rpt2Call.stringValue = networkObject.rpt2Call;
                                                   }
-     ];
+     ];*/
     
-    [[NSNotificationCenter defaultCenter] addObserverForName: DMYNetworkStreamEnd
+    /*[[NSNotificationCenter defaultCenter] addObserverForName: DMYNetworkStreamEnd
                                                       object: nil
                                                        queue: [NSOperationQueue mainQueue]
                                                   usingBlock: ^(NSNotification *notification) {
-                                                      myCall.stringValue = @"";
-                                                      urCall.stringValue = @"";
-                                                      rpt1Call.stringValue = @"";
-                                                      rpt2Call.stringValue = @"";
+                                                      weakSelf.myCall.stringValue = @"";
+                                                      weakSelf.urCall.stringValue = @"";
+                                                      weakSelf.rpt1Call.stringValue = @"";
+                                                      weakSelf.rpt2Call.stringValue = @"";
                                                   }
-     ];
+     ]; */
 
     // Do any additional setup after loading the view.
 }
 
 - (void)viewWillDisappear {
-    [[NSNotificationCenter defaultCenter] removeObserver:self
+    NSLog(@"View Dissapearing\n");
+    
+    /* [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:DMYNetworkHeaderReceived
                                                   object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:DMYNetworkStreamEnd
-                                                  object: nil];
+                                                  object: nil]; */
 }
 
 - (void)setRepresentedObject:(id)representedObject {

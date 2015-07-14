@@ -86,14 +86,6 @@ const struct dv3k_packet dv3k_ratep = {
     .payload.ctrl.data.ratep = { 0x01, 0x30, 0x07, 0x63, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48 }
 };
 
-/* const struct dv3k_packet dv3k_ambe = {
-    .start_byte = DV3000_START_BYTE,
-    .header.packet_type = DV3000_TYPE_AMBE,
-    .header.payload_length = htons(sizeof(dv3k_ambe.payload.ambe)),
-    .payload.ambe.field_id = 0x01,
-    .payload.ambe.num_bits = sizeof(dv3k_ambe.payload.ambe.data) * 8
-}; */
-
 const struct dv3k_packet dv3k_audio = {
     .start_byte =  DV3000_START_BYTE,
     .header.packet_type = DV3000_TYPE_AUDIO,
@@ -104,14 +96,16 @@ const struct dv3k_packet dv3k_audio = {
 
 @interface DMYDV3KVocoder () {
     int serialDescriptor;
-    dispatch_source_t dispatchSource;
     dispatch_queue_t dispatchQueue;
     struct dv3k_packet dv3k_ambe;
-    NSOperationQueue *ioQueue;
+    BOOL running;
+    struct dv3k_packet *responsePacket;
+    NSThread *readThread;
 }
 
-- (void) processPacket;
+// - (void) processPacket;
 - (BOOL) readPacket:(struct dv3k_packet *)packet;
+- (void) readLoop;
 @end
 
 @implementation DMYDV3KVocoder
@@ -132,12 +126,12 @@ const struct dv3k_packet dv3k_audio = {
         dv3k_ambe.payload.ambe.field_id = 0x01;
         dv3k_ambe.payload.ambe.num_bits = sizeof(dv3k_ambe.payload.ambe.data) * 8;
         
-        //ioQueue = [[NSOperationQueue alloc] init];
-        //ioQueue.maxConcurrentOperationCount = 1;
-        
         dispatch_queue_attr_t dispatchQueueAttr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, -1);
         dispatchQueue = dispatch_queue_create("net.nh6z.Dummy.SerialIO", dispatchQueueAttr);
         
+        readThread = nil;
+        
+        responsePacket = calloc(1, sizeof(struct dv3k_packet));
     }
     
     return self;
@@ -145,11 +139,8 @@ const struct dv3k_packet dv3k_audio = {
 
 - (BOOL) readPacket:(struct dv3k_packet *)packet {
     ssize_t bytes;
-    char input;
     int offset = 0;
-    int failedReads = 0;
-    
-    //memset(packet, 0, sizeof(struct dv3k_packet));
+
     packet->start_byte = 0x00;
     
     do {
@@ -157,24 +148,16 @@ const struct dv3k_packet dv3k_audio = {
         if(bytes == -1) {
             NSLog(@"Couldn't byte from descriptor: %s\n", strerror(errno));
         }
-        if(bytes == 0)
-            return NO;
-        
-        //if(packet->start_byte != DV3000_START_BYTE)
-        //    NSLog(@"got byte 0x%02hhx\n", packet->start_byte);
         
         ++offset;
-        
-        // NSLog(@"Got byte 0x%02x\n", input);
-        
     } while (packet->start_byte != DV3000_START_BYTE);
     
-    //if(offset > 1)
-    //    NSLog(@"Needed to read %d bytes with %d failed reads before finding sync\n", offset, failedReads);
+    if(offset > 1)
+        NSLog(@"Needed to read %d bytes before finding sync\n", offset);
     
     bytes = read(serialDescriptor, &packet->header, sizeof(packet->header));
     if(bytes == -1) {
-        NSLog(@"Couldn't read product id header: %s\n", strerror(errno));
+        NSLog(@"Couldn't read header: %s\n", strerror(errno));
         return NO;
     }
     
@@ -183,24 +166,90 @@ const struct dv3k_packet dv3k_audio = {
         return NO;
     }
     
-    /* if(packet->start_byte != DV3000_START_BYTE) {
-        NSLog(@"Received invalid DV3K packet\n");
-        [self findStartByte];
-        return NO;
-    } */
-    
-    bytes = read(serialDescriptor, &packet->payload, ntohs(packet->header.payload_length));
-    if(bytes == -1) {
-        NSLog(@"Couldn't read product id payload: %s\n", strerror(errno));
-        return NO;
+    ssize_t bytesLeft = ntohs(packet->header.payload_length);
+    while(bytesLeft > 0) {
+        bytes = read(serialDescriptor, &packet->payload + (ntohs(packet->header.payload_length) - bytesLeft), bytesLeft);
+        if(bytes == -1) {
+            NSLog(@"Couldn't read payload: %s\n", strerror(errno));
+            return NO;
+        }
+        
+        bytesLeft -= bytes;
     }
-    
+
     return YES;
+}
+
+- (void) readLoop {
+    ssize_t bytes;
+    ssize_t bytesLeft;
+    
+    NSLog(@"Read Thread Begins\n");
+    
+    while(running == YES) {
+        if([self readPacket:responsePacket] == NO)
+            continue;
+        /* packet->start_byte = 0x00;
+        
+        bytes = read(serialDescriptor, packet, sizeof(packet->header) + 1);
+        if(bytes == -1) {
+            NSLog(@"Couldn't read header: %s\n", strerror(errno));
+            continue;
+        }
+        
+        if(bytes == 0) {
+            NSLog(@"No bytes read from socket\n");
+            continue;
+        }
+        
+        if(packet->start_byte != DV3000_START_BYTE) {
+            NSLog(@"Invalid Start Byte: 0x%02hhx\n", packet->start_byte);
+            continue;
+        }
+        
+        if(ntohs(packet->header.payload_length) > sizeof(packet->payload)) {
+            NSLog(@"Payload length %d exceeds available buffer %ld\n", ntohs(packet->header.payload_length), sizeof(packet->payload));
+            continue;
+        }
+        
+        bytesLeft = ntohs(packet->header.payload_length);
+        while(bytesLeft > 0) {
+            bytes = read(serialDescriptor, &packet->payload + (ntohs(packet->header.payload_length) - bytesLeft), bytesLeft);
+            if(bytes == -1) {
+                NSLog(@"Couldn't read payload: %s\n", strerror(errno));
+                continue;
+            }
+            
+            if(bytes == 0) {
+                NSLog(@"No bytes read from socket\n");
+                continue;
+            }
+            
+            bytesLeft -= bytes;
+        }
+        
+        /* if(bytes != ntohs(responsePacket.header.payload_length)) {
+            NSLog(@"Short Read, only read %ld bytes, expected %d bytes\n", bytes, ntohs(responsePacket.header.payload_length));
+            continue;
+        } */
+        
+        switch(responsePacket->header.packet_type) {
+            case DV3000_TYPE_CONTROL:
+                NSLog(@"DV3K Control Packet Received\n");
+                break;
+            case DV3000_TYPE_AMBE:
+                NSLog(@"DV3K AMBE Packet Received\n");
+                break;
+            case DV3000_TYPE_AUDIO:
+                //NSLog(@"DV3K Audio Packet Received\n");
+                break;
+        }
+    }
 }
 
 - (BOOL) start {
     
-    struct dv3k_packet responsePacket;
+    
     ssize_t bytes = 0;
     struct termios portTermios;
     int i = 0;
@@ -222,8 +271,8 @@ const struct dv3k_packet dv3k_audio = {
     portTermios.c_cflag    &= ~(CSIZE | CSTOPB | PARENB | CRTSCTS);
     portTermios.c_cflag    |= CS8;
     portTermios.c_oflag    &= ~(OPOST);
-    portTermios.c_cc[VMIN]  = 0;
-    portTermios.c_cc[VTIME] = 10;
+    portTermios.c_cc[VMIN]  = 1 + sizeof(responsePacket->header) + sizeof(responsePacket->payload.ambe);
+    portTermios.c_cc[VTIME] = 5;
     
     //  This should be settable
     if(cfsetspeed(&portTermios, B230400) == -1) {
@@ -246,14 +295,14 @@ const struct dv3k_packet dv3k_audio = {
         return NO;
     }
 
-    //  Wait for ready signal
+    //  Wait for ready signal -- This needs to be reworked...
     do {
-        if([self readPacket:&responsePacket] == NO) return NO;
+        if([self readPacket:responsePacket] == NO) return NO;
         if(i > 10) return NO;
         ++i;
-    } while (responsePacket.start_byte != DV3000_START_BYTE ||
-             responsePacket.header.packet_type != DV3000_TYPE_CONTROL ||
-             responsePacket.payload.ctrl.field_id != DV3000_CONTROL_READY);
+    } while (responsePacket->start_byte != DV3000_START_BYTE ||
+             responsePacket->header.packet_type != DV3000_TYPE_CONTROL ||
+             responsePacket->payload.ctrl.field_id != DV3000_CONTROL_READY);
     
     bytes = write(serialDescriptor, &dv3k_prodid, sizeof(dv3k_prodid.header) + ntohs(dv3k_prodid.header.payload_length) + 1);
     if(bytes == -1) {
@@ -262,17 +311,17 @@ const struct dv3k_packet dv3k_audio = {
         return NO;
     }
     
-    if([self readPacket:&responsePacket] == NO)
+    if([self readPacket:responsePacket] == NO)
         return NO;
-    if(responsePacket.start_byte != DV3000_START_BYTE ||
-       responsePacket.header.packet_type != DV3000_TYPE_CONTROL ||
-       responsePacket.payload.ctrl.field_id != DV3000_CONTROL_PRODID) {
+    if(responsePacket->start_byte != DV3000_START_BYTE ||
+       responsePacket->header.packet_type != DV3000_TYPE_CONTROL ||
+       responsePacket->payload.ctrl.field_id != DV3000_CONTROL_PRODID) {
         NSLog(@"Couldn't read product ID\n");
         close(serialDescriptor);
         return NO;
     }
     
-    self.productId = [NSString stringWithCString:responsePacket.payload.ctrl.data.prodid encoding:NSUTF8StringEncoding];
+    self.productId = [NSString stringWithCString:responsePacket->payload.ctrl.data.prodid encoding:NSUTF8StringEncoding];
     
     bytes = write(serialDescriptor, &dv3k_vers, sizeof(dv3k_vers.header) + ntohs(dv3k_vers.header.payload_length) + 1);
     if(bytes == -1) {
@@ -281,17 +330,17 @@ const struct dv3k_packet dv3k_audio = {
         return NO;
     }
     
-    if([self readPacket:&responsePacket] == NO)
+    if([self readPacket:responsePacket] == NO)
         return NO;
-    if(responsePacket.start_byte != DV3000_START_BYTE ||
-       responsePacket.header.packet_type != DV3000_TYPE_CONTROL ||
-       responsePacket.payload.ctrl.field_id != DV3000_CONTROL_VERSTRING) {
+    if(responsePacket->start_byte != DV3000_START_BYTE ||
+       responsePacket->header.packet_type != DV3000_TYPE_CONTROL ||
+       responsePacket->payload.ctrl.field_id != DV3000_CONTROL_VERSTRING) {
         NSLog(@"Couldn't version\n");
         close(serialDescriptor);
         return NO;
     }
     
-    self.version = [NSString stringWithCString:responsePacket.payload.ctrl.data.version encoding:NSUTF8StringEncoding];
+    self.version = [NSString stringWithCString:responsePacket->payload.ctrl.data.version encoding:NSUTF8StringEncoding];
    
     NSLog(@"Product ID is %@\n", self.productId);
     NSLog(@"Version is %@\n", self.version);
@@ -305,24 +354,24 @@ const struct dv3k_packet dv3k_audio = {
         return NO;
     }
     
-    if([self readPacket:&responsePacket] == NO)
+    if([self readPacket:responsePacket] == NO)
         return NO;
-    if(responsePacket.start_byte != DV3000_START_BYTE ||
-       responsePacket.header.packet_type != DV3000_TYPE_CONTROL ||
-       responsePacket.payload.ctrl.field_id != DV3000_CONTROL_RATEP) {
+    if(responsePacket->start_byte != DV3000_START_BYTE ||
+       responsePacket->header.packet_type != DV3000_TYPE_CONTROL ||
+       responsePacket->payload.ctrl.field_id != DV3000_CONTROL_RATEP) {
         NSLog(@"Couldn't set RATEP\n");
         close(serialDescriptor);
         return NO;
     }
     
-    unsigned long mics = 300UL;
+    /* unsigned long mics = 300UL;
     if(ioctl(serialDescriptor, IOSSDATALAT, &mics) == -1) {
         NSLog(@"Cannot set data latency: %s\n", strerror(errno));
-    }
+    } */
     
     NSLog(@"DV3000 is now set up\n");
     
-    portTermios.c_cc[VTIME] = 0;
+    /* portTermios.c_cc[VTIME] = 0;
     if(tcsetattr(serialDescriptor, TCSANOW, &portTermios) == -1) {
         NSLog(@"Cannot set terminal attributes: %s\n", strerror(errno));
         close(serialDescriptor);
@@ -331,48 +380,11 @@ const struct dv3k_packet dv3k_audio = {
     
     if(fcntl(serialDescriptor, F_SETFL, O_NONBLOCK | O_NDELAY) == -1) {
         NSLog(@"Couldn't set O_NONBLOCK: %s\n", strerror(errno));
-    }
-    
-    /* if(fcntl(serialDescriptor, F_SETFL, O_NDELAY) == -1) {
-        NSLog(@"Couldn't set O_NDELAY: %s\n", strerror(errno));
     } */
     
-    // dispatch_queue_t mainQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    DMYDV3KVocoder __weak *weakSelf = self;
-    NSLog(@"Inital Weak Self is %@\n", weakSelf);
-    dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, serialDescriptor, 0, dispatchQueue);
-    struct dv3k_packet *dataPacket;
-    dataPacket = malloc(sizeof(struct dv3k_packet));
-    dispatch_source_set_event_handler(dispatchSource, ^{
-        char *buffer;
-        
-        NSLog(@"%ld bytes waiting in buffer\n", dispatch_source_get_data(dispatchSource));
-        buffer = malloc(dispatch_source_get_data(dispatchSource));
-        read((int) dispatch_source_get_handle(dispatchSource), buffer, dispatch_source_get_data(dispatchSource));
-        free(buffer);
-        return;
-        
-        while([weakSelf readPacket:dataPacket] == YES) {
-            switch(dataPacket->header.packet_type) {
-                case DV3000_TYPE_CONTROL:
-                    NSLog(@"DV3K Control Packet Received\n");
-                    break;
-                case DV3000_TYPE_AMBE:
-                    NSLog(@"DV3K AMBE Packet Received\n");
-                    break;
-                case DV3000_TYPE_AUDIO:
-                    // NSLog(@"DV3K Audio Packet Received\n");
-                    break;
-            }
-        }
-        
-        /* ioctl(serialDescriptor, FIONREAD, &bytesWaiting);
-        NSLog(@"%d bytes ending in buffer\n", bytesWaiting); */
-    });
-    
-    dispatch_source_set_cancel_handler(dispatchSource, ^{ close(serialDescriptor); });
-    
-    dispatch_resume(dispatchSource);
+    running = YES;
+    readThread = [[NSThread alloc] initWithTarget:self selector:@selector(readLoop) object:nil];
+    [readThread start];
     
     NSLog(@"Completed serial setup\n");
     
@@ -380,13 +392,14 @@ const struct dv3k_packet dv3k_audio = {
 }
 
 - (void) dealloc {
+    free(responsePacket);
     NSLog(@"Deallocating the vocoder object\n");
 }
 
 - (void) decodeData:(NSData *) data {
     dispatch_async(dispatchQueue, ^{
         ssize_t bytes;
-
+        
         memcpy(&dv3k_ambe.payload.ambe.data, [data bytes], sizeof(dv3k_ambe.payload.ambe.data));
         
         bytes = write(serialDescriptor, &dv3k_ambe, sizeof(dv3k_ambe.header) + ntohs(dv3k_ambe.header.payload_length) + 1);
@@ -394,22 +407,13 @@ const struct dv3k_packet dv3k_audio = {
             NSLog(@"Couldn't send AMBE packet: %s\n", strerror(errno));
             return;
         }
-    
-    /* char *packetBytes = (char *) &dv3k_ambe;
-    NSMutableString *packetString = [[NSMutableString alloc] init];
-    [packetString appendFormat:@"Sending Packet: "];
-    for(int i = 0; i < sizeof(dv3k_ambe.header) + ntohs(dv3k_ambe.header.payload_length) + 1; ++i)
-        [packetString appendFormat:@"%02hhx ", packetBytes[i] ];
-    NSLog(@"%@\n", packetString); */
-    });
+    });    
 }
 
 - (void) findStartByte {
         ssize_t bytes;
     char input;
     do {
-
-        
         bytes = read(serialDescriptor, &input, 1);
         if(bytes == -1) {
             NSLog(@"Couldn't byte from descriptor: %s\n", strerror(errno));
@@ -421,8 +425,7 @@ const struct dv3k_packet dv3k_audio = {
     } while (input != DV3000_START_BYTE);
 }
 
--(void) processPacket {
-    struct dv3k_packet responsePacket = {0};
+/* -(void) processPacket {
     
     if([self readPacket:&responsePacket] == NO)
         return;
@@ -431,7 +434,7 @@ const struct dv3k_packet dv3k_audio = {
         NSLog(@"Received invalid DV3K packet\n");
         [self findStartByte];
         return;
-    } */
+    }
     
     switch(responsePacket.header.packet_type) {
         case DV3000_TYPE_CONTROL:
@@ -444,6 +447,6 @@ const struct dv3k_packet dv3k_audio = {
             NSLog(@"DV3K Audio Packet Received\n");
             break;
     }
-}
+} */
 
 @end
