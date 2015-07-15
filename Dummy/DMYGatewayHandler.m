@@ -24,23 +24,23 @@ struct gatewayPacket {
     union {
         struct {
             uint16 streamId;
-            char lastPacket;
-            char flags[3];
-            char rpt1Call[8];
-            char rpt2Call[8];
-            char urCall[8];
-            char myCall[8];
-            char myCall2[4];
+            uint8 lastPacket;
+            uint8 flags[3];
+            uint8 rpt1Call[8];
+            uint8 rpt2Call[8];
+            uint8 urCall[8];
+            uint8 myCall[8];
+            uint8 myCall2[4];
             uint16 checksum;
         } dstarHeader;
         struct {
             uint16 streamId;
-            char sequence;
-            char errors;
-            char ambeData[9];
-            char slowData[3];
+            uint8 sequence;
+            uint8 errors;
+            uint8 ambeData[9];
+            uint8 slowData[3];
         } dstarData;
-        char junk[1500];  // This should go away once all packets are accounted for.
+        // uint8 junk[1500];  // This should go away once all packets are accounted for.
     } payload;
 } __attribute__((packed));
 
@@ -71,7 +71,6 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 - (NSData *) constructRemoteAddrStruct;
 - (NSData *) constructLocalAddrStruct;
 - (void) processPacket;
-- (void) readLoop;
 
 @end
 
@@ -137,7 +136,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     }
     
     dispatch_queue_t mainQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, gatewaySocket, 0, mainQueue);
+    dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, (uintptr_t) gatewaySocket, 0, mainQueue);
     DMYGatewayHandler __weak *weakSelf = self;
     dispatch_source_set_event_handler(dispatchSource, ^{
         [weakSelf processPacket];
@@ -147,11 +146,8 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     
     dispatch_resume(dispatchSource);
     
-    /* running = YES;
-    readThread = [[NSThread alloc] initWithTarget:self selector:@selector(readLoop) object:nil];
-    [readThread start]; */
-    
-    //  Should set up a timer here for the poll interval.
+    //  XXX Should set up a timer here for the poll interval.
+    //  XXX And for a watchdog timer
     
     NSLog(@"Completed socket setup\n");
     
@@ -184,15 +180,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     return [NSData dataWithData:addrStructData];
 }
 
-- (void) readLoop {
-    NSLog(@"Network read thread begins\n");
-    while(running) {
-        [self processPacket];
-    }
-}
-
 - (void) processPacket {
-//    struct gatewayPacket incomingPacket = {0};
     struct sockaddr_in incomingAddress;
     socklen_t incomingAddressLen;
     
@@ -238,11 +226,11 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
                                                length:sizeof(incomingPacket->payload.dstarHeader.myCall2)
                                              encoding:NSUTF8StringEncoding];
             
-            //dispatch_async(dispatch_get_main_queue(), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkHeaderReceived
-                                                                    object: self
+                                                                    object: weakSelf
                                                                   userInfo: nil];
-            //});
+            });
             //NSLog(@"My = %@/%@\n", myCall, myCall2);
             //NSLog(@"UR = %@\n", urCall);
             //NSLog(@"RPT1 = %@\n", rpt1Call);
@@ -254,11 +242,11 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
             if(streamId == 0) {
                 streamId = incomingPacket->payload.dstarData.streamId;
                 sequence = incomingPacket->payload.dstarData.sequence;
-                //dispatch_async(dispatch_get_main_queue(), ^{
-                //    [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkStreamStart
-                //                                                        object: self
-                //                                                      userInfo: nil];
-                //});
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkStreamStart
+                                                                        object: weakSelf
+                                                                      userInfo: nil];
+                });
 
                 NSLog(@"New incoming stream with ID %d\n", streamId);
             }
@@ -292,11 +280,11 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
                 NSLog(@"End of stream %d\n", incomingPacket->payload.dstarData.streamId);
                 streamId = 0;
                 incomingPacket->payload.dstarData.sequence &= ~0x40;
-                //dispatch_async(dispatch_get_main_queue(), ^{
+                dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkStreamEnd
-                                                                        object: self
+                                                                        object: weakSelf
                                                                       userInfo: nil];
-                //});
+                });
             }
             
             if(incomingPacket->payload.dstarData.sequence != sequence) {

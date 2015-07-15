@@ -19,5 +19,6 @@
 @property NSString *serialPort;
 @property NSString *productId;
 @property NSString *version;
+@property long speed;
 
 @end

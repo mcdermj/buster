@@ -34,7 +34,7 @@
     [[NSNotificationCenter defaultCenter] addObserverForName: DMYNetworkStreamEnd
                                                       object: nil
                                                        queue: [NSOperationQueue mainQueue]
-                                                  usingBlock: ^(NSNotification *notification) {
+                                                  usingBlock: ^(NSNotification *notification) {                                                      
                                                       weakSelf.myCall.stringValue = @"";
                                                       weakSelf.urCall.stringValue = @"";
                                                       weakSelf.rpt1Call.stringValue = @"";
