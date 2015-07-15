@@ -12,6 +12,8 @@
 
 #import <sys/ioctl.h>
 
+// #define NSLog(x...)
+
 NSString * const DMYNetworkHeaderReceived = @"DMYNetworkHeaderReceived";
 NSString * const DMYNetworkStreamEnd = @"DMYNetworkStreamEnd";
 NSString * const DMYNetworkStreamStart = @"DMYNetworkStreamStart";
@@ -38,18 +40,32 @@ struct gatewayPacket {
             char ambeData[9];
             char slowData[3];
         } dstarData;
-        char junk[250];  // This should go away once all packets are accounted for.
+        char junk[1500];  // This should go away once all packets are accounted for.
     } payload;
 } __attribute__((packed));
+
+NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
+    uint8 halfmax = max / 2;
+    
+    if(counter < halfmax) {
+        if(incoming <= counter + halfmax) return YES;
+    } else {
+        if(incoming > counter ||
+           incoming <= counter - halfmax) return YES;
+    }
+    
+    return NO;
+}
 
 @interface DMYGatewayHandler () {
     int gatewaySocket;
     dispatch_source_t dispatchSource;
     uint16 streamId;
-    char sequence;
+    uint8 sequence;
     BOOL running;
     NSThread *readThread;
     struct gatewayPacket *incomingPacket;
+    CFAbsoluteTime lastPacketTime;
 }
 
 - (NSData *) constructRemoteAddrStruct;
@@ -111,16 +127,16 @@ struct gatewayPacket {
         NSLog(@"Couldn't set socket to SO_REUSEADDR: %s\n", strerror(errno));
     }
     
-    /* if(fcntl(gatewaySocket, F_SETFL, O_NONBLOCK) == -1) {
+    if(fcntl(gatewaySocket, F_SETFL, O_NONBLOCK) == -1) {
         NSLog(@"Couldn't set socket to nonblocking: %s\n", strerror(errno));
-    } */
+    }
     
     NSData *addr = [self constructLocalAddrStruct];
     if(bind(gatewaySocket, (const struct sockaddr *) [addr bytes], (socklen_t) [addr length])) {
         NSLog(@"Couldn't bind gateway socket: %s\n", strerror(errno));
     }
     
-    /* dispatch_queue_t mainQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_queue_t mainQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, gatewaySocket, 0, mainQueue);
     DMYGatewayHandler __weak *weakSelf = self;
     dispatch_source_set_event_handler(dispatchSource, ^{
@@ -129,11 +145,11 @@ struct gatewayPacket {
     
     dispatch_source_set_cancel_handler(dispatchSource, ^{ close(gatewaySocket); });
     
-    dispatch_resume(dispatchSource); */
+    dispatch_resume(dispatchSource);
     
-    running = YES;
+    /* running = YES;
     readThread = [[NSThread alloc] initWithTarget:self selector:@selector(readLoop) object:nil];
-    [readThread start];
+    [readThread start]; */
     
     //  Should set up a timer here for the poll interval.
     
@@ -223,9 +239,9 @@ struct gatewayPacket {
                                              encoding:NSUTF8StringEncoding];
             
             //dispatch_async(dispatch_get_main_queue(), ^{
-            //    [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkHeaderReceived
-            //                                                        object: self
-            //                                                      userInfo: nil];
+                [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkHeaderReceived
+                                                                    object: self
+                                                                  userInfo: nil];
             //});
             //NSLog(@"My = %@/%@\n", myCall, myCall2);
             //NSLog(@"UR = %@\n", urCall);
@@ -247,14 +263,29 @@ struct gatewayPacket {
                 NSLog(@"New incoming stream with ID %d\n", streamId);
             }
             
-            //if(streamId != incomingPacket->payload.dstarData.streamId)
-            //    NSLog(@"Stream ID mismatch\n");
+            if(streamId != incomingPacket->payload.dstarData.streamId) {
+                NSLog(@"Stream ID mismatch\n");
+                //  If we have missed time for about 10 packets, this stream is probably over and we missed the end packet.
+                //  XXX This should probably be in a watchdog timer somehow.
+                if(CFAbsoluteTimeGetCurrent() > lastPacketTime + .200) {
+                    NSLog(@"Stream timed out\n");
+                    streamId = 0;
+                    [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkStreamEnd
+                                                                        object: self
+                                                                      userInfo: nil];
+                }
+                return;
+            }
+            
+            lastPacketTime = CFAbsoluteTimeGetCurrent();
             
             if(incomingPacket->payload.dstarData.slowData[0] == 0x55 &&
                incomingPacket->payload.dstarData.slowData[1] == 0x2D &&
                incomingPacket->payload.dstarData.slowData[2] == 0x16) {
                 //NSLog(@"Received Sync Packet\n");
-                sequence = 0;
+                // sequence = 0;
+                if(incomingPacket->payload.dstarData.sequence != 0)
+                    NSLog(@"Sync in wrong place");
             }
 
             if(incomingPacket->payload.dstarData.sequence & 0x40) {
@@ -262,17 +293,24 @@ struct gatewayPacket {
                 streamId = 0;
                 incomingPacket->payload.dstarData.sequence &= ~0x40;
                 //dispatch_async(dispatch_get_main_queue(), ^{
-                 //   [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkStreamEnd
-                //                                                        object: self
-                //                                                      userInfo: nil];
+                [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkStreamEnd
+                                                                        object: self
+                                                                      userInfo: nil];
                 //});
             }
             
-            if(sequence != incomingPacket->payload.dstarData.sequence)
-                NSLog(@"Sequence mismatch: %d vs %d\n", sequence, incomingPacket->payload.dstarData.sequence);
-            
-            ++sequence;
-            
+            if(incomingPacket->payload.dstarData.sequence != sequence) {
+            //  If the packet is more recent, reset the sequence, if not, wait for my next packet
+                if(isSequenceAhead(incomingPacket->payload.dstarData.sequence, sequence, 20))
+                     sequence = incomingPacket->payload.dstarData.sequence;
+                else {
+                    NSLog(@"Out of order packet: incoming = %u, sequence = %u\n", incomingPacket->payload.dstarData.sequence, sequence);
+                    return;
+                }
+            }
+    
+            sequence = (sequence + 1) % 21;
+        
             [vocoder decodeData:[NSData dataWithBytes:incomingPacket->payload.dstarData.ambeData length:sizeof(incomingPacket->payload.dstarData.ambeData)]];
            break;
         case 0x24:
@@ -282,6 +320,8 @@ struct gatewayPacket {
             NSLog(@"Unknown packet type: %02x\n", incomingPacket->packetType);
             break;
     }
+    
+    
 }
 
 - (void) dealloc {

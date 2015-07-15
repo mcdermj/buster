@@ -19,7 +19,7 @@
     [super viewDidLoad];
     
     __weak ViewController *weakSelf = self;
-    /*[[NSNotificationCenter defaultCenter] addObserverForName: DMYNetworkHeaderReceived
+    [[NSNotificationCenter defaultCenter] addObserverForName: DMYNetworkHeaderReceived
                                                       object: nil
                                                        queue: [NSOperationQueue mainQueue]
                                                   usingBlock:^(NSNotification *notification) {
@@ -29,9 +29,9 @@
                                                       weakSelf.rpt1Call.stringValue = networkObject.rpt1Call;
                                                       weakSelf.rpt2Call.stringValue = networkObject.rpt2Call;
                                                   }
-     ];*/
+     ];
     
-    /*[[NSNotificationCenter defaultCenter] addObserverForName: DMYNetworkStreamEnd
+    [[NSNotificationCenter defaultCenter] addObserverForName: DMYNetworkStreamEnd
                                                       object: nil
                                                        queue: [NSOperationQueue mainQueue]
                                                   usingBlock: ^(NSNotification *notification) {
@@ -40,7 +40,7 @@
                                                       weakSelf.rpt1Call.stringValue = @"";
                                                       weakSelf.rpt2Call.stringValue = @"";
                                                   }
-     ]; */
+     ];
 
     // Do any additional setup after loading the view.
 }
