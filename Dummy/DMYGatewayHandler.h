@@ -27,8 +27,12 @@ extern NSString * const DMYNetworkStreamEnd;
 @property (readonly) NSString *rpt1Call;
 @property (readonly) NSString *rpt2Call;
 @property (readonly) NSString *myCall2;
+@property NSString *xmitMyCall;
+@property NSString *xmitUrCall;
+@property NSString *xmitRepeater;
 
 - (id) initWithRemoteAddress:(NSString *)remoteAddress remotePort:(NSUInteger)remotePort localPort:(NSUInteger)localPort;
 - (BOOL) start;
+- (void) linkTo:(NSString *)reflector;
 
 @end

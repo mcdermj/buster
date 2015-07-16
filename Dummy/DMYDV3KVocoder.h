@@ -10,15 +10,19 @@
 
 #import "DMYVocoderProtocol.h"
 
+#import "DMYAudioHandler.h"
+
 @interface DMYDV3KVocoder : NSObject <DMYVocoderProtocol>
 
 - (id) initWithPort:(NSString *)serialPort;
-- (void) decodeData:(NSData *) data;
+- (void) decodeData:(void *) data;
 - (BOOL) start;
 
 @property NSString *serialPort;
 @property NSString *productId;
 @property NSString *version;
 @property long speed;
+
+@property DMYAudioHandler *audio;
 
 @end

@@ -15,6 +15,8 @@
 		093B9B0E1B50E2D500C2ABD0 /* DummyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B0D1B50E2D500C2ABD0 /* DummyTests.m */; };
 		093B9B191B50E3BD00C2ABD0 /* DMYGatewayHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B181B50E3BD00C2ABD0 /* DMYGatewayHandler.m */; };
 		093B9B1D1B52DBA000C2ABD0 /* DMYDV3KVocoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B1C1B52DBA000C2ABD0 /* DMYDV3KVocoder.m */; };
+		09A5FDEE1B5794FA00AE9E1C /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */; };
+		09A5FDF11B57956A00AE9E1C /* DMYAudioHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 09A5FDF01B57956A00AE9E1C /* DMYAudioHandler.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +47,10 @@
 		093B9B1A1B5214C700C2ABD0 /* DMYVocoderProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DMYVocoderProtocol.h; sourceTree = "<group>"; };
 		093B9B1B1B52DBA000C2ABD0 /* DMYDV3KVocoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYDV3KVocoder.h; sourceTree = "<group>"; };
 		093B9B1C1B52DBA000C2ABD0 /* DMYDV3KVocoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYDV3KVocoder.m; sourceTree = "<group>"; };
+		09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TPCircularBuffer.c; sourceTree = "<group>"; };
+		09A5FDED1B5794FA00AE9E1C /* TPCircularBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPCircularBuffer.h; sourceTree = "<group>"; };
+		09A5FDEF1B57956A00AE9E1C /* DMYAudioHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYAudioHandler.h; sourceTree = "<group>"; };
+		09A5FDF01B57956A00AE9E1C /* DMYAudioHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYAudioHandler.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +98,10 @@
 				093B9B181B50E3BD00C2ABD0 /* DMYGatewayHandler.m */,
 				093B9B1B1B52DBA000C2ABD0 /* DMYDV3KVocoder.h */,
 				093B9B1C1B52DBA000C2ABD0 /* DMYDV3KVocoder.m */,
+				09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */,
+				09A5FDEF1B57956A00AE9E1C /* DMYAudioHandler.h */,
+				09A5FDF01B57956A00AE9E1C /* DMYAudioHandler.m */,
+				09A5FDED1B5794FA00AE9E1C /* TPCircularBuffer.h */,
 				093B9B1A1B5214C700C2ABD0 /* DMYVocoderProtocol.h */,
 				093B9AFB1B50E2D500C2ABD0 /* ViewController.h */,
 				093B9AFC1B50E2D500C2ABD0 /* ViewController.m */,
@@ -228,10 +238,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				09A5FDEE1B5794FA00AE9E1C /* TPCircularBuffer.c in Sources */,
 				093B9B191B50E3BD00C2ABD0 /* DMYGatewayHandler.m in Sources */,
 				093B9B1D1B52DBA000C2ABD0 /* DMYDV3KVocoder.m in Sources */,
 				093B9AFD1B50E2D500C2ABD0 /* ViewController.m in Sources */,
 				093B9AFA1B50E2D500C2ABD0 /* main.m in Sources */,
+				09A5FDF11B57956A00AE9E1C /* DMYAudioHandler.m in Sources */,
 				093B9AF81B50E2D500C2ABD0 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

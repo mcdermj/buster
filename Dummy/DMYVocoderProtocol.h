@@ -7,5 +7,5 @@
 //
 
 @protocol DMYVocoderProtocol
-- (void) decodeData:(NSData *) data;
+- (void) decodeData:(void *) data;
 @end

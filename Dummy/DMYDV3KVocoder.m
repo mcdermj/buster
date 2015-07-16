@@ -77,6 +77,7 @@ struct dv3k_packet {
 @synthesize productId;
 @synthesize version;
 @synthesize speed;
+@synthesize audio;
 
 - (id) initWithPort:(NSString *)_serialPort {
     self = [super init];
@@ -127,9 +128,14 @@ struct dv3k_packet {
     }
     
     bytesLeft = ntohs(packet->header.payload_length);
+    if(bytesLeft > sizeof(packet->payload)) {
+        NSLog(@"Payload exceeds buffer size: %ld\n", bytesLeft);
+        return NO;
+    }
+    
     while(bytesLeft > 0) {
         bytes = read(serialDescriptor, ((uint8_t *) &packet->payload) + (ntohs(packet->header.payload_length) - bytesLeft), bytesLeft);
-        if(bytes == -1) {
+         if(bytes == -1) {
             if(errno == EAGAIN) continue;
             NSLog(@"Couldn't read payload: %s\n", strerror(errno));
             return NO;
@@ -251,7 +257,7 @@ struct dv3k_packet {
         NSLog(@"Couldn't set O_NONBLOCK: %s\n", strerror(errno));
     }
     
-    dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, (uintptr_t) serialDescriptor, 0, dispatchQueue);
+    dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, (uintptr_t) serialDescriptor, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
     DMYDV3KVocoder __weak *weakSelf = self;
     dispatch_source_set_event_handler(dispatchSource, ^{
         [weakSelf processPacket];
@@ -270,11 +276,11 @@ struct dv3k_packet {
     free(responsePacket);
 }
 
-- (void) decodeData:(NSData *) data {
+- (void) decodeData:(void *) data {
     dispatch_async(dispatchQueue, ^{
         ssize_t bytes;
         
-        memcpy(&dv3k_ambe.payload.ambe.data, [data bytes], sizeof(dv3k_ambe.payload.ambe.data));
+        memcpy(&dv3k_ambe.payload.ambe.data, data, sizeof(dv3k_ambe.payload.ambe.data));
         
         bytes = write(serialDescriptor, &dv3k_ambe, sizeof(dv3k_ambe.header) + ntohs(dv3k_ambe.header.payload_length) + 1);
         if(bytes == -1) {
@@ -296,6 +302,12 @@ struct dv3k_packet {
             NSLog(@"DV3K AMBE Packet Received\n");
             break;
         case DV3000_TYPE_AUDIO:
+            if(responsePacket->payload.audio.field_id != 0x00 ||
+               responsePacket->payload.audio.num_samples != sizeof(responsePacket->payload.audio.samples) / sizeof(short)) {
+                NSLog(@"Received invalid audio packet\n");
+                return;
+            }
+            [audio queueAudioData:&responsePacket->payload.audio.samples withLength:sizeof(responsePacket->payload.audio.samples)];
             // NSLog(@"DV3K Audio Packet Received\n");
             break;
     }

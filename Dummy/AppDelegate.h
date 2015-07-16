@@ -8,8 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "DMYGatewayHandler.h"
+
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
+@property (readonly) DMYGatewayHandler *network;
 
 @end
 

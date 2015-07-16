@@ -8,12 +8,16 @@
 
 #import "ViewController.h"
 
+#import "DMYGatewayHandler.h"
+#import "AppDelegate.h"
+
 @implementation ViewController
 
 @synthesize myCall;
 @synthesize urCall;
 @synthesize rpt1Call;
 @synthesize rpt2Call;
+@synthesize linkTarget;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -48,12 +52,12 @@
 - (void)viewWillDisappear {
     NSLog(@"View Dissapearing\n");
     
-    /* [[NSNotificationCenter defaultCenter] removeObserver:self
+    [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:DMYNetworkHeaderReceived
                                                   object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:DMYNetworkStreamEnd
-                                                  object: nil]; */
+                                                  object:nil];
 }
 
 - (void)setRepresentedObject:(id)representedObject {
@@ -62,4 +66,10 @@
     // Update the view, if already loaded.
 }
 
+- (IBAction)doLink:(id)sender {
+    AppDelegate *delegate = (AppDelegate *) [NSApp delegate];
+    
+    //  We should do sanity checking on this value
+    [[delegate network] linkTo:linkTarget.stringValue];
+}
 @end
