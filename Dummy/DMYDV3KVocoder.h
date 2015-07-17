@@ -15,13 +15,14 @@
 @interface DMYDV3KVocoder : NSObject <DMYVocoderProtocol>
 
 - (id) initWithPort:(NSString *)serialPort;
-- (void) decodeData:(void *) data;
+// - (void) decodeData:(void *) data;
 - (BOOL) start;
 
 @property NSString *serialPort;
 @property NSString *productId;
 @property NSString *version;
 @property long speed;
+@property BOOL beep;
 
 @property DMYAudioHandler *audio;
 

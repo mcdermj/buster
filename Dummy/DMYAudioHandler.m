@@ -12,6 +12,7 @@
 #include <AudioToolbox/AudioToolbox.h>
 
 #import "TPCircularBuffer.h"
+#import "DMYGatewayHandler.h"
 
 static const AudioComponentDescription componentDescription = {
     .componentType = kAudioUnitType_Output,
@@ -32,6 +33,8 @@ static const AudioStreamBasicDescription outputFormat  = {
     .mBitsPerChannel = sizeof(int16_t) * 8
 };
 
+static BOOL receiving = NO;
+
 static OSStatus playbackThreadCallback (void *userData, AudioUnitRenderActionFlags *actionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData) {
     int32_t availableBytes;
     void *bufferTail;
@@ -41,6 +44,10 @@ static OSStatus playbackThreadCallback (void *userData, AudioUnitRenderActionFla
         bufferTail = TPCircularBufferTail(buffer, &availableBytes);
         if((UInt32) availableBytes < ioData->mBuffers[i].mDataByteSize) {
             memset(ioData->mBuffers[i].mData, 0, ioData->mBuffers[i].mDataByteSize);
+            if(!receiving && availableBytes > 0) {
+                memcpy(ioData->mBuffers[i].mData, bufferTail, availableBytes);
+                TPCircularBufferConsume(buffer, availableBytes);
+            }
         } else {
             memcpy(ioData->mBuffers[i].mData, bufferTail, ioData->mBuffers[i].mDataByteSize);
             TPCircularBufferConsume(buffer, ioData->mBuffers[i].mDataByteSize);
@@ -123,6 +130,22 @@ static OSStatus playbackThreadCallback (void *userData, AudioUnitRenderActionFla
     }
     
     NSLog(@"Audio system set up\n");
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName: DMYNetworkStreamStart
+                                                      object: nil
+                                                       queue: [NSOperationQueue mainQueue]
+                                                  usingBlock:^(NSNotification *notification) {
+                                                      receiving = YES;
+                                                      TPCircularBufferClear(&playbackBuffer);
+                                                  }
+     ];
+    [[NSNotificationCenter defaultCenter] addObserverForName: DMYNetworkStreamEnd
+                                                      object: nil
+                                                       queue: [NSOperationQueue mainQueue]
+                                                  usingBlock:^(NSNotification *notification) {
+                                                      receiving = NO;
+                                                  }
+     ];
 
     return YES;
 }

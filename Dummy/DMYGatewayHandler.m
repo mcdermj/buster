@@ -76,12 +76,11 @@ struct gatewayPacket {
             uint8 slowData[3];
         } dstarData;
         uint8 pollText[255];
-        // uint8 junk[1500];  // This should go away once all packets are accounted for.
     } payload;
 } __attribute__((packed));
 
 static const struct gatewayPacket pollPacket = {
-    .magic ="DSRP",
+    .magic = "DSRP",
     .packetType = 0x0A,
     .payload.pollText = "Dummy v1.0 (Mac)"
 };
@@ -175,15 +174,24 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     int one = 1;
     if(setsockopt(gatewaySocket, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one))) {
         NSLog(@"Couldn't set socket to SO_REUSEADDR: %s\n", strerror(errno));
+        return NO;
     }
     
     if(fcntl(gatewaySocket, F_SETFL, O_NONBLOCK) == -1) {
         NSLog(@"Couldn't set socket to nonblocking: %s\n", strerror(errno));
+        return NO;
     }
     
     NSData *addr = [self constructLocalAddrStruct];
     if(bind(gatewaySocket, (const struct sockaddr *) [addr bytes], (socklen_t) [addr length])) {
         NSLog(@"Couldn't bind gateway socket: %s\n", strerror(errno));
+        return NO;
+    }
+    
+    addr = [self constructRemoteAddrStruct];
+    if(connect(gatewaySocket, (const struct sockaddr *) [addr bytes], (socklen_t) [addr length])) {
+        NSLog(@"Couldn't connect socket: %s\n", strerror(errno));
+        return NO;
     }
     
     dispatch_queue_t mainQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
@@ -201,10 +209,9 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     //  XXX This should eventually be put on the read serial queue.
     pollTimerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
     dispatch_source_set_timer(pollTimerSource, dispatch_walltime(NULL, 0), 60ull * NSEC_PER_SEC, 1ull * NSEC_PER_SEC);
-    NSData *pollAddr = [self constructRemoteAddrStruct];
     dispatch_source_set_event_handler(pollTimerSource, ^{
         NSLog(@"Sending Poll\n");
-        if(sendto(gatewaySocket, &pollPacket, sizeof(pollPacket), 0, [pollAddr bytes], (socklen_t) [pollAddr length]) == -1) {
+        if(send(gatewaySocket, &pollPacket, sizeof(pollPacket), 0) == -1) {
             NSLog(@"Couldn't send poll packet: %s\n", strerror(errno));
             return;
         }
@@ -230,7 +237,6 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         packetPointer < ((char *) &packet.payload.dstarHeader.flags) + length;
         ++packetPointer) {
         crc = (crc >> 8) ^ ccittTab[(crc & 0x00FF) ^ *packetPointer];
-        // NSLog(@"Data = %c(0x%02X) CRC = 0x%04x\n", *packetPointer, *packetPointer, crc);
     }
     
     crc = ~crc;
@@ -244,8 +250,6 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         short linkStreamId;
         
         memset(&packet, 0, sizeof(packet));
-        
-        NSData *addr = [self constructRemoteAddrStruct];
         
         NSMutableString *linkCmd = [NSMutableString stringWithString:reflector];
         [linkCmd deleteCharactersInRange:NSMakeRange(6, 1)];
@@ -261,7 +265,6 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
        
         NSMutableString *gateway = [NSMutableString stringWithString:xmitRepeater];
         [gateway replaceCharactersInRange:NSMakeRange(7, 1) withString:@"G"];
-        NSLog(@"%@/%@\n", xmitRepeater, gateway);
         
         strncpy((char *) packet.payload.dstarHeader.rpt2Call, [xmitRepeater cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt1Call));
         strncpy((char *) packet.payload.dstarHeader.rpt1Call, [gateway cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt2Call));
@@ -272,12 +275,11 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         packet.payload.dstarHeader.streamId = linkStreamId;
         
         packet.payload.dstarHeader.checksum = [self calculateChecksum:packet];
-        NSLog(@"Checksum is %x\n", packet.payload.dstarHeader.checksum);
         
         //   XXX Maybe the length should be shorter here
         size_t packetLen = sizeof(packet.magic) + sizeof(packet.packetType) + sizeof(packet.payload.dstarHeader);
         NSLog(@"packetLen = %lu\n", packetLen);
-        if(sendto(gatewaySocket, &packet, packetLen, 0, [addr bytes], (socklen_t) [addr length]) == -1) {
+        if(send(gatewaySocket, &packet, packetLen, 0) == -1) {
             NSLog(@"Couldn't send link header: %s\n", strerror(errno));
             return;
         }
@@ -288,7 +290,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         packet.payload.dstarData.streamId = linkStreamId;
         packet.packetType = 0x21;
         packetLen = sizeof(packet.magic) + sizeof(packet.packetType) + sizeof(packet.payload.dstarData);
-        if(sendto(gatewaySocket, &packet, packetLen, 0, [addr bytes], (socklen_t) [addr length]) == -1) {
+        if(send(gatewaySocket, &packet, packetLen, 0) == -1) {
             NSLog(@"Couldn't send link header: %s\n", strerror(errno));
             return;
         }
@@ -323,12 +325,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 }
 
 - (void) processPacket {
-    struct sockaddr_in incomingAddress;
-    socklen_t incomingAddressLen;
-    
-    ssize_t bytesRead = recvfrom(gatewaySocket, incomingPacket, sizeof(struct gatewayPacket), 0, (struct sockaddr *) &incomingAddress, &incomingAddressLen);
-    
-    if(bytesRead == -1) {
+    if(recv(gatewaySocket, incomingPacket, sizeof(struct gatewayPacket), 0) == -1) {
         NSLog(@"Couldn't read packet: %s\n", strerror(errno));
         return;
     }
@@ -372,13 +369,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
                                                                     object: weakSelf
                                                                   userInfo: nil];
             });
-            //NSLog(@"My = %@/%@\n", myCall, myCall2);
-            //NSLog(@"UR = %@\n", urCall);
-            //NSLog(@"RPT1 = %@\n", rpt1Call);
-            //NSLog(@"RPT2 = %@\n", rpt2Call);
-        }
-            break;
-        case 0x21:
+            
             if(streamId == 0) {
                 streamId = incomingPacket->payload.dstarData.streamId;
                 sequence = incomingPacket->payload.dstarData.sequence;
@@ -388,16 +379,19 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
                                                                       userInfo: nil];
                 });
                 
-                NSLog(@"New incoming stream with ID %d\n", streamId);
+                NSLog(@"New stream %d: My: %@/%@ Ur: %@ RPT1: %@ RPT2: %@\n", streamId, myCall, myCall2, urCall, rpt1Call, rpt2Call);
             }
-            
+        }
+            break;
+        case 0x21:
             if(streamId != incomingPacket->payload.dstarData.streamId) {
-                //NSLog(@"Stream ID mismatch\n");
+                // NSLog(@"Stream ID mismatch\n");
                 //  If we have missed time for about 10 packets, this stream is probably over and we missed the end packet.
                 //  XXX This should probably be in a watchdog timer somehow.
                 if(CFAbsoluteTimeGetCurrent() > lastPacketTime + .200) {
                     NSLog(@"Stream timed out\n");
                     streamId = 0;
+                    lastPacketTime = CFAbsoluteTimeGetCurrent();
                     [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkStreamEnd
                                                                         object: self
                                                                       userInfo: nil];
@@ -417,7 +411,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
             }
             
             if(incomingPacket->payload.dstarData.sequence & 0x40) {
-                NSLog(@"End of stream %d\n", incomingPacket->payload.dstarData.streamId);
+                NSLog(@"End stream %d\n", incomingPacket->payload.dstarData.streamId);
                 streamId = 0;
                 incomingPacket->payload.dstarData.sequence &= ~0x40;
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -429,9 +423,9 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
             
             if(incomingPacket->payload.dstarData.sequence != sequence) {
                 //  If the packet is more recent, reset the sequence, if not, wait for my next packet
-                if(isSequenceAhead(incomingPacket->payload.dstarData.sequence, sequence, 20))
+                if(isSequenceAhead(incomingPacket->payload.dstarData.sequence, sequence, 20)) {
                     sequence = incomingPacket->payload.dstarData.sequence;
-                else {
+                } else {
                     NSLog(@"Out of order packet: incoming = %u, sequence = %u\n", incomingPacket->payload.dstarData.sequence, sequence);
                     return;
                 }
@@ -439,7 +433,8 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
             
             sequence = (sequence + 1) % 21;
             
-            [vocoder decodeData: incomingPacket->payload.dstarData.ambeData];
+            //  If streamId == 0, we are on the last packet of this stream.
+            [vocoder decodeData: incomingPacket->payload.dstarData.ambeData lastPacket:(streamId == 0)];
             break;
         case 0x24:
             NSLog(@"Packet is DD Data\n");

@@ -14,19 +14,28 @@
 
 // #define NSLog(x...)
 
-#define DV3000_TYPE_CONTROL 0x00
-#define DV3000_TYPE_AMBE 0x01
-#define DV3000_TYPE_AUDIO 0x02
+#define DV3K_TYPE_CONTROL 0x00
+#define DV3K_TYPE_AMBE 0x01
+#define DV3K_TYPE_AUDIO 0x02
 
-static const unsigned char DV3000_START_BYTE   = 0x61;
+static const unsigned char DV3K_START_BYTE   = 0x61;
 
-static const unsigned char DV3000_CONTROL_RATEP  = 0x0A;
-static const unsigned char DV3000_CONTROL_PRODID = 0x30;
-static const unsigned char DV3000_CONTROL_VERSTRING = 0x31;
-static const unsigned char DV3000_CONTROL_RESET = 0x33;
-static const unsigned char DV3000_CONTROL_READY = 0x39;
+static const unsigned char DV3K_CONTROL_RATEP  = 0x0A;
+static const unsigned char DV3K_CONTROL_PRODID = 0x30;
+static const unsigned char DV3K_CONTROL_VERSTRING = 0x31;
+static const unsigned char DV3K_CONTROL_RESET = 0x33;
+static const unsigned char DV3K_CONTROL_READY = 0x39;
+
+static const unsigned char DV3K_AMBE_FIELD_CMODE = 0x02;
+static const unsigned char DV3K_AMBE_FIELD_TONE = 0x08;
+static const unsigned char DV3K_AMBE_FIELD_CHAND = 0x01;
+
+static const unsigned char DV3K_AUDIO_FIELD_SPEECHD = 0x00;
 
 static const char ratep_values[12] = { 0x01, 0x30, 0x07, 0x63, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48 };
+
+//  The size of a dv3k header is the start byte, plus header size plus the payload length
+#define dv3k_packet_size(a) (1 + sizeof((a).header) + ntohs((a).header.payload_length))
 
 #pragma pack(push, 1)
 struct dv3k_packet {
@@ -50,13 +59,59 @@ struct dv3k_packet {
             short samples[160];
         } audio;
         struct {
-            unsigned char field_id;
-            unsigned char num_bits;
-            unsigned char data[9];
+            struct {
+                unsigned char field_id;
+                unsigned char num_bits;
+                unsigned char data[9];
+            } data;
+            struct {
+                unsigned char field_id;
+                unsigned short value;
+            } cmode;
+            struct {
+                unsigned char field_id;
+                unsigned char tone;
+                unsigned char amplitude;
+            } tone;
         } ambe;
+/*        struct {
+            unsigned char data_field_id;
+            unsigned char data_num_bits;
+            unsigned char data[9];
+            unsigned char cmode_field_id;
+            unsigned short cmode_value;
+            unsigned char field_id;
+            unsigned char tone;
+            unsigned char amplitude;
+        } bleep; */
     } payload;
 };
 #pragma pack(pop)
+
+static const struct dv3k_packet bleepPacket = {
+    .start_byte = DV3K_START_BYTE,
+    .header.packet_type = DV3K_TYPE_AMBE,
+    .header.payload_length = htons(sizeof(bleepPacket.payload.ambe)),
+    .payload.ambe.data.field_id = DV3K_AMBE_FIELD_CHAND,
+    .payload.ambe.data.num_bits = sizeof(bleepPacket.payload.ambe.data.data) * 8,
+    .payload.ambe.data.data = {0},
+    .payload.ambe.cmode.field_id = DV3K_AMBE_FIELD_CMODE,
+    .payload.ambe.cmode.value = htons(0x4000),
+    .payload.ambe.tone.field_id = DV3K_AMBE_FIELD_TONE,
+    .payload.ambe.tone.tone = 0x40,
+    .payload.ambe.tone.amplitude = 0x00
+};
+
+static const struct dv3k_packet silencePacket = {
+    .start_byte = DV3K_START_BYTE,
+    .header.packet_type = DV3K_TYPE_AMBE,
+    .header.payload_length = htons(sizeof(silencePacket.payload.ambe.data) + sizeof(silencePacket.payload.ambe.cmode)),
+    .payload.ambe.data.field_id = DV3K_AMBE_FIELD_CHAND,
+    .payload.ambe.data.num_bits = sizeof(silencePacket.payload.ambe.data.data) * 8,
+    .payload.ambe.data.data = {0},
+    .payload.ambe.cmode.field_id = DV3K_AMBE_FIELD_CMODE,
+    .payload.ambe.cmode.value = 0x0000
+};
 
 @interface DMYDV3KVocoder () {
     int serialDescriptor;
@@ -78,6 +133,7 @@ struct dv3k_packet {
 @synthesize version;
 @synthesize speed;
 @synthesize audio;
+@synthesize beep;
 
 - (id) initWithPort:(NSString *)_serialPort {
     self = [super init];
@@ -85,11 +141,11 @@ struct dv3k_packet {
     if(self) {
         serialPort = _serialPort;
 
-        dv3k_ambe.start_byte = DV3000_START_BYTE;
-        dv3k_ambe.header.packet_type = DV3000_TYPE_AMBE;
-        dv3k_ambe.header.payload_length = htons(sizeof(dv3k_ambe.payload.ambe));
-        dv3k_ambe.payload.ambe.field_id = 0x01;
-        dv3k_ambe.payload.ambe.num_bits = sizeof(dv3k_ambe.payload.ambe.data) * 8;
+        dv3k_ambe.start_byte = DV3K_START_BYTE;
+        dv3k_ambe.header.packet_type = DV3K_TYPE_AMBE;
+        dv3k_ambe.header.payload_length = htons(sizeof(dv3k_ambe.payload.ambe.data));
+        dv3k_ambe.payload.ambe.data.field_id = DV3K_AMBE_FIELD_CHAND;
+        dv3k_ambe.payload.ambe.data.num_bits = sizeof(dv3k_ambe.payload.ambe.data.data) * 8;
         
         dispatch_queue_attr_t dispatchQueueAttr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, -1);
         dispatchQueue = dispatch_queue_create("net.nh6z.Dummy.SerialIO", dispatchQueueAttr);
@@ -98,6 +154,8 @@ struct dv3k_packet {
         responsePacket = calloc(1, sizeof(struct dv3k_packet));
         
         speed = 230400;
+        
+        beep = YES;
     }
     
     return self;
@@ -112,7 +170,7 @@ struct dv3k_packet {
     bytes = read(serialDescriptor, packet, 1);
     if(bytes == -1 && errno != EAGAIN)
         NSLog(@"Couldn't read start byte: %s\n", strerror(errno));
-    if(packet->start_byte != DV3000_START_BYTE)
+    if(packet->start_byte != DV3K_START_BYTE)
         return NO;
     
     bytesLeft = sizeof(packet->header);
@@ -154,7 +212,7 @@ struct dv3k_packet {
         return NO;
     }
     
-    if(write(serialDescriptor, &packet, sizeof(packet.header) + ntohs(packet.header.payload_length) + 1) == -1) {
+    if(write(serialDescriptor, &packet, dv3k_packet_size(packet)) == -1) {
         NSLog(@"Couldn't write control packet\n");
         return NO;
     }
@@ -162,8 +220,8 @@ struct dv3k_packet {
     if([self readPacket:responsePacket] == NO)
         return NO;
     
-    if(responsePacket->start_byte != DV3000_START_BYTE ||
-       responsePacket->header.packet_type != DV3000_TYPE_CONTROL ||
+    if(responsePacket->start_byte != DV3K_START_BYTE ||
+       responsePacket->header.packet_type != DV3K_TYPE_CONTROL ||
        responsePacket->payload.ctrl.field_id != response) {
         NSLog(@"Couldn't get control response\n");
         return NO;
@@ -192,7 +250,6 @@ struct dv3k_packet {
     portTermios.c_cflag    &= ~(CSIZE | CSTOPB | PARENB | CRTSCTS);
     portTermios.c_cflag    |= CS8;
     portTermios.c_oflag    &= ~(OPOST);
-    //portTermios.c_cc[VMIN]  = 1 + sizeof(responsePacket->header) + sizeof(responsePacket->payload.ambe);
     portTermios.c_cc[VMIN] = 0;
     portTermios.c_cc[VTIME] = 5;
     
@@ -210,27 +267,27 @@ struct dv3k_packet {
     
     //  Initialize the DV3K
     struct dv3k_packet ctrlPacket = {
-        .start_byte = DV3000_START_BYTE,
-        .header.packet_type = DV3000_TYPE_CONTROL,
+        .start_byte = DV3K_START_BYTE,
+        .header.packet_type = DV3K_TYPE_CONTROL,
         .header.payload_length = htons(1),
-        .payload.ctrl.field_id = DV3000_CONTROL_RESET
+        .payload.ctrl.field_id = DV3K_CONTROL_RESET
     };
-    if([self sendCtrlPacket:ctrlPacket expectResponse:DV3000_CONTROL_READY] == NO) {
+    if(![self sendCtrlPacket:ctrlPacket expectResponse:DV3K_CONTROL_READY]) {
         NSLog(@"Couldn't Reset DV3000: %s\n", strerror(errno));
         close(serialDescriptor);
         return NO;
     }
     
-    ctrlPacket.payload.ctrl.field_id = DV3000_CONTROL_PRODID;
-    if([self sendCtrlPacket:ctrlPacket expectResponse:DV3000_CONTROL_PRODID] == NO) {
+    ctrlPacket.payload.ctrl.field_id = DV3K_CONTROL_PRODID;
+    if(![self sendCtrlPacket:ctrlPacket expectResponse:DV3K_CONTROL_PRODID]) {
         NSLog(@"Couldn't query product id: %s\n", strerror(errno));
         close(serialDescriptor);
         return NO;
     }
     self.productId = [NSString stringWithCString:responsePacket->payload.ctrl.data.prodid encoding:NSUTF8StringEncoding];
     
-    ctrlPacket.payload.ctrl.field_id = DV3000_CONTROL_VERSTRING;
-    if([self sendCtrlPacket:ctrlPacket expectResponse:DV3000_CONTROL_VERSTRING] == NO) {
+    ctrlPacket.payload.ctrl.field_id = DV3K_CONTROL_VERSTRING;
+    if(![self sendCtrlPacket:ctrlPacket expectResponse:DV3K_CONTROL_VERSTRING]) {
         NSLog(@"Couldn't query version: %s\n", strerror(errno));
         close(serialDescriptor);
         return NO;
@@ -243,9 +300,9 @@ struct dv3k_packet {
     
     //  Set up the Vocoder
     ctrlPacket.header.payload_length = htons(sizeof(ctrlPacket.payload.ctrl.data.ratep) + 1);
-    ctrlPacket.payload.ctrl.field_id = DV3000_CONTROL_RATEP;
+    ctrlPacket.payload.ctrl.field_id = DV3K_CONTROL_RATEP;
     memcpy(ctrlPacket.payload.ctrl.data.ratep, ratep_values, sizeof(ratep_values));
-    if([self sendCtrlPacket:ctrlPacket expectResponse:DV3000_CONTROL_RATEP] == NO) {
+    if([self sendCtrlPacket:ctrlPacket expectResponse:DV3K_CONTROL_RATEP] == NO) {
         NSLog(@"Couldn't send RATEP request: %s\n", strerror(errno));
         close(serialDescriptor);
         return NO;
@@ -276,33 +333,51 @@ struct dv3k_packet {
     free(responsePacket);
 }
 
-- (void) decodeData:(void *) data {
+- (void) decodeData:(void *) data lastPacket:(BOOL)last {
     dispatch_async(dispatchQueue, ^{
         ssize_t bytes;
         
-        memcpy(&dv3k_ambe.payload.ambe.data, data, sizeof(dv3k_ambe.payload.ambe.data));
         
-        bytes = write(serialDescriptor, &dv3k_ambe, sizeof(dv3k_ambe.header) + ntohs(dv3k_ambe.header.payload_length) + 1);
+        memcpy(&dv3k_ambe.payload.ambe.data.data, data, sizeof(dv3k_ambe.payload.ambe.data.data));
+        
+        bytes = write(serialDescriptor, &dv3k_ambe, dv3k_packet_size(dv3k_ambe));
         if(bytes == -1) {
             NSLog(@"Couldn't send AMBE packet: %s\n", strerror(errno));
             return;
         }
-    });    
+        
+        if(last && beep) {
+            for(int i = 0; i < 5; ++i) {
+                bytes = write(serialDescriptor, &bleepPacket, dv3k_packet_size(bleepPacket));
+                if(bytes == -1) {
+                    NSLog(@"Couldn't write bleep packet: %s\n", strerror(errno));
+                    return;
+                }
+            }
+            
+            //  Write a silence packet to clean out the chain
+            bytes = write(serialDescriptor, &silencePacket, dv3k_packet_size(silencePacket));
+            if(bytes == -1) {
+                NSLog(@"Couldn't write silence packet: %s\n", strerror(errno));
+                return;
+            }
+        }
+    });
 }
 
 -(void) processPacket {
-    if([self readPacket:responsePacket] == NO)
+    if(![self readPacket:responsePacket])
         return;
     
     switch(responsePacket->header.packet_type) {
-        case DV3000_TYPE_CONTROL:
+        case DV3K_TYPE_CONTROL:
             NSLog(@"DV3K Control Packet Received\n");
             break;
-        case DV3000_TYPE_AMBE:
+        case DV3K_TYPE_AMBE:
             NSLog(@"DV3K AMBE Packet Received\n");
             break;
-        case DV3000_TYPE_AUDIO:
-            if(responsePacket->payload.audio.field_id != 0x00 ||
+        case DV3K_TYPE_AUDIO:
+            if(responsePacket->payload.audio.field_id != DV3K_AUDIO_FIELD_SPEECHD ||
                responsePacket->payload.audio.num_samples != sizeof(responsePacket->payload.audio.samples) / sizeof(short)) {
                 NSLog(@"Received invalid audio packet\n");
                 return;
