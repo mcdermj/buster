@@ -81,6 +81,9 @@
     DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
     
     //  We should do sanity checking on this value
+    if([linkTarget.stringValue length] < 8)
+        return;
+    
     [[delegate network] linkTo:linkTarget.stringValue];
 }
 @end
