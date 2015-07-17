@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		093B9AF81B50E2D500C2ABD0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9AF71B50E2D500C2ABD0 /* AppDelegate.m */; };
+		093B9AF81B50E2D500C2ABD0 /* DMYAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9AF71B50E2D500C2ABD0 /* DMYAppDelegate.m */; };
 		093B9AFA1B50E2D500C2ABD0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9AF91B50E2D500C2ABD0 /* main.m */; };
-		093B9AFD1B50E2D500C2ABD0 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9AFC1B50E2D500C2ABD0 /* ViewController.m */; };
+		093B9AFD1B50E2D500C2ABD0 /* DMYMainWindowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9AFC1B50E2D500C2ABD0 /* DMYMainWindowViewController.m */; };
 		093B9AFF1B50E2D500C2ABD0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 093B9AFE1B50E2D500C2ABD0 /* Images.xcassets */; };
 		093B9B021B50E2D500C2ABD0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 093B9B001B50E2D500C2ABD0 /* Main.storyboard */; };
 		093B9B0E1B50E2D500C2ABD0 /* DummyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B0D1B50E2D500C2ABD0 /* DummyTests.m */; };
@@ -32,11 +32,11 @@
 /* Begin PBXFileReference section */
 		093B9AF11B50E2D500C2ABD0 /* Dummy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dummy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		093B9AF51B50E2D500C2ABD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		093B9AF61B50E2D500C2ABD0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		093B9AF71B50E2D500C2ABD0 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		093B9AF61B50E2D500C2ABD0 /* DMYAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DMYAppDelegate.h; sourceTree = "<group>"; };
+		093B9AF71B50E2D500C2ABD0 /* DMYAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DMYAppDelegate.m; sourceTree = "<group>"; };
 		093B9AF91B50E2D500C2ABD0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		093B9AFB1B50E2D500C2ABD0 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		093B9AFC1B50E2D500C2ABD0 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		093B9AFB1B50E2D500C2ABD0 /* DMYMainWindowViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DMYMainWindowViewController.h; sourceTree = "<group>"; };
+		093B9AFC1B50E2D500C2ABD0 /* DMYMainWindowViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DMYMainWindowViewController.m; sourceTree = "<group>"; };
 		093B9AFE1B50E2D500C2ABD0 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		093B9B011B50E2D500C2ABD0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		093B9B071B50E2D500C2ABD0 /* DummyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DummyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -92,19 +92,19 @@
 		093B9AF31B50E2D500C2ABD0 /* Dummy */ = {
 			isa = PBXGroup;
 			children = (
-				093B9AF61B50E2D500C2ABD0 /* AppDelegate.h */,
-				093B9AF71B50E2D500C2ABD0 /* AppDelegate.m */,
+				093B9AF61B50E2D500C2ABD0 /* DMYAppDelegate.h */,
+				093B9AF71B50E2D500C2ABD0 /* DMYAppDelegate.m */,
 				093B9B171B50E3BD00C2ABD0 /* DMYGatewayHandler.h */,
 				093B9B181B50E3BD00C2ABD0 /* DMYGatewayHandler.m */,
 				093B9B1B1B52DBA000C2ABD0 /* DMYDV3KVocoder.h */,
 				093B9B1C1B52DBA000C2ABD0 /* DMYDV3KVocoder.m */,
+				09A5FDED1B5794FA00AE9E1C /* TPCircularBuffer.h */,
 				09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */,
 				09A5FDEF1B57956A00AE9E1C /* DMYAudioHandler.h */,
 				09A5FDF01B57956A00AE9E1C /* DMYAudioHandler.m */,
-				09A5FDED1B5794FA00AE9E1C /* TPCircularBuffer.h */,
 				093B9B1A1B5214C700C2ABD0 /* DMYVocoderProtocol.h */,
-				093B9AFB1B50E2D500C2ABD0 /* ViewController.h */,
-				093B9AFC1B50E2D500C2ABD0 /* ViewController.m */,
+				093B9AFB1B50E2D500C2ABD0 /* DMYMainWindowViewController.h */,
+				093B9AFC1B50E2D500C2ABD0 /* DMYMainWindowViewController.m */,
 				093B9AFE1B50E2D500C2ABD0 /* Images.xcassets */,
 				093B9B001B50E2D500C2ABD0 /* Main.storyboard */,
 				093B9AF41B50E2D500C2ABD0 /* Supporting Files */,
@@ -241,10 +241,10 @@
 				09A5FDEE1B5794FA00AE9E1C /* TPCircularBuffer.c in Sources */,
 				093B9B191B50E3BD00C2ABD0 /* DMYGatewayHandler.m in Sources */,
 				093B9B1D1B52DBA000C2ABD0 /* DMYDV3KVocoder.m in Sources */,
-				093B9AFD1B50E2D500C2ABD0 /* ViewController.m in Sources */,
+				093B9AFD1B50E2D500C2ABD0 /* DMYMainWindowViewController.m in Sources */,
 				093B9AFA1B50E2D500C2ABD0 /* main.m in Sources */,
 				09A5FDF11B57956A00AE9E1C /* DMYAudioHandler.m in Sources */,
-				093B9AF81B50E2D500C2ABD0 /* AppDelegate.m in Sources */,
+				093B9AF81B50E2D500C2ABD0 /* DMYAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

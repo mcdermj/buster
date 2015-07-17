@@ -1,5 +1,5 @@
 //
-//  DMYVocoderProtocol.h
+//  DMYAppDelegate.h
 //
 //  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
 
@@ -17,6 +17,13 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-@protocol DMYVocoderProtocol
-- (void) decodeData:(void *) data lastPacket:(BOOL)last;
+#import <Cocoa/Cocoa.h>
+
+#import "DMYGatewayHandler.h"
+
+@interface DMYAppDelegate : NSObject <NSApplicationDelegate>
+
+@property (readonly) DMYGatewayHandler *network;
+
 @end
+

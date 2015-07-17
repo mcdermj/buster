@@ -1,5 +1,5 @@
 //
-//  DMYVocoderProtocol.h
+//  DMYMainWindowViewController.h
 //
 //  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
 
@@ -17,6 +17,17 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-@protocol DMYVocoderProtocol
-- (void) decodeData:(void *) data lastPacket:(BOOL)last;
+#import <Cocoa/Cocoa.h>
+
+@interface DMYMainWindowViewController : NSViewController
+
+@property (weak) IBOutlet NSTextField *urCall;
+@property (weak) IBOutlet NSTextField *myCall;
+@property (weak) IBOutlet NSTextField *rpt1Call;
+@property (weak) IBOutlet NSTextField *rpt2Call;
+@property (weak) IBOutlet NSTextField *linkTarget;
+
+- (IBAction)doLink:(id)sender;
+
 @end
+
