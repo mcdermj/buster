@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>myCall</key>
+	<string>NO0CAL</string>
+	<key>gatewayAddr</key>
+	<string>127.0.0.1</string>
+	<key>gatewayPort</key>
+	<real>20010</real>
+	<key>repeaterCall</key>
+	<string>NO0CAL B</string>
+	<key>dv3kSerialPortBaud</key>
+	<integer>230400</integer>
+</dict>
+</plist>

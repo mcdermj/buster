@@ -37,13 +37,20 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
     
-    network = [[DMYGatewayHandler alloc] initWithRemoteAddress:@"127.0.0.1" remotePort:20010 localPort:20011];
+    NSURL *defaultPrefsFile = [[NSBundle mainBundle]
+                               URLForResource:@"DefaultPreferences" withExtension:@"plist"];
+    NSDictionary *defaultPrefs =
+    [NSDictionary dictionaryWithContentsOfURL:defaultPrefsFile];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:defaultPrefs];
+    
+    network = [[DMYGatewayHandler alloc] initWithRemoteAddress:[[NSUserDefaults standardUserDefaults] stringForKey:@"gatewayAddr"] remotePort:[[NSUserDefaults standardUserDefaults] integerForKey:@"gatewayPort"] localPort:20011];
     vocoder = [[DMYDV3KVocoder alloc] initWithPort:@"/dev/cu.usbserial-DA016UVB"];
+    vocoder.speed = [[NSUserDefaults standardUserDefaults] integerForKey:@"dv3kSerialPortBaud"];
     audio = [[DMYAudioHandler alloc] init];
     
     
-    network.xmitRepeater = @"NH6Z   B";
-    network.xmitMyCall = @"NH6Z";
+    network.xmitRepeater = [[NSUserDefaults standardUserDefaults] stringForKey:@"repeaterCall"];
+    network.xmitMyCall = [[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"];
     
     network.vocoder = vocoder;
     vocoder.audio = audio;
