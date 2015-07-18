@@ -120,6 +120,11 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     NSThread *readThread;
     struct gatewayPacket *incomingPacket;
     CFAbsoluteTime lastPacketTime;
+    
+    enum {
+        GWY_STOPPED,
+        GWY_STARTED
+    } status;
 }
 
 - (NSData *) constructRemoteAddrStruct;
@@ -131,32 +136,33 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 
 @implementation DMYGatewayHandler
 
-@synthesize remoteAddress;
-@synthesize remotePort;
-@synthesize localPort;
+@synthesize gatewayAddr;
+@synthesize gatewayPort;
+@synthesize repeaterPort;
 @synthesize urCall;
 @synthesize myCall;
 @synthesize rpt1Call;
 @synthesize rpt2Call;
 @synthesize myCall2;
 @synthesize vocoder;
-@synthesize xmitRepeater;
+@synthesize xmitRpt1Call;
+@synthesize xmitRpt2Call;
 @synthesize xmitMyCall;
 @synthesize xmitUrCall;
 
 #pragma mark - Initializers
 
-- (id) initWithRemoteAddress:(NSString *)_remoteAddress remotePort:(NSUInteger)_remotePort localPort:(NSUInteger)_localPort {
+- (id) initWithRemoteAddress:(NSString *)_gatewayAddr remotePort:(NSUInteger)_gatewayPort localPort:(NSUInteger)_repeaterPort {
     self = [super init];
     
     if(self) {
         gatewaySocket = 0;
         streamId = 0;
         
-        self.remotePort = _remotePort;
-        self.localPort = _localPort;
-        self.remoteAddress = [NSString stringWithString:_remoteAddress];
-        self.vocoder = nil;
+        gatewayPort = _gatewayPort;
+        repeaterPort = _repeaterPort;
+        gatewayAddr = [NSString stringWithString:_gatewayAddr];
+        vocoder = nil;
         
         urCall = @"";
         myCall = @"";
@@ -165,13 +171,55 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         myCall2 = @"";
         xmitMyCall = @"";
         xmitUrCall = @"";
-        xmitRepeater = @"";
+        xmitRpt1Call = @"";
+        xmitRpt2Call = @"";
         
         incomingPacket = malloc(sizeof(struct gatewayPacket));
+        
+        status = GWY_STOPPED;
     }
     
     return self;
 }
+
+- (void) setGatewayAddr:(NSString *)_addr {
+    [self willChangeValueForKey:@"gatewayAddr"];
+    gatewayAddr = _addr;
+    
+    [self stop];
+    [self start];
+    [self didChangeValueForKey:@"gatewayAddr"];
+}
+- (NSString *) gatewayAddr {
+    return gatewayAddr;
+}
+
+- (void) setGatewayPort:(NSUInteger)_port {
+    [self willChangeValueForKey:@"gatewayPort"];
+    gatewayPort = _port;
+    
+    [self stop];
+    [self start];
+    [self didChangeValueForKey:@"gatewayPort"];
+
+}
+- (NSUInteger) gatewayPort {
+    return gatewayPort;
+}
+
+- (void) setRepeaterPort:(NSUInteger)_port {
+    [self willChangeValueForKey:@"repeaterPort"];
+    repeaterPort = _port;
+    
+    [self stop];
+    [self start];
+    [self didChangeValueForKey:@"repeaterPort"];
+    
+}
+- (NSUInteger) repeaterPort {
+    return repeaterPort;
+}
+
 
 #pragma mark - Flow Control
 
@@ -212,7 +260,9 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         [weakSelf processPacket];
     });
     
-    dispatch_source_set_cancel_handler(dispatchSource, ^{ close(gatewaySocket); });
+    /* dispatch_source_set_cancel_handler(dispatchSource, ^{
+        close(gatewaySocket);
+    }); */
     
     dispatch_resume(dispatchSource);
     
@@ -234,7 +284,18 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     
     NSLog(@"Completed socket setup\n");
     
+    status = GWY_STARTED;
+    
     return YES;
+}
+
+- (void) stop {
+    if(status == GWY_STARTED) {
+        dispatch_source_cancel(dispatchSource);
+        dispatch_source_cancel(pollTimerSource);
+    }
+    
+    close(gatewaySocket);
 }
 
 - (uint16) calculateChecksum:(struct gatewayPacket)packet {
@@ -262,30 +323,29 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         
         memset(&packet, 0, sizeof(packet));
         
+        memcpy(&packet.magic, "DSRP", sizeof(packet.magic));
+        packet.packetType = 0x20;
+        
         NSMutableString *linkCmd = [NSMutableString stringWithString:reflector];
         [linkCmd deleteCharactersInRange:NSMakeRange(6, 1)];
         [linkCmd appendString:@"L"];
-        NSLog(@"Linking to %@ with link command %@\n", reflector, linkCmd);
         strncpy((char *) packet.payload.dstarHeader.urCall, [linkCmd cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.urCall));
   
         // XXX This is generic code that should be constructed for whenever we need a header packet.
         // XXX Maybe a fillHeader function
-        memcpy(&packet.magic, "DSRP", sizeof(packet.magic));
-        packet.packetType = 0x20;
         strncpy((char *) packet.payload.dstarHeader.myCall, [xmitMyCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.myCall));
-       
-        NSMutableString *gateway = [NSMutableString stringWithString:xmitRepeater];
-        [gateway replaceCharactersInRange:NSMakeRange(7, 1) withString:@"G"];
+        strncpy((char *) packet.payload.dstarHeader.rpt2Call, [xmitRpt2Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt1Call));
+        strncpy((char *) packet.payload.dstarHeader.rpt1Call, [xmitRpt1Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt2Call));
         
-        strncpy((char *) packet.payload.dstarHeader.rpt2Call, [xmitRepeater cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt1Call));
-        strncpy((char *) packet.payload.dstarHeader.rpt1Call, [gateway cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt2Call));
-        
+        // XXX Change Me!
         strncpy((char *) packet.payload.dstarHeader.myCall2, "HOME", sizeof(packet.payload.dstarHeader.myCall2));
         
         linkStreamId = htons((short) random());
         packet.payload.dstarHeader.streamId = linkStreamId;
         
         packet.payload.dstarHeader.checksum = [self calculateChecksum:packet];
+        
+        NSLog(@"Linking to %@ with link command %@\n", reflector, linkCmd);
         
         //   XXX Maybe the length should be shorter here
         size_t packetLen = sizeof(packet.magic) + sizeof(packet.packetType) + sizeof(packet.payload.dstarHeader);
@@ -302,7 +362,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         packet.packetType = 0x21;
         packetLen = sizeof(packet.magic) + sizeof(packet.packetType) + sizeof(packet.payload.dstarData);
         if(send(gatewaySocket, &packet, packetLen, 0) == -1) {
-            NSLog(@"Couldn't send link header: %s\n", strerror(errno));
+            NSLog(@"Couldn't send link data: %s\n", strerror(errno));
             return;
         }
 
@@ -317,8 +377,8 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     struct sockaddr_in *addrStruct = [addrStructData mutableBytes];
     addrStruct->sin_len = sizeof(struct sockaddr_in);
     addrStruct->sin_family = AF_INET;
-    addrStruct->sin_port = htons(remotePort);
-    addrStruct->sin_addr.s_addr = inet_addr([remoteAddress cStringUsingEncoding:NSUTF8StringEncoding]);
+    addrStruct->sin_port = htons(gatewayPort);
+    addrStruct->sin_addr.s_addr = inet_addr([gatewayAddr cStringUsingEncoding:NSUTF8StringEncoding]);
 
     return [NSData dataWithData:addrStructData];
 }
@@ -329,7 +389,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     struct sockaddr_in *addrStruct = [addrStructData mutableBytes];
     addrStruct->sin_len = sizeof(struct sockaddr_in);
     addrStruct->sin_family = AF_INET;
-    addrStruct->sin_port = htons(localPort);
+    addrStruct->sin_port = htons(repeaterPort);
     addrStruct->sin_addr.s_addr = INADDR_ANY;
 
     return [NSData dataWithData:addrStructData];

@@ -20,10 +20,12 @@
 #import <Cocoa/Cocoa.h>
 
 #import "DMYGatewayHandler.h"
+#import "DMYDV3KVocoder.h"
 
 @interface DMYAppDelegate : NSObject <NSApplicationDelegate>
 
 @property (readonly) DMYGatewayHandler *network;
+@property (readonly) DMYDV3KVocoder *vocoder;
 
 @end
 

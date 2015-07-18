@@ -22,6 +22,7 @@
 #import <termios.h>
 #import <sys/ioctl.h>
 #import <IOKit/serial/ioss.h>
+#import <IOKit/usb/IOUSBLib.h>
 
 // #define NSLog(x...)
 
@@ -85,17 +86,7 @@ struct dv3k_packet {
                 unsigned char amplitude;
             } tone;
         } ambe;
-/*        struct {
-            unsigned char data_field_id;
-            unsigned char data_num_bits;
-            unsigned char data[9];
-            unsigned char cmode_field_id;
-            unsigned short cmode_value;
-            unsigned char field_id;
-            unsigned char tone;
-            unsigned char amplitude;
-        } bleep; */
-    } payload;
+   } payload;
 };
 #pragma pack(pop)
 
@@ -130,6 +121,10 @@ static const struct dv3k_packet silencePacket = {
     dispatch_source_t dispatchSource;
     struct dv3k_packet dv3k_ambe;
     struct dv3k_packet *responsePacket;
+    enum {
+        DV3K_STOPPED,
+        DV3K_STARTED
+    } status;
 }
 
 - (BOOL) readPacket:(struct dv3k_packet *)packet;
@@ -167,10 +162,102 @@ static const struct dv3k_packet silencePacket = {
         speed = 230400;
         
         beep = YES;
+        
+        status = DV3K_STOPPED;
     }
     
     return self;
 }
+
+- (void) setSpeed:(long)_speed {
+    [self willChangeValueForKey:@"speed"];
+    speed = _speed;
+    
+    [self stop];
+    [self start];
+    [self didChangeValueForKey:@"speed"];
+}
+- (long) speed {
+    return speed;
+}
+
+- (void) setSerialPort:(NSString *)_serialPort {
+    [self willChangeValueForKey:@"serialPort"];
+    serialPort = _serialPort;
+    
+    [self stop];
+    [self start];
+    [self didChangeValueForKey:@"serialPort"];
+}
+
+- (NSString *) serialPort {
+    return serialPort;
+}
+
+- (NSArray *) ports {
+    kern_return_t kernResult;
+    mach_port_t masterPort;
+    NSDictionary *classesToMatch;
+    io_iterator_t matchingServices;
+    io_object_t serialDevice;
+    NSMutableArray *deviceArray = [NSMutableArray arrayWithCapacity:1];
+    
+    kernResult = IOMasterPort(MACH_PORT_NULL, &masterPort);
+    if(kernResult != KERN_SUCCESS) {
+        NSLog(@"Couldn't get master port: %d\n", kernResult);
+        return nil;
+    }
+    
+    classesToMatch = CFBridgingRelease(IOServiceMatching(kIOSerialBSDServiceValue));
+    if(classesToMatch == NULL) {
+        NSLog(@"IOServiceMatching returned a NULL dictionary.\n");
+    } else {
+        [classesToMatch setValue:[NSString stringWithCString:kIOSerialBSDRS232Type encoding:NSUTF8StringEncoding]
+                          forKey:[NSString stringWithCString:kIOSerialBSDTypeKey encoding:NSUTF8StringEncoding]];
+    }
+    
+    kernResult = IOServiceGetMatchingServices(masterPort, CFBridgingRetain(classesToMatch), &matchingServices);
+    if(kernResult != KERN_SUCCESS) {
+        NSLog(@"Couldn't get matching services: %d\n", kernResult);
+        return nil;
+    }
+    
+    
+    while((serialDevice = IOIteratorNext(matchingServices))) {
+        io_object_t parent;
+        io_object_t grandparent;
+        NSNumber *USBVendorId;
+        NSNumber *USBProductId;
+        
+        kernResult = IORegistryEntryGetParentEntry(serialDevice, kIOServicePlane, &parent);
+        if(kernResult != KERN_SUCCESS) {
+            NSLog(@"Couldn't get parent: %d\n", kernResult);
+            continue;
+        }
+        
+        kernResult = IORegistryEntryGetParentEntry(parent, kIOServicePlane, &grandparent);
+        if(kernResult != KERN_SUCCESS) {
+            NSLog(@"Couldn't get grandparent: %d\n", kernResult);
+            continue;
+        }
+
+        USBVendorId = CFBridgingRelease(IORegistryEntryCreateCFProperty(grandparent, CFSTR(kUSBVendorID), kCFAllocatorDefault, 0));
+        USBProductId = CFBridgingRelease(IORegistryEntryCreateCFProperty(grandparent, CFSTR(kUSBProductID), kCFAllocatorDefault, 0));
+        IOObjectRelease(parent);
+        IOObjectRelease(grandparent);
+        
+        NSString *deviceFile = CFBridgingRelease(IORegistryEntryCreateCFProperty(serialDevice, CFSTR(kIOCalloutDeviceKey), kCFAllocatorDefault, 0));
+        
+        if(USBVendorId.intValue == 0x0403 && USBProductId.intValue == 0x6015) {
+            [deviceArray addObject:deviceFile];
+        }
+    }
+    
+    IOObjectRelease(matchingServices);
+
+    
+    return [NSArray arrayWithArray:deviceArray];
+};
 
 - (BOOL) readPacket:(struct dv3k_packet *)packet {
     ssize_t bytes;
@@ -217,8 +304,8 @@ static const struct dv3k_packet silencePacket = {
 }
 
 - (BOOL) sendCtrlPacket:(struct dv3k_packet)packet expectResponse:(uint8)response {
-    
-    if(dispatchSource != NULL) {
+
+    if(status != DV3K_STOPPED) {
         NSLog(@"Called sendCtrlPacket: when started\n");
         return NO;
     }
@@ -243,6 +330,11 @@ static const struct dv3k_packet silencePacket = {
 
 - (BOOL) start {
     struct termios portTermios;
+    
+    if(status != DV3K_STOPPED) {
+        NSLog(@"DV3K is not closed\n");
+        return NO;
+    }
     
     serialDescriptor = open([serialPort cStringUsingEncoding:NSUTF8StringEncoding], O_RDWR | O_NOCTTY);
     if(serialDescriptor == -1) {
@@ -305,7 +397,7 @@ static const struct dv3k_packet silencePacket = {
         
     }
     self.version = [NSString stringWithCString:responsePacket->payload.ctrl.data.version encoding:NSUTF8StringEncoding];
-   
+    
     NSLog(@"Product ID is %@\n", self.productId);
     NSLog(@"Version is %@\n", self.version);
     
@@ -331,13 +423,28 @@ static const struct dv3k_packet silencePacket = {
         [weakSelf processPacket];
     });
     
-    dispatch_source_set_cancel_handler(dispatchSource, ^{ close(serialDescriptor); });
+    // dispatch_source_set_cancel_handler(dispatchSource, ^{ close(serialDescriptor); });
     
     dispatch_resume(dispatchSource);
     
     NSLog(@"Completed serial setup\n");
+
+    status = DV3K_STARTED;
     
     return YES;
+}
+
+- (void) stop {
+    if(status != DV3K_STARTED) {
+        NSLog(@"DV3K isn't started\n");
+        return;
+    }
+    
+    dispatch_source_cancel(dispatchSource);
+    
+    close(serialDescriptor);
+    
+    status = DV3K_STOPPED;
 }
 
 - (void) dealloc {
@@ -345,6 +452,9 @@ static const struct dv3k_packet silencePacket = {
 }
 
 - (void) decodeData:(void *) data lastPacket:(BOOL)last {
+    if(status != DV3K_STARTED)
+        return;
+    
     dispatch_async(dispatchQueue, ^{
         ssize_t bytes;
         
@@ -394,7 +504,6 @@ static const struct dv3k_packet silencePacket = {
                 return;
             }
             [audio queueAudioData:&responsePacket->payload.audio.samples withLength:sizeof(responsePacket->payload.audio.samples)];
-            // NSLog(@"DV3K Audio Packet Received\n");
             break;
     }
 }

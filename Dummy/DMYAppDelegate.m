@@ -24,7 +24,6 @@
 #import "DMYAudioHandler.h"
 
 @interface DMYAppDelegate () {
-    DMYDV3KVocoder *vocoder;
     DMYAudioHandler *audio;
 }
 
@@ -33,6 +32,7 @@
 @implementation DMYAppDelegate
 
 @synthesize network;
+@synthesize vocoder;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
@@ -43,14 +43,24 @@
     [NSDictionary dictionaryWithContentsOfURL:defaultPrefsFile];
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultPrefs];
     
-    network = [[DMYGatewayHandler alloc] initWithRemoteAddress:[[NSUserDefaults standardUserDefaults] stringForKey:@"gatewayAddr"] remotePort:[[NSUserDefaults standardUserDefaults] integerForKey:@"gatewayPort"] localPort:20011];
-    vocoder = [[DMYDV3KVocoder alloc] initWithPort:@"/dev/cu.usbserial-DA016UVB"];
+    network = [[DMYGatewayHandler alloc] initWithRemoteAddress:[[NSUserDefaults standardUserDefaults] stringForKey:@"gatewayAddr"] remotePort:[[NSUserDefaults standardUserDefaults] integerForKey:@"gatewayPort"] localPort:[[NSUserDefaults standardUserDefaults] integerForKey:@"repeaterPort"]];
+    vocoder = [[DMYDV3KVocoder alloc] initWithPort:[[NSUserDefaults standardUserDefaults] stringForKey:@"dv3kSerialPort"]];
     vocoder.speed = [[NSUserDefaults standardUserDefaults] integerForKey:@"dv3kSerialPortBaud"];
     audio = [[DMYAudioHandler alloc] init];
     
     
-    network.xmitRepeater = [[NSUserDefaults standardUserDefaults] stringForKey:@"repeaterCall"];
+    network.xmitRpt1Call = [[NSUserDefaults standardUserDefaults] stringForKey:@"rpt1Call"];
+    network.xmitRpt1Call = [[NSUserDefaults standardUserDefaults] stringForKey:@"rpt2Call"];
     network.xmitMyCall = [[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"];
+    [network bind:@"xmitMyCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
+    [network bind:@"xmitRpt1Call" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.rpt1Call" options:nil];
+    [network bind:@"xmitRpt2Call" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.rpt2Call" options:nil];
+    [network bind:@"gatewayAddr" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.gatewayAddr" options:nil];
+    [network bind:@"gatewayPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.gatewayPort" options:nil];
+    [network bind:@"repeaterPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.repeaterPort" options:nil];
+    
+    [vocoder bind:@"speed" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPortBaud" options:nil];
+    [vocoder bind:@"serialPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPort" options:nil];
     
     network.vocoder = vocoder;
     vocoder.audio = audio;
@@ -58,9 +68,6 @@
     [audio start];
     [vocoder start];
     [network start];
-    
-    
-    // [network linkTo:@"REF001 C"];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

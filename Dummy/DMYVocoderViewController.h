@@ -1,7 +1,7 @@
 //
-//  DMYDV3KVocoder.h
+//  DMYVocoderViewController.h
 //
-//  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
+// Copyright (c) 2010-2015 - Jeremy C. McDermond (NH6Z)
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -17,26 +17,9 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
 
-#import "DMYVocoderProtocol.h"
+@interface DMYVocoderViewController : NSViewController
 
-#import "DMYAudioHandler.h"
-
-@interface DMYDV3KVocoder : NSObject <DMYVocoderProtocol>
-
-- (id) initWithPort:(NSString *)serialPort;
-// - (void) decodeData:(void *) data;
-- (BOOL) start;
-- (void) stop;
-
-@property NSString *serialPort;
-@property NSString *productId;
-@property NSString *version;
-@property long speed;
-@property BOOL beep;
 @property (readonly) NSArray *ports;
-
-@property DMYAudioHandler *audio;
-
 @end

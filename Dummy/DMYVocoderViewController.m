@@ -1,7 +1,7 @@
 //
-//  DMYDV3KVocoder.h
+//  DMYVocoderViewController.m
 //
-//  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
+// Copyright (c) 2010-2015 - Jeremy C. McDermond (NH6Z)
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -17,26 +17,30 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#import <Foundation/Foundation.h>
+#import "DMYVocoderViewController.h"
 
-#import "DMYVocoderProtocol.h"
+#import "DMYAppDelegate.h"
 
-#import "DMYAudioHandler.h"
+@interface DMYVocoderViewController ()
 
-@interface DMYDV3KVocoder : NSObject <DMYVocoderProtocol>
+@end
 
-- (id) initWithPort:(NSString *)serialPort;
-// - (void) decodeData:(void *) data;
-- (BOOL) start;
-- (void) stop;
+@implementation DMYVocoderViewController
 
-@property NSString *serialPort;
-@property NSString *productId;
-@property NSString *version;
-@property long speed;
-@property BOOL beep;
-@property (readonly) NSArray *ports;
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Initialization code here.
+    }
+    
+    return self;
+}
 
-@property DMYAudioHandler *audio;
+- (NSArray *) ports {
+    DMYAppDelegate *appDelegate = [NSApp delegate];
+    
+    return appDelegate.vocoder.ports;
+}
 
 @end

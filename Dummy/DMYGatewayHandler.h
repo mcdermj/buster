@@ -27,9 +27,9 @@ extern NSString * const DMYNetworkStreamEnd;
 
 @interface DMYGatewayHandler : NSObject
 
-@property NSString *remoteAddress;
-@property NSUInteger remotePort;
-@property NSUInteger localPort;
+@property NSString *gatewayAddr;
+@property NSUInteger gatewayPort;
+@property NSUInteger repeaterPort;
 
 @property id <DMYVocoderProtocol> vocoder;
 
@@ -40,10 +40,12 @@ extern NSString * const DMYNetworkStreamEnd;
 @property (readonly) NSString *myCall2;
 @property NSString *xmitMyCall;
 @property NSString *xmitUrCall;
-@property NSString *xmitRepeater;
+@property NSString *xmitRpt1Call;
+@property NSString *xmitRpt2Call;
 
-- (id) initWithRemoteAddress:(NSString *)remoteAddress remotePort:(NSUInteger)remotePort localPort:(NSUInteger)localPort;
+- (id) initWithRemoteAddress:(NSString *)gatewayAddr remotePort:(NSUInteger)remotePort localPort:(NSUInteger)localPort;
 - (BOOL) start;
+- (void) stop;
 - (void) linkTo:(NSString *)reflector;
 
 @end

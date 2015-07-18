@@ -12,5 +12,7 @@
 	<string>NO0CAL B</string>
 	<key>dv3kSerialPortBaud</key>
 	<integer>230400</integer>
+	<key>repeaterPort</key>
+	<integer>20011</integer>
 </dict>
 </plist>
