@@ -19,13 +19,17 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface DMYMainWindowViewController : NSViewController
+@interface DMYMainWindowViewController : NSViewController <NSTableViewDelegate>
 
 @property (weak) IBOutlet NSTextField *urCall;
 @property (weak) IBOutlet NSTextField *myCall;
 @property (weak) IBOutlet NSTextField *rpt1Call;
 @property (weak) IBOutlet NSTextField *rpt2Call;
 @property (weak) IBOutlet NSTextField *linkTarget;
+@property (strong) IBOutlet NSArrayController *heardTableController;
+@property (weak) IBOutlet NSTableView *heardTableView;
+@property (weak) IBOutlet NSTableView *reflectorTableView;
+@property (strong) IBOutlet NSArrayController *reflectorTableController;
 
 - (IBAction)doLink:(id)sender;
 

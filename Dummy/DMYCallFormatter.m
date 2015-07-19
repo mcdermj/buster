@@ -64,7 +64,7 @@
 
 - (NSString *) stringForObjectValue:(id)obj {
     NSString *inString = (NSString *) obj;
-    return [inString stringByReplacingOccurrencesOfString:@" " withString:@"•"];
+    return [[inString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] stringByReplacingOccurrencesOfString:@" " withString:@"•"];
 }
 
 - (BOOL) getObjectValue:(out __autoreleasing id *)obj forString:(NSString *)string errorDescription:(out NSString *__autoreleasing *)error {

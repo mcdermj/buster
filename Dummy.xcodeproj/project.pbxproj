@@ -19,6 +19,7 @@
 		096F2B5C1B58ED1B00766A95 /* DefaultPreferences.plist in Resources */ = {isa = PBXBuildFile; fileRef = 096F2B5B1B58ED1B00766A95 /* DefaultPreferences.plist */; };
 		09A5FDEE1B5794FA00AE9E1C /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */; };
 		09A5FDF11B57956A00AE9E1C /* DMYAudioHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 09A5FDF01B57956A00AE9E1C /* DMYAudioHandler.m */; };
+		09AB117B1B5A13970067B9FB /* DMYVocoderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09AB11791B5A13970067B9FB /* DMYVocoderViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,9 @@
 		09A5FDED1B5794FA00AE9E1C /* TPCircularBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPCircularBuffer.h; sourceTree = "<group>"; };
 		09A5FDEF1B57956A00AE9E1C /* DMYAudioHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYAudioHandler.h; sourceTree = "<group>"; };
 		09A5FDF01B57956A00AE9E1C /* DMYAudioHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYAudioHandler.m; sourceTree = "<group>"; };
+		09AB11781B5A13970067B9FB /* DMYVocoderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYVocoderViewController.h; sourceTree = "<group>"; };
+		09AB11791B5A13970067B9FB /* DMYVocoderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYVocoderViewController.m; sourceTree = "<group>"; };
+		09AB117A1B5A13970067B9FB /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +101,9 @@
 		093B9AF31B50E2D500C2ABD0 /* Dummy */ = {
 			isa = PBXGroup;
 			children = (
+				09AB11781B5A13970067B9FB /* DMYVocoderViewController.h */,
+				09AB11791B5A13970067B9FB /* DMYVocoderViewController.m */,
+				09AB117A1B5A13970067B9FB /* Prefix.pch */,
 				093B9AF61B50E2D500C2ABD0 /* DMYAppDelegate.h */,
 				093B9AF71B50E2D500C2ABD0 /* DMYAppDelegate.m */,
 				093B9B171B50E3BD00C2ABD0 /* DMYGatewayHandler.h */,
@@ -249,6 +256,7 @@
 			files = (
 				09A5FDEE1B5794FA00AE9E1C /* TPCircularBuffer.c in Sources */,
 				093B9B191B50E3BD00C2ABD0 /* DMYGatewayHandler.m in Sources */,
+				09AB117B1B5A13970067B9FB /* DMYVocoderViewController.m in Sources */,
 				093B9B1D1B52DBA000C2ABD0 /* DMYDV3KVocoder.m in Sources */,
 				093B9AFD1B50E2D500C2ABD0 /* DMYMainWindowViewController.m in Sources */,
 				093B9AFA1B50E2D500C2ABD0 /* main.m in Sources */,

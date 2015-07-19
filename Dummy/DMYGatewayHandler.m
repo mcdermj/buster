@@ -114,7 +114,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     int gatewaySocket;
     dispatch_source_t dispatchSource;
     dispatch_source_t pollTimerSource;
-    uint16 streamId;
+    //uint16 streamId;
     uint8 sequence;
     BOOL running;
     NSThread *readThread;
@@ -144,6 +144,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 @synthesize rpt1Call;
 @synthesize rpt2Call;
 @synthesize myCall2;
+@synthesize streamId;
 @synthesize vocoder;
 @synthesize xmitRpt1Call;
 @synthesize xmitRpt2Call;
@@ -186,8 +187,10 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     [self willChangeValueForKey:@"gatewayAddr"];
     gatewayAddr = _addr;
     
-    [self stop];
-    [self start];
+    if(status == GWY_STARTED) {
+        [self stop];
+        [self start];
+    }
     [self didChangeValueForKey:@"gatewayAddr"];
 }
 - (NSString *) gatewayAddr {
@@ -198,8 +201,10 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     [self willChangeValueForKey:@"gatewayPort"];
     gatewayPort = _port;
     
-    [self stop];
-    [self start];
+    if(status == GWY_STARTED) {
+        [self stop];
+        [self start];
+    }
     [self didChangeValueForKey:@"gatewayPort"];
 
 }
@@ -211,8 +216,10 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     [self willChangeValueForKey:@"repeaterPort"];
     repeaterPort = _port;
     
-    [self stop];
-    [self start];
+    if(status == GWY_STARTED) {
+        [self stop];
+        [self start];
+    }
     [self didChangeValueForKey:@"repeaterPort"];
     
 }
@@ -395,6 +402,19 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     return [NSData dataWithData:addrStructData];
 }
 
+- (NSDictionary *) header {
+    return @{
+              @"streamId": [NSNumber numberWithUnsignedInteger:streamId],
+              @"myCall": myCall,
+              @"urCall": urCall,
+              @"myCall2": myCall2,
+              @"rpt1Call": rpt1Call,
+              @"rpt2Call": rpt2Call,
+              @"time": [NSDate date],
+              @"message": @"Test Message"
+            };
+}
+
 - (void) processPacket {
     if(recv(gatewaySocket, incomingPacket, sizeof(struct gatewayPacket), 0) == -1) {
         NSLog(@"Couldn't read packet: %s\n", strerror(errno));
@@ -419,6 +439,10 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
             NSLog(@"Packet is NETWORK_STATUS\n");
             break;
         case 0x20: {
+            if(streamId != 0 && streamId != incomingPacket->payload.dstarHeader.streamId) {
+                NSLog(@"Stream ID Mismatch on Header");
+                return;
+            }
             myCall = [[NSString alloc] initWithBytes:incomingPacket->payload.dstarHeader.myCall
                                               length:sizeof(incomingPacket->payload.dstarHeader.myCall)
                                             encoding:NSUTF8StringEncoding];
@@ -435,23 +459,26 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
                                                length:sizeof(incomingPacket->payload.dstarHeader.myCall2)
                                              encoding:NSUTF8StringEncoding];
             
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkHeaderReceived
-                                                                    object: weakSelf
-                                                                  userInfo: nil];
-            });
-            
+
             if(streamId == 0) {
-                streamId = incomingPacket->payload.dstarData.streamId;
-                sequence = incomingPacket->payload.dstarData.sequence;
-                dispatch_async(dispatch_get_main_queue(), ^{
+                streamId = incomingPacket->payload.dstarHeader.streamId;
+                //sequence = incomingPacket->payload.dstarHeader.sequence;
+                //dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkStreamStart
-                                                                        object: weakSelf
-                                                                      userInfo: nil];
-                });
+                                                                        object: self
+                                                                      userInfo: [self header]
+                     ];
+                //});
                 
-                NSLog(@"New stream %d: My: %@/%@ Ur: %@ RPT1: %@ RPT2: %@\n", streamId, myCall, myCall2, urCall, rpt1Call, rpt2Call);
+                NSLog(@"New stream %lu: My: %@/%@ Ur: %@ RPT1: %@ RPT2: %@\n", (unsigned long) streamId, myCall, myCall2, urCall, rpt1Call, rpt2Call);
             }
+            
+            //dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkHeaderReceived
+                                                                    object: self
+                                                                  userInfo: [self header]];
+            //});
+
         }
             break;
         case 0x21:
@@ -483,13 +510,18 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
             
             if(incomingPacket->payload.dstarData.sequence & 0x40) {
                 NSLog(@"End stream %d\n", incomingPacket->payload.dstarData.streamId);
-                streamId = 0;
+                
                 incomingPacket->payload.dstarData.sequence &= ~0x40;
-                dispatch_async(dispatch_get_main_queue(), ^{
+                //dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkStreamEnd
-                                                                        object: weakSelf
-                                                                      userInfo: nil];
-                });
+                                                                        object: self
+                                                                      userInfo: @{
+                                                                                  @"streamId": [NSNumber numberWithUnsignedInteger:weakSelf.streamId],
+                                                                                  @"time": [NSDate date]
+                                                                                }
+                     ];
+                streamId = 0;
+                //});
             }
             
             if(incomingPacket->payload.dstarData.sequence != sequence) {

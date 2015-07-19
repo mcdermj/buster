@@ -22,6 +22,10 @@
 #import "DMYGatewayHandler.h"
 #import "DMYAppDelegate.h"
 
+@interface DMYMainWindowViewController ()
+- (void) linkReflector:(id)sender;
+@end
+
 @implementation DMYMainWindowViewController
 
 @synthesize myCall;
@@ -29,20 +33,55 @@
 @synthesize rpt1Call;
 @synthesize rpt2Call;
 @synthesize linkTarget;
+@synthesize heardTableController;
+@synthesize heardTableView;
+@synthesize reflectorTableView;
+@synthesize reflectorTableController;
+
+- (void) linkReflector:(id)sender {
+    NSString *reflector = [reflectorTableView.dataSource tableView:reflectorTableView objectValueForTableColumn:0 row:reflectorTableView.clickedRow];
+    NSLog(@"Reflector %@ double clicked\n", reflector);
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+        
+    // XXX This is cruddy.  Why are there blank entries in there anyhow?
+    for(NSDictionary *entry in heardTableController.arrangedObjects)
+        if(entry.count == 0)
+            [heardTableController removeObject:entry];
+    
+    heardTableView.delegate = self;
+    heardTableController.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"time" ascending:NO] ];
+    
+    reflectorTableView.doubleAction = @selector(linkReflector:);
     
     __weak DMYMainWindowViewController *weakSelf = self;
-    [[NSNotificationCenter defaultCenter] addObserverForName: DMYNetworkHeaderReceived
+    [[NSNotificationCenter defaultCenter] addObserverForName: DMYNetworkStreamStart
                                                       object: nil
                                                        queue: [NSOperationQueue mainQueue]
                                                   usingBlock:^(NSNotification *notification) {
-                                                      DMYGatewayHandler *networkObject = [notification object];
-                                                      weakSelf.myCall.stringValue = networkObject.myCall;
-                                                      weakSelf.urCall.stringValue = networkObject.urCall;
-                                                      weakSelf.rpt1Call.stringValue = networkObject.rpt1Call;
-                                                      weakSelf.rpt2Call.stringValue = networkObject.rpt2Call;
+                                                                                                            
+                                                      weakSelf.urCall.stringValue = notification.userInfo[@"urCall"];
+                                                      weakSelf.myCall.stringValue = notification.userInfo[@"myCall"];
+                                                      weakSelf.rpt1Call.stringValue = notification.userInfo[@"rpt1Call"];
+                                                      weakSelf.rpt2Call.stringValue = notification.userInfo[@"rpt2Call"];
+                                                     
+                                                      NSPredicate *currentFilterPredicate = heardTableController.filterPredicate;
+                                                      heardTableController.filterPredicate = nil;
+                                                      
+                                                      // XXX This is cruddy.  Why are there blank entries in there anyhow?
+                                                      for(NSDictionary *entry in heardTableController.arrangedObjects)
+                                                          if(entry.count == 0)
+                                                              [heardTableController removeObject:entry];
+                                                      
+                                                      NSPredicate *streamIdPredicate = [NSPredicate predicateWithFormat:@"streamId == %@", notification.userInfo[@"streamId"]];
+                                                      NSArray *entries = [heardTableController.arrangedObjects filteredArrayUsingPredicate:streamIdPredicate];
+                                                                                                                                              
+                                                      if(entries.count == 0)
+                                                          [heardTableController addObject:notification.userInfo];
+                                                      
+                                                      heardTableController.filterPredicate = currentFilterPredicate;
                                                   }
      ];
     
@@ -54,10 +93,29 @@
                                                       weakSelf.urCall.stringValue = @"";
                                                       weakSelf.rpt1Call.stringValue = @"";
                                                       weakSelf.rpt2Call.stringValue = @"";
+                                                      
+                                                      NSPredicate *currentFilterPredicate = heardTableController.filterPredicate;
+                                                      heardTableController.filterPredicate = nil;
+                                                      
+                                                      NSPredicate *streamIdPredicate = [NSPredicate predicateWithFormat:@"streamId == %@", notification.userInfo[@"streamId"]];
+                                                      NSArray *entries = [heardTableController.arrangedObjects filteredArrayUsingPredicate:streamIdPredicate];
+                                                      
+                                                      if(entries.count != 1) {
+                                                          NSLog(@"Found a freaky number of entries for predicate: %lu\n", (unsigned long)entries.count);
+                                                          return;
+                                                      }
+
+                                                      NSDate *headerTime = notification.userInfo[@"time"];
+                                                      NSDate *startTime = entries[0][@"time"];
+                                                      NSMutableDictionary *newHeader = [NSMutableDictionary dictionaryWithDictionary:entries[0]];
+                                                      newHeader[@"duration"] = [NSNumber numberWithDouble:[headerTime timeIntervalSinceDate:startTime]];
+                                                      
+                                                      [heardTableController removeObject:entries[0]];
+                                                      [heardTableController addObject:[NSDictionary dictionaryWithDictionary:newHeader]];
+                                                      
+                                                      heardTableController.filterPredicate = currentFilterPredicate;
                                                   }
      ];
-
-    // Do any additional setup after loading the view.
 }
 
 - (void)viewWillDisappear {
@@ -80,10 +138,19 @@
 - (IBAction)doLink:(id)sender {
     DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
     
-    //  We should do sanity checking on this value
-    if([linkTarget.stringValue length] < 8)
+    if(reflectorTableController.selectedObjects.count != 1)
+        return;
+
+    NSString *reflector = reflectorTableController.selectedObjects[0][@"reflector"];
+    
+    if(reflector.length < 8)
         return;
     
-    [[delegate network] linkTo:linkTarget.stringValue];
+    [delegate.network linkTo:reflector];
 }
+
+- (NSIndexSet *) tableView:(NSTableView *)tableView selectionIndexesForProposedSelection:(NSIndexSet *)proposedSelectionIndexes {
+    return nil;
+}
+
 @end

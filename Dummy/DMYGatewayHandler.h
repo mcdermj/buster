@@ -38,6 +38,7 @@ extern NSString * const DMYNetworkStreamEnd;
 @property (readonly) NSString *rpt1Call;
 @property (readonly) NSString *rpt2Call;
 @property (readonly) NSString *myCall2;
+@property (readonly) NSUInteger streamId;
 @property NSString *xmitMyCall;
 @property NSString *xmitUrCall;
 @property NSString *xmitRpt1Call;

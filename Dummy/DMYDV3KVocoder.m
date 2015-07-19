@@ -173,8 +173,10 @@ static const struct dv3k_packet silencePacket = {
     [self willChangeValueForKey:@"speed"];
     speed = _speed;
     
-    [self stop];
-    [self start];
+    if(status == DV3K_STARTED ) {
+        [self stop];
+        [self start];
+    }
     [self didChangeValueForKey:@"speed"];
 }
 - (long) speed {
@@ -185,8 +187,10 @@ static const struct dv3k_packet silencePacket = {
     [self willChangeValueForKey:@"serialPort"];
     serialPort = _serialPort;
     
-    [self stop];
-    [self start];
+    if(status == DV3K_STARTED) {
+        [self stop];
+        [self start];
+    }
     [self didChangeValueForKey:@"serialPort"];
 }
 
@@ -257,7 +261,7 @@ static const struct dv3k_packet silencePacket = {
 
     
     return [NSArray arrayWithArray:deviceArray];
-};
+}
 
 - (BOOL) readPacket:(struct dv3k_packet *)packet {
     ssize_t bytes;
