@@ -192,11 +192,16 @@
 }
 
 /* - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-    return 0;
+    NSArray *objects = reflectorTableController.arrangedObjects;
+    
+    NSLog(@"%ld  -- objects = %@", objects.count, objects);
+    
+    return [objects count];
 }
 
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+    NSLog(@"Need cell for row %ld column %@", row, tableColumn);
     return nil;
 } */
 
