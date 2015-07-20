@@ -24,7 +24,7 @@
 #import <IOKit/serial/ioss.h>
 #import <IOKit/usb/IOUSBLib.h>
 
-// #define NSLog(x...)
+#import "DMYAppDelegate.h"
 
 #define DV3K_TYPE_CONTROL 0x00
 #define DV3K_TYPE_AMBE 0x01
@@ -115,6 +115,8 @@ static const struct dv3k_packet silencePacket = {
     .payload.ambe.cmode.value = 0x0000
 };
 
+NSString * const DMYVocoderDeviceChanged = @"DMYVocoderDeviceChanged";
+
 @interface DMYDV3KVocoder () {
     int serialDescriptor;
     dispatch_queue_t dispatchQueue;
@@ -132,6 +134,36 @@ static const struct dv3k_packet silencePacket = {
 - (void) processPacket;
 @end
 
+static void VocoderAdded(void *refCon, io_iterator_t iterator) {
+    //  XXX This should probably be worked out so that we get a singleton for this class.
+    DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
+
+    while(IOIteratorNext(iterator));
+    
+    NSArray *ports = [DMYDV3KVocoder ports];
+    
+    if(ports.count == 1) {
+        delegate.vocoder.serialPort = ports[0];
+        [delegate.vocoder start];
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:DMYVocoderDeviceChanged object: nil];
+}
+
+static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
+    //  XXX This should probably be worked out so that we get a singleton for this class.
+    DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
+    
+    while(IOIteratorNext(iterator));
+    
+    NSArray *ports = [DMYDV3KVocoder ports];
+    
+    if(![ports containsObject:delegate.vocoder.serialPort])
+        [delegate.vocoder stop];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:DMYVocoderDeviceChanged object: nil];
+}
+
 @implementation DMYDV3KVocoder
 
 @synthesize serialPort;
@@ -141,12 +173,55 @@ static const struct dv3k_packet silencePacket = {
 @synthesize audio;
 @synthesize beep;
 
-- (id) initWithPort:(NSString *)_serialPort {
++ (void) initialize {
+    mach_port_t masterPort;
+    CFMutableDictionaryRef matchingDict;
+    CFRunLoopSourceRef runLoopSource;
+    kern_return_t kernReturn;
+    io_iterator_t deviceIterator;
+    SInt32 usbVendor = 0x0403;
+    SInt32 usbProduct = 0x6015;
+    
+    kernReturn = IOMasterPort(MACH_PORT_NULL, &masterPort);
+    if(kernReturn != KERN_SUCCESS) {
+        NSLog(@"Cannot get mach port\n");
+        return;
+    }
+    
+    matchingDict = IOServiceMatching(kIOUSBDeviceClassName);
+    if(!matchingDict) {
+        NSLog(@"Couldn't create a USB matching dictionary\n");
+        mach_port_deallocate(mach_task_self(), masterPort);
+        return;
+    }
+    
+    CFDictionarySetValue(matchingDict, CFSTR(kUSBVendorName), CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &usbVendor));
+    CFDictionarySetValue(matchingDict, CFSTR(kUSBProductName), CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &usbProduct));
+    
+    IONotificationPortRef gNotifyPort = IONotificationPortCreate(masterPort);
+    runLoopSource = IONotificationPortGetRunLoopSource(gNotifyPort);
+    CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopCommonModes);
+    
+    matchingDict = (CFMutableDictionaryRef) CFRetain(matchingDict);
+    matchingDict = (CFMutableDictionaryRef) CFRetain(matchingDict);
+    matchingDict = (CFMutableDictionaryRef) CFRetain(matchingDict);
+    
+    kernReturn = IOServiceAddMatchingNotification(gNotifyPort, kIOFirstMatchNotification, matchingDict, VocoderAdded, NULL, &deviceIterator);
+    // Clean out the device iterator so the notification will arm.
+    while(IOIteratorNext(deviceIterator));
+    
+    kernReturn = IOServiceAddMatchingNotification(gNotifyPort, kIOTerminatedNotification, matchingDict, VocoderRemoved, NULL, &deviceIterator);
+    // Clean out the device iterator so the notification will arm.
+    while(IOIteratorNext(deviceIterator));
+    
+    mach_port_deallocate(mach_task_self(), masterPort);
+    
+}
+
+- (id) initWithPort:(NSString *)_serialPort andSpeed:(long)_speed {
     self = [super init];
     
     if(self) {
-        serialPort = _serialPort;
-
         dv3k_ambe.start_byte = DV3K_START_BYTE;
         dv3k_ambe.header.packet_type = DV3K_TYPE_AMBE;
         dv3k_ambe.header.payload_length = htons(sizeof(dv3k_ambe.payload.ambe.data));
@@ -159,46 +234,63 @@ static const struct dv3k_packet silencePacket = {
         
         responsePacket = calloc(1, sizeof(struct dv3k_packet));
         
-        speed = 230400;
+        speed = _speed;
+        serialPort = _serialPort;
         
         beep = YES;
         
         status = DV3K_STOPPED;
+
     }
     
     return self;
 }
 
++ (BOOL) automaticallyNotifiesObserversForKey:(NSString *)key {
+    BOOL automatic = NO;
+    
+    if([key isEqualToString:@"productId"] ||
+       [key isEqualToString:@"version"] ||
+       [key isEqualToString:@"serialPort"] ||
+       [key isEqualToString:@"speed"])
+        automatic = NO;
+    else
+        automatic = [super automaticallyNotifiesObserversForKey:key];
+    
+    return automatic;
+}
+
+
 - (void) setSpeed:(long)_speed {
+    if(speed == _speed) return;
+    
     [self willChangeValueForKey:@"speed"];
     speed = _speed;
-    
-    if(status == DV3K_STARTED ) {
-        [self stop];
-        [self start];
-    }
     [self didChangeValueForKey:@"speed"];
+    
+    [self stop];
+    [self start];
 }
 - (long) speed {
     return speed;
 }
 
 - (void) setSerialPort:(NSString *)_serialPort {
+    if([serialPort isEqualToString:_serialPort]) return;
+    
     [self willChangeValueForKey:@"serialPort"];
     serialPort = _serialPort;
-    
-    if(status == DV3K_STARTED) {
-        [self stop];
-        [self start];
-    }
     [self didChangeValueForKey:@"serialPort"];
+    
+    [self stop];
+    [self start];
 }
 
 - (NSString *) serialPort {
     return serialPort;
 }
 
-- (NSArray *) ports {
++ (NSArray *) ports {
     kern_return_t kernResult;
     mach_port_t masterPort;
     NSDictionary *classesToMatch;
@@ -225,7 +317,6 @@ static const struct dv3k_packet silencePacket = {
         NSLog(@"Couldn't get matching services: %d\n", kernResult);
         return nil;
     }
-    
     
     while((serialDevice = IOIteratorNext(matchingServices))) {
         io_object_t parent;
@@ -258,8 +349,9 @@ static const struct dv3k_packet silencePacket = {
     }
     
     IOObjectRelease(matchingServices);
-
     
+    mach_port_deallocate(mach_task_self(), masterPort);
+
     return [NSArray arrayWithArray:deviceArray];
 }
 
@@ -340,6 +432,16 @@ static const struct dv3k_packet silencePacket = {
         return NO;
     }
     
+    [self willChangeValueForKey:@"version"];
+    [self willChangeValueForKey:@"productId"];
+    version = @"";
+    productId = @"";
+    [self didChangeValueForKey:@"productId"];
+    [self didChangeValueForKey:@"version"];
+    
+    if(serialPort == nil || [serialPort isEqualToString:@""])
+        return NO;
+    
     serialDescriptor = open([serialPort cStringUsingEncoding:NSUTF8StringEncoding], O_RDWR | O_NOCTTY);
     if(serialDescriptor == -1) {
         NSLog(@"Error opening DV3000 Serial Port: %s\n", strerror(errno));
@@ -391,7 +493,7 @@ static const struct dv3k_packet silencePacket = {
         close(serialDescriptor);
         return NO;
     }
-    self.productId = [NSString stringWithCString:responsePacket->payload.ctrl.data.prodid encoding:NSUTF8StringEncoding];
+    NSString *tmpProductId = [NSString stringWithCString:responsePacket->payload.ctrl.data.prodid encoding:NSUTF8StringEncoding];
     
     ctrlPacket.payload.ctrl.field_id = DV3K_CONTROL_VERSTRING;
     if(![self sendCtrlPacket:ctrlPacket expectResponse:DV3K_CONTROL_VERSTRING]) {
@@ -400,10 +502,8 @@ static const struct dv3k_packet silencePacket = {
         return NO;
         
     }
-    self.version = [NSString stringWithCString:responsePacket->payload.ctrl.data.version encoding:NSUTF8StringEncoding];
+    NSString *tmpVersion = [NSString stringWithCString:responsePacket->payload.ctrl.data.version encoding:NSUTF8StringEncoding];
     
-    NSLog(@"Product ID is %@\n", self.productId);
-    NSLog(@"Version is %@\n", self.version);
     
     //  Set up the Vocoder
     ctrlPacket.header.payload_length = htons(sizeof(ctrlPacket.payload.ctrl.data.ratep) + 1);
@@ -432,7 +532,17 @@ static const struct dv3k_packet silencePacket = {
     dispatch_resume(dispatchSource);
     
     NSLog(@"Completed serial setup\n");
-
+    
+    [self willChangeValueForKey:@"productId"];
+    [self willChangeValueForKey:@"version"];
+    productId = tmpProductId;
+    version = tmpVersion;
+    [self didChangeValueForKey:@"version"];
+    [self didChangeValueForKey:@"productId"];
+    
+    NSLog(@"Product ID is %@\n", self.productId);
+    NSLog(@"Version is %@\n", self.version);
+    
     status = DV3K_STARTED;
     
     return YES;
@@ -447,6 +557,13 @@ static const struct dv3k_packet silencePacket = {
     dispatch_source_cancel(dispatchSource);
     
     close(serialDescriptor);
+    
+    [self willChangeValueForKey:@"productId"];
+    [self willChangeValueForKey:@"version"];
+    productId = @"";
+    version = @"";
+    [self didChangeValueForKey:@"version"];
+    [self didChangeValueForKey:@"productId"];
     
     status = DV3K_STOPPED;
 }

@@ -19,7 +19,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface DMYMainWindowViewController : NSViewController <NSTableViewDelegate>
+@interface DMYMainWindowViewController : NSViewController <NSTableViewDelegate, NSTableViewDataSource>
 
 @property (weak) IBOutlet NSTextField *urCall;
 @property (weak) IBOutlet NSTextField *myCall;
@@ -32,6 +32,8 @@
 @property (strong) IBOutlet NSArrayController *reflectorTableController;
 
 - (IBAction)doLink:(id)sender;
+- (IBAction)addReflector:(id)sender;
+- (IBAction)reflectorTableEnter:(id)sender;
 
 @end
 

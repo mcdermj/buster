@@ -436,11 +436,11 @@
             <objects>
                 <viewController title="Vocoder" id="b3d-Gl-b6s" customClass="DMYVocoderViewController" sceneMemberID="viewController">
                     <view key="view" id="SSq-qa-m7A">
-                        <rect key="frame" x="0.0" y="0.0" width="420" height="84"/>
+                        <rect key="frame" x="0.0" y="0.0" width="420" height="141"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XAI-ht-sic">
-                                <rect key="frame" x="18" y="47" width="69" height="17"/>
+                                <rect key="frame" x="18" y="104" width="69" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Serial Port" id="W9p-sS-ZhS">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -448,7 +448,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ePx-oD-nK2">
-                                <rect key="frame" x="18" y="22" width="69" height="17"/>
+                                <rect key="frame" x="18" y="79" width="69" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Baud Rate" id="OGi-fg-6Nv">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -456,7 +456,7 @@
                                 </textFieldCell>
                             </textField>
                             <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vnS-0J-Vaf">
-                                <rect key="frame" x="91" y="17" width="236" height="26"/>
+                                <rect key="frame" x="91" y="74" width="312" height="26"/>
                                 <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="YYW-Ab-LSK">
                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="menu"/>
@@ -472,7 +472,7 @@
                                 </connections>
                             </popUpButton>
                             <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XL9-DO-T4X">
-                                <rect key="frame" x="91" y="42" width="236" height="26"/>
+                                <rect key="frame" x="91" y="99" width="312" height="26"/>
                                 <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="6jZ-i4-qwZ" id="2rY-gD-Bfe">
                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="menu"/>
@@ -485,18 +485,67 @@
                                     </menu>
                                 </popUpButtonCell>
                                 <connections>
-                                    <binding destination="b3d-Gl-b6s" name="contentValues" keyPath="self.ports" id="gif-0M-yiD"/>
-                                    <binding destination="QYk-Xy-JMt" name="selectedValue" keyPath="values.dv3kSerialPort" previousBinding="gif-0M-yiD" id="7Y5-0i-FbV"/>
+                                    <binding destination="QYk-Xy-JMt" name="selectedValue" keyPath="values.dv3kSerialPort" id="pOr-uX-aRR"/>
                                 </connections>
                             </popUpButton>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zep-MF-FOw">
+                                <rect key="frame" x="26" y="43" width="61" height="14"/>
+                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Product ID" id="vPK-3d-KZp">
+                                    <font key="font" metaFont="smallSystem"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KUh-Pa-eVx">
+                                <rect key="frame" x="91" y="43" width="309" height="14"/>
+                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="nbY-Yi-CwG">
+                                    <font key="font" metaFont="smallSystem"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                                <connections>
+                                    <binding destination="b3d-Gl-b6s" name="value" keyPath="self.vocoder.productId" id="xez-AJ-v9B">
+                                        <dictionary key="options">
+                                            <bool key="NSContinuouslyUpdatesValue" value="YES"/>
+                                        </dictionary>
+                                    </binding>
+                                </connections>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZDR-uF-lSv">
+                                <rect key="frame" x="91" y="18" width="309" height="14"/>
+                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="w1s-nX-fN8">
+                                    <font key="font" metaFont="smallSystem"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                                <connections>
+                                    <binding destination="b3d-Gl-b6s" name="value" keyPath="self.vocoder.version" id="RIL-Gp-G6N">
+                                        <dictionary key="options">
+                                            <bool key="NSContinuouslyUpdatesValue" value="YES"/>
+                                        </dictionary>
+                                    </binding>
+                                </connections>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="15O-Mx-zxo">
+                                <rect key="frame" x="44" y="18" width="43" height="14"/>
+                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Version" id="E6H-qp-le2">
+                                    <font key="font" metaFont="smallSystem"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                     </view>
+                    <connections>
+                        <outlet property="serialPortPopup" destination="XL9-DO-T4X" id="9jf-sC-iMF"/>
+                    </connections>
                 </viewController>
                 <customObject id="DMc-Sp-0kx" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <userDefaultsController id="sso-b3-QTG"/>
                 <userDefaultsController id="QYk-Xy-JMt"/>
+                <userDefaultsController id="QPH-OE-Abm"/>
             </objects>
-            <point key="canvasLocation" x="1249" y="308"/>
+            <point key="canvasLocation" x="1249" y="336.5"/>
         </scene>
         <!--Main Window View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -591,21 +640,13 @@
                                 <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <font key="titleFont" metaFont="smallSystemBold"/>
                             </box>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yaq-4t-BH0">
-                                <rect key="frame" x="18" y="255" width="56" height="17"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Link To: " id="I41-Y8-ulx">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
                             <scrollView misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="avZ-AZ-WVn" userLabel="Reflector Table">
                                 <rect key="frame" x="519" y="20" width="83" height="334"/>
-                                <clipView key="contentView" id="BYJ-Mb-T1W">
+                                <clipView key="contentView" misplaced="YES" id="BYJ-Mb-T1W">
                                     <rect key="frame" x="1" y="17" width="238" height="117"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" headerView="8E1-QA-SES" id="sF2-ua-GZt">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" headerView="8E1-QA-SES" id="sF2-ua-GZt">
                                             <rect key="frame" x="0.0" y="0.0" width="238" height="117"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -630,6 +671,9 @@
                                                     </connections>
                                                 </tableColumn>
                                             </tableColumns>
+                                            <connections>
+                                                <binding destination="3qO-F1-Tqi" name="selectionIndexes" keyPath="selectionIndexes" id="cTy-0G-dtE"/>
+                                            </connections>
                                         </tableView>
                                     </subviews>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -651,19 +695,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
-                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xd9-SS-Ncs">
-                                <rect key="frame" x="106" y="252" width="96" height="22"/>
-                                <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="0XD-B9-XBv">
-                                    <customFormatter key="formatter" id="r18-xk-4A1" customClass="DMYCallFormatter"/>
-                                    <font key="font" metaFont="fixedUser" size="11"/>
-                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                                <connections>
-                                    <action selector="doLink:" target="XfG-lQ-9wD" id="j1Z-Nh-tEN"/>
-                                </connections>
-                            </textField>
-                            <box autoresizesSubviews="NO" focusRingType="none" misplaced="YES" borderWidth="0.0" title="Heard List" borderType="none" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="rwq-R5-EeB">
+                            <box autoresizesSubviews="NO" focusRingType="none" misplaced="YES" title="Heard List" borderType="none" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="rwq-R5-EeB">
                                 <rect key="frame" x="-3" y="-4" width="520" height="192"/>
                                 <view key="contentView">
                                     <rect key="frame" x="0.0" y="0.0" width="520" height="192"/>
@@ -680,10 +712,10 @@
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </searchFieldCell>
                                             <connections>
-                                                <binding destination="Zyq-aq-WHS" name="predicate" keyPath="filterPredicate" id="7Lu-gi-KwQ">
+                                                <binding destination="Zyq-aq-WHS" name="predicate" keyPath="filterPredicate" id="Hpg-dC-4hS">
                                                     <dictionary key="options">
                                                         <string key="NSDisplayName">predicate</string>
-                                                        <string key="NSPredicateFormat">myCall contains $value</string>
+                                                        <string key="NSPredicateFormat">myCall contains[cd] $value</string>
                                                     </dictionary>
                                                 </binding>
                                             </connections>
@@ -873,12 +905,12 @@
                                     <constraint firstItem="ofW-7P-voU" firstAttribute="top" secondItem="pwT-ch-zJC" secondAttribute="bottom" constant="10" id="HjO-ow-Kad"/>
                                     <constraint firstItem="ofW-7P-voU" firstAttribute="leading" secondItem="rwq-R5-EeB" secondAttribute="leading" id="Q6f-o3-agD"/>
                                     <constraint firstAttribute="trailing" secondItem="ofW-7P-voU" secondAttribute="trailing" id="Uys-d6-qE1"/>
-                                    <constraint firstAttribute="trailing" secondItem="pwT-ch-zJC" secondAttribute="trailing" id="bQ1-lr-e7b"/>
+                                    <constraint firstAttribute="trailing" secondItem="pwT-ch-zJC" secondAttribute="trailing" constant="10" id="bQ1-lr-e7b"/>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="522" id="ktw-1m-j8k"/>
                                     <constraint firstItem="pwT-ch-zJC" firstAttribute="top" secondItem="rwq-R5-EeB" secondAttribute="top" constant="10" id="txY-a8-1Em"/>
                                 </constraints>
                                 <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <color key="fillColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <font key="titleFont" metaFont="smallSystemBold"/>
                             </box>
                             <button misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Y9w-7c-W1y" userLabel="Add Reflector Button">
@@ -892,7 +924,7 @@
                                     <font key="font" metaFont="miniSystem"/>
                                 </buttonCell>
                                 <connections>
-                                    <action selector="add:" target="3qO-F1-Tqi" id="BVq-DD-gJ4"/>
+                                    <action selector="addReflector:" target="XfG-lQ-9wD" id="j3y-VF-RfY"/>
                                 </connections>
                             </button>
                             <button misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HHn-S8-cIi" userLabel="Remove Reflector Button">
@@ -925,28 +957,27 @@
                             </button>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="HHn-S8-cIi" firstAttribute="top" secondItem="avZ-AZ-WVn" secondAttribute="bottom" id="84Y-ir-GMj"/>
-                            <constraint firstAttribute="bottom" secondItem="HHn-S8-cIi" secondAttribute="bottom" id="9xV-PW-D6y"/>
+                            <constraint firstItem="HHn-S8-cIi" firstAttribute="top" secondItem="avZ-AZ-WVn" secondAttribute="bottom" constant="-1" id="84Y-ir-GMj"/>
+                            <constraint firstAttribute="bottom" secondItem="HHn-S8-cIi" secondAttribute="bottom" constant="-1" id="9xV-PW-D6y"/>
                             <constraint firstItem="rwq-R5-EeB" firstAttribute="top" secondItem="Udf-BZ-wIu" secondAttribute="bottom" constant="75" id="EHU-Ee-Z2f"/>
                             <constraint firstItem="Udf-BZ-wIu" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="EQR-LF-AJ2"/>
-                            <constraint firstItem="avZ-AZ-WVn" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="L31-z7-2pL"/>
-                            <constraint firstItem="Y9w-7c-W1y" firstAttribute="top" secondItem="avZ-AZ-WVn" secondAttribute="bottom" id="OI7-Lf-0wi"/>
-                            <constraint firstAttribute="bottom" secondItem="rwq-R5-EeB" secondAttribute="bottom" id="Z2p-2T-VbQ"/>
-                            <constraint firstItem="iRe-lQ-G1N" firstAttribute="leading" secondItem="HHn-S8-cIi" secondAttribute="trailing" id="ZOy-D4-G9P"/>
+                            <constraint firstItem="avZ-AZ-WVn" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="-1" id="L31-z7-2pL"/>
+                            <constraint firstItem="Y9w-7c-W1y" firstAttribute="top" secondItem="avZ-AZ-WVn" secondAttribute="bottom" constant="-1" id="OI7-Lf-0wi"/>
+                            <constraint firstAttribute="bottom" secondItem="rwq-R5-EeB" secondAttribute="bottom" constant="-1" id="Z2p-2T-VbQ"/>
+                            <constraint firstItem="iRe-lQ-G1N" firstAttribute="leading" secondItem="HHn-S8-cIi" secondAttribute="trailing" constant="-1" id="ZOy-D4-G9P"/>
                             <constraint firstItem="Udf-BZ-wIu" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="chz-S5-90i"/>
-                            <constraint firstAttribute="trailing" secondItem="avZ-AZ-WVn" secondAttribute="trailing" id="lDu-tu-RPm"/>
-                            <constraint firstItem="HHn-S8-cIi" firstAttribute="leading" secondItem="Y9w-7c-W1y" secondAttribute="trailing" id="oxj-M9-b1E"/>
-                            <constraint firstAttribute="bottom" secondItem="iRe-lQ-G1N" secondAttribute="bottom" id="pwq-c1-2nB"/>
-                            <constraint firstItem="rwq-R5-EeB" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="tnO-1g-xh4"/>
-                            <constraint firstItem="avZ-AZ-WVn" firstAttribute="leading" secondItem="rwq-R5-EeB" secondAttribute="trailing" id="ubd-Gp-0Um"/>
-                            <constraint firstItem="Y9w-7c-W1y" firstAttribute="leading" secondItem="rwq-R5-EeB" secondAttribute="trailing" id="uyG-G3-VU7"/>
-                            <constraint firstAttribute="bottom" secondItem="Y9w-7c-W1y" secondAttribute="bottom" id="z6m-Ma-SIk"/>
+                            <constraint firstAttribute="trailing" secondItem="avZ-AZ-WVn" secondAttribute="trailing" constant="-1" id="lDu-tu-RPm"/>
+                            <constraint firstItem="HHn-S8-cIi" firstAttribute="leading" secondItem="Y9w-7c-W1y" secondAttribute="trailing" constant="-1" id="oxj-M9-b1E"/>
+                            <constraint firstAttribute="bottom" secondItem="iRe-lQ-G1N" secondAttribute="bottom" constant="-1" id="pwq-c1-2nB"/>
+                            <constraint firstItem="rwq-R5-EeB" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="-1" id="tnO-1g-xh4"/>
+                            <constraint firstItem="avZ-AZ-WVn" firstAttribute="leading" secondItem="rwq-R5-EeB" secondAttribute="trailing" constant="-1" id="ubd-Gp-0Um"/>
+                            <constraint firstItem="Y9w-7c-W1y" firstAttribute="leading" secondItem="rwq-R5-EeB" secondAttribute="trailing" constant="-1" id="uyG-G3-VU7"/>
+                            <constraint firstAttribute="bottom" secondItem="Y9w-7c-W1y" secondAttribute="bottom" constant="-1" id="z6m-Ma-SIk"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="heardTableController" destination="Zyq-aq-WHS" id="Giq-qt-yv3"/>
                         <outlet property="heardTableView" destination="rqv-8N-voe" id="5Vk-Qj-jkt"/>
-                        <outlet property="linkTarget" destination="xd9-SS-Ncs" id="kk9-LD-iL5"/>
                         <outlet property="myCall" destination="r8R-tJ-5jL" id="GqB-rA-i2t"/>
                         <outlet property="reflectorTableController" destination="3qO-F1-Tqi" id="lMp-DT-tno"/>
                         <outlet property="reflectorTableView" destination="sF2-ua-GZt" id="zdi-yu-Bsy"/>
@@ -958,7 +989,7 @@
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <userDefaultsController representsSharedInstance="YES" id="9Wg-oH-sfS"/>
                 <arrayController editable="NO" automaticallyPreparesContent="YES" preservesSelection="NO" selectsInsertedObjects="NO" avoidsEmptySelection="NO" clearsFilterPredicateOnInsertion="NO" automaticallyRearrangesObjects="YES" id="Zyq-aq-WHS" userLabel="Heard Array Controller"/>
-                <arrayController avoidsEmptySelection="NO" id="3qO-F1-Tqi" userLabel="Reflector Array Controller">
+                <arrayController preservesSelection="NO" selectsInsertedObjects="NO" avoidsEmptySelection="NO" clearsFilterPredicateOnInsertion="NO" id="3qO-F1-Tqi" userLabel="Reflector Array Controller">
                     <connections>
                         <binding destination="9Wg-oH-sfS" name="contentArray" keyPath="values.reflectorFavorites" id="WRa-Ui-KlH">
                             <dictionary key="options">
@@ -968,7 +999,7 @@
                     </connections>
                 </arrayController>
             </objects>
-            <point key="canvasLocation" x="314.5" y="703"/>
+            <point key="canvasLocation" x="36.5" y="984"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="mEM-Ej-KR7">
@@ -993,6 +1024,7 @@
                 </viewController>
                 <customObject id="B0j-BN-CLv" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="464" y="639"/>
         </scene>
     </scenes>
     <resources>

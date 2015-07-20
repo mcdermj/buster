@@ -19,7 +19,10 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface DMYVocoderViewController : NSViewController
+#import "DMYDV3KVocoder.h"
 
-@property (readonly) NSArray *ports;
+@interface DMYVocoderViewController : NSViewController
+@property (weak) IBOutlet NSPopUpButton *serialPortPopup;
+
+@property (readonly) DMYDV3KVocoder *vocoder;
 @end

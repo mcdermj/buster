@@ -27,6 +27,8 @@
 
 @implementation DMYVocoderViewController
 
+@synthesize serialPortPopup;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -37,10 +39,27 @@
     return self;
 }
 
-- (NSArray *) ports {
+-(DMYDV3KVocoder *) vocoder {
     DMYAppDelegate *appDelegate = [NSApp delegate];
     
-    return appDelegate.vocoder.ports;
+    return appDelegate.vocoder;
+}
+
+- (void)viewDidAppear {
+    //  Initialize the port list
+    // DMYAppDelegate *appDelegate = [NSApp delegate];
+
+    [serialPortPopup removeAllItems];
+    [serialPortPopup addItemsWithTitles:[DMYDV3KVocoder ports]];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName: DMYVocoderDeviceChanged
+                                                      object: nil
+                                                       queue: [NSOperationQueue mainQueue]
+                                                  usingBlock:^(NSNotification *notification) {
+                                                      [serialPortPopup removeAllItems];
+                                                      [serialPortPopup addItemsWithTitles:[DMYDV3KVocoder ports]];
+                                                   }
+     ];
 }
 
 @end

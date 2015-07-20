@@ -44,10 +44,18 @@
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultPrefs];
     
     network = [[DMYGatewayHandler alloc] initWithRemoteAddress:[[NSUserDefaults standardUserDefaults] stringForKey:@"gatewayAddr"] remotePort:[[NSUserDefaults standardUserDefaults] integerForKey:@"gatewayPort"] localPort:[[NSUserDefaults standardUserDefaults] integerForKey:@"repeaterPort"]];
-    vocoder = [[DMYDV3KVocoder alloc] initWithPort:[[NSUserDefaults standardUserDefaults] stringForKey:@"dv3kSerialPort"]];
-    vocoder.speed = [[NSUserDefaults standardUserDefaults] integerForKey:@"dv3kSerialPortBaud"];
-    audio = [[DMYAudioHandler alloc] init];
     
+    NSString *portName = [[NSUserDefaults standardUserDefaults] stringForKey:@"dv3kSerialPort"];
+    if(!portName) {
+        NSArray *ports = [DMYDV3KVocoder ports];
+        if(ports.count == 1)
+            [[NSUserDefaults standardUserDefaults] setObject:ports[0] forKey:@"dv3kSerialPort"];
+    }
+    
+    vocoder = [[DMYDV3KVocoder alloc] initWithPort:[[NSUserDefaults standardUserDefaults] stringForKey:@"dv3kSerialPort"]
+                                          andSpeed:[[NSUserDefaults standardUserDefaults] integerForKey:@"dv3kSerialPortBaud"]];
+    
+    audio = [[DMYAudioHandler alloc] init];
     
     network.xmitRpt1Call = [[NSUserDefaults standardUserDefaults] stringForKey:@"rpt1Call"];
     network.xmitRpt1Call = [[NSUserDefaults standardUserDefaults] stringForKey:@"rpt2Call"];
@@ -65,8 +73,21 @@
     network.vocoder = vocoder;
     vocoder.audio = audio;
     
+    [[NSNotificationCenter defaultCenter] addObserverForName: DMYVocoderDeviceChanged
+                                                      object: nil
+                                                       queue: [NSOperationQueue mainQueue]
+                                                  usingBlock: ^(NSNotification *notification) {
+                                                        [[NSUserDefaults standardUserDefaults] setObject:vocoder.serialPort forKey:@"dv3kSerialPort"];
+                                                  }];
+    
     [audio start];
-    [vocoder start];
+    if(![vocoder start]){
+        NSAlert *alert = [[NSAlert alloc] init];
+        alert.alertStyle = NSWarningAlertStyle;
+        alert.messageText = @"Cannot Open the Serial Port";
+        alert.informativeText = @"Please check your serial port and speed settings in the Perferences menu";
+        [alert runModal];
+    };
     [network start];
 }
 

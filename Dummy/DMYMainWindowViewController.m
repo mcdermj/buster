@@ -23,7 +23,6 @@
 #import "DMYAppDelegate.h"
 
 @interface DMYMainWindowViewController ()
-- (void) linkReflector:(id)sender;
 @end
 
 @implementation DMYMainWindowViewController
@@ -38,23 +37,14 @@
 @synthesize reflectorTableView;
 @synthesize reflectorTableController;
 
-- (void) linkReflector:(id)sender {
-    NSString *reflector = [reflectorTableView.dataSource tableView:reflectorTableView objectValueForTableColumn:0 row:reflectorTableView.clickedRow];
-    NSLog(@"Reflector %@ double clicked\n", reflector);
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
-        
-    // XXX This is cruddy.  Why are there blank entries in there anyhow?
-    for(NSDictionary *entry in heardTableController.arrangedObjects)
-        if(entry.count == 0)
-            [heardTableController removeObject:entry];
+    
+    [reflectorTableView registerForDraggedTypes:@[ @"com.nh6z.Dummy.reflector" ]];
+    reflectorTableView.dataSource = self;
     
     heardTableView.delegate = self;
     heardTableController.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"time" ascending:NO] ];
-    
-    reflectorTableView.doubleAction = @selector(linkReflector:);
     
     __weak DMYMainWindowViewController *weakSelf = self;
     [[NSNotificationCenter defaultCenter] addObserverForName: DMYNetworkStreamStart
@@ -69,11 +59,6 @@
                                                      
                                                       NSPredicate *currentFilterPredicate = heardTableController.filterPredicate;
                                                       heardTableController.filterPredicate = nil;
-                                                      
-                                                      // XXX This is cruddy.  Why are there blank entries in there anyhow?
-                                                      for(NSDictionary *entry in heardTableController.arrangedObjects)
-                                                          if(entry.count == 0)
-                                                              [heardTableController removeObject:entry];
                                                       
                                                       NSPredicate *streamIdPredicate = [NSPredicate predicateWithFormat:@"streamId == %@", notification.userInfo[@"streamId"]];
                                                       NSArray *entries = [heardTableController.arrangedObjects filteredArrayUsingPredicate:streamIdPredicate];
@@ -138,8 +123,10 @@
 - (IBAction)doLink:(id)sender {
     DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
     
-    if(reflectorTableController.selectedObjects.count != 1)
+    if(reflectorTableController.selectedObjects.count != 1) {
+        NSBeep();
         return;
+    }
 
     NSString *reflector = reflectorTableController.selectedObjects[0][@"reflector"];
     
@@ -149,8 +136,68 @@
     [delegate.network linkTo:reflector];
 }
 
-- (NSIndexSet *) tableView:(NSTableView *)tableView selectionIndexesForProposedSelection:(NSIndexSet *)proposedSelectionIndexes {
-    return nil;
+-(void) addReflector:(id)sender {
+    NSMutableDictionary *newObject = [NSMutableDictionary dictionaryWithDictionary:@{ @"reflector": @"REFXXX C"}];
+    [reflectorTableController addObject:newObject];
+    
+    NSInteger insertedObjectIndex = [reflectorTableController.arrangedObjects indexOfObject:newObject];
+    reflectorTableController.selectionIndex = insertedObjectIndex;
+    [reflectorTableView editColumn:0 row:insertedObjectIndex withEvent:nil select:YES];
 }
+
+- (IBAction)reflectorTableEnter:(id)sender {
+    NSLog(@"I'm here\n");
+}
+
+#pragma mark - Selection Control
+
+- (NSIndexSet *) tableView:(NSTableView *)tableView selectionIndexesForProposedSelection:(NSIndexSet *)proposedSelectionIndexes {
+    if(tableView == heardTableView)
+        return nil;
+    
+    return proposedSelectionIndexes;
+}
+
+#pragma mark - Drag and Drop support
+
+- (id <NSPasteboardWriting>) tableView:(NSTableView *)tableView pasteboardWriterForRow:(NSInteger)row {
+    NSDictionary *reflector = reflectorTableController.arrangedObjects[row];
+    
+    NSPasteboardItem *item = [[NSPasteboardItem alloc] init];
+    [item setPropertyList:reflector forType:@"com.nh6z.Dummy.reflector"];
+    
+    return item;
+}
+
+-(NSDragOperation) tableView:(NSTableView *)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)dropOperation {
+    [tableView setDropRow:row dropOperation:NSTableViewDropAbove];
+    return NSDragOperationMove;
+}
+
+-(BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
+    NSDictionary *reflector = [info.draggingPasteboard propertyListForType:@"com.nh6z.Dummy.reflector"];
+    
+    if(tableView != reflectorTableView)
+        return NO;
+    
+    NSInteger oldIndex = [reflectorTableController.arrangedObjects indexOfObject:reflector];
+    
+    [reflectorTableController removeObject:reflector];
+    if(row < oldIndex)
+        [reflectorTableController insertObject:reflector atArrangedObjectIndex:row];
+    else
+        [reflectorTableController insertObject:reflector atArrangedObjectIndex:row - 1];
+    
+    return YES;
+}
+
+/* - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
+    return 0;
+}
+
+
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+    return nil;
+} */
 
 @end
