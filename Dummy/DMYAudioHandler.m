@@ -23,6 +23,7 @@
 #include <AudioToolbox/AudioToolbox.h>
 
 #import "TPCircularBuffer.h"
+#import "TPCircularBuffer+AudioBufferList.h"
 #import "DMYGatewayHandler.h"
 
 static const AudioComponentDescription componentDescription = {
@@ -46,6 +47,21 @@ static const AudioStreamBasicDescription outputFormat  = {
 
 static BOOL receiving = NO;
 
+@interface DMYAudioHandler () {
+    TPCircularBuffer playbackBuffer;
+    TPCircularBuffer recordBuffer;
+    AudioUnit outputUnit;
+    AudioUnit inputUnit;
+    AudioStreamBasicDescription inputFormat;
+    dispatch_source_t inputAudioSource;
+}
+
+@property (readonly) AudioUnit inputUnit;
+@property (readonly) TPCircularBuffer *recordBuffer;
+@property (readonly) AudioStreamBasicDescription *inputFormat;
+
+@end
+
 static OSStatus playbackThreadCallback (void *userData, AudioUnitRenderActionFlags *actionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData) {
     int32_t availableBytes;
     void *bufferTail;
@@ -68,24 +84,55 @@ static OSStatus playbackThreadCallback (void *userData, AudioUnitRenderActionFla
     return noErr;
 }
 
-
-@interface DMYAudioHandler () {
-    TPCircularBuffer playbackBuffer;
-    AudioUnit outputUnit;
+static OSStatus recordThreadCallback (void *userData, AudioUnitRenderActionFlags *actionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData) {
+    DMYAudioHandler *audioHandler = (__bridge DMYAudioHandler *) userData;
+    
+    OSStatus error;
+    
+    // NSLog(@"IN recordThreadCallback");
+    
+    AudioBufferList *bufferList = TPCircularBufferPrepareEmptyAudioBufferListWithAudioFormat(audioHandler.recordBuffer, audioHandler.inputFormat, inNumberFrames, inTimeStamp);
+    if(!bufferList) {
+        NSLog(@"recordBuffer is full\n");
+        return kIOReturnSuccess;
+    }
+    
+    error = AudioUnitRender(audioHandler.inputUnit, actionFlags, inTimeStamp, inBusNumber, inNumberFrames, bufferList);
+    if(error != noErr) {
+        NSLog(@"Error rendering input audio %d\n", error);
+    }
+    
+    TPCircularBufferProduceAudioBufferList(audioHandler.recordBuffer, inTimeStamp);
+    
+    return kIOReturnSuccess;
 }
 
-@end
 
 @implementation DMYAudioHandler
+
+@synthesize vocoder;
 
 - (id) init {
     self = [super init];
     
     if(self) {
         TPCircularBufferInit(&playbackBuffer, 16384);
+        TPCircularBufferInit(&recordBuffer, 16384);
     }
     
     return self;
+}
+
+- (AudioUnit) inputUnit {
+    return inputUnit;
+}
+
+- (TPCircularBuffer *) recordBuffer {
+    return &recordBuffer;
+}
+
+- (AudioStreamBasicDescription *) inputFormat {
+    return &inputFormat;
 }
 
 -(void) queueAudioData:(void *)audioData withLength:(uint32)length {
@@ -99,24 +146,26 @@ static OSStatus playbackThreadCallback (void *userData, AudioUnitRenderActionFla
     OSStatus error;
     AudioComponent outputComponent;
     
+    
+    //  Set up the speaker output audio
     CFRunLoopRef runLoop = NULL;
     AudioObjectPropertyAddress theAddress = { kAudioHardwarePropertyRunLoop, kAudioObjectPropertyScopeGlobal, kAudioObjectPropertyElementMaster };
     error = AudioObjectSetPropertyData(kAudioObjectSystemObject, &theAddress, 0, NULL, sizeof(CFRunLoopRef), &runLoop);
     if(error != noErr) {
-        fprintf(stderr, "Couldn't set run loop\n");
+        NSLog(@"Couldn't set run loop\n");
     }
     
     outputComponent = AudioComponentFindNext(NULL, &componentDescription);
     error = AudioComponentInstanceNew(outputComponent, &outputUnit);
     if(error != noErr) {
-        fprintf(stderr, "Couldn't get the default output unit\n");
-        return false;
+        NSLog(@"Couldn't get the default output unit\n");
+        return NO;
     }
 
     error = AudioUnitSetProperty(outputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &outputFormat, sizeof(outputFormat));
     if(error != noErr) {
-        fprintf(stderr, "Couldn't set stream format for output unit\n");
-        return false;
+        NSLog(@"Couldn't set stream format for output unit\n");
+        return NO;
     }
     
     AURenderCallbackStruct renderCallback;
@@ -124,20 +173,20 @@ static OSStatus playbackThreadCallback (void *userData, AudioUnitRenderActionFla
     renderCallback.inputProcRefCon = &playbackBuffer;
     error = AudioUnitSetProperty(outputUnit, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Global, 0, &renderCallback, sizeof(renderCallback));
     if(error != noErr) {
-        fprintf(stderr, "Couldn't set render callback\n");
-        return false;
+        NSLog(@"Couldn't set render callback\n");
+        return NO;
     }
     
     error = AudioUnitInitialize(outputUnit);
     if(error != noErr) {
-        fprintf(stderr, "Couldn't initialize output unit\n");
-        return false;
+        NSLog(@"Couldn't initialize output unit\n");
+        return NO;
     }
 
     error = AudioOutputUnitStart(outputUnit);
     if(error != noErr) {
-        fprintf(stderr, "Couldn't start output unit\n");
-        return false;
+        NSLog(@"Couldn't start output unit\n");
+        return NO;
     }
     
     NSLog(@"Audio system set up\n");
@@ -157,6 +206,128 @@ static OSStatus playbackThreadCallback (void *userData, AudioUnitRenderActionFla
                                                       receiving = NO;
                                                   }
      ];
+    
+    //  Set up microphone input audio
+    error = AudioComponentInstanceNew(outputComponent, &inputUnit);
+    if(error != noErr) {
+        NSLog(@"Couldn't get the default output unit\n");
+        return NO;
+    }
+
+    UInt32 enable = 1;
+    error = AudioUnitSetProperty(inputUnit, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Input, 1, &enable, sizeof(enable));
+    if(error != noErr) {
+        NSLog(@"Couldn't enable output IO for input unit\n");
+        return NO;
+    }
+    
+    enable = 0;
+    error = AudioUnitSetProperty(inputUnit, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Output, 0, &enable, sizeof(enable));
+    if(error != noErr) {
+        NSLog(@"Couldn't enable output IO for input unit\n");
+        return NO;
+    }
+    
+     AudioDeviceID defaultDevice;
+     UInt32 defaultDeviceSize = sizeof(defaultDevice);
+     
+    AudioObjectPropertyAddress defaultDeviceAddress = { kAudioHardwarePropertyDefaultInputDevice, kAudioObjectPropertyScopeGlobal, kAudioObjectPropertyElementMaster };
+    error = AudioObjectGetPropertyData(defaultDevice, &defaultDeviceAddress, 0, NULL, &defaultDeviceSize, &defaultDevice);
+    if(error != kAudioHardwareNoError) {
+        NSLog(@"AudioObjectGetPropertyData (kAudioDevicePropertyDeviceNameCFString) failed\n");
+        return NO;
+    }
+    
+    error = AudioUnitSetProperty(inputUnit, kAudioOutputUnitProperty_CurrentDevice, kAudioUnitScope_Global, 0, &defaultDevice, sizeof(AudioDeviceID));
+    if(error != noErr) {
+        NSLog(@"Couldn't set input device: %ld\n", (long int) error);
+        return NO;
+    }
+    
+    defaultDeviceAddress.mSelector = kAudioDevicePropertyNominalSampleRate;
+    AudioValueRange hardwareSampleRate = {
+        .mMinimum = 8000.0,
+        .mMaximum = 8000.0
+    };
+    error = AudioObjectSetPropertyData(defaultDevice, &defaultDeviceAddress, 0, NULL, sizeof(hardwareSampleRate), &hardwareSampleRate);
+    if(error != noErr) {
+        NSLog(@"Couldn't set hardware sample rate\n");
+        return NO;
+    }
+
+    UInt32 inputFormatSize = sizeof(inputFormat);
+    error = AudioUnitGetProperty(inputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 1, &inputFormat, &inputFormatSize);
+    if(error != noErr) {
+        NSLog(@"Couldn't get stream output format for input unit\n");
+        return NO;
+    }
+    
+    inputFormat.mSampleRate = 8000.0;  //  This isn't going to be good for a AudioConverter
+    inputFormat.mFormatFlags = kAudioFormatFlagIsPacked | kAudioFormatFlagIsSignedInteger| kAudioFormatFlagIsBigEndian;
+    inputFormat.mBytesPerPacket = sizeof(int16_t);
+    inputFormat.mBytesPerFrame = sizeof(int16_t);
+    inputFormat.mFramesPerPacket = 1;
+    inputFormat.mChannelsPerFrame = 1;
+    inputFormat.mBitsPerChannel = sizeof(int16_t) * 8;
+    
+    error = AudioUnitSetProperty(inputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 1, &inputFormat, sizeof(inputFormat));
+    if(error != noErr) {
+        NSLog(@"Couldn't set stream format for input unit\n");
+        return NO;
+    }
+    
+    renderCallback.inputProc = recordThreadCallback;
+    renderCallback.inputProcRefCon = (__bridge void *)(self);
+    error = AudioUnitSetProperty(inputUnit, kAudioOutputUnitProperty_SetInputCallback, kAudioUnitScope_Global, 1, &renderCallback, sizeof(renderCallback));
+    if(error != noErr) {
+        NSLog(@"Couldn't set record render callback\n");
+        return NO;
+    }
+
+    int allocBuffer = false;
+    error = AudioUnitSetProperty(inputUnit, kAudioUnitProperty_ShouldAllocateBuffer, kAudioUnitScope_Output, 1, &allocBuffer, sizeof(allocBuffer));
+    if(error != noErr) {
+        NSLog(@"Couldn't set buffer allocation\n");
+        return NO;
+    }
+
+    error = AudioUnitInitialize(inputUnit);
+    if(error != noErr) {
+        NSLog(@"Couldn't initialize output unit\n");
+        return NO;
+    }
+    
+    error = AudioOutputUnitStart(inputUnit);
+    if(error != noErr) {
+        NSLog(@"Couldn't start output unit\n");
+        return NO;
+    }
+    
+    //  Set up a timer source to pull audio through the system and submit it to the vocoder.
+    //  XXX this probably wants its own high priority serial queue to make sure we don't run more than one at once.
+    inputAudioSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+    dispatch_source_set_timer(inputAudioSource, dispatch_time(DISPATCH_TIME_NOW, 0), 20ull * NSEC_PER_MSEC, 1ull * NSEC_PER_MSEC);
+    
+    dispatch_source_set_event_handler(inputAudioSource, ^{
+        // XXX We probably want to malloc the buffer list once and use it repeatedly.
+        AudioBufferList bufferList;
+        AudioTimeStamp timestamp;
+        UInt32 numSamples = 160;
+        
+        bufferList.mNumberBuffers = 1;
+        bufferList.mBuffers[0].mNumberChannels = 1;
+        bufferList.mBuffers[0].mDataByteSize = numSamples * sizeof(short);
+        bufferList.mBuffers[0].mData = calloc(1, bufferList.mBuffers[0].mDataByteSize);
+        
+        TPCircularBufferDequeueBufferListFrames(&recordBuffer, &numSamples, &bufferList, &timestamp, &inputFormat);
+        [vocoder encodeData:bufferList.mBuffers[0].mData];
+        
+        // NSLog(@"Got %u samples from buffer\n", numSamples);
+        return;
+    });
+    
+    dispatch_resume(inputAudioSource);
+
 
     return YES;
 }

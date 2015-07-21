@@ -15,6 +15,7 @@
 		093B9B0E1B50E2D500C2ABD0 /* DummyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B0D1B50E2D500C2ABD0 /* DummyTests.m */; };
 		093B9B191B50E3BD00C2ABD0 /* DMYGatewayHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B181B50E3BD00C2ABD0 /* DMYGatewayHandler.m */; };
 		093B9B1D1B52DBA000C2ABD0 /* DMYDV3KVocoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B1C1B52DBA000C2ABD0 /* DMYDV3KVocoder.m */; };
+		095C3FAF1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c in Sources */ = {isa = PBXBuildFile; fileRef = 095C3FAD1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c */; };
 		096F2B5A1B58C06E00766A95 /* DMYCallFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 096F2B591B58C06E00766A95 /* DMYCallFormatter.m */; };
 		096F2B5C1B58ED1B00766A95 /* DefaultPreferences.plist in Resources */ = {isa = PBXBuildFile; fileRef = 096F2B5B1B58ED1B00766A95 /* DefaultPreferences.plist */; };
 		09A5FDEE1B5794FA00AE9E1C /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */; };
@@ -50,6 +51,8 @@
 		093B9B1A1B5214C700C2ABD0 /* DMYVocoderProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DMYVocoderProtocol.h; sourceTree = "<group>"; };
 		093B9B1B1B52DBA000C2ABD0 /* DMYDV3KVocoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYDV3KVocoder.h; sourceTree = "<group>"; };
 		093B9B1C1B52DBA000C2ABD0 /* DMYDV3KVocoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYDV3KVocoder.m; sourceTree = "<group>"; };
+		095C3FAD1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "TPCircularBuffer+AudioBufferList.c"; sourceTree = "<group>"; };
+		095C3FAE1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TPCircularBuffer+AudioBufferList.h"; sourceTree = "<group>"; };
 		096F2B581B58C06E00766A95 /* DMYCallFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYCallFormatter.h; sourceTree = "<group>"; };
 		096F2B591B58C06E00766A95 /* DMYCallFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYCallFormatter.m; sourceTree = "<group>"; };
 		096F2B5B1B58ED1B00766A95 /* DefaultPreferences.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DefaultPreferences.plist; sourceTree = "<group>"; };
@@ -116,6 +119,8 @@
 				09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */,
 				09A5FDEF1B57956A00AE9E1C /* DMYAudioHandler.h */,
 				09A5FDF01B57956A00AE9E1C /* DMYAudioHandler.m */,
+				095C3FAD1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c */,
+				095C3FAE1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.h */,
 				093B9B1A1B5214C700C2ABD0 /* DMYVocoderProtocol.h */,
 				093B9AFB1B50E2D500C2ABD0 /* DMYMainWindowViewController.h */,
 				093B9AFC1B50E2D500C2ABD0 /* DMYMainWindowViewController.m */,
@@ -257,6 +262,7 @@
 				09A5FDEE1B5794FA00AE9E1C /* TPCircularBuffer.c in Sources */,
 				093B9B191B50E3BD00C2ABD0 /* DMYGatewayHandler.m in Sources */,
 				09AB117B1B5A13970067B9FB /* DMYVocoderViewController.m in Sources */,
+				095C3FAF1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c in Sources */,
 				093B9B1D1B52DBA000C2ABD0 /* DMYDV3KVocoder.m in Sources */,
 				093B9AFD1B50E2D500C2ABD0 /* DMYMainWindowViewController.m in Sources */,
 				093B9AFA1B50E2D500C2ABD0 /* main.m in Sources */,
@@ -391,7 +397,7 @@
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_SHADOW = YES;
-				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_SIGN_COMPARE = NO;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = Dummy/Info.plist;
@@ -416,7 +422,7 @@
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_SHADOW = YES;
-				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_SIGN_COMPARE = NO;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = Dummy/Info.plist;

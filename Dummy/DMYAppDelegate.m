@@ -71,6 +71,7 @@
     [vocoder bind:@"serialPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPort" options:nil];
     
     network.vocoder = vocoder;
+    audio.vocoder = vocoder;
     vocoder.audio = audio;
     
     [[NSNotificationCenter defaultCenter] addObserverForName: DMYVocoderDeviceChanged

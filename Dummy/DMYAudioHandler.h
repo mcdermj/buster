@@ -19,9 +19,13 @@
 
 #import <Foundation/Foundation.h>
 
+#import "DMYVocoderProtocol.h"
+
 @interface DMYAudioHandler : NSObject
 
 -(void) queueAudioData:(void *)audioData withLength:(uint32)length;
 -(BOOL) start;
+
+@property id<DMYVocoderProtocol> vocoder;
 
 @end
