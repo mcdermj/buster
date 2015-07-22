@@ -24,7 +24,7 @@
 #import "DMYAudioHandler.h"
 
 @interface DMYAppDelegate () {
-    DMYAudioHandler *audio;
+    // DMYAudioHandler *audio;
 }
 
 @end
@@ -33,6 +33,7 @@
 
 @synthesize network;
 @synthesize vocoder;
+@synthesize audio;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application

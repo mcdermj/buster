@@ -21,11 +21,13 @@
 
 #import "DMYGatewayHandler.h"
 #import "DMYDV3KVocoder.h"
+#import "DMYAudioHandler.h"
 
 @interface DMYAppDelegate : NSObject <NSApplicationDelegate>
 
 @property (readonly) DMYGatewayHandler *network;
 @property (readonly) DMYDV3KVocoder *vocoder;
+@property (readonly) DMYAudioHandler *audio;
 
 @end
 

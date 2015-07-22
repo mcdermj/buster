@@ -22,6 +22,7 @@
 
 @interface DMYCallFormatter () {
     NSCharacterSet *invalidChars;
+    NSRegularExpression *commandRegex;
 }
 
 @end
@@ -31,7 +32,9 @@
 - (id) init {
     self = [super init];
     if(self) {
+        NSError *error = NULL;
         invalidChars = [NSCharacterSet characterSetWithCharactersInString:@"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz• "].invertedSet;
+        commandRegex = [NSRegularExpression regularExpressionWithPattern:@"[ ]{7}[A-Z]{1}" options:NSRegularExpressionCaseInsensitive error:&error];
     }
     
     return self;
@@ -64,7 +67,18 @@
 
 - (NSString *) stringForObjectValue:(id)obj {
     NSString *inString = (NSString *) obj;
-    return [[inString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] stringByReplacingOccurrencesOfString:@" " withString:@"•"];
+    NSString *newString;
+    
+    if(obj == nil)
+        return nil;
+    
+    if([commandRegex numberOfMatchesInString:inString options:NSMatchingAnchored range:NSMakeRange(0, [inString length])] == 0) {
+        newString = [inString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    } else {
+        newString = inString;
+    }
+    
+    return [newString stringByReplacingOccurrencesOfString:@" " withString:@"•"];
 }
 
 - (BOOL) getObjectValue:(out __autoreleasing id *)obj forString:(NSString *)string errorDescription:(out NSString *__autoreleasing *)error {

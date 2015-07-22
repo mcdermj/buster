@@ -19,5 +19,5 @@
 
 @protocol DMYVocoderProtocol
 - (void) decodeData:(void *) data lastPacket:(BOOL)last;
-- (void) encodeData:(void *) data;
+- (void) encodeData:(void *) data lastPacket:(BOOL)last;
 @end

@@ -102,7 +102,8 @@ static OSStatus recordThreadCallback (void *userData, AudioUnitRenderActionFlags
         NSLog(@"Error rendering input audio %d\n", error);
     }
     
-    TPCircularBufferProduceAudioBufferList(audioHandler.recordBuffer, inTimeStamp);
+    if(audioHandler.xmit)
+        TPCircularBufferProduceAudioBufferList(audioHandler.recordBuffer, inTimeStamp);
     
     return kIOReturnSuccess;
 }
@@ -111,6 +112,7 @@ static OSStatus recordThreadCallback (void *userData, AudioUnitRenderActionFlags
 @implementation DMYAudioHandler
 
 @synthesize vocoder;
+@synthesize xmit;
 
 - (id) init {
     self = [super init];
@@ -118,6 +120,8 @@ static OSStatus recordThreadCallback (void *userData, AudioUnitRenderActionFlags
     if(self) {
         TPCircularBufferInit(&playbackBuffer, 16384);
         TPCircularBufferInit(&recordBuffer, 16384);
+        
+        xmit = NO;
     }
     
     return self;
@@ -133,6 +137,17 @@ static OSStatus recordThreadCallback (void *userData, AudioUnitRenderActionFlags
 
 - (AudioStreamBasicDescription *) inputFormat {
     return &inputFormat;
+}
+
+- (void) setXmit:(BOOL)_xmit {
+    xmit = _xmit;
+    
+    if(xmit)
+        dispatch_resume(inputAudioSource);
+}
+
+- (BOOL) xmit {
+    return xmit;
 }
 
 -(void) queueAudioData:(void *)audioData withLength:(uint32)length {
@@ -313,6 +328,7 @@ static OSStatus recordThreadCallback (void *userData, AudioUnitRenderActionFlags
         AudioBufferList bufferList;
         AudioTimeStamp timestamp;
         UInt32 numSamples = 160;
+        BOOL last = NO;
         
         bufferList.mNumberBuffers = 1;
         bufferList.mBuffers[0].mNumberChannels = 1;
@@ -320,15 +336,18 @@ static OSStatus recordThreadCallback (void *userData, AudioUnitRenderActionFlags
         bufferList.mBuffers[0].mData = calloc(1, bufferList.mBuffers[0].mDataByteSize);
         
         TPCircularBufferDequeueBufferListFrames(&recordBuffer, &numSamples, &bufferList, &timestamp, &inputFormat);
-        [vocoder encodeData:bufferList.mBuffers[0].mData];
+        if(!xmit && numSamples == 0) {
+            last = YES;
+            dispatch_suspend(inputAudioSource);
+        }
+        
+        [vocoder encodeData:bufferList.mBuffers[0].mData lastPacket:last];
         
         // NSLog(@"Got %u samples from buffer\n", numSamples);
         return;
     });
     
-    dispatch_resume(inputAudioSource);
-
-
+    // dispatch_resume(inputAudioSource);
     return YES;
 }
 

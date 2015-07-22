@@ -114,7 +114,8 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     int gatewaySocket;
     dispatch_source_t dispatchSource;
     dispatch_source_t pollTimerSource;
-    //uint16 streamId;
+    uint16 xmitStreamId;
+    uint8 xmitSequence;
     uint8 sequence;
     BOOL running;
     NSThread *readThread;
@@ -131,6 +132,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 - (NSData *) constructLocalAddrStruct;
 - (void) processPacket;
 - (uint16) calculateChecksum:(struct gatewayPacket)packet;
+- (void) sendBlankTransmissionWithUr:(NSString *)urCall;
 
 @end
 
@@ -178,10 +180,15 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         incomingPacket = malloc(sizeof(struct gatewayPacket));
         
         status = GWY_STOPPED;
+        
+        xmitStreamId = htons((short) random());
+        xmitSequence = 0;
     }
     
     return self;
 }
+
+#pragma mark - Accessors
 
 - (void) setGatewayAddr:(NSString *)_addr {
     [self willChangeValueForKey:@"gatewayAddr"];
@@ -305,30 +312,19 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     close(gatewaySocket);
 }
 
-- (uint16) calculateChecksum:(struct gatewayPacket)packet {
-    unsigned short crc = 0xFFFF;
-    
-    int length = (sizeof(packet.payload.dstarHeader.myCall) * 4) +
-    sizeof(packet.payload.dstarHeader.myCall2) +
-    sizeof(packet.payload.dstarHeader.flags);
-    
-    for(char *packetPointer = (char *) &packet.payload.dstarHeader.flags;
-        packetPointer < ((char *) &packet.payload.dstarHeader.flags) + length;
-        ++packetPointer) {
-        crc = (crc >> 8) ^ ccittTab[(crc & 0x00FF) ^ *packetPointer];
-    }
-    
-    crc = ~crc;
-    
-    return ((uint16) crc);
-}
+#pragma mark - Linking
 
 - (void) linkTo:(NSString *)reflector {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        struct gatewayPacket packet;
-        short linkStreamId;
+        //struct gatewayPacket packet;
+        //short linkStreamId;
         
-        memset(&packet, 0, sizeof(packet));
+        NSMutableString *linkCmd = [NSMutableString stringWithString:reflector];
+        [linkCmd deleteCharactersInRange:NSMakeRange(6, 1)];
+        [linkCmd appendString:@"L"];
+
+        [self sendBlankTransmissionWithUr:linkCmd];
+        /*memset(&packet, 0, sizeof(packet));
         
         memcpy(&packet.magic, "DSRP", sizeof(packet.magic));
         packet.packetType = 0x20;
@@ -371,12 +367,152 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         if(send(gatewaySocket, &packet, packetLen, 0) == -1) {
             NSLog(@"Couldn't send link data: %s\n", strerror(errno));
             return;
-        }
+        } */
 
     });
 }
 
+- (void) unlink {
+    [self sendBlankTransmissionWithUr:@"       U"];
+}
+
+- (void) sendBlankTransmissionWithUr:(NSString *)_urCall {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        struct gatewayPacket packet;
+        short linkStreamId;
+        
+        memset(&packet, 0, sizeof(packet));
+        
+        memcpy(&packet.magic, "DSRP", sizeof(packet.magic));
+        packet.packetType = 0x20;
+        
+        strncpy((char *) packet.payload.dstarHeader.urCall, [_urCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.urCall));
+        
+        // XXX This is generic code that should be constructed for whenever we need a header packet.
+        // XXX Maybe a fillHeader function
+        strncpy((char *) packet.payload.dstarHeader.myCall, [xmitMyCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.myCall));
+        strncpy((char *) packet.payload.dstarHeader.rpt2Call, [xmitRpt2Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt1Call));
+        strncpy((char *) packet.payload.dstarHeader.rpt1Call, [xmitRpt1Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt2Call));
+        
+        // XXX Change Me!
+        strncpy((char *) packet.payload.dstarHeader.myCall2, "HOME", sizeof(packet.payload.dstarHeader.myCall2));
+        
+        linkStreamId = htons((short) random());
+        packet.payload.dstarHeader.streamId = linkStreamId;
+        
+        packet.payload.dstarHeader.checksum = [self calculateChecksum:packet];
+        
+        //   XXX Maybe the length should be shorter here
+        size_t packetLen = sizeof(packet.magic) + sizeof(packet.packetType) + sizeof(packet.payload.dstarHeader);
+        NSLog(@"packetLen = %lu\n", packetLen);
+        if(send(gatewaySocket, &packet, packetLen, 0) == -1) {
+            NSLog(@"Couldn't send link header: %s\n", strerror(errno));
+            return;
+        }
+        
+        //  Send the end stream packet
+        memset(&packet.payload, 0, sizeof(packet.payload));
+        packet.payload.dstarData.sequence = 0x40;
+        packet.payload.dstarData.streamId = linkStreamId;
+        packet.packetType = 0x21;
+        packetLen = sizeof(packet.magic) + sizeof(packet.packetType) + sizeof(packet.payload.dstarData);
+        if(send(gatewaySocket, &packet, packetLen, 0) == -1) {
+            NSLog(@"Couldn't send link data: %s\n", strerror(errno));
+            return;
+        }
+        
+    });
+}
+
+
+- (void) sendAMBE:(void *)data lastPacket:(BOOL)last {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        //  XXX Should use a reusable struct
+        struct gatewayPacket packet;
+        size_t packetLen;
+        
+        memset(&packet, 0, sizeof(packet));
+        memcpy(&packet.magic, "DSRP", sizeof(packet.magic));
+        
+        if(xmitSequence == 0) {
+            packet.packetType = 0x20;
+            //  XXX Should be settable
+            strncpy((char *) packet.payload.dstarHeader.urCall, [xmitUrCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.urCall));
+            NSLog(@"Ur is %@", xmitUrCall);
+            
+            strncpy((char *) packet.payload.dstarHeader.myCall, [xmitMyCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.myCall));
+            strncpy((char *) packet.payload.dstarHeader.rpt2Call, [xmitRpt2Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt1Call));
+            strncpy((char *) packet.payload.dstarHeader.rpt1Call, [xmitRpt1Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt2Call));
+            
+            // XXX Change Me!
+            strncpy((char *) packet.payload.dstarHeader.myCall2, "HOME", sizeof(packet.payload.dstarHeader.myCall2));
+            
+            packet.payload.dstarHeader.streamId = xmitStreamId;
+            
+            packet.payload.dstarHeader.checksum = [self calculateChecksum:packet];
+            
+            packetLen = sizeof(packet.magic) + sizeof(packet.packetType) + sizeof(packet.payload.dstarHeader);
+            // NSLog(@"packetLen = %lu\n", packetLen);
+            if(send(gatewaySocket, &packet, packetLen, 0) == -1) {
+                NSLog(@"Couldn't send stream header: %s\n", strerror(errno));
+                return;
+            }
+            
+            memset(&packet, 0, sizeof(packet));
+            memcpy(&packet.magic, "DSRP", sizeof(packet.magic));
+        }
+        
+        packet.packetType = 0x21;
+        memcpy(&packet.payload.dstarData.ambeData, data, sizeof(packet.payload.dstarData.ambeData));
+        packet.payload.dstarData.sequence = xmitSequence;
+        packet.payload.dstarData.streamId = xmitStreamId;
+        
+        if(xmitSequence != 0)
+            memset(&packet.payload.dstarData.slowData, 0, sizeof(packet.payload.dstarData.slowData));
+        else {
+            // XXX Sync bytes should be put into a constant and memcpy'ed.  We can use this for later memcmp's as well.
+            packet.payload.dstarData.slowData[0] = 0x55;
+            packet.payload.dstarData.slowData[1] = 0x2D;
+            packet.payload.dstarData.slowData[2] = 0x16;
+        }
+        
+        packet.payload.dstarData.errors = 0;
+        
+        if(last) {
+            xmitStreamId = htons((short) random());
+            packet.payload.dstarData.sequence &= 0x40;
+            NSLog(@"Last packet");
+        }
+        
+        packetLen = sizeof(packet.magic) + sizeof(packet.packetType) + sizeof(packet.payload.dstarData);
+        if(send(gatewaySocket, &packet, packetLen, 0) == -1) {
+            NSLog(@"Couldn't send audio data: %s\n", strerror(errno));
+            return;
+        }
+        
+        xmitSequence = (xmitSequence + 1) % 21;
+    });
+}
+
 #pragma mark - Internal Methods
+
+- (uint16) calculateChecksum:(struct gatewayPacket)packet {
+    unsigned short crc = 0xFFFF;
+    
+    int length = (sizeof(packet.payload.dstarHeader.myCall) * 4) +
+    sizeof(packet.payload.dstarHeader.myCall2) +
+    sizeof(packet.payload.dstarHeader.flags);
+    
+    for(char *packetPointer = (char *) &packet.payload.dstarHeader.flags;
+        packetPointer < ((char *) &packet.payload.dstarHeader.flags) + length;
+        ++packetPointer) {
+        crc = (crc >> 8) ^ ccittTab[(crc & 0x00FF) ^ *packetPointer];
+    }
+    
+    crc = ~crc;
+    
+    return ((uint16) crc);
+}
 
 - (NSData *) constructRemoteAddrStruct {
     NSMutableData *addrStructData = [[NSMutableData alloc] initWithLength:sizeof(struct sockaddr_in)];

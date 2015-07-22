@@ -36,9 +36,13 @@
 @synthesize heardTableView;
 @synthesize reflectorTableView;
 @synthesize reflectorTableController;
+@synthesize xmitUrCall;
+@synthesize statusLED;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
     
     [reflectorTableView registerForDraggedTypes:@[ @"com.nh6z.Dummy.reflector" ]];
     reflectorTableView.dataSource = self;
@@ -67,6 +71,8 @@
                                                           [heardTableController addObject:notification.userInfo];
                                                       
                                                       heardTableController.filterPredicate = currentFilterPredicate;
+                                                      
+                                                      statusLED.image = [NSImage imageNamed:@"Green LED"];
                                                   }
      ];
     
@@ -99,8 +105,14 @@
                                                       [heardTableController addObject:[NSDictionary dictionaryWithDictionary:newHeader]];
                                                       
                                                       heardTableController.filterPredicate = currentFilterPredicate;
+                                                      
+                                                      statusLED.image = [NSImage imageNamed:@"Gray LED"];
                                                   }
      ];
+    
+    
+    //[xmitUrCall bind:@"value" toObject:delegate.network withKeyPath:@"xmitUrCall" options:nil];
+    //[delegate.network bind:@"xmitUrCall" toObject:xmitUrCall withKeyPath:@"value" options:nil];
 }
 
 - (void)viewWillDisappear {
@@ -147,6 +159,28 @@
 
 - (IBAction)reflectorTableEnter:(id)sender {
     NSLog(@"I'm here\n");
+}
+
+- (IBAction)doTx:(id)sender {
+    DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
+    
+    if(delegate.audio.xmit) {
+        delegate.audio.xmit = NO;
+        delegate.network.xmitUrCall = @"";
+        statusLED.image = [NSImage imageNamed:@"Gray LED"];
+    }  else {
+        delegate.network.xmitUrCall = xmitUrCall.objectValue;
+        delegate.audio.xmit = YES;
+        statusLED.image = [NSImage imageNamed:@"Red LED"];
+    }
+        
+
+}
+
+- (IBAction)doUnlink:(id)sender {
+    DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
+
+    [delegate.network unlink];
 }
 
 #pragma mark - Selection Control

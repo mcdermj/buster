@@ -37,6 +37,7 @@ static const unsigned char DV3K_CONTROL_PRODID = 0x30;
 static const unsigned char DV3K_CONTROL_VERSTRING = 0x31;
 static const unsigned char DV3K_CONTROL_RESET = 0x33;
 static const unsigned char DV3K_CONTROL_READY = 0x39;
+static const unsigned char DV3K_CONTROL_CHANFMT = 0x15;
 
 static const unsigned char DV3K_AMBE_FIELD_CMODE = 0x02;
 static const unsigned char DV3K_AMBE_FIELD_TONE = 0x08;
@@ -63,6 +64,7 @@ struct dv3k_packet {
                 char prodid[16];
                 char ratep[12];
                 char version[48];
+                short chanfmt;
             } data;
         } ctrl;
         struct {
@@ -70,10 +72,7 @@ struct dv3k_packet {
             unsigned char num_samples;
             short samples[160];
             unsigned char cmode_field_id;
-            unsigned char cmode_value;
-            unsigned char tone_field_id;
-            unsigned char tone;
-            unsigned char amplitude;
+            short cmode_value;
         } audio;
         struct {
             struct {
@@ -239,9 +238,6 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         dv3k_audio.header.payload_length = htons(sizeof(dv3k_ambe.payload.audio));
         dv3k_audio.payload.audio.field_id = DV3K_AUDIO_FIELD_SPEECHD;
         dv3k_audio.payload.audio.num_samples = sizeof(dv3k_audio.payload.audio.samples) / sizeof(short);
-        dv3k_audio.payload.audio.tone_field_id = 0x08;
-        dv3k_audio.payload.audio.tone = 0x40;
-        dv3k_audio.payload.audio.amplitude = 0x00;
         dv3k_audio.payload.audio.cmode_field_id = 0x02;
         dv3k_audio.payload.audio.cmode_value = htons(0x4000);
 
@@ -533,6 +529,15 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         return NO;
     }
     
+    ctrlPacket.header.payload_length = htons(sizeof(ctrlPacket.payload.ctrl.data.chanfmt) + 1);
+    ctrlPacket.payload.ctrl.field_id = DV3K_CONTROL_CHANFMT;
+    ctrlPacket.payload.ctrl.data.chanfmt = htons(0x0001);
+    if([self sendCtrlPacket:ctrlPacket expectResponse:DV3K_CONTROL_CHANFMT] == NO) {
+        NSLog(@"Couldn't send CHANFMT request: %s\n", strerror(errno));
+        close(serialDescriptor);
+        return NO;
+    }
+    
     NSLog(@"DV3000 is now set up\n");
     
     if(fcntl(serialDescriptor, F_SETFL, O_NONBLOCK | O_NDELAY) == -1) {
@@ -625,7 +630,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     });
 }
 
-- (void) encodeData:(void *)  data {
+- (void) encodeData:(void *)  data lastPacket:(BOOL)last {
     // XXX We shouldn't have to free the data.
     if(status != DV3K_STARTED) {
         free(data);
@@ -635,8 +640,12 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     dispatch_async(dispatchQueue, ^{
         ssize_t bytes;
         
-        memcpy(&dv3k_audio.payload.audio.samples, data, dv3k_packet_size(dv3k_audio));
-        
+        memcpy(&dv3k_audio.payload.audio.samples, data, sizeof(dv3k_audio.payload.audio.samples));
+        if(last)
+            dv3k_audio.payload.audio.cmode_value = htons(0x4000);
+        else
+            dv3k_audio.payload.audio.cmode_value = 0x0000;
+                
         bytes = write(serialDescriptor, &dv3k_audio, dv3k_packet_size(dv3k_audio));
         if(bytes == -1) {
             NSLog(@"Couldn't send audio packet: %s\n", strerror(errno));
@@ -648,6 +657,9 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
 }
 
 -(void) processPacket {
+    DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
+    BOOL last = NO;
+    
     if(![self readPacket:responsePacket])
         return;
     
@@ -656,12 +668,20 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
             NSLog(@"DV3K Control Packet Received\n");
             break;
         case DV3K_TYPE_AMBE:
-            NSLog(@"DV3K AMBE Packet Received payload length %d\n", ntohs(responsePacket->header.payload_length));
+           //  NSLog(@"DV3K AMBE Packet Received payload length %d with cmode = 0x%04X\n", ntohs(responsePacket->header.payload_length), ntohs(responsePacket->payload.ambe.cmode.value));
             if(responsePacket->payload.ambe.data.field_id != DV3K_AMBE_FIELD_CHAND ||
                responsePacket->payload.ambe.data.num_bits != sizeof(responsePacket->payload.ambe.data.data) * 8) {
-                NSLog(@"Received invalid AMBE packet payload length %d\n", ntohs(responsePacket->header.payload_length));
+                NSLog(@"Received invalid AMBE packet", ntohs(responsePacket->header.payload_length));
                 return;
             }
+            
+            if(responsePacket->payload.ambe.cmode.field_id == DV3K_AMBE_FIELD_CMODE &&
+               (htons(responsePacket->payload.ambe.cmode.value) & 0x8000)) {
+                last = YES;
+                NSLog(@"Last Packet");
+            }
+            
+            [delegate.network sendAMBE:responsePacket->payload.ambe.data.data lastPacket:last];
             
             break;
         case DV3K_TYPE_AUDIO:

@@ -27,5 +27,6 @@
 -(BOOL) start;
 
 @property id<DMYVocoderProtocol> vocoder;
+@property BOOL xmit;
 
 @end

@@ -48,5 +48,7 @@ extern NSString * const DMYNetworkStreamEnd;
 - (BOOL) start;
 - (void) stop;
 - (void) linkTo:(NSString *)reflector;
+- (void) unlink;
+- (void) sendAMBE:(void *)data lastPacket:(BOOL)last;
 
 @end
