@@ -47,6 +47,8 @@ static const AudioStreamBasicDescription outputFormat  = {
 
 static BOOL receiving = NO;
 
+static inline BOOL CheckStatus(OSStatus error, const char *operation);
+
 @interface DMYAudioHandler () {
     TPCircularBuffer playbackBuffer;
     TPCircularBuffer recordBuffer;
@@ -157,52 +159,124 @@ static OSStatus recordThreadCallback (void *userData, AudioUnitRenderActionFlags
     
 }
 
+static inline BOOL CheckStatus(OSStatus error, const char *operation) {
+    if(error == noErr)
+        return YES;
+    
+    char str[20];
+    // see if it appears to be a 4-char-code
+    *(UInt32 *)(str + 1) = CFSwapInt32HostToBig(error);
+    if (isprint(str[1]) && isprint(str[2]) && isprint(str[3]) && isprint(str[4])) {
+        str[0] = str[5] = '\'';
+        str[6] = '\0';
+    } else {
+        // no, format it as an integer
+        sprintf(str, "%d", (int)error);
+    }
+    
+    switch(error) {
+        case kAudioUnitErr_InvalidProperty:
+            NSLog(@"Error: %s (%s) kAudioUnitErr_InvalidProperty", operation, str);
+            break;
+            
+        case kAudioUnitErr_InvalidParameter:
+            NSLog(@"Error: %s (%s) kAudioUnitErr_InvalidParameter", operation, str);
+            break;
+            
+        case kAudioUnitErr_InvalidElement:
+            NSLog(@"Error: %s (%s) kAudioUnitErr_InvalidElement", operation, str);
+            break;
+            
+        case kAudioUnitErr_NoConnection:
+            NSLog(@"Error: %s (%s) kAudioUnitErr_NoConnection", operation, str);
+            break;
+            
+        case kAudioUnitErr_FailedInitialization:
+            NSLog(@"Error: %s (%s) kAudioUnitErr_FailedInitialization", operation, str);
+            break;
+            
+        case kAudioUnitErr_TooManyFramesToProcess:
+            NSLog(@"Error: %s (%s) kAudioUnitErr_TooManyFramesToProcess", operation, str);
+            break;
+            
+        case kAudioUnitErr_InvalidFile:
+            NSLog(@"Error: %s (%s) kAudioUnitErr_InvalidFile", operation, str);
+            break;
+            
+        case kAudioUnitErr_FormatNotSupported:
+            NSLog(@"Error: %s (%s) kAudioUnitErr_FormatNotSupported", operation, str);
+            break;
+            
+        case kAudioUnitErr_Uninitialized:
+            NSLog(@"Error: %s (%s) kAudioUnitErr_Uninitialized", operation, str);
+            break;
+            
+        case kAudioUnitErr_InvalidScope:
+            NSLog(@"Error: %s (%s) kAudioUnitErr_InvalidScope", operation, str);
+            break;
+            
+        case kAudioUnitErr_PropertyNotWritable:
+            NSLog(@"Error: %s (%s) kAudioUnitErr_PropertyNotWritable", operation, str);
+            break;
+            
+        case kAudioUnitErr_InvalidPropertyValue:
+            NSLog(@"Error: %s (%s) kAudioUnitErr_InvalidPropertyValue", operation, str);
+            break;
+            
+        case kAudioUnitErr_PropertyNotInUse:
+            NSLog(@"Error: %s (%s) kAudioUnitErr_PropertyNotInUse", operation, str);
+            break;
+            
+        case kAudioUnitErr_Initialized:
+            NSLog(@"Error: %s (%s) kAudioUnitErr_Initialized", operation, str);
+            break;
+            
+        case kAudioUnitErr_InvalidOfflineRender:
+            NSLog(@"Error: %s (%s) kAudioUnitErr_InvalidOfflineRender", operation, str);
+            break;
+            
+        case kAudioUnitErr_Unauthorized:
+            NSLog(@"Error: %s (%s) kAudioUnitErr_Unauthorized", operation, str);
+            break;
+        default:
+            NSLog(@"Error: %s (%s)", operation, str);
+            break;
+    }
+
+    return NO;
+}
+
 - (BOOL) start {
-    OSStatus error;
+    // OSStatus error;
     AudioComponent outputComponent;
     
     
-    //  Set up the speaker output audio
+    //  Set up the CoreAudio run loop and find the Output HAL
     CFRunLoopRef runLoop = NULL;
     AudioObjectPropertyAddress theAddress = { kAudioHardwarePropertyRunLoop, kAudioObjectPropertyScopeGlobal, kAudioObjectPropertyElementMaster };
-    error = AudioObjectSetPropertyData(kAudioObjectSystemObject, &theAddress, 0, NULL, sizeof(CFRunLoopRef), &runLoop);
-    if(error != noErr) {
-        NSLog(@"Couldn't set run loop\n");
-    }
+    CheckStatus(AudioObjectSetPropertyData(kAudioObjectSystemObject, &theAddress, 0, NULL, sizeof(CFRunLoopRef), &runLoop), "AudioObjectSetPropertyData(kAudioHardwarePropertyRunLoop");
     
     outputComponent = AudioComponentFindNext(NULL, &componentDescription);
-    error = AudioComponentInstanceNew(outputComponent, &outputUnit);
-    if(error != noErr) {
-        NSLog(@"Couldn't get the default output unit\n");
+    
+    //  Set up the output unit for speaker output
+    if(!CheckStatus(AudioComponentInstanceNew(outputComponent, &outputUnit), "AudioComponentInstanceNew"))
         return NO;
-    }
-
-    error = AudioUnitSetProperty(outputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &outputFormat, sizeof(outputFormat));
-    if(error != noErr) {
-        NSLog(@"Couldn't set stream format for output unit\n");
+    
+    if(!CheckStatus(AudioUnitSetProperty(outputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &outputFormat, sizeof(outputFormat)), "AudioUnitSetProperty(kAudioUnitPropertyStreamFormat)"))
         return NO;
-    }
     
     AURenderCallbackStruct renderCallback;
     renderCallback.inputProc = playbackThreadCallback;
     renderCallback.inputProcRefCon = &playbackBuffer;
-    error = AudioUnitSetProperty(outputUnit, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Global, 0, &renderCallback, sizeof(renderCallback));
-    if(error != noErr) {
-        NSLog(@"Couldn't set render callback\n");
-        return NO;
-    }
     
-    error = AudioUnitInitialize(outputUnit);
-    if(error != noErr) {
-        NSLog(@"Couldn't initialize output unit\n");
+    if(!CheckStatus(AudioUnitSetProperty(outputUnit, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Global, 0, &renderCallback, sizeof(renderCallback)), "AudioUnitSetProperty(kAudioUnitProperty_SetRenderCallback)"))
         return NO;
-    }
-
-    error = AudioOutputUnitStart(outputUnit);
-    if(error != noErr) {
-        NSLog(@"Couldn't start output unit\n");
+    
+    if(!CheckStatus(AudioUnitInitialize(outputUnit), "AudioUnitInitialize"))
         return NO;
-    }
+    
+    if(!CheckStatus(AudioOutputUnitStart(outputUnit), "AudioOutputUnitStart"))
+        return NO;
     
     NSLog(@"Audio system set up\n");
     
@@ -223,59 +297,38 @@ static OSStatus recordThreadCallback (void *userData, AudioUnitRenderActionFlags
      ];
     
     //  Set up microphone input audio
-    error = AudioComponentInstanceNew(outputComponent, &inputUnit);
-    if(error != noErr) {
-        NSLog(@"Couldn't get the default output unit\n");
+    if(!CheckStatus(AudioComponentInstanceNew(outputComponent, &inputUnit), "AudioComponentInstanceNew"))
         return NO;
-    }
-
+    
     UInt32 enable = 1;
-    error = AudioUnitSetProperty(inputUnit, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Input, 1, &enable, sizeof(enable));
-    if(error != noErr) {
-        NSLog(@"Couldn't enable output IO for input unit\n");
+    if(!CheckStatus(AudioUnitSetProperty(inputUnit, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Input, 1, &enable, sizeof(enable)), "AudioUnitSetProperty(kAudioOutputUnitProperty_EnableIO"))
         return NO;
-    }
     
     enable = 0;
-    error = AudioUnitSetProperty(inputUnit, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Output, 0, &enable, sizeof(enable));
-    if(error != noErr) {
-        NSLog(@"Couldn't enable output IO for input unit\n");
+    if(!CheckStatus(AudioUnitSetProperty(inputUnit, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Output, 0, &enable, sizeof(enable)), "AudioUnitSetProperty(kAudioOutputUnitProperty_EnableIO"))
         return NO;
-    }
     
-     AudioDeviceID defaultDevice;
-     UInt32 defaultDeviceSize = sizeof(defaultDevice);
-     
+    AudioDeviceID defaultDevice;
+    UInt32 defaultDeviceSize = sizeof(defaultDevice);
     AudioObjectPropertyAddress defaultDeviceAddress = { kAudioHardwarePropertyDefaultInputDevice, kAudioObjectPropertyScopeGlobal, kAudioObjectPropertyElementMaster };
-    error = AudioObjectGetPropertyData(defaultDevice, &defaultDeviceAddress, 0, NULL, &defaultDeviceSize, &defaultDevice);
-    if(error != kAudioHardwareNoError) {
-        NSLog(@"AudioObjectGetPropertyData (kAudioDevicePropertyDeviceNameCFString) failed\n");
-        return NO;
-    }
     
-    error = AudioUnitSetProperty(inputUnit, kAudioOutputUnitProperty_CurrentDevice, kAudioUnitScope_Global, 0, &defaultDevice, sizeof(AudioDeviceID));
-    if(error != noErr) {
-        NSLog(@"Couldn't set input device: %ld\n", (long int) error);
+    if(!CheckStatus(AudioObjectGetPropertyData(kAudioObjectSystemObject, &defaultDeviceAddress, 0, NULL, &defaultDeviceSize, &defaultDevice), "AudioUnitGetPropertyData(kAudioHardwarePropertyDefaultInputDevice)"))
         return NO;
-    }
+    
+    if(!CheckStatus(AudioUnitSetProperty(inputUnit, kAudioOutputUnitProperty_CurrentDevice, kAudioUnitScope_Global, 0, &defaultDevice, sizeof(AudioDeviceID)), "AudioUnitSetProperty(kAudioOutputUnitProperty_CurrentDevice)"))
+        return NO;
     
     defaultDeviceAddress.mSelector = kAudioDevicePropertyNominalSampleRate;
     AudioValueRange hardwareSampleRate = {
         .mMinimum = 8000.0,
         .mMaximum = 8000.0
     };
-    error = AudioObjectSetPropertyData(defaultDevice, &defaultDeviceAddress, 0, NULL, sizeof(hardwareSampleRate), &hardwareSampleRate);
-    if(error != noErr) {
-        NSLog(@"Couldn't set hardware sample rate\n");
+    if(!CheckStatus(AudioObjectSetPropertyData(defaultDevice, &defaultDeviceAddress, 0, NULL, sizeof(hardwareSampleRate), &hardwareSampleRate), "AudioObjectSetPropertyData(kAudioDevicePropertyNominalSampleRate)"))
         return NO;
-    }
-
+    
     UInt32 inputFormatSize = sizeof(inputFormat);
-    error = AudioUnitGetProperty(inputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 1, &inputFormat, &inputFormatSize);
-    if(error != noErr) {
-        NSLog(@"Couldn't get stream output format for input unit\n");
+    if(!CheckStatus(AudioUnitGetProperty(inputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 1, &inputFormat, &inputFormatSize), "AudioUnitGetProperty(kAudioUnitProperty_StreamFormat)"))
         return NO;
-    }
     
     inputFormat.mSampleRate = 8000.0;  //  This isn't going to be good for a AudioConverter
     inputFormat.mFormatFlags = kAudioFormatFlagIsPacked | kAudioFormatFlagIsSignedInteger| kAudioFormatFlagIsBigEndian;
@@ -285,38 +338,23 @@ static OSStatus recordThreadCallback (void *userData, AudioUnitRenderActionFlags
     inputFormat.mChannelsPerFrame = 1;
     inputFormat.mBitsPerChannel = sizeof(int16_t) * 8;
     
-    error = AudioUnitSetProperty(inputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 1, &inputFormat, sizeof(inputFormat));
-    if(error != noErr) {
-        NSLog(@"Couldn't set stream format for input unit\n");
+    if(!CheckStatus(AudioUnitSetProperty(inputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 1, &inputFormat, sizeof(inputFormat)), "AudioUnitSetProperty(kAudioUnitProperty_StreamFormat)"))
         return NO;
-    }
     
     renderCallback.inputProc = recordThreadCallback;
     renderCallback.inputProcRefCon = (__bridge void *)(self);
-    error = AudioUnitSetProperty(inputUnit, kAudioOutputUnitProperty_SetInputCallback, kAudioUnitScope_Global, 1, &renderCallback, sizeof(renderCallback));
-    if(error != noErr) {
-        NSLog(@"Couldn't set record render callback\n");
+    if(!CheckStatus(AudioUnitSetProperty(inputUnit, kAudioOutputUnitProperty_SetInputCallback, kAudioUnitScope_Global, 1, &renderCallback, sizeof(renderCallback)), "AudioUnitSetProperty(kAudioOutputUnitProperty_SetInputCallback)"))
         return NO;
-    }
-
-    int allocBuffer = false;
-    error = AudioUnitSetProperty(inputUnit, kAudioUnitProperty_ShouldAllocateBuffer, kAudioUnitScope_Output, 1, &allocBuffer, sizeof(allocBuffer));
-    if(error != noErr) {
-        NSLog(@"Couldn't set buffer allocation\n");
-        return NO;
-    }
-
-    error = AudioUnitInitialize(inputUnit);
-    if(error != noErr) {
-        NSLog(@"Couldn't initialize output unit\n");
-        return NO;
-    }
     
-    error = AudioOutputUnitStart(inputUnit);
-    if(error != noErr) {
-        NSLog(@"Couldn't start output unit\n");
+    int allocBuffer = false;
+    if(!CheckStatus(AudioUnitSetProperty(inputUnit, kAudioUnitProperty_ShouldAllocateBuffer, kAudioUnitScope_Output, 1, &allocBuffer, sizeof(allocBuffer)), "AudioUnitSetProperty(kAudioUnitProperty_ShouldAllocateBuffer)"))
         return NO;
-    }
+    
+    if(!CheckStatus(AudioUnitInitialize(inputUnit), "AudioUnitInitialize"))
+        return NO;
+    
+    if(!CheckStatus(AudioOutputUnitStart(inputUnit), "AudioOutputUnitStart"))
+        return NO;
     
     //  Set up a timer source to pull audio through the system and submit it to the vocoder.
     //  XXX this probably wants its own high priority serial queue to make sure we don't run more than one at once.
@@ -347,7 +385,6 @@ static OSStatus recordThreadCallback (void *userData, AudioUnitRenderActionFlags
         return;
     });
     
-    // dispatch_resume(inputAudioSource);
     return YES;
 }
 
