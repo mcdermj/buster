@@ -60,6 +60,7 @@ static BOOL receiving = NO;
 @property (readonly) TPCircularBuffer *recordBuffer;
 @property (readonly) AudioStreamBasicDescription *inputFormat;
 
++(NSArray *)enumerateDevices:(AudioObjectPropertyScope)scope;
 @end
 
 static OSStatus playbackThreadCallback (void *userData, AudioUnitRenderActionFlags *actionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData) {
@@ -349,6 +350,118 @@ static OSStatus recordThreadCallback (void *userData, AudioUnitRenderActionFlags
     
     // dispatch_resume(inputAudioSource);
     return YES;
+}
+
++(NSArray *)enumerateInputDevices {
+    return [self enumerateDevices:kAudioObjectPropertyScopeInput];
+}
+
++(NSArray *)enumerateOutputDevices {
+    return [self enumerateDevices:kAudioObjectPropertyScopeOutput];
+}
+
++(void)enumerateDevicesWithBlock:(void(^)(AudioDeviceID))enumeratorBlock {
+    OSStatus status;
+    
+    AudioObjectPropertyAddress propertyAddress = {
+        kAudioHardwarePropertyDevices,
+        kAudioObjectPropertyScopeGlobal,
+        kAudioObjectPropertyElementMaster
+    };
+    
+    UInt32 dataSize = 0;
+    status = AudioObjectGetPropertyDataSize(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &dataSize);
+    if(status != kAudioHardwareNoError) {
+        NSLog(@"AudioObjectGetPropertyDataSize (kAudioHardwarePropertyDevices) failed");
+        return;
+    }
+    
+    UInt32 deviceCount = (UInt32)(dataSize / sizeof(AudioDeviceID));
+    AudioDeviceID *audioDevices = (AudioDeviceID *) malloc(dataSize);
+    if(audioDevices == NULL) {
+        NSLog(@"Unable to allocate memory");
+        return;
+    }
+    
+    status = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &dataSize, audioDevices);
+    if(status != kAudioHardwareNoError) {
+        NSLog(@"AudioObjectGetPropertyData (kAudioHardwarePropertyDevices) failed");
+        return;
+    }
+    
+    for(UInt32 i = 0; i < deviceCount; ++i) {
+        enumeratorBlock(audioDevices[i]);
+    }
+    
+    free(audioDevices);
+}
+
++(NSArray *)enumerateDevices:(AudioObjectPropertyScope)scope {
+
+    NSMutableArray *devices = [NSMutableArray arrayWithCapacity:1];
+    
+    NSParameterAssert(scope == kAudioObjectPropertyScopeOutput ||
+                      scope == kAudioObjectPropertyScopeInput);
+    
+    [DMYAudioHandler enumerateDevicesWithBlock:^(AudioDeviceID deviceId){
+        NSString *deviceName;
+        NSString *deviceUID;
+        OSStatus status;
+        
+        UInt32 dataSize = sizeof(deviceName);
+        AudioObjectPropertyAddress propertyAddress = {
+            kAudioDevicePropertyDeviceNameCFString,
+            kAudioObjectPropertyScopeGlobal,
+            kAudioObjectPropertyElementMaster
+        };
+
+        status = AudioObjectGetPropertyData(deviceId, &propertyAddress, 0, NULL, &dataSize, &deviceName);
+        if(status != kAudioHardwareNoError) {
+            NSLog(@"AudioObjectGetPropertyData (kAudioDevicePropertyDeviceNameCFString) failed");
+            return;
+        }
+        
+        dataSize = sizeof(deviceUID);
+        propertyAddress.mSelector = kAudioDevicePropertyDeviceUID;
+        status = AudioObjectGetPropertyData(deviceId, &propertyAddress, 0, NULL, &dataSize, &deviceUID);
+        if(status != kAudioHardwareNoError) {
+            NSLog(@"AudioObjectGetPropertyData (kAudioDevicePropertyDeviceNameCFString) failed");
+            return;
+        }
+    
+        //  We have to see if there are any audio buffers for the appropriate scope to see if the device supports
+        //  that scope.
+        propertyAddress.mScope = scope;
+        dataSize = 0;
+        propertyAddress.mSelector = kAudioDevicePropertyStreamConfiguration;
+        status = AudioObjectGetPropertyDataSize(deviceId, &propertyAddress, 0, NULL, &dataSize);
+        if(status != kAudioHardwareNoError) {
+            NSLog(@"AudioObjectGetPropertyDataSize (kAudioDevicePropertyStreamConfiguration) failed");
+            return;
+        }
+    
+        AudioBufferList *bufferList = (AudioBufferList *) malloc(dataSize);
+        if(bufferList == NULL) {
+            NSLog(@"Unable to malloc memory");
+            return;
+        }
+    
+        status = AudioObjectGetPropertyData(deviceId, &propertyAddress, 0, NULL, &dataSize, bufferList);
+        if(status != kAudioHardwareNoError || bufferList->mNumberBuffers == 0) {
+            if(status != kAudioHardwareNoError)
+                NSLog(@"AudioObjectGetPropertyData (kAudioDevicePropertyStreamConfiguration) failed");
+            free(bufferList);
+            bufferList = NULL;
+            return;
+        }
+    
+        free(bufferList);
+        bufferList = NULL;
+    
+        [devices addObject: @{ @"name":deviceName, @"uid":deviceUID, @"id":[NSNumber numberWithInt:deviceId] }];
+    }];
+
+    return [NSArray arrayWithArray:devices];
 }
 
 

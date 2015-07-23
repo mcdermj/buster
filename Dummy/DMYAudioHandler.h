@@ -26,6 +26,9 @@
 -(void) queueAudioData:(void *)audioData withLength:(uint32)length;
 -(BOOL) start;
 
++(NSArray *)enumerateInputDevices;
++(NSArray *)enumerateOutputDevices;
+
 @property id<DMYVocoderProtocol> vocoder;
 @property BOOL xmit;
 

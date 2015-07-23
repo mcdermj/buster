@@ -47,7 +47,6 @@
 
 - (void)viewDidAppear {
     //  Initialize the port list
-    // DMYAppDelegate *appDelegate = [NSApp delegate];
 
     [serialPortPopup removeAllItems];
     [serialPortPopup addItemsWithTitles:[DMYDV3KVocoder ports]];
