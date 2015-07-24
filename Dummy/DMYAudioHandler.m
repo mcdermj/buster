@@ -140,6 +140,7 @@ static OSStatus audioConverterCallback(AudioConverterRef inAudioConverter, UInt3
 
 @synthesize vocoder;
 @synthesize xmit;
+@synthesize inputDevice;
 
 - (id) init {
     self = [super init];
@@ -166,6 +167,21 @@ static OSStatus audioConverterCallback(AudioConverterRef inAudioConverter, UInt3
 - (AudioStreamBasicDescription *) inputFormat {
     return &inputFormat;
 }
+
+
+- (AudioDeviceID) inputDevice {
+    return inputDevice;
+}
+
+- (void) setInputDevice:(AudioDeviceID)_inputDevice {
+    if(inputDevice == _inputDevice)
+        return;
+    
+    inputDevice = _inputDevice;
+    // [self stop];
+    [self start];
+}
+
 
 - (void) setXmit:(BOOL)_xmit {
     if(_xmit && inputConverter)

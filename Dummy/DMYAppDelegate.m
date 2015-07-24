@@ -38,8 +38,7 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
     
-    NSArray *inputDevices = [DMYAudioHandler enumerateInputDevices];
-    NSLog(@"Input Devices = %@", inputDevices);
+    // NSArray *inputDevices = [DMYAudioHandler enumerateInputDevices];
     
     NSURL *defaultPrefsFile = [[NSBundle mainBundle]
                                URLForResource:@"DefaultPreferences" withExtension:@"plist"];

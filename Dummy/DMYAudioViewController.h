@@ -1,7 +1,7 @@
 //
-//  DMYAudioHandler.h
+//  DMYAudioViewController.h
 //
-//  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
+// Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -17,23 +17,13 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
 
-#import "DMYVocoderProtocol.h"
+@interface DMYAudioViewController : NSViewController
+@property (weak) IBOutlet NSPopUpButton *outputDeviceMenu;
+@property (weak) IBOutlet NSPopUpButton *inputDeviceMenu;
 
-#import <AudioToolbox/AudioToolbox.h>
-
-@interface DMYAudioHandler : NSObject
-
--(void) queueAudioData:(void *)audioData withLength:(uint32)length;
--(BOOL) start;
-
-+(NSArray *)enumerateInputDevices;
-+(NSArray *)enumerateOutputDevices;
-
-@property id<DMYVocoderProtocol> vocoder;
-@property AudioDeviceID inputDevice;
-@property AudioDeviceID outputDevice;
-@property BOOL xmit;
+@property NSInteger selectedInput;
+@property NSInteger selectedOutput;
 
 @end
