@@ -149,6 +149,7 @@ static OSStatus audioConverterCallback(AudioConverterRef inAudioConverter, UInt3
         TPCircularBufferInit(&recordBuffer, 16384);
         
         xmit = NO;
+        inputConverter = NULL;
     }
     
     return self;
@@ -167,6 +168,12 @@ static OSStatus audioConverterCallback(AudioConverterRef inAudioConverter, UInt3
 }
 
 - (void) setXmit:(BOOL)_xmit {
+    if(_xmit && inputConverter)
+        AudioConverterReset(inputConverter);
+    
+    if(_xmit)
+        TPCircularBufferClear(&recordBuffer);
+    
     xmit = _xmit;
     
     if(xmit)
