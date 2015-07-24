@@ -470,8 +470,8 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     
     portTermios.c_lflag    &= ~(ECHO | ECHOE | ICANON | IEXTEN | ISIG);
     portTermios.c_iflag    &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON | IXOFF | IXANY);
-    portTermios.c_cflag    &= ~(CSIZE | CSTOPB | PARENB | CRTSCTS);
-    portTermios.c_cflag    |= CS8;
+    portTermios.c_cflag    &= ~(CSIZE | CSTOPB | PARENB);
+    portTermios.c_cflag    |= CS8 | CRTSCTS;
     portTermios.c_oflag    &= ~(OPOST);
     portTermios.c_cc[VMIN] = 0;
     portTermios.c_cc[VTIME] = 5;
