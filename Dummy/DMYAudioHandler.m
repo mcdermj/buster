@@ -114,15 +114,23 @@ static OSStatus recordThreadCallback (void *userData, AudioUnitRenderActionFlags
 
 static OSStatus audioConverterCallback(AudioConverterRef inAudioConverter, UInt32 *ioNumberDataPackets, AudioBufferList *ioData, AudioStreamPacketDescription **outDataPacketDescription, void *inUserData) {
     DMYAudioHandler *audioHandler = (__bridge DMYAudioHandler *) inUserData;
-    UInt32 numSamples = *ioNumberDataPackets;
     AudioTimeStamp timestamp;
     
     ioData->mNumberBuffers = 1;
     ioData->mBuffers[0].mNumberChannels = 1;
-    ioData->mBuffers[0].mDataByteSize = numSamples * sizeof(short);
+    ioData->mBuffers[0].mDataByteSize = *ioNumberDataPackets * sizeof(short);
     ioData->mBuffers[0].mData = calloc(1, ioData->mBuffers[0].mDataByteSize);
     
-    TPCircularBufferDequeueBufferListFrames(audioHandler.recordBuffer, &numSamples, ioData, &timestamp, audioHandler.inputFormat);
+    //NSLog(@"Being called for %d samples", *ioNumberDataPackets);
+    
+    TPCircularBufferDequeueBufferListFrames(audioHandler.recordBuffer, ioNumberDataPackets, ioData, &timestamp, audioHandler.inputFormat);
+    
+    ioData->mBuffers[0].mDataByteSize = *ioNumberDataPackets * sizeof(short);
+    if(*ioNumberDataPackets == 0)
+        return kAudioConverterErr_UnspecifiedError;
+    
+    //NSLog(@"Got %d samples", *ioNumberDataPackets);
+    //NSLog(@"Buffers are %d large", ioData->mBuffers[0].mDataByteSize);
     
     return noErr;
 }
@@ -265,7 +273,6 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
 
 - (BOOL) start {
     AudioComponent outputComponent;
-    
     
     //  Set up the CoreAudio run loop and find the Output HAL
     CFRunLoopRef runLoop = NULL;
@@ -441,8 +448,12 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
             bufferList.mBuffers[0].mDataByteSize = numSamples * sizeof(short);
             bufferList.mBuffers[0].mData = calloc(1, bufferList.mBuffers[0].mDataByteSize);
             
-            if(!CheckStatus(AudioConverterFillComplexBuffer(inputConverter, audioConverterCallback, (__bridge void *)(self), &numSamples, &bufferList, NULL), "AudioConverterFillComplexBuffer"))
+            OSStatus status = AudioConverterFillComplexBuffer(inputConverter, audioConverterCallback, (__bridge void *)(self), &numSamples, &bufferList, NULL);
+            
+            if(status != noErr && status != kAudioConverterErr_UnspecifiedError)
                 return;
+            
+            // NSLog(@"Got %d samples from the AudioConverter", numSamples);
             
             if(!xmit && numSamples == 0) {
                 last = YES;
