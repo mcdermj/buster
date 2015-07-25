@@ -38,8 +38,6 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
     
-    // NSArray *inputDevices = [DMYAudioHandler enumerateInputDevices];
-    
     NSURL *defaultPrefsFile = [[NSBundle mainBundle]
                                URLForResource:@"DefaultPreferences" withExtension:@"plist"];
     NSDictionary *defaultPrefs =
@@ -77,12 +75,50 @@
     audio.vocoder = vocoder;
     vocoder.audio = audio;
     
+    NSString *inputUid = [[NSUserDefaults standardUserDefaults] stringForKey:@"inputAudioDevice"];
+    if(!inputUid) {
+        audio.inputDevice = audio.defaultInputDevice;
+    } else {
+        for(NSDictionary *entry in [DMYAudioHandler enumerateInputDevices])
+            if([entry[@"uid"] isEqualToString:inputUid])
+                audio.inputDevice = ((NSNumber *)entry[@"id"]).intValue;
+     }
+    
+    NSString *outputUid = [[NSUserDefaults standardUserDefaults] stringForKey:@"outputAudioDevice"];
+    if(!outputUid) {
+        audio.outputDevice = audio.defaultOutputDevice;
+    } else {
+        for(NSDictionary *entry in [DMYAudioHandler enumerateOutputDevices])
+            if([entry[@"uid"] isEqualToString:outputUid])
+                audio.outputDevice = ((NSNumber *)entry[@"id"]).intValue;
+    }
+
+    
     [[NSNotificationCenter defaultCenter] addObserverForName: DMYVocoderDeviceChanged
                                                       object: nil
                                                        queue: [NSOperationQueue mainQueue]
                                                   usingBlock: ^(NSNotification *notification) {
                                                         [[NSUserDefaults standardUserDefaults] setObject:vocoder.serialPort forKey:@"dv3kSerialPort"];
                                                   }];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName: DMYAudioDeviceChanged
+                                                      object: nil
+                                                       queue: [NSOperationQueue mainQueue]
+                                                  usingBlock: ^(NSNotification *notification) {
+                                                      for(NSDictionary *entry in [DMYAudioHandler enumerateInputDevices]) {
+                                                          if(((NSNumber *)entry[@"id"]).intValue == audio.inputDevice) {
+                                                              [[NSUserDefaults standardUserDefaults] setObject:entry[@"uid"] forKey:@"inputAudioDevice"];
+                                                          }
+                                                      }
+                                                      
+                                                      for(NSDictionary *entry in [DMYAudioHandler enumerateOutputDevices]) {
+                                                          if(((NSNumber *)entry[@"id"]).intValue == audio.outputDevice) {
+                                                              [[NSUserDefaults standardUserDefaults] setObject:entry[@"uid"] forKey:@"outputAudioDevice"];
+                                                          }
+                                                      }
+                                                  }];
+
+
     
     [audio start];
     if(![vocoder start]){

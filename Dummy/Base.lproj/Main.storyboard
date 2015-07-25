@@ -1093,6 +1093,9 @@
                                         </items>
                                     </menu>
                                 </popUpButtonCell>
+                                <connections>
+                                    <binding destination="PTa-5A-wC9" name="selectedTag" keyPath="self.selectedOutput" id="44G-QO-L0h"/>
+                                </connections>
                             </popUpButton>
                             <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TXG-GC-K3t">
                                 <rect key="frame" x="97" y="17" width="312" height="26"/>
@@ -1106,10 +1109,10 @@
                                             <menuItem title="Item 3" id="Wzx-d8-LWt"/>
                                         </items>
                                     </menu>
-                                    <connections>
-                                        <binding destination="PTa-5A-wC9" name="selectedTag" keyPath="self.selectedTag" id="Q2n-qC-s8R"/>
-                                    </connections>
                                 </popUpButtonCell>
+                                <connections>
+                                    <binding destination="PTa-5A-wC9" name="selectedTag" keyPath="self.selectedInput" id="NpK-jS-rK7"/>
+                                </connections>
                             </popUpButton>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h5x-4o-35e">
                                 <rect key="frame" x="46" y="51" width="47" height="17"/>
@@ -1127,6 +1130,7 @@
                     </connections>
                 </viewController>
                 <customObject id="B0j-BN-CLv" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <userDefaultsController id="daA-mL-Cd4"/>
             </objects>
             <point key="canvasLocation" x="1249" y="564"/>
         </scene>

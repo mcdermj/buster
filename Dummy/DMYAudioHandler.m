@@ -22,6 +22,9 @@
 #include <AudioUnit/AudioUnit.h>
 #include <AudioToolbox/AudioToolbox.h>
 
+#import <IOKit/usb/IOUSBLib.h>
+#import <IOKit/audio/IOAudioLib.h>
+
 #import "TPCircularBuffer.h"
 #import "TPCircularBuffer+AudioBufferList.h"
 #import "DMYGatewayHandler.h"
@@ -47,6 +50,8 @@ static const AudioStreamBasicDescription outputFormat  = {
 
 static BOOL receiving = NO;
 
+NSString * const DMYAudioDeviceChanged = @"DMYAudioDeviceChanged";
+
 static inline BOOL CheckStatus(OSStatus error, const char *operation);
 
 @interface DMYAudioHandler () {
@@ -57,6 +62,11 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation);
     AudioStreamBasicDescription inputFormat;
     dispatch_source_t inputAudioSource;
     AudioConverterRef inputConverter;
+    
+    enum {
+        AUDIO_STATUS_STARTED,
+        AUDIO_STATUS_STOPPED
+    } status;
 }
 
 @property (readonly) AudioUnit inputUnit;
@@ -121,16 +131,29 @@ static OSStatus audioConverterCallback(AudioConverterRef inAudioConverter, UInt3
     ioData->mBuffers[0].mDataByteSize = *ioNumberDataPackets * sizeof(short);
     ioData->mBuffers[0].mData = calloc(1, ioData->mBuffers[0].mDataByteSize);
     
-    //NSLog(@"Being called for %d samples", *ioNumberDataPackets);
-    
     TPCircularBufferDequeueBufferListFrames(audioHandler.recordBuffer, ioNumberDataPackets, ioData, &timestamp, audioHandler.inputFormat);
     
     ioData->mBuffers[0].mDataByteSize = *ioNumberDataPackets * sizeof(short);
     if(*ioNumberDataPackets == 0)
         return kAudioConverterErr_UnspecifiedError;
     
-    //NSLog(@"Got %d samples", *ioNumberDataPackets);
-    //NSLog(@"Buffers are %d large", ioData->mBuffers[0].mDataByteSize);
+    return noErr;
+}
+
+static OSStatus AudioDevicesChanged(AudioObjectID inObjectID, UInt32 inNumberAddress, const AudioObjectPropertyAddress inAddresses[], void *inClientData) {
+    DMYAudioHandler *handler = (__bridge DMYAudioHandler *) inClientData;
+    AudioDeviceID inputDevice = handler.inputDevice;
+    AudioDeviceID outputDevice = handler.outputDevice;
+    
+    if(NSNotFound == [[DMYAudioHandler enumerateInputDevices] indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop){ return ((NSNumber *)((NSDictionary *)obj)[@"id"]).intValue == handler.inputDevice; }])
+        inputDevice = handler.defaultInputDevice;
+    
+    if(NSNotFound == [[DMYAudioHandler enumerateOutputDevices] indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop){ return ((NSNumber *)((NSDictionary *)obj)[@"id"]).intValue == handler.outputDevice; }])
+        outputDevice = handler.defaultOutputDevice;
+    
+    [handler setInputDevice:inputDevice andOutputDevice:outputDevice];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:DMYAudioDeviceChanged object: nil];
     
     return noErr;
 }
@@ -141,6 +164,7 @@ static OSStatus audioConverterCallback(AudioConverterRef inAudioConverter, UInt3
 @synthesize vocoder;
 @synthesize xmit;
 @synthesize inputDevice;
+@synthesize outputDevice;
 
 - (id) init {
     self = [super init];
@@ -151,6 +175,21 @@ static OSStatus audioConverterCallback(AudioConverterRef inAudioConverter, UInt3
         
         xmit = NO;
         inputConverter = NULL;
+        inputUnit = NULL;
+        outputUnit = NULL;
+        
+        status = AUDIO_STATUS_STOPPED;
+        
+        inputDevice = 0;
+        outputDevice = 0;
+        
+        AudioObjectPropertyAddress propertyAddress = {
+            kAudioHardwarePropertyDevices,
+            kAudioObjectPropertyScopeGlobal,
+            kAudioObjectPropertyElementMaster
+        };
+        
+        AudioObjectAddPropertyListener(kAudioObjectSystemObject, &propertyAddress, AudioDevicesChanged, (__bridge void *) self);
     }
     
     return self;
@@ -178,8 +217,40 @@ static OSStatus audioConverterCallback(AudioConverterRef inAudioConverter, UInt3
         return;
     
     inputDevice = _inputDevice;
-    // [self stop];
-    [self start];
+    
+    if(status == AUDIO_STATUS_STARTED) {
+        [self stop];
+        [self start];
+    }
+}
+
+- (AudioDeviceID) outputDevice {
+    return outputDevice;
+}
+
+- (void) setOutputDevice:(AudioDeviceID)_outputDevice {
+    if(outputDevice == _outputDevice)
+        return;
+    
+    outputDevice = _outputDevice;
+    
+    if(status == AUDIO_STATUS_STARTED) {
+        [self stop];
+        [self start];
+    }
+}
+
+-(void)setInputDevice:(AudioDeviceID)_inputDevice andOutputDevice:(AudioDeviceID)_outputDevice {
+    if(inputDevice == _inputDevice && outputDevice == _outputDevice)
+        return;
+    
+    inputDevice = _inputDevice;
+    outputDevice = _outputDevice;
+    
+    if(status == AUDIO_STATUS_STARTED) {
+        [self stop];
+        [self start];
+    }
 }
 
 
@@ -199,6 +270,29 @@ static OSStatus audioConverterCallback(AudioConverterRef inAudioConverter, UInt3
 - (BOOL) xmit {
     return xmit;
 }
+
+- (AudioDeviceID) defaultOutputDevice {
+    AudioObjectPropertyAddress propertyAddress = { kAudioHardwarePropertyDefaultOutputDevice, kAudioObjectPropertyScopeGlobal, kAudioObjectPropertyElementMaster };
+    AudioDeviceID device;
+    
+    UInt32 deviceSize = sizeof(device);
+    if(!CheckStatus(AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &deviceSize, &device), "AudioUnitGetPropertyData(kAudioHardwarePropertyDefaultOutputDevice)"))
+        return 0;
+    
+    return device;
+}
+
+- (AudioDeviceID) defaultInputDevice {
+    AudioObjectPropertyAddress propertyAddress = { kAudioHardwarePropertyDefaultInputDevice, kAudioObjectPropertyScopeGlobal, kAudioObjectPropertyElementMaster };
+    AudioDeviceID device;
+    
+    UInt32 deviceSize = sizeof(device);
+    if(!CheckStatus(AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &deviceSize, &device), "AudioUnitGetPropertyData(kAudioHardwarePropertyDefaultInputDevice)"))
+        return 0;
+    
+    return device;
+}
+
 
 -(void) queueAudioData:(void *)audioData withLength:(uint32)length {
     if(TPCircularBufferProduceBytes(&playbackBuffer, audioData, length) == false) {
@@ -297,6 +391,9 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
 - (BOOL) start {
     AudioComponent outputComponent;
     
+    if(status != AUDIO_STATUS_STOPPED)
+        return NO;
+    
     //  Set up the CoreAudio run loop and find the Output HAL
     CFRunLoopRef runLoop = NULL;
     AudioObjectPropertyAddress theAddress = { kAudioHardwarePropertyRunLoop, kAudioObjectPropertyScopeGlobal, kAudioObjectPropertyElementMaster };
@@ -307,6 +404,18 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
     //  Set up the output unit for speaker output
     if(!CheckStatus(AudioComponentInstanceNew(outputComponent, &outputUnit), "AudioComponentInstanceNew"))
         return NO;
+    
+    AudioObjectPropertyAddress propertyAddress = { kAudioHardwarePropertyDefaultOutputDevice, kAudioObjectPropertyScopeGlobal, kAudioObjectPropertyElementMaster };
+    
+    if(outputDevice == 0) {
+        UInt32 defaultDeviceSize = sizeof(outputDevice);
+        if(!CheckStatus(AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &defaultDeviceSize, &outputDevice), "AudioUnitGetPropertyData(kAudioHardwarePropertyDefaultInputDevice)"))
+            return NO;
+    }
+    
+    if(!CheckStatus(AudioUnitSetProperty(outputUnit, kAudioOutputUnitProperty_CurrentDevice, kAudioUnitScope_Global, 0, &outputDevice, sizeof(AudioDeviceID)), "AudioUnitSetProperty(kAudioOutputUnitProperty_CurrentDevice)"))
+        return NO;
+
     
     if(!CheckStatus(AudioUnitSetProperty(outputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &outputFormat, sizeof(outputFormat)), "AudioUnitSetProperty(kAudioUnitPropertyStreamFormat)"))
         return NO;
@@ -352,14 +461,16 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
     if(!CheckStatus(AudioUnitSetProperty(inputUnit, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Output, 0, &enable, sizeof(enable)), "AudioUnitSetProperty(kAudioOutputUnitProperty_EnableIO"))
         return NO;
     
-    AudioDeviceID defaultDevice;
-    UInt32 defaultDeviceSize = sizeof(defaultDevice);
-    AudioObjectPropertyAddress defaultDeviceAddress = { kAudioHardwarePropertyDefaultInputDevice, kAudioObjectPropertyScopeGlobal, kAudioObjectPropertyElementMaster };
+    // propertyAddress = { kAudioHardwarePropertyDefaultInputDevice, kAudioObjectPropertyScopeGlobal, kAudioObjectPropertyElementMaster };
+    propertyAddress.mSelector = kAudioHardwarePropertyDefaultInputDevice;
     
-    if(!CheckStatus(AudioObjectGetPropertyData(kAudioObjectSystemObject, &defaultDeviceAddress, 0, NULL, &defaultDeviceSize, &defaultDevice), "AudioUnitGetPropertyData(kAudioHardwarePropertyDefaultInputDevice)"))
+    if(inputDevice == 0) {
+        UInt32 defaultDeviceSize = sizeof(inputDevice);
+        if(!CheckStatus(AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &defaultDeviceSize, &inputDevice), "AudioUnitGetPropertyData(kAudioHardwarePropertyDefaultInputDevice)"))
         return NO;
+    }
     
-    if(!CheckStatus(AudioUnitSetProperty(inputUnit, kAudioOutputUnitProperty_CurrentDevice, kAudioUnitScope_Global, 0, &defaultDevice, sizeof(AudioDeviceID)), "AudioUnitSetProperty(kAudioOutputUnitProperty_CurrentDevice)"))
+    if(!CheckStatus(AudioUnitSetProperty(inputUnit, kAudioOutputUnitProperty_CurrentDevice, kAudioUnitScope_Global, 0, &inputDevice, sizeof(AudioDeviceID)), "AudioUnitSetProperty(kAudioOutputUnitProperty_CurrentDevice)"))
         return NO;
     
     renderCallback.inputProc = recordThreadCallback;
@@ -375,14 +486,14 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
     //  If we have to resample, we'd prefer to set the hardware sample rate to 48k if possible because it will make the
     //  resampling rate integral rather than fractional.
     
-    defaultDeviceAddress.mSelector = kAudioDevicePropertyAvailableNominalSampleRates;
+    propertyAddress.mSelector = kAudioDevicePropertyAvailableNominalSampleRates;
     UInt32 sampleRatesSize = 0;
-    if(!CheckStatus(AudioObjectGetPropertyDataSize(defaultDevice, &defaultDeviceAddress, 0, NULL, &sampleRatesSize), "AudioObjectGetPropertyDataSize(kAudioDevicePropertyAvailableNominalSampleRates"))
+    if(!CheckStatus(AudioObjectGetPropertyDataSize(inputDevice, &propertyAddress, 0, NULL, &sampleRatesSize), "AudioObjectGetPropertyDataSize(kAudioDevicePropertyAvailableNominalSampleRates"))
         return NO;
     
     AudioValueRange *sampleRateRanges = (AudioValueRange *) malloc(sampleRatesSize);
     
-    if(!CheckStatus(AudioObjectGetPropertyData(defaultDevice, &defaultDeviceAddress, 0, NULL, &sampleRatesSize, sampleRateRanges), "AudioObjectGetPropertyData(kAudioDevicePropertyAvailableNominalSampleRates"))
+    if(!CheckStatus(AudioObjectGetPropertyData(inputDevice, &propertyAddress, 0, NULL, &sampleRatesSize, sampleRateRanges), "AudioObjectGetPropertyData(kAudioDevicePropertyAvailableNominalSampleRates"))
         return NO;
     
     double hardwareSampleRate = 0.0;
@@ -396,18 +507,18 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
     
     NSLog(@"We want hardware sample rate to be %f\n", hardwareSampleRate);
     if(hardwareSampleRate != 0.0) {
-        defaultDeviceAddress.mSelector = kAudioDevicePropertyNominalSampleRate;
+        propertyAddress.mSelector = kAudioDevicePropertyNominalSampleRate;
         AudioValueRange hardwareSampleRateRange = {
             .mMinimum = hardwareSampleRate,
             .mMaximum = hardwareSampleRate
         };
-        if(!CheckStatus(AudioObjectSetPropertyData(defaultDevice, &defaultDeviceAddress, 0, NULL, sizeof(hardwareSampleRateRange), &hardwareSampleRateRange), "AudioObjectSetPropertyData(kAudioDevicePropertyNominalSampleRate)"))
+        if(!CheckStatus(AudioObjectSetPropertyData(inputDevice, &propertyAddress, 0, NULL, sizeof(hardwareSampleRateRange), &hardwareSampleRateRange), "AudioObjectSetPropertyData(kAudioDevicePropertyNominalSampleRate)"))
             return NO;
     } else {
         AudioValueRange hardwareSampleRateRange;
         UInt32 rangeSize = sizeof(hardwareSampleRateRange);
-        defaultDeviceAddress.mSelector = kAudioDevicePropertyNominalSampleRate;
-        if(!CheckStatus(AudioObjectGetPropertyData(defaultDevice, &defaultDeviceAddress, 0, NULL, &rangeSize, &hardwareSampleRateRange), "AudioObjectGetPropertyData(kAudioDevicePropertyNominalSampleRate"))
+        propertyAddress.mSelector = kAudioDevicePropertyNominalSampleRate;
+        if(!CheckStatus(AudioObjectGetPropertyData(inputDevice, &propertyAddress, 0, NULL, &rangeSize, &hardwareSampleRateRange), "AudioObjectGetPropertyData(kAudioDevicePropertyNominalSampleRate"))
             return NO;
         
         hardwareSampleRate = hardwareSampleRateRange.mMinimum;
@@ -471,9 +582,9 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
             bufferList.mBuffers[0].mDataByteSize = numSamples * sizeof(short);
             bufferList.mBuffers[0].mData = calloc(1, bufferList.mBuffers[0].mDataByteSize);
             
-            OSStatus status = AudioConverterFillComplexBuffer(inputConverter, audioConverterCallback, (__bridge void *)(self), &numSamples, &bufferList, NULL);
+            OSStatus error = AudioConverterFillComplexBuffer(inputConverter, audioConverterCallback, (__bridge void *)(self), &numSamples, &bufferList, NULL);
             
-            if(status != noErr && status != kAudioConverterErr_UnspecifiedError)
+            if(error != noErr && error != kAudioConverterErr_UnspecifiedError)
                 return;
             
             // NSLog(@"Got %d samples from the AudioConverter", numSamples);
@@ -498,7 +609,42 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
     
     NSLog(@"Audio system set up\n");
     
+    status = AUDIO_STATUS_STARTED;
+    
     return YES;
+}
+
+-(void)stop {
+    if(status != AUDIO_STATUS_STARTED)
+        return;
+    
+    NSLog(@"Stopping audio");
+    
+    dispatch_suspend(inputAudioSource);
+    dispatch_source_cancel(inputAudioSource);
+    
+    if(inputConverter) {
+        AudioConverterDispose(inputConverter);
+        inputConverter = NULL;
+    }
+    
+    AudioOutputUnitStop(inputUnit);
+    AudioOutputUnitStop(outputUnit);
+    AudioUnitUninitialize(inputUnit);
+    AudioUnitUninitialize(outputUnit);
+    AudioComponentInstanceDispose(inputUnit);
+    AudioComponentInstanceDispose(outputUnit);
+    inputUnit = NULL;
+    outputUnit = NULL;
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:DMYNetworkStreamStart
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:DMYNetworkStreamEnd
+                                                          object:nil];
+    
+    status = AUDIO_STATUS_STOPPED;
 }
 
 +(NSArray *)enumerateInputDevices {
@@ -607,11 +753,13 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
         free(bufferList);
         bufferList = NULL;
     
-        [devices addObject: @{ @"name":deviceName, @"uid":deviceUID, @"id":[NSNumber numberWithInt:deviceId] }];
+        [devices addObject: @{ @"description":deviceName, @"uid":deviceUID, @"id":[NSNumber numberWithInt:deviceId] }];
     }];
 
     return [NSArray arrayWithArray:devices];
 }
 
++ (void) initialize {
+}
 
 @end
