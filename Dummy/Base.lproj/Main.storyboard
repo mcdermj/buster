@@ -168,13 +168,14 @@
             </objects>
             <point key="canvasLocation" x="36" y="333"/>
         </scene>
-        <!--Tab View Controller-->
+        <!--Preferences-->
         <scene sceneID="lmm-p7-N0X">
             <objects>
-                <tabViewController tabStyle="toolbar" id="aw7-oo-70e" sceneMemberID="viewController">
+                <tabViewController title="Preferences" tabStyle="toolbar" id="aw7-oo-70e" sceneMemberID="viewController">
                     <tabViewItems>
-                        <tabViewItem identifier="" image="NSPreferencesGeneral" id="PeP-cn-9Ib"/>
-                        <tabViewItem identifier="" image="NSUser" id="Vg5-7j-s1k"/>
+                        <tabViewItem label="General" identifier="" image="NSPreferencesGeneral" id="PeP-cn-9Ib"/>
+                        <tabViewItem label="Vocoder" identifier="" image="Chip" id="Vg5-7j-s1k"/>
+                        <tabViewItem label="Audio" image="Microphone" id="dWg-a5-ZPJ"/>
                     </tabViewItems>
                     <tabView key="tabView" type="noTabsNoBorder" id="ZBZ-fl-NSf">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
@@ -185,12 +186,13 @@
                     <connections>
                         <segue destination="qq2-Ge-0JC" kind="relationship" relationship="tabItems" id="Bxx-mc-3JU"/>
                         <segue destination="b3d-Gl-b6s" kind="relationship" relationship="tabItems" id="5b2-ET-XDZ"/>
+                        <segue destination="PTa-5A-wC9" kind="relationship" relationship="tabItems" id="Hgn-OI-jEO"/>
                     </connections>
                 </tabViewController>
                 <customObject id="FKA-t3-fup" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <userDefaultsController id="yja-xk-sQw"/>
             </objects>
-            <point key="canvasLocation" x="669" y="189"/>
+            <point key="canvasLocation" x="671" y="189"/>
         </scene>
         <!--General-->
         <scene sceneID="plL-MQ-FZW">
@@ -1060,28 +1062,87 @@
                 </viewController>
                 <customObject id="ERb-Ut-dBH" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="515" y="659"/>
         </scene>
-        <!--View Controller-->
+        <!--Audio-->
         <scene sceneID="elY-lg-nZP">
             <objects>
-                <viewController id="PTa-5A-wC9" sceneMemberID="viewController">
+                <viewController title="Audio" id="PTa-5A-wC9" customClass="DMYAudioViewController" sceneMemberID="viewController">
                     <view key="view" id="XSw-uU-Ge2">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <rect key="frame" x="0.0" y="0.0" width="420" height="90"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TRZ-HT-6PH">
+                                <rect key="frame" x="57" y="20" width="36" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Input" id="vtg-eW-9ai">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mVy-ci-K0O">
+                                <rect key="frame" x="97" y="48" width="312" height="26"/>
+                                <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="wEg-sf-7sk" id="yT2-5W-4CC">
+                                    <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="menu"/>
+                                    <menu key="menu" id="STx-qH-LV6">
+                                        <items>
+                                            <menuItem title="Item 1" state="on" id="wEg-sf-7sk"/>
+                                            <menuItem title="Item 2" id="Sao-h8-4FT"/>
+                                            <menuItem title="Item 3" id="Lki-6A-HWX"/>
+                                        </items>
+                                    </menu>
+                                </popUpButtonCell>
+                                <connections>
+                                    <binding destination="PTa-5A-wC9" name="selectedTag" keyPath="self.selectedOutput" id="44G-QO-L0h"/>
+                                </connections>
+                            </popUpButton>
+                            <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TXG-GC-K3t">
+                                <rect key="frame" x="97" y="17" width="312" height="26"/>
+                                <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="Ai7-uP-6ma" id="J6T-a4-Ies">
+                                    <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="menu"/>
+                                    <menu key="menu" id="bjO-NR-U5E">
+                                        <items>
+                                            <menuItem title="Item 1" state="on" id="Ai7-uP-6ma"/>
+                                            <menuItem title="Item 2" id="IAp-Xk-3p1"/>
+                                            <menuItem title="Item 3" id="Wzx-d8-LWt"/>
+                                        </items>
+                                    </menu>
+                                </popUpButtonCell>
+                                <connections>
+                                    <binding destination="PTa-5A-wC9" name="selectedTag" keyPath="self.selectedInput" id="NpK-jS-rK7"/>
+                                </connections>
+                            </popUpButton>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h5x-4o-35e">
+                                <rect key="frame" x="46" y="51" width="47" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Output" id="TqM-9f-QPD">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
                     </view>
+                    <connections>
+                        <outlet property="inputDeviceMenu" destination="TXG-GC-K3t" id="KRn-Nt-erf"/>
+                        <outlet property="outputDeviceMenu" destination="mVy-ci-K0O" id="JA7-dP-e26"/>
+                    </connections>
                 </viewController>
                 <customObject id="B0j-BN-CLv" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <userDefaultsController id="daA-mL-Cd4"/>
             </objects>
-            <point key="canvasLocation" x="464" y="639"/>
+            <point key="canvasLocation" x="1249" y="564"/>
         </scene>
     </scenes>
     <resources>
+        <image name="Chip" width="164.57142639160156" height="138.85714721679688"/>
         <image name="Gray LED" width="40" height="40"/>
+        <image name="Microphone" width="38.400001525878906" height="38.400001525878906"/>
         <image name="NSAddTemplate" width="11" height="11"/>
         <image name="NSFollowLinkFreestandingTemplate" width="14" height="14"/>
         <image name="NSInvalidDataFreestandingTemplate" width="14" height="14"/>
         <image name="NSPreferencesGeneral" width="32" height="32"/>
         <image name="NSRemoveTemplate" width="11" height="11"/>
-        <image name="NSUser" width="32" height="32"/>
     </resources>
 </document>

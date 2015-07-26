@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0924272E1B62F46600D568DE /* DMYAudioViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0924272D1B62F46600D568DE /* DMYAudioViewController.m */; };
 		093B9AF81B50E2D500C2ABD0 /* DMYAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9AF71B50E2D500C2ABD0 /* DMYAppDelegate.m */; };
 		093B9AFA1B50E2D500C2ABD0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9AF91B50E2D500C2ABD0 /* main.m */; };
 		093B9AFD1B50E2D500C2ABD0 /* DMYMainWindowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9AFC1B50E2D500C2ABD0 /* DMYMainWindowViewController.m */; };
@@ -34,6 +35,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0924272C1B62F46600D568DE /* DMYAudioViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYAudioViewController.h; sourceTree = "<group>"; };
+		0924272D1B62F46600D568DE /* DMYAudioViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYAudioViewController.m; sourceTree = "<group>"; };
 		093B9AF11B50E2D500C2ABD0 /* Dummy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dummy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		093B9AF51B50E2D500C2ABD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		093B9AF61B50E2D500C2ABD0 /* DMYAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DMYAppDelegate.h; sourceTree = "<group>"; };
@@ -104,26 +107,28 @@
 		093B9AF31B50E2D500C2ABD0 /* Dummy */ = {
 			isa = PBXGroup;
 			children = (
-				09AB11781B5A13970067B9FB /* DMYVocoderViewController.h */,
-				09AB11791B5A13970067B9FB /* DMYVocoderViewController.m */,
 				09AB117A1B5A13970067B9FB /* Prefix.pch */,
 				093B9AF61B50E2D500C2ABD0 /* DMYAppDelegate.h */,
 				093B9AF71B50E2D500C2ABD0 /* DMYAppDelegate.m */,
-				093B9B171B50E3BD00C2ABD0 /* DMYGatewayHandler.h */,
-				093B9B181B50E3BD00C2ABD0 /* DMYGatewayHandler.m */,
 				096F2B581B58C06E00766A95 /* DMYCallFormatter.h */,
 				096F2B591B58C06E00766A95 /* DMYCallFormatter.m */,
-				093B9B1B1B52DBA000C2ABD0 /* DMYDV3KVocoder.h */,
-				093B9B1C1B52DBA000C2ABD0 /* DMYDV3KVocoder.m */,
+				09AB11781B5A13970067B9FB /* DMYVocoderViewController.h */,
+				09AB11791B5A13970067B9FB /* DMYVocoderViewController.m */,
+				0924272C1B62F46600D568DE /* DMYAudioViewController.h */,
+				0924272D1B62F46600D568DE /* DMYAudioViewController.m */,
+				093B9AFB1B50E2D500C2ABD0 /* DMYMainWindowViewController.h */,
+				093B9AFC1B50E2D500C2ABD0 /* DMYMainWindowViewController.m */,
 				09A5FDED1B5794FA00AE9E1C /* TPCircularBuffer.h */,
 				09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */,
-				09A5FDEF1B57956A00AE9E1C /* DMYAudioHandler.h */,
-				09A5FDF01B57956A00AE9E1C /* DMYAudioHandler.m */,
 				095C3FAD1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c */,
 				095C3FAE1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.h */,
 				093B9B1A1B5214C700C2ABD0 /* DMYVocoderProtocol.h */,
-				093B9AFB1B50E2D500C2ABD0 /* DMYMainWindowViewController.h */,
-				093B9AFC1B50E2D500C2ABD0 /* DMYMainWindowViewController.m */,
+				093B9B171B50E3BD00C2ABD0 /* DMYGatewayHandler.h */,
+				093B9B181B50E3BD00C2ABD0 /* DMYGatewayHandler.m */,
+				093B9B1B1B52DBA000C2ABD0 /* DMYDV3KVocoder.h */,
+				093B9B1C1B52DBA000C2ABD0 /* DMYDV3KVocoder.m */,
+				09A5FDEF1B57956A00AE9E1C /* DMYAudioHandler.h */,
+				09A5FDF01B57956A00AE9E1C /* DMYAudioHandler.m */,
 				093B9AFE1B50E2D500C2ABD0 /* Images.xcassets */,
 				093B9B001B50E2D500C2ABD0 /* Main.storyboard */,
 				093B9AF41B50E2D500C2ABD0 /* Supporting Files */,
@@ -269,6 +274,7 @@
 				09A5FDF11B57956A00AE9E1C /* DMYAudioHandler.m in Sources */,
 				093B9AF81B50E2D500C2ABD0 /* DMYAppDelegate.m in Sources */,
 				096F2B5A1B58C06E00766A95 /* DMYCallFormatter.m in Sources */,
+				0924272E1B62F46600D568DE /* DMYAudioViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

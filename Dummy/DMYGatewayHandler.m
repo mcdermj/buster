@@ -436,9 +436,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         
         if(xmitSequence == 0) {
             packet.packetType = 0x20;
-            //  XXX Should be settable
             strncpy((char *) packet.payload.dstarHeader.urCall, [xmitUrCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.urCall));
-            NSLog(@"Ur is %@", xmitUrCall);
             
             strncpy((char *) packet.payload.dstarHeader.myCall, [xmitMyCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.myCall));
             strncpy((char *) packet.payload.dstarHeader.rpt2Call, [xmitRpt2Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt1Call));

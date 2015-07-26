@@ -21,15 +21,26 @@
 
 #import "DMYVocoderProtocol.h"
 
+#import <AudioToolbox/AudioToolbox.h>
+
+extern NSString * const DMYAudioDeviceChanged;
+
 @interface DMYAudioHandler : NSObject
 
 -(void) queueAudioData:(void *)audioData withLength:(uint32)length;
 -(BOOL) start;
+-(void) stop;
 
 +(NSArray *)enumerateInputDevices;
 +(NSArray *)enumerateOutputDevices;
 
+-(void)setInputDevice:(AudioDeviceID)_inputDevice andOutputDevice:(AudioDeviceID)_outputDevice;
+
 @property id<DMYVocoderProtocol> vocoder;
+@property AudioDeviceID inputDevice;
+@property AudioDeviceID outputDevice;
+@property (readonly) AudioDeviceID defaultInputDevice;
+@property (readonly) AudioDeviceID defaultOutputDevice;
 @property BOOL xmit;
 
 @end
