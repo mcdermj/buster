@@ -23,6 +23,8 @@
 #import "DMYDV3KVocoder.h"
 #import "DMYAudioHandler.h"
 
+
+
 @interface DMYAppDelegate () {
     // DMYAudioHandler *audio;
 }
@@ -34,6 +36,7 @@
 @synthesize network;
 @synthesize vocoder;
 @synthesize audio;
+@synthesize txKeyCode;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
@@ -67,6 +70,7 @@
     [network bind:@"gatewayAddr" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.gatewayAddr" options:nil];
     [network bind:@"gatewayPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.gatewayPort" options:nil];
     [network bind:@"repeaterPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.repeaterPort" options:nil];
+    [self bind:@"txKeyCode" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.shortcutValue" options:@{NSValueTransformerNameBindingOption: MASDictionaryTransformerName}];
     
     [vocoder bind:@"speed" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPortBaud" options:nil];
     [vocoder bind:@"serialPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPort" options:nil];
@@ -92,6 +96,12 @@
             if([entry[@"uid"] isEqualToString:outputUid])
                 audio.outputDevice = ((NSNumber *)entry[@"id"]).intValue;
     }
+    
+    
+    /* [NSEvent addLocalMonitorForEventsMatchingMask:NSKeyDownMask handler:^NSEvent *(NSEvent *event){
+        NSLog(@"Got a keydown event: %@", event);
+        return event;
+    }]; */
 
     
     [[NSNotificationCenter defaultCenter] addObserverForName: DMYVocoderDeviceChanged

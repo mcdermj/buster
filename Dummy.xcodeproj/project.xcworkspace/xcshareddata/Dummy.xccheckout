@@ -10,15 +10,23 @@
 	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
+		<key>97641889692A69A4B270231FB25F4B84FB93CA0B</key>
+		<string>git://github.com/Kentzo/ShortcutRecorder.git</string>
 		<key>A0FE35341BB15C77B8DB42DDA089C8A73855D2D3</key>
 		<string>ssh://git.nh6z.net/var/git/dummy.git</string>
+		<key>BB3C4AE3EC7E6771B5CB3DC143FB7B67396AE556</key>
+		<string>https://github.com/shpakovski/MASShortcut.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>Dummy.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
+		<key>97641889692A69A4B270231FB25F4B84FB93CA0B</key>
+		<string>../../ShortcutRecorder</string>
 		<key>A0FE35341BB15C77B8DB42DDA089C8A73855D2D3</key>
 		<string>../..</string>
+		<key>BB3C4AE3EC7E6771B5CB3DC143FB7B67396AE556</key>
+		<string>../../MASShortcut/</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>ssh://git.nh6z.net/var/git/dummy.git</string>
@@ -35,6 +43,22 @@
 			<string>A0FE35341BB15C77B8DB42DDA089C8A73855D2D3</string>
 			<key>IDESourceControlWCCName</key>
 			<string>dummy</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>BB3C4AE3EC7E6771B5CB3DC143FB7B67396AE556</string>
+			<key>IDESourceControlWCCName</key>
+			<string>MASShortcut</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>97641889692A69A4B270231FB25F4B84FB93CA0B</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ShortcutRecorder</string>
 		</dict>
 	</array>
 </dict>

@@ -16,6 +16,9 @@
 		093B9B0E1B50E2D500C2ABD0 /* DummyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B0D1B50E2D500C2ABD0 /* DummyTests.m */; };
 		093B9B191B50E3BD00C2ABD0 /* DMYGatewayHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B181B50E3BD00C2ABD0 /* DMYGatewayHandler.m */; };
 		093B9B1D1B52DBA000C2ABD0 /* DMYDV3KVocoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B1C1B52DBA000C2ABD0 /* DMYDV3KVocoder.m */; };
+		0954910B1B64A78100A57FD2 /* DMYApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 0954910A1B64A78100A57FD2 /* DMYApplication.m */; };
+		0954911B1B64B5B600A57FD2 /* DMYGeneralPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0954911A1B64B5B600A57FD2 /* DMYGeneralPreferencesController.m */; };
+		095491281B64B8B100A57FD2 /* MASShortcut.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 095491231B64B8A900A57FD2 /* MASShortcut.framework */; };
 		095C3FAF1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c in Sources */ = {isa = PBXBuildFile; fileRef = 095C3FAD1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c */; };
 		096F2B5A1B58C06E00766A95 /* DMYCallFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 096F2B591B58C06E00766A95 /* DMYCallFormatter.m */; };
 		096F2B5C1B58ED1B00766A95 /* DefaultPreferences.plist in Resources */ = {isa = PBXBuildFile; fileRef = 096F2B5B1B58ED1B00766A95 /* DefaultPreferences.plist */; };
@@ -31,6 +34,27 @@
 			proxyType = 1;
 			remoteGlobalIDString = 093B9AF01B50E2D500C2ABD0;
 			remoteInfo = Dummy;
+		};
+		095491221B64B8A900A57FD2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0954911C1B64B8A800A57FD2 /* MASShortcut.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0D827CD31990D4420010B8EF;
+			remoteInfo = MASShortcut;
+		};
+		095491241B64B8A900A57FD2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0954911C1B64B8A800A57FD2 /* MASShortcut.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0D827D8319910AFF0010B8EF;
+			remoteInfo = MASShortcutTests;
+		};
+		095491261B64B8A900A57FD2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0954911C1B64B8A800A57FD2 /* MASShortcut.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0D827D371990D5E70010B8EF;
+			remoteInfo = Demo;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -54,6 +78,11 @@
 		093B9B1A1B5214C700C2ABD0 /* DMYVocoderProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DMYVocoderProtocol.h; sourceTree = "<group>"; };
 		093B9B1B1B52DBA000C2ABD0 /* DMYDV3KVocoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYDV3KVocoder.h; sourceTree = "<group>"; };
 		093B9B1C1B52DBA000C2ABD0 /* DMYDV3KVocoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYDV3KVocoder.m; sourceTree = "<group>"; };
+		095491091B64A78100A57FD2 /* DMYApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYApplication.h; sourceTree = "<group>"; };
+		0954910A1B64A78100A57FD2 /* DMYApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYApplication.m; sourceTree = "<group>"; };
+		095491191B64B5B600A57FD2 /* DMYGeneralPreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYGeneralPreferencesController.h; sourceTree = "<group>"; };
+		0954911A1B64B5B600A57FD2 /* DMYGeneralPreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYGeneralPreferencesController.m; sourceTree = "<group>"; };
+		0954911C1B64B8A800A57FD2 /* MASShortcut.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MASShortcut.xcodeproj; path = MASShortcut/MASShortcut.xcodeproj; sourceTree = "<group>"; };
 		095C3FAD1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "TPCircularBuffer+AudioBufferList.c"; sourceTree = "<group>"; };
 		095C3FAE1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TPCircularBuffer+AudioBufferList.h"; sourceTree = "<group>"; };
 		096F2B581B58C06E00766A95 /* DMYCallFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYCallFormatter.h; sourceTree = "<group>"; };
@@ -73,6 +102,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				095491281B64B8B100A57FD2 /* MASShortcut.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,6 +119,7 @@
 		093B9AE81B50E2D400C2ABD0 = {
 			isa = PBXGroup;
 			children = (
+				0954911C1B64B8A800A57FD2 /* MASShortcut.xcodeproj */,
 				093B9AF31B50E2D500C2ABD0 /* Dummy */,
 				093B9B0A1B50E2D500C2ABD0 /* DummyTests */,
 				093B9AF21B50E2D500C2ABD0 /* Products */,
@@ -108,6 +139,8 @@
 			isa = PBXGroup;
 			children = (
 				09AB117A1B5A13970067B9FB /* Prefix.pch */,
+				095491091B64A78100A57FD2 /* DMYApplication.h */,
+				0954910A1B64A78100A57FD2 /* DMYApplication.m */,
 				093B9AF61B50E2D500C2ABD0 /* DMYAppDelegate.h */,
 				093B9AF71B50E2D500C2ABD0 /* DMYAppDelegate.m */,
 				096F2B581B58C06E00766A95 /* DMYCallFormatter.h */,
@@ -116,6 +149,8 @@
 				09AB11791B5A13970067B9FB /* DMYVocoderViewController.m */,
 				0924272C1B62F46600D568DE /* DMYAudioViewController.h */,
 				0924272D1B62F46600D568DE /* DMYAudioViewController.m */,
+				095491191B64B5B600A57FD2 /* DMYGeneralPreferencesController.h */,
+				0954911A1B64B5B600A57FD2 /* DMYGeneralPreferencesController.m */,
 				093B9AFB1B50E2D500C2ABD0 /* DMYMainWindowViewController.h */,
 				093B9AFC1B50E2D500C2ABD0 /* DMYMainWindowViewController.m */,
 				09A5FDED1B5794FA00AE9E1C /* TPCircularBuffer.h */,
@@ -161,6 +196,16 @@
 				093B9B0C1B50E2D500C2ABD0 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		0954911D1B64B8A800A57FD2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				095491231B64B8A900A57FD2 /* MASShortcut.framework */,
+				095491251B64B8A900A57FD2 /* Tests.xctest */,
+				095491271B64B8A900A57FD2 /* Demo.app */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -231,6 +276,12 @@
 			mainGroup = 093B9AE81B50E2D400C2ABD0;
 			productRefGroup = 093B9AF21B50E2D500C2ABD0 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 0954911D1B64B8A800A57FD2 /* Products */;
+					ProjectRef = 0954911C1B64B8A800A57FD2 /* MASShortcut.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				093B9AF01B50E2D500C2ABD0 /* Dummy */,
@@ -238,6 +289,31 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		095491231B64B8A900A57FD2 /* MASShortcut.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = MASShortcut.framework;
+			remoteRef = 095491221B64B8A900A57FD2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		095491251B64B8A900A57FD2 /* Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			name = Tests.xctest;
+			path = MASShortcutTests.xctest;
+			remoteRef = 095491241B64B8A900A57FD2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		095491271B64B8A900A57FD2 /* Demo.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = Demo.app;
+			remoteRef = 095491261B64B8A900A57FD2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		093B9AEF1B50E2D500C2ABD0 /* Resources */ = {
@@ -266,6 +342,7 @@
 			files = (
 				09A5FDEE1B5794FA00AE9E1C /* TPCircularBuffer.c in Sources */,
 				093B9B191B50E3BD00C2ABD0 /* DMYGatewayHandler.m in Sources */,
+				0954911B1B64B5B600A57FD2 /* DMYGeneralPreferencesController.m in Sources */,
 				09AB117B1B5A13970067B9FB /* DMYVocoderViewController.m in Sources */,
 				095C3FAF1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c in Sources */,
 				093B9B1D1B52DBA000C2ABD0 /* DMYDV3KVocoder.m in Sources */,
@@ -273,6 +350,7 @@
 				093B9AFA1B50E2D500C2ABD0 /* main.m in Sources */,
 				09A5FDF11B57956A00AE9E1C /* DMYAudioHandler.m in Sources */,
 				093B9AF81B50E2D500C2ABD0 /* DMYAppDelegate.m in Sources */,
+				0954910B1B64A78100A57FD2 /* DMYApplication.m in Sources */,
 				096F2B5A1B58C06E00766A95 /* DMYCallFormatter.m in Sources */,
 				0924272E1B62F46600D568DE /* DMYAudioViewController.m in Sources */,
 			);

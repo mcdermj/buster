@@ -21,6 +21,7 @@
 
 #import "DMYGatewayHandler.h"
 #import "DMYAppDelegate.h"
+#import "DMYApplication.h"
 
 @interface DMYMainWindowViewController () {
     NSInteger txButtonState;
@@ -113,11 +114,16 @@
                                                   }
      ];
     
-    [txButton setPeriodicDelay:.1f interval:.1f];
-    txButtonState = NSOffState;
+    [[NSNotificationCenter defaultCenter] addObserverForName:DMYTxKeyDown object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+        [self startTx];
+    }];
     
-    //[xmitUrCall bind:@"value" toObject:delegate.network withKeyPath:@"xmitUrCall" options:nil];
-    //[delegate.network bind:@"xmitUrCall" toObject:xmitUrCall withKeyPath:@"value" options:nil];
+    [[NSNotificationCenter defaultCenter] addObserverForName:DMYTxKeyUp object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+        [self endTx];
+    }];
+    
+    [txButton setPeriodicDelay:.1f interval:.1f];
+    txButtonState = NSOffState;    
 }
 
 - (void)viewWillDisappear {
@@ -166,33 +172,27 @@
     NSLog(@"I'm here\n");
 }
 
-- (IBAction)doTx:(id)sender {
+-(void)startTx {
     DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
-    // NSButton *txButton = (NSButton *)sender;
-    
-    
-    
-    if(txButton.state == txButtonState) {
-        delegate.network.xmitUrCall = xmitUrCall.objectValue;
-        delegate.audio.xmit = YES;
-        statusLED.image = [NSImage imageNamed:@"Red LED"];
-    } else {
-        delegate.audio.xmit = NO;
-        delegate.network.xmitUrCall = @"";
-        statusLED.image = [NSImage imageNamed:@"Gray LED"];
-    }
+    delegate.network.xmitUrCall = xmitUrCall.objectValue;
+    delegate.audio.xmit = YES;
+    statusLED.image = [NSImage imageNamed:@"Red LED"];
+}
+
+-(void)endTx {
+    DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
+    delegate.audio.xmit = NO;
+    delegate.network.xmitUrCall = @"";
+    statusLED.image = [NSImage imageNamed:@"Gray LED"];
+}
+
+- (IBAction)doTx:(id)sender {    
+    if(txButton.state == txButtonState)
+        [self startTx];
+    else
+        [self endTx];
     
     txButtonState = txButton.state;
-    
-    /* if(delegate.audio.xmit) {
-        delegate.audio.xmit = NO;
-        delegate.network.xmitUrCall = @"";
-        statusLED.image = [NSImage imageNamed:@"Gray LED"];
-    }  else {
-        delegate.network.xmitUrCall = xmitUrCall.objectValue;
-        delegate.audio.xmit = YES;
-        statusLED.image = [NSImage imageNamed:@"Red LED"];
-     } */
 }
 
 - (IBAction)doUnlink:(id)sender {
@@ -243,18 +243,8 @@
     return YES;
 }
 
-/* - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-    NSArray *objects = reflectorTableController.arrangedObjects;
-    
-    NSLog(@"%ld  -- objects = %@", objects.count, objects);
-    
-    return [objects count];
+-(void)keyDown:(NSEvent *) event {
+    NSLog(@"Got KeyDown");
 }
-
-
-- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    NSLog(@"Need cell for row %ld column %@", row, tableColumn);
-    return nil;
-} */
 
 @end

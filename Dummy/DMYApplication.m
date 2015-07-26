@@ -1,5 +1,5 @@
 //
-//  DMYAppDelegate.h
+//  DMYApplication.m
 //
 //  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
 
@@ -17,21 +17,29 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#import <Cocoa/Cocoa.h>
 
-#import "DMYGatewayHandler.h"
-#import "DMYDV3KVocoder.h"
-#import "DMYAudioHandler.h"
+#import "DMYApplication.h"
 
-#import <MASShortcut/Shortcut.h>
+#import "DMYAppDelegate.h"
 
-@interface DMYAppDelegate : NSObject <NSApplicationDelegate>
+NSString * const DMYTxKeyDown = @"DMYTxKeyDown";
+NSString * const DMYTxKeyUp = @"DMYTxKeyUp";
 
-@property (readonly) DMYGatewayHandler *network;
-@property (readonly) DMYDV3KVocoder *vocoder;
-@property (readonly) DMYAudioHandler *audio;
-
-@property MASShortcut *txKeyCode;
+@interface DMYApplication ()
 
 @end
 
+@implementation DMYApplication
+
+-(void)sendEvent:(NSEvent *)theEvent {
+    NSUInteger txKeyCode = ((DMYAppDelegate *) self.delegate).txKeyCode.keyCode;
+    
+    if(theEvent.type == NSKeyDown && theEvent.keyCode == txKeyCode)
+        [[NSNotificationCenter defaultCenter] postNotificationName:DMYTxKeyDown object:nil];
+    else if(theEvent.type == NSKeyUp && theEvent.keyCode == txKeyCode)
+        [[NSNotificationCenter defaultCenter] postNotificationName:DMYTxKeyUp object:nil];
+    else
+        [super sendEvent:theEvent];
+}
+
+@end

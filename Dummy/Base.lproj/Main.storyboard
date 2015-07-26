@@ -148,7 +148,7 @@
                 <customObject id="Voe-Tx-rLC" customClass="DMYAppDelegate"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="0.0"/>
+            <point key="canvasLocation" x="671" y="-65"/>
         </scene>
         <!--Window Controller-->
         <scene sceneID="R2V-B0-nI4">
@@ -197,13 +197,13 @@
         <!--General-->
         <scene sceneID="plL-MQ-FZW">
             <objects>
-                <viewController title="General" id="qq2-Ge-0JC" sceneMemberID="viewController">
+                <viewController title="General" id="qq2-Ge-0JC" customClass="DMYGeneralPreferencesController" sceneMemberID="viewController">
                     <view key="view" id="1SU-Tj-tJk">
-                        <rect key="frame" x="0.0" y="0.0" width="420" height="268"/>
+                        <rect key="frame" x="0.0" y="0.0" width="420" height="315"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <box autoresizesSubviews="NO" fixedFrame="YES" title="Gateway" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="EJx-7O-eCz">
-                                <rect key="frame" x="17" y="81" width="386" height="61"/>
+                                <rect key="frame" x="17" y="128" width="386" height="61"/>
                                 <view key="contentView">
                                     <rect key="frame" x="1" y="1" width="384" height="45"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -279,7 +279,7 @@
                                 <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </box>
                             <box autoresizesSubviews="NO" fixedFrame="YES" title="Dummy Repeater" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="Uo6-C4-Mjt">
-                                <rect key="frame" x="17" y="16" width="386" height="61"/>
+                                <rect key="frame" x="17" y="63" width="386" height="61"/>
                                 <view key="contentView">
                                     <rect key="frame" x="1" y="1" width="384" height="45"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -352,7 +352,7 @@
                                 <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </box>
                             <box autoresizesSubviews="NO" fixedFrame="YES" title="My Info" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="Egh-6W-SY1">
-                                <rect key="frame" x="17" y="154" width="380" height="94"/>
+                                <rect key="frame" x="17" y="201" width="380" height="94"/>
                                 <view key="contentView">
                                     <rect key="frame" x="1" y="1" width="378" height="78"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -425,13 +425,19 @@
                                 <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                 <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </box>
+                            <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xt6-wQ-qOz" customClass="MASShortcutView">
+                                <rect key="frame" x="20" y="40" width="163" height="19"/>
+                            </customView>
                         </subviews>
                     </view>
+                    <connections>
+                        <outlet property="shortcutView" destination="xt6-wQ-qOz" id="lk2-Zd-AnC"/>
+                    </connections>
                 </viewController>
                 <customObject id="gSa-GS-ok0" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <userDefaultsController id="eDD-IH-9g9"/>
             </objects>
-            <point key="canvasLocation" x="1249" y="38"/>
+            <point key="canvasLocation" x="1249" y="-33.5"/>
         </scene>
         <!--Vocoder-->
         <scene sceneID="Kze-65-k1d">
@@ -547,7 +553,7 @@
                 <userDefaultsController id="QYk-Xy-JMt"/>
                 <userDefaultsController id="QPH-OE-Abm"/>
             </objects>
-            <point key="canvasLocation" x="1249" y="336.5"/>
+            <point key="canvasLocation" x="1249" y="257.5"/>
         </scene>
         <!--Main Window View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -1050,20 +1056,7 @@
                     </connections>
                 </arrayController>
             </objects>
-            <point key="canvasLocation" x="36.5" y="984"/>
-        </scene>
-        <!--View Controller-->
-        <scene sceneID="mEM-Ej-KR7">
-            <objects>
-                <viewController id="68b-k9-xdh" sceneMemberID="viewController">
-                    <view key="view" id="Xj9-3H-RBp">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </view>
-                </viewController>
-                <customObject id="ERb-Ut-dBH" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="515" y="659"/>
+            <point key="canvasLocation" x="36.5" y="707"/>
         </scene>
         <!--Audio-->
         <scene sceneID="elY-lg-nZP">
@@ -1133,7 +1126,7 @@
                 <customObject id="B0j-BN-CLv" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <userDefaultsController id="daA-mL-Cd4"/>
             </objects>
-            <point key="canvasLocation" x="1249" y="564"/>
+            <point key="canvasLocation" x="1249" y="429"/>
         </scene>
     </scenes>
     <resources>

@@ -1,5 +1,5 @@
 //
-//  DMYAppDelegate.h
+//  DMYApplication.h
 //
 //  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
 
@@ -19,19 +19,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "DMYGatewayHandler.h"
-#import "DMYDV3KVocoder.h"
-#import "DMYAudioHandler.h"
+extern NSString * const DMYTxKeyDown;
+extern NSString * const DMYTxKeyUp;
 
-#import <MASShortcut/Shortcut.h>
-
-@interface DMYAppDelegate : NSObject <NSApplicationDelegate>
-
-@property (readonly) DMYGatewayHandler *network;
-@property (readonly) DMYDV3KVocoder *vocoder;
-@property (readonly) DMYAudioHandler *audio;
-
-@property MASShortcut *txKeyCode;
+@interface DMYApplication : NSApplication
 
 @end
-
