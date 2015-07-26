@@ -21,11 +21,8 @@
 
 #import "DMYAppDelegate.h"
 
-@interface DMYAudioViewController () {
-}
-
+@interface DMYAudioViewController ()
 -(void)refreshDevices;
-
 @end
 
 @implementation DMYAudioViewController
@@ -98,6 +95,10 @@
                                                   usingBlock:^(NSNotification *notification){
                                                       [self refreshDevices];
                                                   }];
+}
+
+-(void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:DMYAudioDeviceChanged object:nil];
 }
 
 @end
