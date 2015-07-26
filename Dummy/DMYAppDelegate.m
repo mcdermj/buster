@@ -135,4 +135,8 @@
     // Insert code here to tear down your application
 }
 
+-(void)keyDown:(NSEvent *)theEvent {
+    NSLog(@"Got an event %@", theEvent);
+}
+
 @end

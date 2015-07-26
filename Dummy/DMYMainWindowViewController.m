@@ -22,7 +22,9 @@
 #import "DMYGatewayHandler.h"
 #import "DMYAppDelegate.h"
 
-@interface DMYMainWindowViewController ()
+@interface DMYMainWindowViewController () {
+    NSInteger txButtonState;
+}
 @end
 
 @implementation DMYMainWindowViewController
@@ -38,6 +40,7 @@
 @synthesize reflectorTableController;
 @synthesize xmitUrCall;
 @synthesize statusLED;
+@synthesize txButton;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -110,6 +113,8 @@
                                                   }
      ];
     
+    [txButton setPeriodicDelay:.1f interval:.1f];
+    txButtonState = NSOffState;
     
     //[xmitUrCall bind:@"value" toObject:delegate.network withKeyPath:@"xmitUrCall" options:nil];
     //[delegate.network bind:@"xmitUrCall" toObject:xmitUrCall withKeyPath:@"value" options:nil];
@@ -163,8 +168,23 @@
 
 - (IBAction)doTx:(id)sender {
     DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
+    // NSButton *txButton = (NSButton *)sender;
     
-    if(delegate.audio.xmit) {
+    
+    
+    if(txButton.state == txButtonState) {
+        delegate.network.xmitUrCall = xmitUrCall.objectValue;
+        delegate.audio.xmit = YES;
+        statusLED.image = [NSImage imageNamed:@"Red LED"];
+    } else {
+        delegate.audio.xmit = NO;
+        delegate.network.xmitUrCall = @"";
+        statusLED.image = [NSImage imageNamed:@"Gray LED"];
+    }
+    
+    txButtonState = txButton.state;
+    
+    /* if(delegate.audio.xmit) {
         delegate.audio.xmit = NO;
         delegate.network.xmitUrCall = @"";
         statusLED.image = [NSImage imageNamed:@"Gray LED"];
@@ -172,9 +192,7 @@
         delegate.network.xmitUrCall = xmitUrCall.objectValue;
         delegate.audio.xmit = YES;
         statusLED.image = [NSImage imageNamed:@"Red LED"];
-    }
-        
-
+     } */
 }
 
 - (IBAction)doUnlink:(id)sender {

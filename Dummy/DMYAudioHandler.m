@@ -255,6 +255,9 @@ static OSStatus AudioDevicesChanged(AudioObjectID inObjectID, UInt32 inNumberAdd
 
 
 - (void) setXmit:(BOOL)_xmit {
+    if(xmit == _xmit)
+        return;
+    
     if(_xmit && inputConverter)
         AudioConverterReset(inputConverter);
     

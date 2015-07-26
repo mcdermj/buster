@@ -976,7 +976,7 @@
                             </button>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mNc-zd-r4D">
                                 <rect key="frame" x="196" y="217" width="57" height="32"/>
-                                <buttonCell key="cell" type="push" title="TX" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Vkf-rb-mdp">
+                                <buttonCell key="cell" type="push" title="TX" bezelStyle="rounded" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Vkf-rb-mdp">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -1032,6 +1032,7 @@
                         <outlet property="rpt1Call" destination="LPb-8X-wFk" id="dlV-xX-mzy"/>
                         <outlet property="rpt2Call" destination="0X0-tB-ZWL" id="K0a-uy-tq3"/>
                         <outlet property="statusLED" destination="mVD-lY-7a6" id="XRs-v4-hzd"/>
+                        <outlet property="txButton" destination="mNc-zd-r4D" id="6Be-fT-qOp"/>
                         <outlet property="urCall" destination="dld-SW-2h6" id="7Yv-0X-Ein"/>
                         <outlet property="xmitUrCall" destination="xeD-Rj-x0y" id="tcl-vT-jhI"/>
                     </connections>

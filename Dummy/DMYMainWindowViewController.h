@@ -32,6 +32,7 @@
 @property (strong) IBOutlet NSArrayController *reflectorTableController;
 @property (weak) IBOutlet NSTextField *xmitUrCall;
 @property (weak) IBOutlet NSImageView *statusLED;
+@property (weak) IBOutlet NSButton *txButton;
 
 - (IBAction)doLink:(id)sender;
 - (IBAction)addReflector:(id)sender;
