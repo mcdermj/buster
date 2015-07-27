@@ -180,7 +180,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
 
 + (void) initialize {
     mach_port_t masterPort;
-    CFMutableDictionaryRef matchingDict;
+    NSMutableDictionary *matchingDict;
     CFRunLoopSourceRef runLoopSource;
     kern_return_t kernReturn;
     io_iterator_t deviceIterator;
@@ -193,34 +193,32 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         return;
     }
     
-    matchingDict = IOServiceMatching(kIOUSBDeviceClassName);
+    matchingDict = (__bridge NSMutableDictionary *)(IOServiceMatching(kIOUSBDeviceClassName));
     if(!matchingDict) {
         NSLog(@"Couldn't create a USB matching dictionary\n");
         mach_port_deallocate(mach_task_self(), masterPort);
         return;
     }
     
-    CFDictionarySetValue(matchingDict, CFSTR(kUSBVendorName), CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &usbVendor));
-    CFDictionarySetValue(matchingDict, CFSTR(kUSBProductName), CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &usbProduct));
+    matchingDict[@kUSBVendorName] = [NSNumber numberWithInt:usbVendor];
+    matchingDict[@kUSBProductName] = [NSNumber numberWithInt:usbProduct];
     
     IONotificationPortRef gNotifyPort = IONotificationPortCreate(masterPort);
     runLoopSource = IONotificationPortGetRunLoopSource(gNotifyPort);
     CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopCommonModes);
     
-    matchingDict = (CFMutableDictionaryRef) CFRetain(matchingDict);
-    matchingDict = (CFMutableDictionaryRef) CFRetain(matchingDict);
-    matchingDict = (CFMutableDictionaryRef) CFRetain(matchingDict);
+    matchingDict = (NSMutableDictionary *) CFRetain((__bridge CFTypeRef)(matchingDict));
+    matchingDict = (NSMutableDictionary *) CFRetain((__bridge CFTypeRef)(matchingDict));
     
-    kernReturn = IOServiceAddMatchingNotification(gNotifyPort, kIOFirstMatchNotification, matchingDict, VocoderAdded, NULL, &deviceIterator);
+    IOServiceAddMatchingNotification(gNotifyPort, kIOFirstMatchNotification, (__bridge CFDictionaryRef)(matchingDict), VocoderAdded, NULL, &deviceIterator);
     // Clean out the device iterator so the notification will arm.
     while(IOIteratorNext(deviceIterator));
     
-    kernReturn = IOServiceAddMatchingNotification(gNotifyPort, kIOTerminatedNotification, matchingDict, VocoderRemoved, NULL, &deviceIterator);
+    IOServiceAddMatchingNotification(gNotifyPort, kIOTerminatedNotification, (__bridge CFDictionaryRef)(matchingDict), VocoderRemoved, NULL, &deviceIterator);
     // Clean out the device iterator so the notification will arm.
     while(IOIteratorNext(deviceIterator));
     
     mach_port_deallocate(mach_task_self(), masterPort);
-    
 }
 
 - (id) initWithPort:(NSString *)_serialPort andSpeed:(long)_speed {
