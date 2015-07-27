@@ -496,8 +496,10 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
     
     AudioValueRange *sampleRateRanges = (AudioValueRange *) malloc(sampleRatesSize);
     
-    if(!CheckStatus(AudioObjectGetPropertyData(inputDevice, &propertyAddress, 0, NULL, &sampleRatesSize, sampleRateRanges), "AudioObjectGetPropertyData(kAudioDevicePropertyAvailableNominalSampleRates"))
+    if(!CheckStatus(AudioObjectGetPropertyData(inputDevice, &propertyAddress, 0, NULL, &sampleRatesSize, sampleRateRanges), "AudioObjectGetPropertyData(kAudioDevicePropertyAvailableNominalSampleRates")) {
+        free(sampleRateRanges);
         return NO;
+    }
     
     double hardwareSampleRate = 0.0;
     for(int i = 0; i < sampleRatesSize / sizeof(AudioValueRange); ++i) {
@@ -507,6 +509,8 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
         if(sampleRateRanges[i].mMinimum >= 48000.0 && sampleRateRanges[i].mMinimum <= 48000.0 && hardwareSampleRate != 8000.0)
             hardwareSampleRate = 48000.0;
     }
+    
+    free(sampleRateRanges);
     
     NSLog(@"We want hardware sample rate to be %f\n", hardwareSampleRate);
     if(hardwareSampleRate != 0.0) {
@@ -684,6 +688,7 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
     status = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &dataSize, audioDevices);
     if(status != kAudioHardwareNoError) {
         NSLog(@"AudioObjectGetPropertyData (kAudioHardwarePropertyDevices) failed");
+        free(audioDevices);
         return;
     }
     
