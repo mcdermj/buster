@@ -84,6 +84,11 @@ struct gatewayPacket {
             uint8 ambeData[9];
             uint8 slowData[3];
         } dstarData;
+        struct {
+            char local[20];
+            char status;
+            char reflector[8];
+        } networkText;
         uint8 pollText[255];
     } payload;
 } __attribute__((packed));
@@ -126,6 +131,8 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     } status;
 }
 
+@property (nonatomic, copy) NSString *localText;
+@property (nonatomic, copy) NSString *reflectorText;
 
 @property (nonatomic, copy) NSString *urCall;
 @property (nonatomic, copy) NSString *myCall;
@@ -523,6 +530,14 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     switch(incomingPacket->packetType) {
         case 0x00:
             NSLog(@"Packet is NETWORK_TEXT\n");
+            self.localText = [[NSString alloc] initWithBytes:incomingPacket->payload.networkText.local
+                                             length:sizeof(incomingPacket->payload.networkText.local)
+                                           encoding:NSUTF8StringEncoding];
+            self.reflectorText = [[NSString alloc] initWithBytes:incomingPacket->payload.networkText.reflector
+                                             length:sizeof(incomingPacket->payload.networkText.reflector)
+                                           encoding:NSUTF8StringEncoding];
+
+            NSLog(@"Status = 0x%02X", incomingPacket->payload.networkText.status);
             break;
         case 0x01:
             NSLog(@"Packet is NETWORK_TEMPTEXT\n");

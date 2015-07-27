@@ -64,8 +64,8 @@
 		0924272D1B62F46600D568DE /* DMYAudioViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYAudioViewController.m; sourceTree = "<group>"; };
 		093B9AF11B50E2D500C2ABD0 /* Dummy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dummy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		093B9AF51B50E2D500C2ABD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		093B9AF61B50E2D500C2ABD0 /* DMYAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DMYAppDelegate.h; sourceTree = "<group>"; };
-		093B9AF71B50E2D500C2ABD0 /* DMYAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DMYAppDelegate.m; sourceTree = "<group>"; };
+		093B9AF61B50E2D500C2ABD0 /* DMYAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DMYAppDelegate.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		093B9AF71B50E2D500C2ABD0 /* DMYAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = DMYAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		093B9AF91B50E2D500C2ABD0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		093B9AFB1B50E2D500C2ABD0 /* DMYMainWindowViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DMYMainWindowViewController.h; sourceTree = "<group>"; };
 		093B9AFC1B50E2D500C2ABD0 /* DMYMainWindowViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DMYMainWindowViewController.m; sourceTree = "<group>"; };

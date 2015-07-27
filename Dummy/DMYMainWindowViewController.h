@@ -19,6 +19,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "DMYGatewayHandler.h"
+
 @interface DMYMainWindowViewController : NSViewController <NSTableViewDelegate, NSTableViewDataSource>
 
 @property (weak) IBOutlet NSTextField *urCall;
@@ -33,6 +35,9 @@
 @property (weak) IBOutlet NSComboBox *xmitUrCall;
 @property (weak) IBOutlet NSImageView *statusLED;
 @property (weak) IBOutlet NSButton *txButton;
+@property (weak) IBOutlet NSTextField *repeaterInfo;
+
+@property (readonly) DMYGatewayHandler *network;
 
 - (IBAction)doLink:(id)sender;
 - (IBAction)addReflector:(id)sender;

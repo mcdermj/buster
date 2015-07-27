@@ -129,12 +129,15 @@
     }];
     
     [txButton setPeriodicDelay:.1f interval:.1f];
-    txButtonState = NSOffState;    
+    txButtonState = NSOffState;
+    
+    //[self.repeaterInfo bind:@"value" toObject:delegate.network withKeyPath:@"self.localText" options:nil];
+    //[delegate.network bind:@"localText" toObject:self.repeaterInfo withKeyPath:@"values" options:nil];
+    
+    self.repeaterInfo.stringValue = @"Shit shit shit";
 }
 
-- (void)viewWillDisappear {
-    NSLog(@"View Dissapearing\n");
-    
+- (void)viewWillDisappear {    
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:DMYNetworkHeaderReceived
                                                   object:nil];
@@ -249,10 +252,6 @@
         [reflectorTableController insertObject:reflector atArrangedObjectIndex:row - 1];
     
     return YES;
-}
-
--(void)keyDown:(NSEvent *) event {
-    NSLog(@"Got KeyDown");
 }
 
 @end
