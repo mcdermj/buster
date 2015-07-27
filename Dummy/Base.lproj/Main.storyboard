@@ -1177,6 +1177,7 @@
                                 </comboBoxCell>
                                 <connections>
                                     <binding destination="9Wg-oH-sfS" name="content" keyPath="values.destinationCalls" id="rYm-ci-nxj"/>
+                                    <outlet property="delegate" destination="XfG-lQ-9wD" id="OM0-Xt-0Mv"/>
                                 </connections>
                             </comboBox>
                         </subviews>

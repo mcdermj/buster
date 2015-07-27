@@ -153,6 +153,11 @@
 }
 
 -(void)startTx {
+    if(self.xmitUrCall.objectValue == nil)
+        return;
+    
+    [self.view.window makeFirstResponder:nil];
+    
     [DMYDataEngine sharedInstance].network.xmitUrCall = self.xmitUrCall.objectValue;
     [DMYDataEngine sharedInstance].audio.xmit = YES;
     self.statusLED.image = [NSImage imageNamed:@"Red LED"];
@@ -184,6 +189,16 @@
 
 - (IBAction)doUnlink:(id)sender {
     [[DMYDataEngine sharedInstance].network unlink];
+}
+
+#pragma mark - Text Editing Control
+
+-(BOOL)control:(NSControl *)control textShouldEndEditing:(NSText *)fieldEditor {
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [control.window makeFirstResponder:nil];
+    });
+    return YES;
 }
 
 #pragma mark - Selection Control
