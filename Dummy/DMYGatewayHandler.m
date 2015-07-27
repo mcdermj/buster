@@ -23,8 +23,6 @@
 
 #import <sys/ioctl.h>
 
-// #define NSLog(x...)
-
 NSString * const DMYNetworkHeaderReceived = @"DMYNetworkHeaderReceived";
 NSString * const DMYNetworkStreamEnd = @"DMYNetworkStreamEnd";
 NSString * const DMYNetworkStreamStart = @"DMYNetworkStreamStart";
@@ -128,6 +126,15 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     } status;
 }
 
+
+@property (nonatomic, copy) NSString *urCall;
+@property (nonatomic, copy) NSString *myCall;
+@property (nonatomic, copy) NSString *rpt1Call;
+@property (nonatomic, copy) NSString *rpt2Call;
+@property (nonatomic, copy) NSString *myCall2;
+@property (nonatomic, assign) NSUInteger streamId;
+
+
 - (NSData *) constructRemoteAddrStruct;
 - (NSData *) constructLocalAddrStruct;
 - (void) processPacket;
@@ -138,30 +145,12 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 
 @implementation DMYGatewayHandler
 
-@synthesize gatewayAddr;
-@synthesize gatewayPort;
-@synthesize repeaterPort;
-@synthesize urCall;
-@synthesize myCall;
-@synthesize rpt1Call;
-@synthesize rpt2Call;
-@synthesize myCall2;
-@synthesize streamId;
-@synthesize vocoder;
-@synthesize xmitRpt1Call;
-@synthesize xmitRpt2Call;
-@synthesize xmitMyCall;
-@synthesize xmitUrCall;
-
 #pragma mark - Initializers
 
-- (id) initWithRemoteAddress:(NSString *)_gatewayAddr remotePort:(NSUInteger)_gatewayPort localPort:(NSUInteger)_repeaterPort {
 - (id) init {
     self = [super init];
-    
     if(self) {
         gatewaySocket = 0;
-        streamId = 0;
         _streamId = 0;
         
         _gatewayPort = 0;
@@ -182,21 +171,8 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         _reflectorText = @"";
         _localText = @"";
         
-        gatewayPort = _gatewayPort;
-        repeaterPort = _repeaterPort;
-        gatewayAddr = [NSString stringWithString:_gatewayAddr];
-        vocoder = nil;
         incomingPacket = malloc(sizeof(struct gatewayPacket));
         
-        urCall = @"";
-        myCall = @"";
-        rpt1Call = @"";
-        rpt2Call = @"";
-        myCall2 = @"";
-        xmitMyCall = @"";
-        xmitUrCall = @"";
-        xmitRpt1Call = @"";
-        xmitRpt2Call = @"";
         status = GWY_STOPPED;
         
         xmitStreamId = htons((short) random());
@@ -243,50 +219,32 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 
 #pragma mark - Accessors
 
-- (void) setGatewayAddr:(NSString *)_addr {
-    [self willChangeValueForKey:@"gatewayAddr"];
-    gatewayAddr = _addr;
+- (void) setGatewayAddr:(NSString *)gatewayAddr {
+    _gatewayAddr = gatewayAddr;
     
     if(status == GWY_STARTED) {
         [self stop];
         [self start];
     }
-    [self didChangeValueForKey:@"gatewayAddr"];
-}
-- (NSString *) gatewayAddr {
-    return gatewayAddr;
 }
 
-- (void) setGatewayPort:(NSUInteger)_port {
-    [self willChangeValueForKey:@"gatewayPort"];
-    gatewayPort = _port;
+- (void) setGatewayPort:(NSUInteger)gatewayPort {
+    _gatewayPort = gatewayPort;
     
     if(status == GWY_STARTED) {
         [self stop];
         [self start];
     }
-    [self didChangeValueForKey:@"gatewayPort"];
-
-}
-- (NSUInteger) gatewayPort {
-    return gatewayPort;
 }
 
-- (void) setRepeaterPort:(NSUInteger)_port {
-    [self willChangeValueForKey:@"repeaterPort"];
-    repeaterPort = _port;
+- (void) setRepeaterPort:(NSUInteger)repeaterPort {
+    _repeaterPort = repeaterPort;
     
     if(status == GWY_STARTED) {
         [self stop];
         [self start];
     }
-    [self didChangeValueForKey:@"repeaterPort"];
-    
 }
-- (NSUInteger) repeaterPort {
-    return repeaterPort;
-}
-
 
 #pragma mark - Flow Control
 
@@ -327,10 +285,6 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         [weakSelf processPacket];
     });
     
-    /* dispatch_source_set_cancel_handler(dispatchSource, ^{
-        close(gatewaySocket);
-    }); */
-    
     dispatch_resume(dispatchSource);
     
     //  XXX Should set up a timer here for the poll interval.
@@ -369,59 +323,11 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 
 - (void) linkTo:(NSString *)reflector {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        //struct gatewayPacket packet;
-        //short linkStreamId;
-        
         NSMutableString *linkCmd = [NSMutableString stringWithString:reflector];
         [linkCmd deleteCharactersInRange:NSMakeRange(6, 1)];
         [linkCmd appendString:@"L"];
 
         [self sendBlankTransmissionWithUr:linkCmd];
-        /*memset(&packet, 0, sizeof(packet));
-        
-        memcpy(&packet.magic, "DSRP", sizeof(packet.magic));
-        packet.packetType = 0x20;
-        
-        NSMutableString *linkCmd = [NSMutableString stringWithString:reflector];
-        [linkCmd deleteCharactersInRange:NSMakeRange(6, 1)];
-        [linkCmd appendString:@"L"];
-        strncpy((char *) packet.payload.dstarHeader.urCall, [linkCmd cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.urCall));
-  
-        // XXX This is generic code that should be constructed for whenever we need a header packet.
-        // XXX Maybe a fillHeader function
-        strncpy((char *) packet.payload.dstarHeader.myCall, [xmitMyCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.myCall));
-        strncpy((char *) packet.payload.dstarHeader.rpt2Call, [xmitRpt2Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt1Call));
-        strncpy((char *) packet.payload.dstarHeader.rpt1Call, [xmitRpt1Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt2Call));
-        
-        // XXX Change Me!
-        strncpy((char *) packet.payload.dstarHeader.myCall2, "HOME", sizeof(packet.payload.dstarHeader.myCall2));
-        
-        linkStreamId = htons((short) random());
-        packet.payload.dstarHeader.streamId = linkStreamId;
-        
-        packet.payload.dstarHeader.checksum = [self calculateChecksum:packet];
-        
-        NSLog(@"Linking to %@ with link command %@\n", reflector, linkCmd);
-        
-        //   XXX Maybe the length should be shorter here
-        size_t packetLen = sizeof(packet.magic) + sizeof(packet.packetType) + sizeof(packet.payload.dstarHeader);
-        NSLog(@"packetLen = %lu\n", packetLen);
-        if(send(gatewaySocket, &packet, packetLen, 0) == -1) {
-            NSLog(@"Couldn't send link header: %s\n", strerror(errno));
-            return;
-        }
-        
-        //  Send the end stream packet
-        memset(&packet.payload, 0, sizeof(packet.payload));
-        packet.payload.dstarData.sequence = 0x40;
-        packet.payload.dstarData.streamId = linkStreamId;
-        packet.packetType = 0x21;
-        packetLen = sizeof(packet.magic) + sizeof(packet.packetType) + sizeof(packet.payload.dstarData);
-        if(send(gatewaySocket, &packet, packetLen, 0) == -1) {
-            NSLog(@"Couldn't send link data: %s\n", strerror(errno));
-            return;
-        } */
-
     });
 }
 
@@ -429,7 +335,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     [self sendBlankTransmissionWithUr:@"       U"];
 }
 
-- (void) sendBlankTransmissionWithUr:(NSString *)_urCall {
+- (void) sendBlankTransmissionWithUr:(NSString *)urCall {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         struct gatewayPacket packet;
         short linkStreamId;
@@ -439,13 +345,13 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         memcpy(&packet.magic, "DSRP", sizeof(packet.magic));
         packet.packetType = 0x20;
         
-        strncpy((char *) packet.payload.dstarHeader.urCall, [_urCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.urCall));
+        strncpy((char *) packet.payload.dstarHeader.urCall, [urCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.urCall));
         
         // XXX This is generic code that should be constructed for whenever we need a header packet.
         // XXX Maybe a fillHeader function
-        strncpy((char *) packet.payload.dstarHeader.myCall, [xmitMyCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.myCall));
-        strncpy((char *) packet.payload.dstarHeader.rpt2Call, [xmitRpt2Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt1Call));
-        strncpy((char *) packet.payload.dstarHeader.rpt1Call, [xmitRpt1Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt2Call));
+        strncpy((char *) packet.payload.dstarHeader.myCall, [self.xmitMyCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.myCall));
+        strncpy((char *) packet.payload.dstarHeader.rpt2Call, [self.xmitRpt2Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt1Call));
+        strncpy((char *) packet.payload.dstarHeader.rpt1Call, [self.xmitRpt1Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt2Call));
         
         // XXX Change Me!
         strncpy((char *) packet.payload.dstarHeader.myCall2, "HOME", sizeof(packet.payload.dstarHeader.myCall2));
@@ -489,11 +395,11 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         
         if(xmitSequence == 0) {
             packet.packetType = 0x20;
-            strncpy((char *) packet.payload.dstarHeader.urCall, [xmitUrCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.urCall));
+            strncpy((char *) packet.payload.dstarHeader.urCall, [self.xmitUrCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.urCall));
             
-            strncpy((char *) packet.payload.dstarHeader.myCall, [xmitMyCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.myCall));
-            strncpy((char *) packet.payload.dstarHeader.rpt2Call, [xmitRpt2Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt1Call));
-            strncpy((char *) packet.payload.dstarHeader.rpt1Call, [xmitRpt1Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt2Call));
+            strncpy((char *) packet.payload.dstarHeader.myCall, [self.xmitMyCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.myCall));
+            strncpy((char *) packet.payload.dstarHeader.rpt2Call, [self.xmitRpt2Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt1Call));
+            strncpy((char *) packet.payload.dstarHeader.rpt1Call, [self.xmitRpt1Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt2Call));
             
             // XXX Change Me!
             strncpy((char *) packet.payload.dstarHeader.myCall2, "HOME", sizeof(packet.payload.dstarHeader.myCall2));
@@ -503,7 +409,6 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
             packet.payload.dstarHeader.checksum = [self calculateChecksum:packet];
             
             packetLen = sizeof(packet.magic) + sizeof(packet.packetType) + sizeof(packet.payload.dstarHeader);
-            // NSLog(@"packetLen = %lu\n", packetLen);
             if(send(gatewaySocket, &packet, packetLen, 0) == -1) {
                 NSLog(@"Couldn't send stream header: %s\n", strerror(errno));
                 return;
@@ -571,8 +476,8 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     struct sockaddr_in *addrStruct = [addrStructData mutableBytes];
     addrStruct->sin_len = sizeof(struct sockaddr_in);
     addrStruct->sin_family = AF_INET;
-    addrStruct->sin_port = htons(gatewayPort);
-    addrStruct->sin_addr.s_addr = inet_addr([gatewayAddr cStringUsingEncoding:NSUTF8StringEncoding]);
+    addrStruct->sin_port = htons(self.gatewayPort);
+    addrStruct->sin_addr.s_addr = inet_addr([self.gatewayAddr cStringUsingEncoding:NSUTF8StringEncoding]);
 
     return [NSData dataWithData:addrStructData];
 }
@@ -583,7 +488,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     struct sockaddr_in *addrStruct = [addrStructData mutableBytes];
     addrStruct->sin_len = sizeof(struct sockaddr_in);
     addrStruct->sin_family = AF_INET;
-    addrStruct->sin_port = htons(repeaterPort);
+    addrStruct->sin_port = htons(self.repeaterPort);
     addrStruct->sin_addr.s_addr = INADDR_ANY;
 
     return [NSData dataWithData:addrStructData];
@@ -591,12 +496,12 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 
 - (NSDictionary *) header {
     return @{
-              @"streamId": [NSNumber numberWithUnsignedInteger:streamId],
-              @"myCall": myCall,
-              @"urCall": urCall,
-              @"myCall2": myCall2,
-              @"rpt1Call": rpt1Call,
-              @"rpt2Call": rpt2Call,
+              @"streamId": [NSNumber numberWithUnsignedInteger:self.streamId],
+              @"myCall": self.myCall,
+              @"urCall": self.urCall,
+              @"myCall2": self.myCall2,
+              @"rpt1Call": self.rpt1Call,
+              @"rpt2Call": self.rpt2Call,
               @"time": [NSDate date],
               @"message": @"Test Message"
             };
@@ -626,29 +531,29 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
             NSLog(@"Packet is NETWORK_STATUS\n");
             break;
         case 0x20: {
-            if(streamId != 0 && streamId != incomingPacket->payload.dstarHeader.streamId) {
+            if(self.streamId != 0 && self.streamId != incomingPacket->payload.dstarHeader.streamId) {
                 NSLog(@"Stream ID Mismatch on Header");
                 return;
             }
-            myCall = [[NSString alloc] initWithBytes:incomingPacket->payload.dstarHeader.myCall
+            self.myCall = [[NSString alloc] initWithBytes:incomingPacket->payload.dstarHeader.myCall
                                               length:sizeof(incomingPacket->payload.dstarHeader.myCall)
                                             encoding:NSUTF8StringEncoding];
-            urCall = [[NSString alloc] initWithBytes:incomingPacket->payload.dstarHeader.urCall
+            self.urCall = [[NSString alloc] initWithBytes:incomingPacket->payload.dstarHeader.urCall
                                               length:sizeof(incomingPacket->payload.dstarHeader.urCall)
                                             encoding:NSUTF8StringEncoding];
-            rpt1Call = [[NSString alloc] initWithBytes:incomingPacket->payload.dstarHeader.rpt1Call
+            self.rpt1Call = [[NSString alloc] initWithBytes:incomingPacket->payload.dstarHeader.rpt1Call
                                                 length:sizeof(incomingPacket->payload.dstarHeader.rpt1Call)
                                               encoding:NSUTF8StringEncoding];
-            rpt2Call = [[NSString alloc] initWithBytes:incomingPacket->payload.dstarHeader.rpt2Call
+            self.rpt2Call = [[NSString alloc] initWithBytes:incomingPacket->payload.dstarHeader.rpt2Call
                                                 length:sizeof(incomingPacket->payload.dstarHeader.rpt2Call)
                                               encoding:NSUTF8StringEncoding];
-            myCall2 = [[NSString alloc] initWithBytes:incomingPacket->payload.dstarHeader.myCall2
+            self.myCall2 = [[NSString alloc] initWithBytes:incomingPacket->payload.dstarHeader.myCall2
                                                length:sizeof(incomingPacket->payload.dstarHeader.myCall2)
                                              encoding:NSUTF8StringEncoding];
             
 
-            if(streamId == 0) {
-                streamId = incomingPacket->payload.dstarHeader.streamId;
+            if(self.streamId == 0) {
+                self.streamId = incomingPacket->payload.dstarHeader.streamId;
                 //sequence = incomingPacket->payload.dstarHeader.sequence;
                 //dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkStreamStart
@@ -657,7 +562,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
                      ];
                 //});
                 
-                NSLog(@"New stream %lu: My: %@/%@ Ur: %@ RPT1: %@ RPT2: %@\n", (unsigned long) streamId, myCall, myCall2, urCall, rpt1Call, rpt2Call);
+                NSLog(@"New stream %lu: My: %@/%@ Ur: %@ RPT1: %@ RPT2: %@\n", (unsigned long) self.streamId, self.myCall, self.myCall2, self.urCall, self.rpt1Call, self.rpt2Call);
             }
             
             //dispatch_async(dispatch_get_main_queue(), ^{
@@ -669,13 +574,13 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         }
             break;
         case 0x21:
-            if(streamId != incomingPacket->payload.dstarData.streamId) {
+            if(self.streamId != incomingPacket->payload.dstarData.streamId) {
                 // NSLog(@"Stream ID mismatch\n");
                 //  If we have missed time for about 10 packets, this stream is probably over and we missed the end packet.
                 //  XXX This should probably be in a watchdog timer somehow.
                 if(CFAbsoluteTimeGetCurrent() > lastPacketTime + .200) {
                     NSLog(@"Stream timed out\n");
-                    streamId = 0;
+                    self.streamId = 0;
                     lastPacketTime = CFAbsoluteTimeGetCurrent();
                     [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkStreamEnd
                                                                         object: self
@@ -707,7 +612,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
                                                                                   @"time": [NSDate date]
                                                                                 }
                      ];
-                streamId = 0;
+                self.streamId = 0;
                 //});
             }
             
@@ -724,7 +629,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
             sequence = (sequence + 1) % 21;
             
             //  If streamId == 0, we are on the last packet of this stream.
-            [vocoder decodeData: incomingPacket->payload.dstarData.ambeData lastPacket:(streamId == 0)];
+            [self.vocoder decodeData: incomingPacket->payload.dstarData.ambeData lastPacket:(self.streamId == 0)];
             break;
         case 0x24:
             NSLog(@"Packet is DD Data\n");

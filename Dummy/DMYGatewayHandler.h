@@ -27,22 +27,23 @@ extern NSString * const DMYNetworkStreamEnd;
 
 @interface DMYGatewayHandler : NSObject
 
-@property NSString *gatewayAddr;
-@property NSUInteger gatewayPort;
-@property NSUInteger repeaterPort;
+@property (copy, nonatomic) NSString *gatewayAddr;
+@property (assign, nonatomic) NSUInteger gatewayPort;
+@property (assign, nonatomic) NSUInteger repeaterPort;
 
-@property id <DMYVocoderProtocol> vocoder;
+@property (assign, nonatomic) id <DMYVocoderProtocol> vocoder;
 
-@property (readonly) NSString *urCall;
-@property (readonly) NSString *myCall;
-@property (readonly) NSString *rpt1Call;
-@property (readonly) NSString *rpt2Call;
-@property (readonly) NSString *myCall2;
-@property (readonly) NSUInteger streamId;
-@property NSString *xmitMyCall;
-@property NSString *xmitUrCall;
-@property NSString *xmitRpt1Call;
-@property NSString *xmitRpt2Call;
+@property (nonatomic, readonly, copy) NSString *urCall;
+@property (nonatomic, readonly, copy) NSString *myCall;
+@property (nonatomic, readonly, copy) NSString *rpt1Call;
+@property (nonatomic, readonly, copy) NSString *rpt2Call;
+@property (nonatomic, readonly, copy) NSString *myCall2;
+@property (nonatomic, readonly, assign) NSUInteger streamId;
+
+@property (copy, nonatomic) NSString *xmitMyCall;
+@property (copy, nonatomic) NSString *xmitUrCall;
+@property (copy, nonatomic) NSString *xmitRpt1Call;
+@property (copy, nonatomic) NSString *xmitRpt2Call;
 
 - (id) initWithRemoteAddress:(NSString *)gatewayAddr remotePort:(NSUInteger)remotePort localPort:(NSUInteger)localPort;
 - (id) init;
