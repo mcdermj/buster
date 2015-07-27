@@ -142,29 +142,65 @@ NSString * const DMYVocoderDeviceChanged = @"DMYVocoderDeviceChanged";
 - (void) processPacket;
 @end
 
+static bool isFTDIPort(io_object_t device) {
+    io_object_t parent;
+    io_object_t grandparent;
+    NSNumber *USBVendorId;
+    NSNumber *USBProductId;
+    OSStatus kernResult;
+    
+    kernResult = IORegistryEntryGetParentEntry(device, kIOServicePlane, &parent);
+    if(kernResult != KERN_SUCCESS) {
+        NSLog(@"Couldn't get parent: %d\n", kernResult);
+        return NO;
+    }
+    
+    kernResult = IORegistryEntryGetParentEntry(parent, kIOServicePlane, &grandparent);
+    if(kernResult != KERN_SUCCESS) {
+        NSLog(@"Couldn't get grandparent: %d\n", kernResult);
+        return NO;
+    }
+    
+    USBVendorId = CFBridgingRelease(IORegistryEntryCreateCFProperty(grandparent, CFSTR(kUSBVendorID), kCFAllocatorDefault, 0));
+    USBProductId = CFBridgingRelease(IORegistryEntryCreateCFProperty(grandparent, CFSTR(kUSBProductID), kCFAllocatorDefault, 0));
+    IOObjectRelease(parent);
+    IOObjectRelease(grandparent);
+    
+    return (USBVendorId.intValue == 0x0403 && USBProductId.intValue == 0x6015);
+}
+
 static void VocoderAdded(void *refCon, io_iterator_t iterator) {
+    //  This is needed to disarm the iterator.  Otherwise we won't get any more events.
     while(IOIteratorNext(iterator));
     
-    NSArray *ports = [DMYDV3KVocoder ports];
+    //  We need to wait 5ms for the device system to catch up, otherwise the io files won't all be created yet and the device won't open.
+    //  If there's only one possible port, we'll try it and see if it's a DV3K.
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5ull * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+        NSArray *ports = [DMYDV3KVocoder ports];
+        if(ports.count == 1) {
+            [DMYDataEngine sharedInstance].vocoder.serialPort = ports[0];
+            [[DMYDataEngine sharedInstance].vocoder start];
+        }
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:DMYVocoderDeviceChanged object: nil];
+    });
+}
+
+static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
+    io_object_t serialDevice;
     
-    if(ports.count == 1) {
-        [DMYDataEngine sharedInstance].vocoder.serialPort = ports[0];
-        [[DMYDataEngine sharedInstance].vocoder start];
-    }
+    //  If one of the devices that's being removed is the active device, we need to shut down the vocoder engine.
+    while((serialDevice = IOIteratorNext(iterator))) {
+        NSString *deviceFile = CFBridgingRelease(IORegistryEntryCreateCFProperty(serialDevice, CFSTR(kIOCalloutDeviceKey), kCFAllocatorDefault, 0));
+        if([deviceFile isEqualToString:[DMYDataEngine sharedInstance].vocoder.serialPort])
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[DMYDataEngine sharedInstance].vocoder stop];
+            });
+    };
     
     [[NSNotificationCenter defaultCenter] postNotificationName:DMYVocoderDeviceChanged object: nil];
 }
 
-static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
-    while(IOIteratorNext(iterator));
-    
-    NSArray *ports = [DMYDV3KVocoder ports];
-    
-    if(![ports containsObject:[DMYDataEngine sharedInstance].vocoder.serialPort])
-        [[DMYDataEngine sharedInstance].vocoder stop];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:DMYVocoderDeviceChanged object: nil];
-}
 
 @implementation DMYDV3KVocoder
 
@@ -174,8 +210,6 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     CFRunLoopSourceRef runLoopSource;
     kern_return_t kernReturn;
     io_iterator_t deviceIterator;
-    SInt32 usbVendor = 0x0403;
-    SInt32 usbProduct = 0x6015;
     
     kernReturn = IOMasterPort(MACH_PORT_NULL, &masterPort);
     if(kernReturn != KERN_SUCCESS) {
@@ -183,15 +217,13 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         return;
     }
     
-    matchingDict = (__bridge NSMutableDictionary *)(IOServiceMatching(kIOUSBDeviceClassName));
-    if(!matchingDict) {
-        NSLog(@"Couldn't create a USB matching dictionary\n");
-        mach_port_deallocate(mach_task_self(), masterPort);
-        return;
+    matchingDict = CFBridgingRelease(IOServiceMatching(kIOSerialBSDServiceValue));
+    if(matchingDict == NULL) {
+        NSLog(@"IOServiceMatching returned a NULL dictionary.\n");
+    } else {
+        [matchingDict setValue:[NSString stringWithCString:kIOSerialBSDRS232Type encoding:NSUTF8StringEncoding]
+                          forKey:[NSString stringWithCString:kIOSerialBSDTypeKey encoding:NSUTF8StringEncoding]];
     }
-    
-    matchingDict[@kUSBVendorName] = [NSNumber numberWithInt:usbVendor];
-    matchingDict[@kUSBProductName] = [NSNumber numberWithInt:usbProduct];
     
     IONotificationPortRef gNotifyPort = IONotificationPortCreate(masterPort);
     runLoopSource = IONotificationPortGetRunLoopSource(gNotifyPort);
@@ -241,6 +273,8 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         
         self.beep = YES;
         
+        serialDescriptor = 0;
+        
         status = DV3K_STOPPED;
         
     }
@@ -248,28 +282,15 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     return self;
 }
 
-+ (BOOL) automaticallyNotifiesObserversForKey:(NSString *)key {
-    BOOL automatic = NO;
-    
-    if([key isEqualToString:@"productId"] ||
-       [key isEqualToString:@"version"] ||
-       [key isEqualToString:@"serialPort"] ||
-       [key isEqualToString:@"speed"])
-        automatic = NO;
-    else
-        automatic = [super automaticallyNotifiesObserversForKey:key];
-    
-    return automatic;
-}
-
-
 - (void) setSpeed:(long)speed {
     if(_speed == speed) return;
     
     _speed = speed;
     
-    [self stop];
-    [self start];
+    if(status == DV3K_STARTED) {
+        [self stop];
+        [self start];
+    }
 }
 
 - (void) setSerialPort:(NSString *)serialPort {
@@ -277,8 +298,10 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     
     _serialPort = serialPort;
     
-    [self stop];
-    [self start];
+    if(status == DV3K_STARTED) {
+        [self stop];
+        [self start];
+    }
 }
 
 + (NSArray *) ports {
@@ -310,31 +333,9 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     }
     
     while((serialDevice = IOIteratorNext(matchingServices))) {
-        io_object_t parent;
-        io_object_t grandparent;
-        NSNumber *USBVendorId;
-        NSNumber *USBProductId;
-        
-        kernResult = IORegistryEntryGetParentEntry(serialDevice, kIOServicePlane, &parent);
-        if(kernResult != KERN_SUCCESS) {
-            NSLog(@"Couldn't get parent: %d\n", kernResult);
-            continue;
-        }
-        
-        kernResult = IORegistryEntryGetParentEntry(parent, kIOServicePlane, &grandparent);
-        if(kernResult != KERN_SUCCESS) {
-            NSLog(@"Couldn't get grandparent: %d\n", kernResult);
-            continue;
-        }
-
-        USBVendorId = CFBridgingRelease(IORegistryEntryCreateCFProperty(grandparent, CFSTR(kUSBVendorID), kCFAllocatorDefault, 0));
-        USBProductId = CFBridgingRelease(IORegistryEntryCreateCFProperty(grandparent, CFSTR(kUSBProductID), kCFAllocatorDefault, 0));
-        IOObjectRelease(parent);
-        IOObjectRelease(grandparent);
-        
         NSString *deviceFile = CFBridgingRelease(IORegistryEntryCreateCFProperty(serialDevice, CFSTR(kIOCalloutDeviceKey), kCFAllocatorDefault, 0));
         
-        if(USBVendorId.intValue == 0x0403 && USBProductId.intValue == 0x6015) {
+        if(deviceFile && isFTDIPort(serialDevice)) {
             [deviceArray addObject:deviceFile];
         }
     }
@@ -523,7 +524,12 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         [weakSelf processPacket];
     });
     
-    // dispatch_source_set_cancel_handler(dispatchSource, ^{ close(serialDescriptor); });
+    dispatch_source_set_cancel_handler(dispatchSource, ^{
+        if(serialDescriptor) {
+            close(serialDescriptor);
+            serialDescriptor = 0;
+        }
+    });
     
     dispatch_resume(dispatchSource);
     
@@ -547,8 +553,6 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     }
     
     dispatch_source_cancel(dispatchSource);
-    
-    close(serialDescriptor);
     
     self.productId = @"";
     self.version = @"";
