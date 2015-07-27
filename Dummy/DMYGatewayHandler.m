@@ -25,6 +25,7 @@
 NSString * const DMYNetworkHeaderReceived = @"DMYNetworkHeaderReceived";
 NSString * const DMYNetworkStreamEnd = @"DMYNetworkStreamEnd";
 NSString * const DMYNetworkStreamStart = @"DMYNetworkStreamStart";
+NSString * const DMYRepeaterInfoReceived = @"DMYRepeaterInfoReceived";
 
 static const unsigned short ccittTab[] = {
     0x0000,0x1189,0x2312,0x329b,0x4624,0x57ad,0x6536,0x74bf,
@@ -489,17 +490,30 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     __weak DMYGatewayHandler *weakSelf = self;
     
     switch(incomingPacket->packetType) {
-        case 0x00:
+        case 0x00: {
             NSLog(@"Packet is NETWORK_TEXT\n");
-            self.localText = [[NSString alloc] initWithBytes:incomingPacket->payload.networkText.local
+            /* self.localText = [[NSString alloc] initWithBytes:incomingPacket->payload.networkText.local
                                              length:sizeof(incomingPacket->payload.networkText.local)
                                            encoding:NSUTF8StringEncoding];
             self.reflectorText = [[NSString alloc] initWithBytes:incomingPacket->payload.networkText.reflector
                                              length:sizeof(incomingPacket->payload.networkText.reflector)
-                                           encoding:NSUTF8StringEncoding];
+                                           encoding:NSUTF8StringEncoding]; */
+            
+            NSDictionary *infoDict = @{ @"local": [[NSString alloc] initWithBytes:incomingPacket->payload.networkText.local
+                                                                           length:sizeof(incomingPacket->payload.networkText.local)
+                                                                         encoding:NSUTF8StringEncoding],
+                                        @"reflector": [[NSString alloc] initWithBytes:incomingPacket->payload.networkText.reflector
+                                                                               length:sizeof(incomingPacket->payload.networkText.reflector)
+                                                                             encoding:NSUTF8StringEncoding],
+                                        @"status": [NSData dataWithBytes:&incomingPacket->payload.networkText.status length:1] };
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:DMYRepeaterInfoReceived object:self userInfo:infoDict];
+            });
 
             NSLog(@"Status = 0x%02X", incomingPacket->payload.networkText.status);
             break;
+        }
         case 0x01:
             NSLog(@"Packet is NETWORK_TEMPTEXT\n");
             break;

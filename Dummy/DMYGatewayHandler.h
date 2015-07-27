@@ -26,6 +26,7 @@
 extern NSString * const DMYNetworkHeaderReceived;
 extern NSString * const DMYNetworkStreamStart;
 extern NSString * const DMYNetworkStreamEnd;
+extern NSString * const DMYRepeaterInfoReceived;
 
 @interface DMYGatewayHandler : NSObject
 

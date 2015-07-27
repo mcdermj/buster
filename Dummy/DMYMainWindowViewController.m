@@ -108,6 +108,10 @@
         [self endTx];
     }];
     
+    [[NSNotificationCenter defaultCenter] addObserverForName:DMYRepeaterInfoReceived object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+        self.repeaterInfo.stringValue = notification.userInfo[@"local"];
+    }];
+    
     [self.txButton setPeriodicDelay:.1f interval:.1f];
     txButtonState = NSOffState;
 }
