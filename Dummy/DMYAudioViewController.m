@@ -27,14 +27,7 @@
 
 @implementation DMYAudioViewController
 
-@synthesize outputDeviceMenu;
-@synthesize inputDeviceMenu;
-@synthesize selectedInput;
-@synthesize selectedOutput;
-
 - (void) setSelectedInput:(NSInteger)_selectedInput {
-    //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
-    
     [DMYDataEngine sharedInstance].audio.inputDevice = (AudioDeviceID) _selectedInput;
     
     for(NSDictionary *entry in [DMYAudioHandler enumerateInputDevices])
@@ -43,14 +36,10 @@
 }
 
 - (NSInteger) selectedInput {
-    //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
-    
     return [DMYDataEngine sharedInstance].audio.inputDevice;
 }
 
 - (void) setSelectedOutput:(NSInteger)_selectedOutput {
-    //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
-
     [DMYDataEngine sharedInstance].audio.outputDevice = (AudioDeviceID) _selectedOutput;
     
     for(NSDictionary *entry in [DMYAudioHandler enumerateOutputDevices])
@@ -60,33 +49,26 @@
 }
 
 - (NSInteger)selectedOutput {
-    //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
-    
     return [DMYDataEngine sharedInstance].audio.outputDevice;
 }
 
 -(void)refreshDevices {
-    //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
-
-    NSLog(@"Refreshing devices");
-    [inputDeviceMenu removeAllItems];
+    [self.inputDeviceMenu removeAllItems];
     for(NSDictionary *entry in [DMYAudioHandler enumerateInputDevices]) {
-        [inputDeviceMenu addItemWithTitle:entry[@"description"]];
-        [inputDeviceMenu itemWithTitle:entry[@"description"]].tag = ((NSNumber *)entry[@"id"]).integerValue;
-        NSLog(@"Adding %@", entry[@"description"]);
+        [self.inputDeviceMenu addItemWithTitle:entry[@"description"]];
+        [self.inputDeviceMenu itemWithTitle:entry[@"description"]].tag = ((NSNumber *)entry[@"id"]).integerValue;
     }
-    [inputDeviceMenu selectItemWithTag:[DMYDataEngine sharedInstance].audio.inputDevice];
+    [self.inputDeviceMenu selectItemWithTag:[DMYDataEngine sharedInstance].audio.inputDevice];
     
-    [outputDeviceMenu removeAllItems];
+    [self.outputDeviceMenu removeAllItems];
     for(NSDictionary *entry in [DMYAudioHandler enumerateOutputDevices]) {
-        [outputDeviceMenu addItemWithTitle:entry[@"description"]];
-        [outputDeviceMenu itemWithTitle:entry[@"description"]].tag = ((NSNumber *)entry[@"id"]).integerValue;
+        [self.outputDeviceMenu addItemWithTitle:entry[@"description"]];
+        [self.outputDeviceMenu itemWithTitle:entry[@"description"]].tag = ((NSNumber *)entry[@"id"]).integerValue;
     }
-    [outputDeviceMenu selectItemWithTag:[DMYDataEngine sharedInstance].audio.outputDevice];
+    [self.outputDeviceMenu selectItemWithTag:[DMYDataEngine sharedInstance].audio.outputDevice];
 }
 
 -(void)viewDidLoad {
-
     [self refreshDevices];
     
     [[NSNotificationCenter defaultCenter] addObserverForName:DMYAudioDeviceChanged

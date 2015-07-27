@@ -19,10 +19,6 @@
 
 #import "DMYAppDelegate.h"
 
-#import "DMYGatewayHandler.h"
-#import "DMYDV3KVocoder.h"
-#import "DMYAudioHandler.h"
-
 #import "DMYDataEngine.h"
 
 
@@ -35,8 +31,6 @@
 @synthesize txKeyCode;
 
 - (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
-    // Insert code here to initialize your application
-    
     NSURL *defaultPrefsFile = [[NSBundle mainBundle]
                                URLForResource:@"DefaultPreferences" withExtension:@"plist"];
     NSDictionary *defaultPrefs =
@@ -45,17 +39,6 @@
     
     DMYDataEngine *engine = [DMYDataEngine sharedInstance];
     
-    /* network = [[DMYGatewayHandler alloc] initWithRemoteAddress:[[NSUserDefaults standardUserDefaults] stringForKey:@"gatewayAddr"] remotePort:[[NSUserDefaults standardUserDefaults] integerForKey:@"gatewayPort"] localPort:[[NSUserDefaults standardUserDefaults] integerForKey:@"repeaterPort"]]; */
-    
-    
-    /* vocoder = [[DMYDV3KVocoder alloc] initWithPort:[[NSUserDefaults standardUserDefaults] stringForKey:@"dv3kSerialPort"]
-                                          andSpeed:[[NSUserDefaults standardUserDefaults] integerForKey:@"dv3kSerialPortBaud"]];
-    
-    audio = [[DMYAudioHandler alloc] init]; */
-    
-    /* network.xmitRpt1Call = [[NSUserDefaults standardUserDefaults] stringForKey:@"rpt1Call"];
-    network.xmitRpt2Call = [[NSUserDefaults standardUserDefaults] stringForKey:@"rpt2Call"];
-    network.xmitMyCall = [[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"]; */
     [engine.network bind:@"xmitMyCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
     [engine.network bind:@"xmitRpt1Call" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.rpt1Call" options:nil];
     [engine.network bind:@"xmitRpt2Call" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.rpt2Call" options:nil];
@@ -76,10 +59,6 @@
             [[NSUserDefaults standardUserDefaults] setObject:ports[0] forKey:@"dv3kSerialPort"];
     }
 
-    /* network.vocoder = vocoder;
-    audio.vocoder = vocoder;
-    vocoder.audio = audio; */
-    
     NSString *inputUid = [[NSUserDefaults standardUserDefaults] stringForKey:@"inputAudioDevice"];
     if(!inputUid) {
         engine.audio.inputDevice = engine.audio.defaultInputDevice;

@@ -23,21 +23,19 @@
 
 @interface DMYMainWindowViewController : NSViewController <NSTableViewDelegate, NSTableViewDataSource>
 
-@property (weak) IBOutlet NSTextField *urCall;
-@property (weak) IBOutlet NSTextField *myCall;
-@property (weak) IBOutlet NSTextField *rpt1Call;
-@property (weak) IBOutlet NSTextField *rpt2Call;
-@property (weak) IBOutlet NSTextField *linkTarget;
-@property (strong) IBOutlet NSArrayController *heardTableController;
-@property (weak) IBOutlet NSTableView *heardTableView;
-@property (weak) IBOutlet NSTableView *reflectorTableView;
-@property (strong) IBOutlet NSArrayController *reflectorTableController;
-@property (weak) IBOutlet NSComboBox *xmitUrCall;
-@property (weak) IBOutlet NSImageView *statusLED;
-@property (weak) IBOutlet NSButton *txButton;
-@property (weak) IBOutlet NSTextField *repeaterInfo;
-
-@property (readonly) DMYGatewayHandler *network;
+@property (nonatomic, weak) IBOutlet NSTextField *urCall;
+@property (nonatomic, weak) IBOutlet NSTextField *myCall;
+@property (nonatomic, weak) IBOutlet NSTextField *rpt1Call;
+@property (nonatomic, weak) IBOutlet NSTextField *rpt2Call;
+@property (nonatomic, weak) IBOutlet NSTextField *linkTarget;
+@property (nonatomic, strong) IBOutlet NSArrayController *heardTableController;
+@property (nonatomic, weak) IBOutlet NSTableView *heardTableView;
+@property (nonatomic, weak) IBOutlet NSTableView *reflectorTableView;
+@property (nonatomic, strong) IBOutlet NSArrayController *reflectorTableController;
+@property (nonatomic, weak) IBOutlet NSComboBox *xmitUrCall;
+@property (nonatomic, weak) IBOutlet NSImageView *statusLED;
+@property (nonatomic, weak) IBOutlet NSButton *txButton;
+@property (nonatomic, weak) IBOutlet NSTextField *repeaterInfo;
 
 - (IBAction)doLink:(id)sender;
 - (IBAction)addReflector:(id)sender;

@@ -134,15 +134,15 @@ NSString * const DMYVocoderDeviceChanged = @"DMYVocoderDeviceChanged";
     } status;
 }
 
+@property (nonatomic, readwrite, copy) NSString *productId;
+@property (nonatomic, readwrite, copy) NSString *version;
+
 - (BOOL) readPacket:(struct dv3k_packet *)packet;
 - (BOOL) sendCtrlPacket:(struct dv3k_packet)packet expectResponse:(uint8)response;
 - (void) processPacket;
 @end
 
 static void VocoderAdded(void *refCon, io_iterator_t iterator) {
-    //  XXX This should probably be worked out so that we get a singleton for this class.
-    //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
-
     while(IOIteratorNext(iterator));
     
     NSArray *ports = [DMYDV3KVocoder ports];
@@ -156,9 +156,6 @@ static void VocoderAdded(void *refCon, io_iterator_t iterator) {
 }
 
 static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
-    //  XXX This should probably be worked out so that we get a singleton for this class.
-    //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
-    
     while(IOIteratorNext(iterator));
     
     NSArray *ports = [DMYDV3KVocoder ports];
@@ -170,13 +167,6 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
 }
 
 @implementation DMYDV3KVocoder
-
-@synthesize serialPort;
-@synthesize productId;
-@synthesize version;
-@synthesize speed;
-@synthesize audio;
-@synthesize beep;
 
 + (void) initialize {
     mach_port_t masterPort;
@@ -221,43 +211,6 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     mach_port_deallocate(mach_task_self(), masterPort);
 }
 
-- (id) initWithPort:(NSString *)_serialPort andSpeed:(long)_speed {
-    self = [super init];
-    
-    if(self) {
-        dv3k_ambe.start_byte = DV3K_START_BYTE;
-        dv3k_ambe.header.packet_type = DV3K_TYPE_AMBE;
-        dv3k_ambe.header.payload_length = htons(sizeof(dv3k_ambe.payload.ambe.data));
-        dv3k_ambe.payload.ambe.data.field_id = DV3K_AMBE_FIELD_CHAND;
-        dv3k_ambe.payload.ambe.data.num_bits = sizeof(dv3k_ambe.payload.ambe.data.data) * 8;
-        
-        dv3k_audio.start_byte = DV3K_START_BYTE;
-        dv3k_audio.header.packet_type = DV3K_TYPE_AUDIO;
-        dv3k_audio.header.payload_length = htons(sizeof(dv3k_ambe.payload.audio));
-        dv3k_audio.payload.audio.field_id = DV3K_AUDIO_FIELD_SPEECHD;
-        dv3k_audio.payload.audio.num_samples = sizeof(dv3k_audio.payload.audio.samples) / sizeof(short);
-        dv3k_audio.payload.audio.cmode_field_id = 0x02;
-        dv3k_audio.payload.audio.cmode_value = htons(0x4000);
-
-        
-        dispatch_queue_attr_t dispatchQueueAttr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, -1);
-        dispatchQueue = dispatch_queue_create("net.nh6z.Dummy.SerialIO", dispatchQueueAttr);
-        dispatchSource = NULL;
-        
-        responsePacket = calloc(1, sizeof(struct dv3k_packet));
-        
-        speed = _speed;
-        serialPort = _serialPort;
-        
-        beep = YES;
-        
-        status = DV3K_STOPPED;
-
-    }
-    
-    return self;
-}
-
 - (id) init {
     self = [super init];
     
@@ -283,10 +236,10 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         
         responsePacket = calloc(1, sizeof(struct dv3k_packet));
         
-        speed = 0;
-        serialPort = @"";
+        self.speed = 0;
+        self.serialPort = @"";
         
-        beep = YES;
+        self.beep = YES;
         
         status = DV3K_STOPPED;
         
@@ -310,33 +263,22 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
 }
 
 
-- (void) setSpeed:(long)_speed {
-    if(speed == _speed) return;
+- (void) setSpeed:(long)speed {
+    if(_speed == speed) return;
     
-    [self willChangeValueForKey:@"speed"];
-    speed = _speed;
-    [self didChangeValueForKey:@"speed"];
+    _speed = speed;
     
     [self stop];
     [self start];
 }
-- (long) speed {
-    return speed;
-}
 
-- (void) setSerialPort:(NSString *)_serialPort {
+- (void) setSerialPort:(NSString *)serialPort {
     if([serialPort isEqualToString:_serialPort]) return;
     
-    [self willChangeValueForKey:@"serialPort"];
-    serialPort = _serialPort;
-    [self didChangeValueForKey:@"serialPort"];
+    _serialPort = serialPort;
     
     [self stop];
     [self start];
-}
-
-- (NSString *) serialPort {
-    return serialPort;
 }
 
 + (NSArray *) ports {
@@ -481,17 +423,13 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         return YES;
     }
     
-    [self willChangeValueForKey:@"version"];
-    [self willChangeValueForKey:@"productId"];
-    version = @"";
-    productId = @"";
-    [self didChangeValueForKey:@"productId"];
-    [self didChangeValueForKey:@"version"];
+    self.version = @"";
+    self.productId = @"";
     
-    if(serialPort == nil || [serialPort isEqualToString:@""])
+    if(self.serialPort == nil || [self.serialPort isEqualToString:@""])
         return NO;
     
-    serialDescriptor = open([serialPort cStringUsingEncoding:NSUTF8StringEncoding], O_RDWR | O_NOCTTY);
+    serialDescriptor = open([self.serialPort cStringUsingEncoding:NSUTF8StringEncoding], O_RDWR | O_NOCTTY);
     if(serialDescriptor == -1) {
         NSLog(@"Error opening DV3000 Serial Port: %s\n", strerror(errno));
         return NO;
@@ -517,7 +455,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         return NO;
     }
     
-    if(ioctl(serialDescriptor, IOSSIOSPEED, &speed) == -1) {
+    if(ioctl(serialDescriptor, IOSSIOSPEED, &_speed) == -1) {
         NSLog(@"Cannot set terminal baud rate: %s\n", strerror(errno));
         close(serialDescriptor);
         return NO;
@@ -591,12 +529,8 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     
     NSLog(@"Completed serial setup\n");
     
-    [self willChangeValueForKey:@"productId"];
-    [self willChangeValueForKey:@"version"];
-    productId = tmpProductId;
-    version = tmpVersion;
-    [self didChangeValueForKey:@"version"];
-    [self didChangeValueForKey:@"productId"];
+    self.productId = tmpProductId;
+    self.version = tmpVersion;
     
     NSLog(@"Product ID is %@\n", self.productId);
     NSLog(@"Version is %@\n", self.version);
@@ -616,12 +550,8 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     
     close(serialDescriptor);
     
-    [self willChangeValueForKey:@"productId"];
-    [self willChangeValueForKey:@"version"];
-    productId = @"";
-    version = @"";
-    [self didChangeValueForKey:@"version"];
-    [self didChangeValueForKey:@"productId"];
+    self.productId = @"";
+    self.version = @"";
     
     status = DV3K_STOPPED;
 }
@@ -646,7 +576,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
             return;
         }
         
-        if(last && beep) {
+        if(last && self.beep) {
             for(int i = 0; i < 5; ++i) {
                 bytes = write(serialDescriptor, &bleepPacket, dv3k_packet_size(bleepPacket));
                 if(bytes == -1) {
@@ -692,7 +622,6 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
 }
 
 -(void) processPacket {
-    //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
     BOOL last = NO;
     
     if(![self readPacket:responsePacket])
@@ -725,7 +654,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
                 NSLog(@"Received invalid audio packet\n");
                 return;
             }
-            [audio queueAudioData:&responsePacket->payload.audio.samples withLength:sizeof(responsePacket->payload.audio.samples)];
+            [self.audio queueAudioData:&responsePacket->payload.audio.samples withLength:sizeof(responsePacket->payload.audio.samples)];
             break;
     }
 }

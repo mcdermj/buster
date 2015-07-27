@@ -19,10 +19,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "DMYGatewayHandler.h"
-#import "DMYDV3KVocoder.h"
-#import "DMYAudioHandler.h"
-
 #import <MASShortcut/Shortcut.h>
 
 @interface DMYAppDelegate : NSObject <NSApplicationDelegate>

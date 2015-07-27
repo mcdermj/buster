@@ -22,42 +22,26 @@
 #import "DMYDataEngine.h"
 
 @interface DMYVocoderViewController ()
-
 @end
 
 @implementation DMYVocoderViewController
 
-@synthesize serialPortPopup;
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Initialization code here.
-    }
-    
-    return self;
-}
-
 -(DMYDV3KVocoder *) vocoder {
-    // DMYAppDelegate *appDelegate = [NSApp delegate];
-    
     return [DMYDataEngine sharedInstance].vocoder;
 }
 
 - (void)viewDidAppear {
     [super viewDidAppear];
-    
 
-    [serialPortPopup removeAllItems];
-    [serialPortPopup addItemsWithTitles:[DMYDV3KVocoder ports]];
+    [self.serialPortPopup removeAllItems];
+    [self.serialPortPopup addItemsWithTitles:[DMYDV3KVocoder ports]];
     
     [[NSNotificationCenter defaultCenter] addObserverForName: DMYVocoderDeviceChanged
                                                       object: nil
                                                        queue: [NSOperationQueue mainQueue]
                                                   usingBlock:^(NSNotification *notification) {
-                                                      [serialPortPopup removeAllItems];
-                                                      [serialPortPopup addItemsWithTitles:[DMYDV3KVocoder ports]];
+                                                      [self.serialPortPopup removeAllItems];
+                                                      [self.serialPortPopup addItemsWithTitles:[DMYDV3KVocoder ports]];
                                                    }
      ];
 }

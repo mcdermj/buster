@@ -20,27 +20,24 @@
 #import <Foundation/Foundation.h>
 
 #import "DMYVocoderProtocol.h"
-
 #import "DMYAudioHandler.h"
 
 extern NSString * const DMYVocoderDeviceChanged;
 
 @interface DMYDV3KVocoder : NSObject <DMYVocoderProtocol>
 
-- (id) initWithPort:(NSString *)serialPort andSpeed:(long)speed;
-- (id) init;
-
 + (NSArray *)ports;
 
+- (id) init;
 - (BOOL) start;
 - (void) stop;
 
-@property NSString *serialPort;
-@property long speed;
-@property (readonly) NSString *productId;
-@property (readonly) NSString *version;
-@property BOOL beep;
+@property (nonatomic, copy) NSString *serialPort;
+@property (nonatomic, assign) long speed;
+@property (nonatomic, assign) BOOL beep;
+@property (nonatomic, readonly, copy) NSString *productId;
+@property (nonatomic, readonly, copy) NSString *version;
 
-@property DMYAudioHandler *audio;
+@property (nonatomic, assign) DMYAudioHandler *audio;
 
 @end

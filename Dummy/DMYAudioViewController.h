@@ -20,10 +20,9 @@
 #import <Cocoa/Cocoa.h>
 
 @interface DMYAudioViewController : NSViewController
-@property (weak) IBOutlet NSPopUpButton *outputDeviceMenu;
-@property (weak) IBOutlet NSPopUpButton *inputDeviceMenu;
+@property (nonatomic, weak) IBOutlet NSPopUpButton *outputDeviceMenu;
+@property (nonatomic, weak) IBOutlet NSPopUpButton *inputDeviceMenu;
 
-@property NSInteger selectedInput;
-@property NSInteger selectedOutput;
-
+@property (nonatomic, assign) NSInteger selectedInput;
+@property (nonatomic, assign) NSInteger selectedOutput;
 @end

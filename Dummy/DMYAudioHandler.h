@@ -36,11 +36,11 @@ extern NSString * const DMYAudioDeviceChanged;
 
 -(void)setInputDevice:(AudioDeviceID)_inputDevice andOutputDevice:(AudioDeviceID)_outputDevice;
 
-@property id<DMYVocoderProtocol> vocoder;
-@property AudioDeviceID inputDevice;
-@property AudioDeviceID outputDevice;
-@property (readonly) AudioDeviceID defaultInputDevice;
-@property (readonly) AudioDeviceID defaultOutputDevice;
-@property BOOL xmit;
+@property (nonatomic) id<DMYVocoderProtocol> vocoder;
+@property (nonatomic) AudioDeviceID inputDevice;
+@property (nonatomic) AudioDeviceID outputDevice;
+@property (nonatomic, readonly) AudioDeviceID defaultInputDevice;
+@property (nonatomic, readonly) AudioDeviceID defaultOutputDevice;
+@property (nonatomic) BOOL xmit;
 
 @end

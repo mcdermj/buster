@@ -21,6 +21,8 @@
 
 #import "DMYVocoderProtocol.h"
 
+
+#pragma mark - Notification Constants
 extern NSString * const DMYNetworkHeaderReceived;
 extern NSString * const DMYNetworkStreamStart;
 extern NSString * const DMYNetworkStreamEnd;
@@ -48,7 +50,6 @@ extern NSString * const DMYNetworkStreamEnd;
 @property (nonatomic, readonly, copy) NSString *localText;
 @property (nonatomic, readonly, copy) NSString *reflectorText;
 
-- (id) initWithRemoteAddress:(NSString *)gatewayAddr remotePort:(NSUInteger)remotePort localPort:(NSUInteger)localPort;
 - (id) init;
 - (BOOL) start;
 - (void) stop;

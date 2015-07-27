@@ -20,7 +20,6 @@
 #import "DMYGatewayHandler.h"
 
 #import <arpa/inet.h>
-
 #import <sys/ioctl.h>
 
 NSString * const DMYNetworkHeaderReceived = @"DMYNetworkHeaderReceived";
@@ -141,7 +140,6 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 @property (nonatomic, copy) NSString *myCall2;
 @property (nonatomic, assign) NSUInteger streamId;
 
-
 - (NSData *) constructRemoteAddrStruct;
 - (NSData *) constructLocalAddrStruct;
 - (void) processPacket;
@@ -185,42 +183,6 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         xmitStreamId = htons((short) random());
         xmitSequence = 0;
     }
-    return self;
-}
-
-- (id) initWithRemoteAddress:(NSString *)gatewayAddr remotePort:(NSUInteger)gatewayPort localPort:(NSUInteger)repeaterPort {
-    self = [super init];
-    
-    if(self) {
-        gatewaySocket = 0;
-        _streamId = 0;
-        
-        _gatewayPort = gatewayPort;
-        _repeaterPort = repeaterPort;
-        _gatewayAddr = [NSString stringWithString:gatewayAddr];
-        
-        _vocoder = nil;
-        
-        _urCall = @"";
-        _myCall = @"";
-        _rpt1Call = @"";
-        _rpt2Call = @"";
-        _myCall2 = @"";
-        _xmitMyCall = @"";
-        _xmitUrCall = @"";
-        _xmitRpt1Call = @"";
-        _xmitRpt2Call = @"";
-        _reflectorText = @"";
-        _localText = @"";
-        
-        incomingPacket = malloc(sizeof(struct gatewayPacket));
-        
-        status = GWY_STOPPED;
-        
-        xmitStreamId = htons((short) random());
-        xmitSequence = 0;
-    }
-    
     return self;
 }
 
@@ -370,7 +332,6 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         
         //   XXX Maybe the length should be shorter here
         size_t packetLen = sizeof(packet.magic) + sizeof(packet.packetType) + sizeof(packet.payload.dstarHeader);
-        NSLog(@"packetLen = %lu\n", packetLen);
         if(send(gatewaySocket, &packet, packetLen, 0) == -1) {
             NSLog(@"Couldn't send link header: %s\n", strerror(errno));
             return;
@@ -569,7 +530,6 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 
             if(self.streamId == 0) {
                 self.streamId = incomingPacket->payload.dstarHeader.streamId;
-                //sequence = incomingPacket->payload.dstarHeader.sequence;
                 //dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkStreamStart
                                                                         object: self
@@ -590,7 +550,6 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
             break;
         case 0x21:
             if(self.streamId != incomingPacket->payload.dstarData.streamId) {
-                // NSLog(@"Stream ID mismatch\n");
                 //  If we have missed time for about 10 packets, this stream is probably over and we missed the end packet.
                 //  XXX This should probably be in a watchdog timer somehow.
                 if(CFAbsoluteTimeGetCurrent() > lastPacketTime + .200) {
@@ -609,8 +568,6 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
             if(incomingPacket->payload.dstarData.slowData[0] == 0x55 &&
                incomingPacket->payload.dstarData.slowData[1] == 0x2D &&
                incomingPacket->payload.dstarData.slowData[2] == 0x16) {
-                //NSLog(@"Received Sync Packet\n");
-                // sequence = 0;
                 if(incomingPacket->payload.dstarData.sequence != 0)
                     NSLog(@"Sync in wrong place");
             }
@@ -656,7 +613,6 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 }
 
 - (void) dealloc {
-    NSLog(@"Deallocing Gateway Handler\n");
     free(incomingPacket);
 }
 

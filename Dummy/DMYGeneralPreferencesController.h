@@ -13,6 +13,5 @@
 @interface DMYGeneralPreferencesController : NSViewController
 
 @property (nonatomic, weak) IBOutlet MASShortcutView *shortcutView;
-@property MASShortcut *shortcutValue;
-
+@property (nonatomic) MASShortcut *shortcutValue;
 @end
