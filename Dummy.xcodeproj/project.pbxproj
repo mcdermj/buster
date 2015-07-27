@@ -80,7 +80,7 @@
 		093B9B1B1B52DBA000C2ABD0 /* DMYDV3KVocoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYDV3KVocoder.h; sourceTree = "<group>"; };
 		093B9B1C1B52DBA000C2ABD0 /* DMYDV3KVocoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYDV3KVocoder.m; sourceTree = "<group>"; };
 		095491091B64A78100A57FD2 /* DMYApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYApplication.h; sourceTree = "<group>"; };
-		0954910A1B64A78100A57FD2 /* DMYApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYApplication.m; sourceTree = "<group>"; };
+		0954910A1B64A78100A57FD2 /* DMYApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = DMYApplication.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		095491191B64B5B600A57FD2 /* DMYGeneralPreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYGeneralPreferencesController.h; sourceTree = "<group>"; };
 		0954911A1B64B5B600A57FD2 /* DMYGeneralPreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYGeneralPreferencesController.m; sourceTree = "<group>"; };
 		0954911C1B64B8A800A57FD2 /* MASShortcut.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MASShortcut.xcodeproj; path = MASShortcut/MASShortcut.xcodeproj; sourceTree = "<group>"; };
@@ -207,7 +207,7 @@
 			isa = PBXGroup;
 			children = (
 				095491231B64B8A900A57FD2 /* MASShortcut.framework */,
-				095491251B64B8A900A57FD2 /* Tests.xctest */,
+				095491251B64B8A900A57FD2 /* MASShortcutTests.xctest */,
 				095491271B64B8A900A57FD2 /* Demo.app */,
 			);
 			name = Products;
@@ -303,10 +303,9 @@
 			remoteRef = 095491221B64B8A900A57FD2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		095491251B64B8A900A57FD2 /* Tests.xctest */ = {
+		095491251B64B8A900A57FD2 /* MASShortcutTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			name = Tests.xctest;
 			path = MASShortcutTests.xctest;
 			remoteRef = 095491241B64B8A900A57FD2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -482,7 +481,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Dummy/Prefix.pch;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = NO;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_PEDANTIC = NO;
@@ -507,7 +506,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Dummy/Prefix.pch;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = NO;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_PEDANTIC = NO;
