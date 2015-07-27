@@ -19,7 +19,7 @@
 
 #import "DMYAudioViewController.h"
 
-#import "DMYAppDelegate.h"
+#import "DMYDataEngine.h"
 
 @interface DMYAudioViewController ()
 -(void)refreshDevices;
@@ -33,9 +33,9 @@
 @synthesize selectedOutput;
 
 - (void) setSelectedInput:(NSInteger)_selectedInput {
-    DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
+    //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
     
-    delegate.audio.inputDevice = (AudioDeviceID) _selectedInput;
+    [DMYDataEngine sharedInstance].audio.inputDevice = (AudioDeviceID) _selectedInput;
     
     for(NSDictionary *entry in [DMYAudioHandler enumerateInputDevices])
         if(((NSNumber *)entry[@"id"]).integerValue == _selectedInput)
@@ -43,15 +43,15 @@
 }
 
 - (NSInteger) selectedInput {
-    DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
+    //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
     
-    return delegate.audio.inputDevice;
+    return [DMYDataEngine sharedInstance].audio.inputDevice;
 }
 
 - (void) setSelectedOutput:(NSInteger)_selectedOutput {
-    DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
+    //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
 
-    delegate.audio.outputDevice = (AudioDeviceID) _selectedOutput;
+    [DMYDataEngine sharedInstance].audio.outputDevice = (AudioDeviceID) _selectedOutput;
     
     for(NSDictionary *entry in [DMYAudioHandler enumerateOutputDevices])
         if(((NSNumber *)entry[@"id"]).integerValue == _selectedOutput)
@@ -60,13 +60,13 @@
 }
 
 - (NSInteger)selectedOutput {
-    DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
+    //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
     
-    return delegate.audio.outputDevice;
+    return [DMYDataEngine sharedInstance].audio.outputDevice;
 }
 
 -(void)refreshDevices {
-    DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
+    //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
 
     NSLog(@"Refreshing devices");
     [inputDeviceMenu removeAllItems];
@@ -75,14 +75,14 @@
         [inputDeviceMenu itemWithTitle:entry[@"description"]].tag = ((NSNumber *)entry[@"id"]).integerValue;
         NSLog(@"Adding %@", entry[@"description"]);
     }
-    [inputDeviceMenu selectItemWithTag:delegate.audio.inputDevice];
+    [inputDeviceMenu selectItemWithTag:[DMYDataEngine sharedInstance].audio.inputDevice];
     
     [outputDeviceMenu removeAllItems];
     for(NSDictionary *entry in [DMYAudioHandler enumerateOutputDevices]) {
         [outputDeviceMenu addItemWithTitle:entry[@"description"]];
         [outputDeviceMenu itemWithTitle:entry[@"description"]].tag = ((NSNumber *)entry[@"id"]).integerValue;
     }
-    [outputDeviceMenu selectItemWithTag:delegate.audio.outputDevice];
+    [outputDeviceMenu selectItemWithTag:[DMYDataEngine sharedInstance].audio.outputDevice];
 }
 
 -(void)viewDidLoad {

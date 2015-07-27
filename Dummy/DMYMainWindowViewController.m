@@ -20,12 +20,15 @@
 #import "DMYMainWindowViewController.h"
 
 #import "DMYGatewayHandler.h"
-#import "DMYAppDelegate.h"
 #import "DMYApplication.h"
+#import "DMYDataEngine.h"
 
 @interface DMYMainWindowViewController () {
     NSInteger txButtonState;
 }
+
+@property DMYGatewayHandler *network;
+
 @end
 
 @implementation DMYMainWindowViewController
@@ -47,6 +50,9 @@
     [super viewDidLoad];
     
     //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
+    //DMYDataEngine *engine = [DMYDataEngine sharedInstance];
+    
+    _network = [DMYDataEngine sharedInstance].network;
     
     [reflectorTableView registerForDraggedTypes:@[ @"com.nh6z.Dummy.reflector" ]];
     reflectorTableView.dataSource = self;
@@ -139,12 +145,10 @@
 
 - (void)setRepresentedObject:(id)representedObject {
     [super setRepresentedObject:representedObject];
-    
-    // Update the view, if already loaded.
 }
 
 - (IBAction)doLink:(id)sender {
-    DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
+    //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
     
     if(reflectorTableController.selectedObjects.count != 1) {
         NSBeep();
@@ -156,7 +160,7 @@
     if(reflector.length < 8)
         return;
     
-    [delegate.network linkTo:reflector];
+    [[DMYDataEngine sharedInstance].network linkTo:reflector];
 }
 
 -(void) addReflector:(id)sender {
@@ -168,21 +172,25 @@
     [reflectorTableView editColumn:0 row:insertedObjectIndex withEvent:nil select:YES];
 }
 
-- (IBAction)reflectorTableEnter:(id)sender {
-    NSLog(@"I'm here\n");
-}
-
 -(void)startTx {
-    DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
-    delegate.network.xmitUrCall = xmitUrCall.objectValue;
-    delegate.audio.xmit = YES;
+    [DMYDataEngine sharedInstance].network.xmitUrCall = xmitUrCall.objectValue;
+    [DMYDataEngine sharedInstance].audio.xmit = YES;
     statusLED.image = [NSImage imageNamed:@"Red LED"];
+    //  [window makeFirstResponder:nil];
+    
+    NSMutableArray *destinationCalls = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"destinationCalls"]];
+    if (![destinationCalls containsObject:self.xmitUrCall.objectValue]) {
+        if(destinationCalls.count > 11) {
+            [destinationCalls removeObjectAtIndex:11];
+        }
+        [destinationCalls insertObject:self.xmitUrCall.objectValue atIndex:1];
+        [[NSUserDefaults standardUserDefaults] setObject:destinationCalls forKey:@"destinationCalls"];
+    }
 }
 
 -(void)endTx {
-    DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
-    delegate.audio.xmit = NO;
-    delegate.network.xmitUrCall = @"";
+    [DMYDataEngine sharedInstance].audio.xmit = NO;
+    [DMYDataEngine sharedInstance].network.xmitUrCall = @"";
     statusLED.image = [NSImage imageNamed:@"Gray LED"];
 }
 
@@ -196,9 +204,9 @@
 }
 
 - (IBAction)doUnlink:(id)sender {
-    DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
+    //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
 
-    [delegate.network unlink];
+    [[DMYDataEngine sharedInstance].network unlink];
 }
 
 #pragma mark - Selection Control

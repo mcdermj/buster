@@ -19,7 +19,7 @@
 
 #import "DMYVocoderViewController.h"
 
-#import "DMYAppDelegate.h"
+#import "DMYDataEngine.h"
 
 @interface DMYVocoderViewController ()
 
@@ -40,13 +40,14 @@
 }
 
 -(DMYDV3KVocoder *) vocoder {
-    DMYAppDelegate *appDelegate = [NSApp delegate];
+    // DMYAppDelegate *appDelegate = [NSApp delegate];
     
-    return appDelegate.vocoder;
+    return [DMYDataEngine sharedInstance].vocoder;
 }
 
 - (void)viewDidAppear {
-    //  Initialize the port list
+    [super viewDidAppear];
+    
 
     [serialPortPopup removeAllItems];
     [serialPortPopup addItemsWithTitles:[DMYDV3KVocoder ports]];

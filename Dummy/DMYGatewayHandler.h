@@ -45,6 +45,7 @@ extern NSString * const DMYNetworkStreamEnd;
 @property NSString *xmitRpt2Call;
 
 - (id) initWithRemoteAddress:(NSString *)gatewayAddr remotePort:(NSUInteger)remotePort localPort:(NSUInteger)localPort;
+- (id) init;
 - (BOOL) start;
 - (void) stop;
 - (void) linkTo:(NSString *)reflector;

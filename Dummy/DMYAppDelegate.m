@@ -23,22 +23,18 @@
 #import "DMYDV3KVocoder.h"
 #import "DMYAudioHandler.h"
 
+#import "DMYDataEngine.h"
 
 
-@interface DMYAppDelegate () {
-    // DMYAudioHandler *audio;
-}
 
+@interface DMYAppDelegate ()
 @end
 
 @implementation DMYAppDelegate
 
-@synthesize network;
-@synthesize vocoder;
-@synthesize audio;
 @synthesize txKeyCode;
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+- (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
     
     NSURL *defaultPrefsFile = [[NSBundle mainBundle]
@@ -47,7 +43,31 @@
     [NSDictionary dictionaryWithContentsOfURL:defaultPrefsFile];
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultPrefs];
     
-    network = [[DMYGatewayHandler alloc] initWithRemoteAddress:[[NSUserDefaults standardUserDefaults] stringForKey:@"gatewayAddr"] remotePort:[[NSUserDefaults standardUserDefaults] integerForKey:@"gatewayPort"] localPort:[[NSUserDefaults standardUserDefaults] integerForKey:@"repeaterPort"]];
+    DMYDataEngine *engine = [DMYDataEngine sharedInstance];
+    
+    /* network = [[DMYGatewayHandler alloc] initWithRemoteAddress:[[NSUserDefaults standardUserDefaults] stringForKey:@"gatewayAddr"] remotePort:[[NSUserDefaults standardUserDefaults] integerForKey:@"gatewayPort"] localPort:[[NSUserDefaults standardUserDefaults] integerForKey:@"repeaterPort"]]; */
+    
+    
+    /* vocoder = [[DMYDV3KVocoder alloc] initWithPort:[[NSUserDefaults standardUserDefaults] stringForKey:@"dv3kSerialPort"]
+                                          andSpeed:[[NSUserDefaults standardUserDefaults] integerForKey:@"dv3kSerialPortBaud"]];
+    
+    audio = [[DMYAudioHandler alloc] init]; */
+    
+    /* network.xmitRpt1Call = [[NSUserDefaults standardUserDefaults] stringForKey:@"rpt1Call"];
+    network.xmitRpt2Call = [[NSUserDefaults standardUserDefaults] stringForKey:@"rpt2Call"];
+    network.xmitMyCall = [[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"]; */
+    [engine.network bind:@"xmitMyCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
+    [engine.network bind:@"xmitRpt1Call" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.rpt1Call" options:nil];
+    [engine.network bind:@"xmitRpt2Call" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.rpt2Call" options:nil];
+    [engine.network bind:@"gatewayAddr" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.gatewayAddr" options:nil];
+    [engine.network bind:@"gatewayPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.gatewayPort" options:nil];
+    [engine.network bind:@"repeaterPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.repeaterPort" options:nil];
+    
+    [self bind:@"txKeyCode" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.shortcutValue" options:@{NSValueTransformerNameBindingOption: MASDictionaryTransformerName}];
+    
+    [engine.vocoder bind:@"speed" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPortBaud" options:nil];
+    [engine.vocoder bind:@"serialPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPort" options:nil];
+    
     
     NSString *portName = [[NSUserDefaults standardUserDefaults] stringForKey:@"dv3kSerialPort"];
     if(!portName) {
@@ -55,60 +75,34 @@
         if(ports.count == 1)
             [[NSUserDefaults standardUserDefaults] setObject:ports[0] forKey:@"dv3kSerialPort"];
     }
-    
-    vocoder = [[DMYDV3KVocoder alloc] initWithPort:[[NSUserDefaults standardUserDefaults] stringForKey:@"dv3kSerialPort"]
-                                          andSpeed:[[NSUserDefaults standardUserDefaults] integerForKey:@"dv3kSerialPortBaud"]];
-    
-    audio = [[DMYAudioHandler alloc] init];
-    
-    network.xmitRpt1Call = [[NSUserDefaults standardUserDefaults] stringForKey:@"rpt1Call"];
-    network.xmitRpt1Call = [[NSUserDefaults standardUserDefaults] stringForKey:@"rpt2Call"];
-    network.xmitMyCall = [[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"];
-    [network bind:@"xmitMyCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
-    [network bind:@"xmitRpt1Call" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.rpt1Call" options:nil];
-    [network bind:@"xmitRpt2Call" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.rpt2Call" options:nil];
-    [network bind:@"gatewayAddr" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.gatewayAddr" options:nil];
-    [network bind:@"gatewayPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.gatewayPort" options:nil];
-    [network bind:@"repeaterPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.repeaterPort" options:nil];
-    [self bind:@"txKeyCode" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.shortcutValue" options:@{NSValueTransformerNameBindingOption: MASDictionaryTransformerName}];
-    
-    [vocoder bind:@"speed" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPortBaud" options:nil];
-    [vocoder bind:@"serialPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPort" options:nil];
-    
-    network.vocoder = vocoder;
+
+    /* network.vocoder = vocoder;
     audio.vocoder = vocoder;
-    vocoder.audio = audio;
+    vocoder.audio = audio; */
     
     NSString *inputUid = [[NSUserDefaults standardUserDefaults] stringForKey:@"inputAudioDevice"];
     if(!inputUid) {
-        audio.inputDevice = audio.defaultInputDevice;
+        engine.audio.inputDevice = engine.audio.defaultInputDevice;
     } else {
         for(NSDictionary *entry in [DMYAudioHandler enumerateInputDevices])
             if([entry[@"uid"] isEqualToString:inputUid])
-                audio.inputDevice = ((NSNumber *)entry[@"id"]).intValue;
+                engine.audio.inputDevice = ((NSNumber *)entry[@"id"]).intValue;
      }
     
     NSString *outputUid = [[NSUserDefaults standardUserDefaults] stringForKey:@"outputAudioDevice"];
     if(!outputUid) {
-        audio.outputDevice = audio.defaultOutputDevice;
+        engine.audio.outputDevice = engine.audio.defaultOutputDevice;
     } else {
         for(NSDictionary *entry in [DMYAudioHandler enumerateOutputDevices])
             if([entry[@"uid"] isEqualToString:outputUid])
-                audio.outputDevice = ((NSNumber *)entry[@"id"]).intValue;
+                engine.audio.outputDevice = ((NSNumber *)entry[@"id"]).intValue;
     }
-    
-    
-    /* [NSEvent addLocalMonitorForEventsMatchingMask:NSKeyDownMask handler:^NSEvent *(NSEvent *event){
-        NSLog(@"Got a keydown event: %@", event);
-        return event;
-    }]; */
-
     
     [[NSNotificationCenter defaultCenter] addObserverForName: DMYVocoderDeviceChanged
                                                       object: nil
                                                        queue: [NSOperationQueue mainQueue]
                                                   usingBlock: ^(NSNotification *notification) {
-                                                        [[NSUserDefaults standardUserDefaults] setObject:vocoder.serialPort forKey:@"dv3kSerialPort"];
+                                                        [[NSUserDefaults standardUserDefaults] setObject:engine.vocoder.serialPort forKey:@"dv3kSerialPort"];
                                                   }];
     
     [[NSNotificationCenter defaultCenter] addObserverForName: DMYAudioDeviceChanged
@@ -116,13 +110,13 @@
                                                        queue: [NSOperationQueue mainQueue]
                                                   usingBlock: ^(NSNotification *notification) {
                                                       for(NSDictionary *entry in [DMYAudioHandler enumerateInputDevices]) {
-                                                          if(((NSNumber *)entry[@"id"]).intValue == audio.inputDevice) {
+                                                          if(((NSNumber *)entry[@"id"]).intValue == engine.audio.inputDevice) {
                                                               [[NSUserDefaults standardUserDefaults] setObject:entry[@"uid"] forKey:@"inputAudioDevice"];
                                                           }
                                                       }
                                                       
                                                       for(NSDictionary *entry in [DMYAudioHandler enumerateOutputDevices]) {
-                                                          if(((NSNumber *)entry[@"id"]).intValue == audio.outputDevice) {
+                                                          if(((NSNumber *)entry[@"id"]).intValue == engine.audio.outputDevice) {
                                                               [[NSUserDefaults standardUserDefaults] setObject:entry[@"uid"] forKey:@"outputAudioDevice"];
                                                           }
                                                       }
@@ -130,23 +124,19 @@
 
 
     
-    [audio start];
-    if(![vocoder start]){
+    [engine.audio start];
+    if(![engine.vocoder start]){
         NSAlert *alert = [[NSAlert alloc] init];
         alert.alertStyle = NSWarningAlertStyle;
         alert.messageText = @"Cannot Open the Serial Port";
         alert.informativeText = @"Please check your serial port and speed settings in the Perferences menu";
         [alert runModal];
     };
-    [network start];
+    [engine.network start];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
     // Insert code here to tear down your application
-}
-
--(void)keyDown:(NSEvent *)theEvent {
-    NSLog(@"Got an event %@", theEvent);
 }
 
 @end

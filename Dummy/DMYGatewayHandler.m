@@ -156,16 +156,37 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 #pragma mark - Initializers
 
 - (id) initWithRemoteAddress:(NSString *)_gatewayAddr remotePort:(NSUInteger)_gatewayPort localPort:(NSUInteger)_repeaterPort {
+- (id) init {
     self = [super init];
     
     if(self) {
         gatewaySocket = 0;
         streamId = 0;
+        _streamId = 0;
+        
+        _gatewayPort = 0;
+        _repeaterPort = 0;
+        _gatewayAddr = @"";
+        
+        _vocoder = nil;
+        
+        _urCall = @"";
+        _myCall = @"";
+        _rpt1Call = @"";
+        _rpt2Call = @"";
+        _myCall2 = @"";
+        _xmitMyCall = @"";
+        _xmitUrCall = @"";
+        _xmitRpt1Call = @"";
+        _xmitRpt2Call = @"";
+        _reflectorText = @"";
+        _localText = @"";
         
         gatewayPort = _gatewayPort;
         repeaterPort = _repeaterPort;
         gatewayAddr = [NSString stringWithString:_gatewayAddr];
         vocoder = nil;
+        incomingPacket = malloc(sizeof(struct gatewayPacket));
         
         urCall = @"";
         myCall = @"";
@@ -176,6 +197,38 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         xmitUrCall = @"";
         xmitRpt1Call = @"";
         xmitRpt2Call = @"";
+        status = GWY_STOPPED;
+        
+        xmitStreamId = htons((short) random());
+        xmitSequence = 0;
+    }
+    return self;
+}
+
+- (id) initWithRemoteAddress:(NSString *)gatewayAddr remotePort:(NSUInteger)gatewayPort localPort:(NSUInteger)repeaterPort {
+    self = [super init];
+    
+    if(self) {
+        gatewaySocket = 0;
+        _streamId = 0;
+        
+        _gatewayPort = gatewayPort;
+        _repeaterPort = repeaterPort;
+        _gatewayAddr = [NSString stringWithString:gatewayAddr];
+        
+        _vocoder = nil;
+        
+        _urCall = @"";
+        _myCall = @"";
+        _rpt1Call = @"";
+        _rpt2Call = @"";
+        _myCall2 = @"";
+        _xmitMyCall = @"";
+        _xmitUrCall = @"";
+        _xmitRpt1Call = @"";
+        _xmitRpt2Call = @"";
+        _reflectorText = @"";
+        _localText = @"";
         
         incomingPacket = malloc(sizeof(struct gatewayPacket));
         

@@ -22,6 +22,7 @@
 		095C3FAF1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c in Sources */ = {isa = PBXBuildFile; fileRef = 095C3FAD1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c */; };
 		096F2B5A1B58C06E00766A95 /* DMYCallFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 096F2B591B58C06E00766A95 /* DMYCallFormatter.m */; };
 		096F2B5C1B58ED1B00766A95 /* DefaultPreferences.plist in Resources */ = {isa = PBXBuildFile; fileRef = 096F2B5B1B58ED1B00766A95 /* DefaultPreferences.plist */; };
+		098B10F01B65FB22002C7A3B /* DMYDataEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 098B10EF1B65FB22002C7A3B /* DMYDataEngine.m */; };
 		09A5FDEE1B5794FA00AE9E1C /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */; };
 		09A5FDF11B57956A00AE9E1C /* DMYAudioHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 09A5FDF01B57956A00AE9E1C /* DMYAudioHandler.m */; };
 		09AB117B1B5A13970067B9FB /* DMYVocoderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09AB11791B5A13970067B9FB /* DMYVocoderViewController.m */; };
@@ -88,6 +89,8 @@
 		096F2B581B58C06E00766A95 /* DMYCallFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYCallFormatter.h; sourceTree = "<group>"; };
 		096F2B591B58C06E00766A95 /* DMYCallFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYCallFormatter.m; sourceTree = "<group>"; };
 		096F2B5B1B58ED1B00766A95 /* DefaultPreferences.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DefaultPreferences.plist; sourceTree = "<group>"; };
+		098B10EE1B65FB22002C7A3B /* DMYDataEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYDataEngine.h; sourceTree = "<group>"; };
+		098B10EF1B65FB22002C7A3B /* DMYDataEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYDataEngine.m; sourceTree = "<group>"; };
 		09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TPCircularBuffer.c; sourceTree = "<group>"; };
 		09A5FDED1B5794FA00AE9E1C /* TPCircularBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPCircularBuffer.h; sourceTree = "<group>"; };
 		09A5FDEF1B57956A00AE9E1C /* DMYAudioHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYAudioHandler.h; sourceTree = "<group>"; };
@@ -157,6 +160,8 @@
 				09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */,
 				095C3FAD1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c */,
 				095C3FAE1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.h */,
+				098B10EE1B65FB22002C7A3B /* DMYDataEngine.h */,
+				098B10EF1B65FB22002C7A3B /* DMYDataEngine.m */,
 				093B9B1A1B5214C700C2ABD0 /* DMYVocoderProtocol.h */,
 				093B9B171B50E3BD00C2ABD0 /* DMYGatewayHandler.h */,
 				093B9B181B50E3BD00C2ABD0 /* DMYGatewayHandler.m */,
@@ -344,6 +349,7 @@
 				093B9B191B50E3BD00C2ABD0 /* DMYGatewayHandler.m in Sources */,
 				0954911B1B64B5B600A57FD2 /* DMYGeneralPreferencesController.m in Sources */,
 				09AB117B1B5A13970067B9FB /* DMYVocoderViewController.m in Sources */,
+				098B10F01B65FB22002C7A3B /* DMYDataEngine.m in Sources */,
 				095C3FAF1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c in Sources */,
 				093B9B1D1B52DBA000C2ABD0 /* DMYDV3KVocoder.m in Sources */,
 				093B9AFD1B50E2D500C2ABD0 /* DMYMainWindowViewController.m in Sources */,

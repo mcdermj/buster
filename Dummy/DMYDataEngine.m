@@ -1,5 +1,5 @@
 //
-//  DMYAppDelegate.h
+//  DMYDataEngine.m
 //
 //  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
 
@@ -17,17 +17,37 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#import <Cocoa/Cocoa.h>
 
-#import "DMYGatewayHandler.h"
-#import "DMYDV3KVocoder.h"
-#import "DMYAudioHandler.h"
+#import "DMYDataEngine.h"
 
-#import <MASShortcut/Shortcut.h>
-
-@interface DMYAppDelegate : NSObject <NSApplicationDelegate>
-
-@property MASShortcut *txKeyCode;
+@interface DMYDataEngine ()
 
 @end
 
+@implementation DMYDataEngine
+
++ (DMYDataEngine *) sharedInstance {
+    static DMYDataEngine *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[self alloc] init];
+    });
+    return sharedInstance;
+}
+
+-(id) init {
+    self = [super init];
+    if(self) {
+        _audio = [[DMYAudioHandler alloc] init];
+        _vocoder = [[DMYDV3KVocoder alloc] init];
+        _network = [[DMYGatewayHandler alloc] init];
+        
+        _network.vocoder = _vocoder;
+        _audio.vocoder = _vocoder;
+        _vocoder.audio = _audio;
+    }
+    
+    return self;
+}
+
+@end

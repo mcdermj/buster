@@ -28,6 +28,7 @@ extern NSString * const DMYVocoderDeviceChanged;
 @interface DMYDV3KVocoder : NSObject <DMYVocoderProtocol>
 
 - (id) initWithPort:(NSString *)serialPort andSpeed:(long)speed;
+- (id) init;
 
 + (NSArray *)ports;
 

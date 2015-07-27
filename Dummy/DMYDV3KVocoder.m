@@ -24,7 +24,7 @@
 #import <IOKit/serial/ioss.h>
 #import <IOKit/usb/IOUSBLib.h>
 
-#import "DMYAppDelegate.h"
+#import "DMYDataEngine.h"
 
 #define DV3K_TYPE_CONTROL 0x00
 #define DV3K_TYPE_AMBE 0x01
@@ -141,15 +141,15 @@ NSString * const DMYVocoderDeviceChanged = @"DMYVocoderDeviceChanged";
 
 static void VocoderAdded(void *refCon, io_iterator_t iterator) {
     //  XXX This should probably be worked out so that we get a singleton for this class.
-    DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
+    //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
 
     while(IOIteratorNext(iterator));
     
     NSArray *ports = [DMYDV3KVocoder ports];
     
     if(ports.count == 1) {
-        delegate.vocoder.serialPort = ports[0];
-        [delegate.vocoder start];
+        [DMYDataEngine sharedInstance].vocoder.serialPort = ports[0];
+        [[DMYDataEngine sharedInstance].vocoder start];
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:DMYVocoderDeviceChanged object: nil];
@@ -157,14 +157,14 @@ static void VocoderAdded(void *refCon, io_iterator_t iterator) {
 
 static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     //  XXX This should probably be worked out so that we get a singleton for this class.
-    DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
+    //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
     
     while(IOIteratorNext(iterator));
     
     NSArray *ports = [DMYDV3KVocoder ports];
     
-    if(![ports containsObject:delegate.vocoder.serialPort])
-        [delegate.vocoder stop];
+    if(![ports containsObject:[DMYDataEngine sharedInstance].vocoder.serialPort])
+        [[DMYDataEngine sharedInstance].vocoder stop];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:DMYVocoderDeviceChanged object: nil];
 }
@@ -255,6 +255,43 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         
         status = DV3K_STOPPED;
 
+    }
+    
+    return self;
+}
+
+- (id) init {
+    self = [super init];
+    
+    if(self) {
+        dv3k_ambe.start_byte = DV3K_START_BYTE;
+        dv3k_ambe.header.packet_type = DV3K_TYPE_AMBE;
+        dv3k_ambe.header.payload_length = htons(sizeof(dv3k_ambe.payload.ambe.data));
+        dv3k_ambe.payload.ambe.data.field_id = DV3K_AMBE_FIELD_CHAND;
+        dv3k_ambe.payload.ambe.data.num_bits = sizeof(dv3k_ambe.payload.ambe.data.data) * 8;
+        
+        dv3k_audio.start_byte = DV3K_START_BYTE;
+        dv3k_audio.header.packet_type = DV3K_TYPE_AUDIO;
+        dv3k_audio.header.payload_length = htons(sizeof(dv3k_ambe.payload.audio));
+        dv3k_audio.payload.audio.field_id = DV3K_AUDIO_FIELD_SPEECHD;
+        dv3k_audio.payload.audio.num_samples = sizeof(dv3k_audio.payload.audio.samples) / sizeof(short);
+        dv3k_audio.payload.audio.cmode_field_id = 0x02;
+        dv3k_audio.payload.audio.cmode_value = htons(0x4000);
+        
+        
+        dispatch_queue_attr_t dispatchQueueAttr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, -1);
+        dispatchQueue = dispatch_queue_create("net.nh6z.Dummy.SerialIO", dispatchQueueAttr);
+        dispatchSource = NULL;
+        
+        responsePacket = calloc(1, sizeof(struct dv3k_packet));
+        
+        speed = 0;
+        serialPort = @"";
+        
+        beep = YES;
+        
+        status = DV3K_STOPPED;
+        
     }
     
     return self;
@@ -443,7 +480,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     
     if(status != DV3K_STOPPED) {
         NSLog(@"DV3K is not closed\n");
-        return NO;
+        return YES;
     }
     
     [self willChangeValueForKey:@"version"];
@@ -657,7 +694,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
 }
 
 -(void) processPacket {
-    DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
+    //DMYAppDelegate *delegate = (DMYAppDelegate *) [NSApp delegate];
     BOOL last = NO;
     
     if(![self readPacket:responsePacket])
@@ -681,7 +718,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
                 NSLog(@"Last Packet");
             }
             
-            [delegate.network sendAMBE:responsePacket->payload.ambe.data.data lastPacket:last];
+            [[DMYDataEngine sharedInstance].network sendAMBE:responsePacket->payload.ambe.data.data lastPacket:last];
             
             break;
         case DV3K_TYPE_AUDIO:
