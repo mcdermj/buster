@@ -30,13 +30,12 @@
 @property (weak) IBOutlet NSTableView *heardTableView;
 @property (weak) IBOutlet NSTableView *reflectorTableView;
 @property (strong) IBOutlet NSArrayController *reflectorTableController;
-@property (weak) IBOutlet NSTextField *xmitUrCall;
+@property (weak) IBOutlet NSComboBox *xmitUrCall;
 @property (weak) IBOutlet NSImageView *statusLED;
 @property (weak) IBOutlet NSButton *txButton;
 
 - (IBAction)doLink:(id)sender;
 - (IBAction)addReflector:(id)sender;
-- (IBAction)reflectorTableEnter:(id)sender;
 - (IBAction)doTx:(id)sender;
 - (IBAction)doUnlink:(id)sender;
 

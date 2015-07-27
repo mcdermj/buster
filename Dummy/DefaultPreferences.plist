@@ -16,5 +16,9 @@
 	<integer>20011</integer>
 	<key>rpt1Call</key>
 	<string>NO0CAL G</string>
+	<key>destinationCalls</key>
+	<array>
+		<string>CQCQCQ</string>
+	</array>
 </dict>
 </plist>
