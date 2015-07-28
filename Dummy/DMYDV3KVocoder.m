@@ -124,6 +124,7 @@ NSString * const DMYVocoderDeviceChanged = @"DMYVocoderDeviceChanged";
 @interface DMYDV3KVocoder () {
     int serialDescriptor;
     dispatch_queue_t dispatchQueue;
+    dispatch_queue_t readDispatchQueue;
     dispatch_source_t dispatchSource;
     struct dv3k_packet dv3k_ambe;
     struct dv3k_packet dv3k_audio;
@@ -263,7 +264,8 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         
         
         dispatch_queue_attr_t dispatchQueueAttr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, -1);
-        dispatchQueue = dispatch_queue_create("net.nh6z.Dummy.SerialIO", dispatchQueueAttr);
+        dispatchQueue = dispatch_queue_create("net.nh6z.Dummy.SerialIO.Write", dispatchQueueAttr);
+        readDispatchQueue = dispatch_queue_create("net.nh6z.Dummy.SerialIO.Read", dispatchQueueAttr);
         dispatchSource = NULL;
         
         responsePacket = calloc(1, sizeof(struct dv3k_packet));
@@ -518,7 +520,8 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         NSLog(@"Couldn't set O_NONBLOCK: %s\n", strerror(errno));
     }
     
-    dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, (uintptr_t) serialDescriptor, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+    //dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, (uintptr_t) serialDescriptor, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+    dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, (uintptr_t) serialDescriptor, 0, readDispatchQueue);
     DMYDV3KVocoder __weak *weakSelf = self;
     dispatch_source_set_event_handler(dispatchSource, ^{
         [weakSelf processPacket];
@@ -568,16 +571,19 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     if(status != DV3K_STARTED)
         return;
     
+    memcpy(&dv3k_ambe.payload.ambe.data.data, data, sizeof(dv3k_ambe.payload.ambe.data.data));
+    
     dispatch_async(dispatchQueue, ^{
         ssize_t bytes;
-        
-        
-        memcpy(&dv3k_ambe.payload.ambe.data.data, data, sizeof(dv3k_ambe.payload.ambe.data.data));
         
         bytes = write(serialDescriptor, &dv3k_ambe, dv3k_packet_size(dv3k_ambe));
         if(bytes == -1) {
             NSLog(@"Couldn't send AMBE packet: %s\n", strerror(errno));
             return;
+        }
+        
+        if(bytes == 0) {
+            NSLog(@"No bytes written to serial port!");
         }
         
         if(last && self.beep) {

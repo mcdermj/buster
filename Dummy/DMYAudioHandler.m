@@ -281,7 +281,7 @@ static OSStatus AudioDevicesChanged(AudioObjectID inObjectID, UInt32 inNumberAdd
 
 -(void) queueAudioData:(void *)audioData withLength:(uint32)length {
     if(TPCircularBufferProduceBytes(&playbackBuffer, audioData, length) == false) {
-        NSLog(@"No space left in buffer\n");
+       // NSLog(@"No space left in buffer\n");
     }
     
 }
