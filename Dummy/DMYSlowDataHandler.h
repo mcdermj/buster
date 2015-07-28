@@ -24,5 +24,8 @@ extern NSString * const DMYSlowDataTextReceived;
 @interface DMYSlowDataHandler : NSObject
 
 -(void)addData:(void *)data streamId:(NSUInteger)streamId;
+-(const void *)getDataForSequence:(NSUInteger)sequence;
+
+@property (nonatomic, copy) NSString *message;
 
 @end

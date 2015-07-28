@@ -7,7 +7,7 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>2D8CEC46-8067-4F5A-A0FA-8714DA77545E</string>
 	<key>IDESourceControlProjectName</key>
-	<string>Dummy</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>A0FE35341BB15C77B8DB42DDA089C8A73855D2D3</key>
@@ -16,7 +16,7 @@
 		<string>https://github.com/shpakovski/MASShortcut.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Dummy.xcodeproj</string>
+	<string>Dummy.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>A0FE35341BB15C77B8DB42DDA089C8A73855D2D3</key>

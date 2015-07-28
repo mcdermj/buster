@@ -189,6 +189,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         xmitSequence = 0;
         
         slowData = [[DMYSlowDataHandler alloc] init];
+        slowData.message = @"Motley Fool";
         
         dispatch_queue_attr_t dispatchQueueAttr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, -1);
         dispatchQueue = dispatch_queue_create("net.nh6z.Dummy.NetworkIO", dispatchQueueAttr);
@@ -401,9 +402,11 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         packet.payload.dstarData.sequence = xmitSequence;
         packet.payload.dstarData.streamId = xmitStreamId;
         
-        if(xmitSequence != 0)
-            memset(&packet.payload.dstarData.slowData, 'F', sizeof(packet.payload.dstarData.slowData));
-        else {
+        if(xmitSequence != 0) {
+            // const char *slowBytes = [slowData getDataForSequence:xmitSequence];
+            memcpy(&packet.payload.dstarData.slowData, [slowData getDataForSequence:xmitSequence], sizeof(packet.payload.dstarData.slowData));
+            //memset(&packet.payload.dstarData.slowData, 'F', sizeof(packet.payload.dstarData.slowData));
+        } else {
             // XXX Sync bytes should be put into a constant and memcpy'ed.  We can use this for later memcmp's as well.
             packet.payload.dstarData.slowData[0] = 0x55;
             packet.payload.dstarData.slowData[1] = 0x2D;

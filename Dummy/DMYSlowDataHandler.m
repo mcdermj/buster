@@ -21,6 +21,7 @@
 
 const char syncBytes[] = { 0x55, 0x2D, 0x16 };
 const char scrambler[] = { 0x70, 0x4F, 0x93 };
+const char filler[] = { 0x66, 0x66, 0x66 };
 
 const char SLOW_DATA_TYPE_MASK = 0xF0;
 const char SLOW_DATA_SEQUENCE_MASK = 0x0F;
@@ -28,12 +29,17 @@ const char SLOW_DATA_TYPE_TEXT = 0x40;
 
 NSString * const DMYSlowDataTextReceived = @"DMYSlowDataTextReceived";
 
+//  These macros are kinda ugly, we might want to axe them for inline functions.
 
 #define UNSCRAMBLE(x)   for(int i = 0; i < 3; ++i) \
                             dataFrame[(x)][i] = ((char *)data)[i] ^ scrambler[i];
 
+#define SCRAMBLE(x)     for(int j = 0; j < 3; ++j) \
+                            messageFrames[(x)][j] ^= scrambler[j];
+
 @interface DMYSlowDataHandler () {
     char dataFrame[2][3];
+    char messageFrames[8][3];
     BOOL isTop;
     NSMutableString *messageData;
 }
@@ -46,10 +52,23 @@ NSString * const DMYSlowDataTextReceived = @"DMYSlowDataTextReceived";
     if(self) {
         isTop = YES;
         messageData = [NSMutableString stringWithString:@"                    "];
-        NSLog("Length is %lu", (unsigned long)messageData.length);
     }
     return self;
 }
+
+-(void)setMessage:(NSString *)message {
+    _message = [message stringByPaddingToLength:20 withString:@" " startingAtIndex:0];
+    
+    for(int i = 0; i < 8; i = i + 2) {
+        int firstIndex = (i * 5) / 2;
+        messageFrames[i][0] = 0x40 | ((char) i / 2);
+        
+        memcpy(&messageFrames[i][1], [[self.message substringWithRange:NSMakeRange(firstIndex, 2)] cStringUsingEncoding:NSUTF8StringEncoding], 2);
+        SCRAMBLE(i)
+        memcpy(messageFrames[i+1], [[self.message substringWithRange:NSMakeRange(firstIndex + 2, 3)] cStringUsingEncoding:NSUTF8StringEncoding], 3);
+        SCRAMBLE(i+1)
+    }
+ }
 
 -(void)addData:(void *)data streamId:(NSUInteger)streamId {
     if(!memcmp(data, syncBytes, 3)) {
@@ -97,6 +116,14 @@ NSString * const DMYSlowDataTextReceived = @"DMYSlowDataTextReceived";
     }
 
     isTop = YES;
+}
+
+-(const void *)getDataForSequence:(NSUInteger)sequence {
+    if(sequence > 0 && sequence < 9) {
+        return messageFrames[sequence - 1];
+    } else {
+        return filler;
+    }
 }
 
 @end
