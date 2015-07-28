@@ -26,6 +26,7 @@
 		09A5FDEE1B5794FA00AE9E1C /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */; };
 		09A5FDF11B57956A00AE9E1C /* DMYAudioHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 09A5FDF01B57956A00AE9E1C /* DMYAudioHandler.m */; };
 		09AB117B1B5A13970067B9FB /* DMYVocoderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09AB11791B5A13970067B9FB /* DMYVocoderViewController.m */; };
+		09E363EC1B66F46500F74DBB /* DMYSlowDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E363EB1B66F46500F74DBB /* DMYSlowDataHandler.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,6 +99,8 @@
 		09AB11781B5A13970067B9FB /* DMYVocoderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYVocoderViewController.h; sourceTree = "<group>"; };
 		09AB11791B5A13970067B9FB /* DMYVocoderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYVocoderViewController.m; sourceTree = "<group>"; };
 		09AB117A1B5A13970067B9FB /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
+		09E363EA1B66F46500F74DBB /* DMYSlowDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYSlowDataHandler.h; sourceTree = "<group>"; };
+		09E363EB1B66F46500F74DBB /* DMYSlowDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYSlowDataHandler.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,6 +168,8 @@
 				093B9B1A1B5214C700C2ABD0 /* DMYVocoderProtocol.h */,
 				093B9B171B50E3BD00C2ABD0 /* DMYGatewayHandler.h */,
 				093B9B181B50E3BD00C2ABD0 /* DMYGatewayHandler.m */,
+				09E363EA1B66F46500F74DBB /* DMYSlowDataHandler.h */,
+				09E363EB1B66F46500F74DBB /* DMYSlowDataHandler.m */,
 				093B9B1B1B52DBA000C2ABD0 /* DMYDV3KVocoder.h */,
 				093B9B1C1B52DBA000C2ABD0 /* DMYDV3KVocoder.m */,
 				09A5FDEF1B57956A00AE9E1C /* DMYAudioHandler.h */,
@@ -306,6 +311,7 @@
 		095491251B64B8A900A57FD2 /* MASShortcutTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
+			name = Tests.xctest;
 			path = MASShortcutTests.xctest;
 			remoteRef = 095491241B64B8A900A57FD2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -357,6 +363,7 @@
 				093B9AF81B50E2D500C2ABD0 /* DMYAppDelegate.m in Sources */,
 				0954910B1B64A78100A57FD2 /* DMYApplication.m in Sources */,
 				096F2B5A1B58C06E00766A95 /* DMYCallFormatter.m in Sources */,
+				09E363EC1B66F46500F74DBB /* DMYSlowDataHandler.m in Sources */,
 				0924272E1B62F46600D568DE /* DMYAudioViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -22,6 +22,8 @@
 #import <arpa/inet.h>
 #import <sys/ioctl.h>
 
+#import "DMYSlowDataHandler.h"
+
 NSString * const DMYNetworkHeaderReceived = @"DMYNetworkHeaderReceived";
 NSString * const DMYNetworkStreamEnd = @"DMYNetworkStreamEnd";
 NSString * const DMYNetworkStreamStart = @"DMYNetworkStreamStart";
@@ -124,6 +126,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     NSThread *readThread;
     struct gatewayPacket *incomingPacket;
     CFAbsoluteTime lastPacketTime;
+    DMYSlowDataHandler *slowData;
     
     enum {
         GWY_STOPPED,
@@ -183,6 +186,8 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         
         xmitStreamId = htons((short) random());
         xmitSequence = 0;
+        
+        slowData = [[DMYSlowDataHandler alloc] init];
     }
     return self;
 }
@@ -613,6 +618,8 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
             }
             
             sequence = (sequence + 1) % 21;
+            
+            [slowData addData:incomingPacket->payload.dstarData.slowData];
             
             //  If streamId == 0, we are on the last packet of this stream.
             [self.vocoder decodeData: incomingPacket->payload.dstarData.ambeData lastPacket:(self.streamId == 0)];
