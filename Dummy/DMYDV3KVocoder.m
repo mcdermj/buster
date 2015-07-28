@@ -355,11 +355,21 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     
     packet->start_byte = 0x00;
     
+    int i;
+    for(i = 0; i < sizeof(struct dv3k_packet); ++i) {
     bytes = read(serialDescriptor, packet, 1);
-    if(bytes == -1 && errno != EAGAIN)
-        NSLog(@"Couldn't read start byte: %s\n", strerror(errno));
+        if(bytes == -1 && errno != EAGAIN) {
+            NSLog(@"Couldn't read start byte: %s\n", strerror(errno));
+            return NO;
+        }
+        if(packet->start_byte == DV3K_START_BYTE)
+            break;
+    }
     if(packet->start_byte != DV3K_START_BYTE)
         return NO;
+    
+    if(i > 0)
+        NSLog(@"Took %d tries to find the start byte", i);
     
     bytesLeft = sizeof(packet->header);
     while(bytesLeft > 0) {

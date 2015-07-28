@@ -125,7 +125,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     uint8 sequence;
     BOOL running;
     NSThread *readThread;
-    struct gatewayPacket *incomingPacket;
+    // struct gatewayPacket *incomingPacket;
     CFAbsoluteTime lastPacketTime;
     DMYSlowDataHandler *slowData;
     
@@ -181,7 +181,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         _reflectorText = @"";
         _localText = @"";
         
-        incomingPacket = malloc(sizeof(struct gatewayPacket));
+        // incomingPacket = malloc(sizeof(struct gatewayPacket));
         
         status = GWY_STOPPED;
         
@@ -487,36 +487,37 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 
 - (void) processPacket {
     ssize_t packetSize;
+    struct gatewayPacket incomingPacket;
     
-    memset(incomingPacket, 0, sizeof(struct gatewayPacket));
-    packetSize = recv(gatewaySocket, incomingPacket, sizeof(struct gatewayPacket), 0);
+    //memset(incomingPacket, 0, sizeof(struct gatewayPacket));
+    packetSize = recv(gatewaySocket, &incomingPacket, sizeof(struct gatewayPacket), 0);
     if(packetSize == -1) {
         NSLog(@"Couldn't read packet: %s\n", strerror(errno));
         return;
     }
     
-    if(strncmp(incomingPacket->magic, "DSRP", 4) != 0) {
-        NSLog(@"Bad packet magic: %c%c%c%c\n", incomingPacket->magic[0], incomingPacket->magic[1], incomingPacket->magic[2], incomingPacket->magic[3]);
+    if(strncmp(incomingPacket.magic, "DSRP", 4) != 0) {
+        NSLog(@"Bad packet magic: %c%c%c%c\n", incomingPacket.magic[0], incomingPacket.magic[1], incomingPacket.magic[2], incomingPacket.magic[3]);
         return;
     }
     
     __weak DMYGatewayHandler *weakSelf = self;
     
-    switch(incomingPacket->packetType) {
+    switch(incomingPacket.packetType) {
         case 0x00: {
-            NSDictionary *infoDict = @{ @"local": [[NSString alloc] initWithBytes:incomingPacket->payload.networkText.local
-                                                                           length:sizeof(incomingPacket->payload.networkText.local)
+            NSDictionary *infoDict = @{ @"local": [[NSString alloc] initWithBytes:incomingPacket.payload.networkText.local
+                                                                           length:sizeof(incomingPacket.payload.networkText.local)
                                                                          encoding:NSUTF8StringEncoding],
-                                        @"reflector": [[NSString alloc] initWithBytes:incomingPacket->payload.networkText.reflector
-                                                                               length:sizeof(incomingPacket->payload.networkText.reflector)
+                                        @"reflector": [[NSString alloc] initWithBytes:incomingPacket.payload.networkText.reflector
+                                                                               length:sizeof(incomingPacket.payload.networkText.reflector)
                                                                              encoding:NSUTF8StringEncoding],
-                                        @"status": [NSData dataWithBytes:&incomingPacket->payload.networkText.status length:1] };
+                                        @"status": [NSData dataWithBytes:&incomingPacket.payload.networkText.status length:1] };
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:DMYRepeaterInfoReceived object:self userInfo:infoDict];
             });
 
-            NSLog(@"Status = 0x%02X", incomingPacket->payload.networkText.status);
+            NSLog(@"Status = 0x%02X", incomingPacket.payload.networkText.status);
             break;
         }
         case 0x01:
@@ -526,33 +527,33 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
             NSLog(@"Packet is NETWORK_STATUS\n");
             break;
         case 0x20: {
-            ssize_t expectedPacketSize = sizeof(incomingPacket->magic) + sizeof(incomingPacket->packetType) + sizeof(incomingPacket->payload.dstarHeader);
+            ssize_t expectedPacketSize = sizeof(incomingPacket.magic) + sizeof(incomingPacket.packetType) + sizeof(incomingPacket.payload.dstarHeader);
             if(packetSize != expectedPacketSize) {
                 NSLog(@"Header packet size doesn't match: expected %ld, got %ld", expectedPacketSize, packetSize);
             }
-            if(self.streamId != 0 && self.streamId != incomingPacket->payload.dstarHeader.streamId) {
+            if(self.streamId != 0 && self.streamId != incomingPacket.payload.dstarHeader.streamId) {
                 NSLog(@"Stream ID Mismatch on Header");
                 return;
             }
-            self.myCall = [[NSString alloc] initWithBytes:incomingPacket->payload.dstarHeader.myCall
-                                              length:sizeof(incomingPacket->payload.dstarHeader.myCall)
+            self.myCall = [[NSString alloc] initWithBytes:incomingPacket.payload.dstarHeader.myCall
+                                              length:sizeof(incomingPacket.payload.dstarHeader.myCall)
                                             encoding:NSUTF8StringEncoding];
-            self.urCall = [[NSString alloc] initWithBytes:incomingPacket->payload.dstarHeader.urCall
-                                              length:sizeof(incomingPacket->payload.dstarHeader.urCall)
+            self.urCall = [[NSString alloc] initWithBytes:incomingPacket.payload.dstarHeader.urCall
+                                              length:sizeof(incomingPacket.payload.dstarHeader.urCall)
                                             encoding:NSUTF8StringEncoding];
-            self.rpt1Call = [[NSString alloc] initWithBytes:incomingPacket->payload.dstarHeader.rpt1Call
-                                                length:sizeof(incomingPacket->payload.dstarHeader.rpt1Call)
+            self.rpt1Call = [[NSString alloc] initWithBytes:incomingPacket.payload.dstarHeader.rpt1Call
+                                                length:sizeof(incomingPacket.payload.dstarHeader.rpt1Call)
                                               encoding:NSUTF8StringEncoding];
-            self.rpt2Call = [[NSString alloc] initWithBytes:incomingPacket->payload.dstarHeader.rpt2Call
-                                                length:sizeof(incomingPacket->payload.dstarHeader.rpt2Call)
+            self.rpt2Call = [[NSString alloc] initWithBytes:incomingPacket.payload.dstarHeader.rpt2Call
+                                                length:sizeof(incomingPacket.payload.dstarHeader.rpt2Call)
                                               encoding:NSUTF8StringEncoding];
-            self.myCall2 = [[NSString alloc] initWithBytes:incomingPacket->payload.dstarHeader.myCall2
-                                               length:sizeof(incomingPacket->payload.dstarHeader.myCall2)
+            self.myCall2 = [[NSString alloc] initWithBytes:incomingPacket.payload.dstarHeader.myCall2
+                                               length:sizeof(incomingPacket.payload.dstarHeader.myCall2)
                                              encoding:NSUTF8StringEncoding];
             
             
             if(self.streamId == 0) {
-                self.streamId = incomingPacket->payload.dstarHeader.streamId;
+                self.streamId = incomingPacket.payload.dstarHeader.streamId;
                 NSDictionary *header = [self header];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkStreamStart
@@ -574,11 +575,11 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         }
             break;
         case 0x21: {
-            ssize_t expectedPacketSize = sizeof(incomingPacket->magic) + sizeof(incomingPacket->packetType) + sizeof(incomingPacket->payload.dstarData);
+            ssize_t expectedPacketSize = sizeof(incomingPacket.magic) + sizeof(incomingPacket.packetType) + sizeof(incomingPacket.payload.dstarData);
             if(packetSize != expectedPacketSize) {
                 NSLog(@"Data packet size doesn't match: expected %ld, got %ld", expectedPacketSize, packetSize);
             }
-           if(self.streamId != incomingPacket->payload.dstarData.streamId) {
+           if(self.streamId != incomingPacket.payload.dstarData.streamId) {
                 //  If we have missed time for about 10 packets, this stream is probably over and we missed the end packet.
                 //  XXX This should probably be in a watchdog timer somehow.
                 if(CFAbsoluteTimeGetCurrent() > lastPacketTime + .200) {
@@ -594,17 +595,17 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
             
             lastPacketTime = CFAbsoluteTimeGetCurrent();
             
-            if(incomingPacket->payload.dstarData.slowData[0] == 0x55 &&
-               incomingPacket->payload.dstarData.slowData[1] == 0x2D &&
-               incomingPacket->payload.dstarData.slowData[2] == 0x16) {
-                if(incomingPacket->payload.dstarData.sequence != 0)
+            if(incomingPacket.payload.dstarData.slowData[0] == 0x55 &&
+               incomingPacket.payload.dstarData.slowData[1] == 0x2D &&
+               incomingPacket.payload.dstarData.slowData[2] == 0x16) {
+                if(incomingPacket.payload.dstarData.sequence != 0)
                     NSLog(@"Sync in wrong place");
             }
             
-            if(incomingPacket->payload.dstarData.sequence & 0x40) {
-                NSLog(@"End stream %d\n", incomingPacket->payload.dstarData.streamId);
+            if(incomingPacket.payload.dstarData.sequence & 0x40) {
+                NSLog(@"End stream %d\n", incomingPacket.payload.dstarData.streamId);
                 
-                incomingPacket->payload.dstarData.sequence &= ~0x40;
+                incomingPacket.payload.dstarData.sequence &= ~0x40;
                 NSDictionary *streamData = @{
                                              @"streamId": [NSNumber numberWithUnsignedInteger:weakSelf.streamId],
                                              @"time": [NSDate date]
@@ -618,35 +619,39 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
                 self.streamId = 0;
             }
             
-            if(incomingPacket->payload.dstarData.sequence != sequence) {
+            if(incomingPacket.payload.dstarData.sequence != sequence) {
                 //  If the packet is more recent, reset the sequence, if not, wait for my next packet
-                if(isSequenceAhead(incomingPacket->payload.dstarData.sequence, sequence, 20)) {
-                    sequence = incomingPacket->payload.dstarData.sequence;
+                if(isSequenceAhead(incomingPacket.payload.dstarData.sequence, sequence, 21)) {
+                    NSLog(@"Skipped packet: incoming %u, sequence = %u",incomingPacket.payload.dstarData.sequence, sequence);
+                    sequence = incomingPacket.payload.dstarData.sequence;
                 } else {
-                    NSLog(@"Out of order packet: incoming = %u, sequence = %u\n", incomingPacket->payload.dstarData.sequence, sequence);
+                    NSLog(@"Out of order packet: incoming = %u, sequence = %u\n", incomingPacket.payload.dstarData.sequence, sequence);
                     return;
                 }
             }
             
-            sequence = (sequence + 1) % 21;
+            if(self.streamId == 0)
+                sequence = 0;
+            else
+                sequence = (sequence + 1) % 21;
             
-            [slowData addData:incomingPacket->payload.dstarData.slowData streamId:self.streamId];
+            [slowData addData:incomingPacket.payload.dstarData.slowData streamId:self.streamId];
             
             //  If streamId == 0, we are on the last packet of this stream.
-            [self.vocoder decodeData: incomingPacket->payload.dstarData.ambeData lastPacket:(self.streamId == 0)];
+            [self.vocoder decodeData: incomingPacket.payload.dstarData.ambeData lastPacket:(self.streamId == 0)];
             break;
         }
         case 0x24:
             NSLog(@"Packet is DD Data\n");
             break;
         default:
-            NSLog(@"Unknown packet type: %02x\n", incomingPacket->packetType);
+            NSLog(@"Unknown packet type: %02x\n", incomingPacket.packetType);
             break;
     }
 }
 
 - (void) dealloc {
-    free(incomingPacket);
+    // free(incomingPacket);
 }
 
 @end
