@@ -19,8 +19,10 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString * const DMYSlowDataTextReceived;
+
 @interface DMYSlowDataHandler : NSObject
 
--(void)addData:(void *)data;
+-(void)addData:(void *)data streamId:(NSUInteger)streamId;
 
 @end

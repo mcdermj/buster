@@ -619,11 +619,12 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
             
             sequence = (sequence + 1) % 21;
             
-            [slowData addData:incomingPacket->payload.dstarData.slowData];
+            [slowData addData:incomingPacket->payload.dstarData.slowData streamId:self.streamId];
             
             //  If streamId == 0, we are on the last packet of this stream.
             [self.vocoder decodeData: incomingPacket->payload.dstarData.ambeData lastPacket:(self.streamId == 0)];
             break;
+        }
         case 0x24:
             NSLog(@"Packet is DD Data\n");
             break;

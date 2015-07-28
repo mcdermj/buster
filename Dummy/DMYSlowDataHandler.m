@@ -26,6 +26,9 @@ const char SLOW_DATA_TYPE_MASK = 0xF0;
 const char SLOW_DATA_SEQUENCE_MASK = 0x0F;
 const char SLOW_DATA_TYPE_TEXT = 0x40;
 
+NSString * const DMYSlowDataTextReceived = @"DMYSlowDataTextReceived";
+
+
 #define UNSCRAMBLE(x)   for(int i = 0; i < 3; ++i) \
                             dataFrame[(x)][i] = ((char *)data)[i] ^ scrambler[i];
 
@@ -48,15 +51,13 @@ const char SLOW_DATA_TYPE_TEXT = 0x40;
     return self;
 }
 
--(void)addData:(void *)data {
+-(void)addData:(void *)data streamId:(NSUInteger)streamId {
     if(!memcmp(data, syncBytes, 3)) {
-        // NSLog(@"Got sync");
         isTop = YES;
         return;
     }
     
     if(isTop) {
-        NSLog(@"In Top");
         UNSCRAMBLE(0)
         isTop = NO;
         return;
@@ -64,15 +65,11 @@ const char SLOW_DATA_TYPE_TEXT = 0x40;
     
     UNSCRAMBLE(1);
     
-    NSLog(@"In Bottom");
-    
     if((dataFrame[0][0] & SLOW_DATA_TYPE_MASK) != SLOW_DATA_TYPE_TEXT) {
         // NSLog(@"Type is not slow data: 0x%02X", dataFrame[0][0]);
         isTop = YES;
         return;
     }
-    
-    
     
     char sequence = dataFrame[0][0] & SLOW_DATA_SEQUENCE_MASK;
     if(sequence > 3) {
@@ -81,19 +78,22 @@ const char SLOW_DATA_TYPE_TEXT = 0x40;
         return;
     }
     NSString *replacementString = [[NSString alloc] initWithBytes:((char*) dataFrame) + 1 length:5 encoding:NSUTF8StringEncoding];
-    // [replacementString appendString:[[NSString alloc] initWithBytes:bottomHalf length:3 encoding:NSUTF8StringEncoding]];
     if(replacementString == nil) {
         NSLog(@"Something went wrong with the string!");
         isTop = YES;
         return;
     }
-    NSLog(@"Replacing %@", replacementString);
     [messageData replaceCharactersInRange:NSMakeRange(sequence * 5, 5) withString:replacementString];
-    NSLog(@"Message string is %@", messageData);
     
     if(sequence == 3) {
         //  Send the notification and reset messageData
-        NSLog(@"We're done!");
+        NSDictionary *notificationData = @{ @"text": [NSString stringWithString:messageData],
+                                            @"streamId": [NSNumber numberWithUnsignedInteger:streamId]};
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:DMYSlowDataTextReceived object:nil userInfo:notificationData];
+        });
+        messageData.string = @"                    ";
     }
 
     isTop = YES;

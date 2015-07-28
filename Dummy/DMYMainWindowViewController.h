@@ -36,6 +36,7 @@
 @property (nonatomic, weak) IBOutlet NSImageView *statusLED;
 @property (nonatomic, weak) IBOutlet NSButton *txButton;
 @property (nonatomic, weak) IBOutlet NSTextField *repeaterInfo;
+@property (nonatomic, weak) IBOutlet NSTextField *shortTextMessageField;
 
 - (IBAction)doLink:(id)sender;
 - (IBAction)addReflector:(id)sender;

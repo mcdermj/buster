@@ -22,6 +22,7 @@
 #import "DMYGatewayHandler.h"
 #import "DMYApplication.h"
 #import "DMYDataEngine.h"
+#import "DMYSlowDataHandler.h"
 
 @interface DMYMainWindowViewController () {
     NSInteger txButtonState;
@@ -74,6 +75,7 @@
                                                       weakSelf.urCall.stringValue = @"";
                                                       weakSelf.rpt1Call.stringValue = @"";
                                                       weakSelf.rpt2Call.stringValue = @"";
+                                                      weakSelf.shortTextMessageField.stringValue = @"";
                                                       
                                                       NSPredicate *currentFilterPredicate = self.heardTableController.filterPredicate;
                                                       self.heardTableController.filterPredicate = nil;
@@ -112,11 +114,35 @@
         self.repeaterInfo.stringValue = notification.userInfo[@"local"];
     }];
     
+    [[NSNotificationCenter defaultCenter] addObserverForName:DMYSlowDataTextReceived object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification){
+        self.shortTextMessageField.stringValue = notification.userInfo[@"text"];
+        
+        NSPredicate *currentFilterPredicate = self.heardTableController.filterPredicate;
+        self.heardTableController.filterPredicate = nil;
+        
+        NSPredicate *streamIdPredicate = [NSPredicate predicateWithFormat:@"streamId == %@", notification.userInfo[@"streamId"]];
+        NSArray *entries = [self.heardTableController.arrangedObjects filteredArrayUsingPredicate:streamIdPredicate];
+        
+        if(entries.count != 1) {
+            NSLog(@"Found a freaky number of entries for streamId %@: %lu\n", notification.userInfo[@"streamId"], (unsigned long)entries.count);
+            self.heardTableController.filterPredicate = currentFilterPredicate;
+            return;
+        }
+        
+        NSMutableDictionary *newHeader = [NSMutableDictionary dictionaryWithDictionary:entries[0]];
+        newHeader[@"message"] = notification.userInfo[@"text"];
+        
+        [self.heardTableController removeObject:entries[0]];
+        [self.heardTableController addObject:[NSDictionary dictionaryWithDictionary:newHeader]];
+        
+        self.heardTableController.filterPredicate = currentFilterPredicate;
+    }];
+    
     [self.txButton setPeriodicDelay:.1f interval:.1f];
     txButtonState = NSOffState;
 }
 
-- (void)viewWillDisappear {    
+- (void)viewWillDisappear {
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:DMYNetworkHeaderReceived
                                                   object:nil];
