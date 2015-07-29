@@ -16,6 +16,8 @@
 	<integer>20011</integer>
 	<key>rpt1Call</key>
 	<string>NO0CAL G</string>
+	<key>slowDataMessage</key>
+	<string>Buster 1.0</string>
 	<key>destinationCalls</key>
 	<array>
 		<string>CQCQCQ</string>

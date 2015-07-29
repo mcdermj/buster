@@ -22,8 +22,6 @@
 #import <arpa/inet.h>
 #import <sys/ioctl.h>
 
-#import "DMYSlowDataHandler.h"
-
 NSString * const DMYNetworkHeaderReceived = @"DMYNetworkHeaderReceived";
 NSString * const DMYNetworkStreamEnd = @"DMYNetworkStreamEnd";
 NSString * const DMYNetworkStreamStart = @"DMYNetworkStreamStart";
@@ -127,7 +125,6 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     NSThread *readThread;
     // struct gatewayPacket *incomingPacket;
     CFAbsoluteTime lastPacketTime;
-    DMYSlowDataHandler *slowData;
     
     enum {
         GWY_STOPPED,
@@ -144,6 +141,8 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 @property (nonatomic, copy) NSString *rpt2Call;
 @property (nonatomic, copy) NSString *myCall2;
 @property (nonatomic, assign) NSUInteger streamId;
+
+@property (nonatomic, readwrite) DMYSlowDataHandler *slowData;
 
 - (NSData *) constructRemoteAddrStruct;
 - (NSData *) constructLocalAddrStruct;
@@ -188,8 +187,8 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         xmitStreamId = htons((short) random());
         xmitSequence = 0;
         
-        slowData = [[DMYSlowDataHandler alloc] init];
-        slowData.message = @"Motley Fool";
+        _slowData = [[DMYSlowDataHandler alloc] init];
+        self.slowData.message = @"Motley Fool";
         
         dispatch_queue_attr_t dispatchQueueAttr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, -1);
         dispatchQueue = dispatch_queue_create("net.nh6z.Dummy.NetworkIO", dispatchQueueAttr);
@@ -404,7 +403,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         
         if(xmitSequence != 0) {
             // const char *slowBytes = [slowData getDataForSequence:xmitSequence];
-            memcpy(&packet.payload.dstarData.slowData, [slowData getDataForSequence:xmitSequence], sizeof(packet.payload.dstarData.slowData));
+            memcpy(&packet.payload.dstarData.slowData, [self.slowData getDataForSequence:xmitSequence], sizeof(packet.payload.dstarData.slowData));
             //memset(&packet.payload.dstarData.slowData, 'F', sizeof(packet.payload.dstarData.slowData));
         } else {
             // XXX Sync bytes should be put into a constant and memcpy'ed.  We can use this for later memcmp's as well.
@@ -638,7 +637,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
             else
                 sequence = (sequence + 1) % 21;
             
-            [slowData addData:incomingPacket.payload.dstarData.slowData streamId:self.streamId];
+            [self.slowData addData:incomingPacket.payload.dstarData.slowData streamId:self.streamId];
             
             //  If streamId == 0, we are on the last packet of this stream.
             [self.vocoder decodeData: incomingPacket.payload.dstarData.ambeData lastPacket:(self.streamId == 0)];

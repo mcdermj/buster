@@ -460,7 +460,7 @@
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <connections>
-                                                <binding destination="QYk-Xy-JMt" name="value" keyPath="values.slowDataMessage" id="LkE-ZH-07R"/>
+                                                <binding destination="NAR-ze-Bfq" name="value" keyPath="values.slowDataMessage" id="XHD-H6-z7Q"/>
                                             </connections>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4wq-bQ-ClG">
@@ -538,6 +538,7 @@
                 </viewController>
                 <customObject id="gSa-GS-ok0" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <userDefaultsController id="eDD-IH-9g9"/>
+                <userDefaultsController id="NAR-ze-Bfq"/>
             </objects>
             <point key="canvasLocation" x="1249" y="-33.5"/>
         </scene>
@@ -726,7 +727,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" headerView="8E1-QA-SES" id="sF2-ua-GZt">
-                                            <rect key="frame" x="0.0" y="0.0" width="81" height="19"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="75" height="19"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>

@@ -20,7 +20,7 @@
 #import <Foundation/Foundation.h>
 
 #import "DMYVocoderProtocol.h"
-
+#import "DMYSlowDataHandler.h"
 
 #pragma mark - Notification Constants
 extern NSString * const DMYNetworkHeaderReceived;
@@ -35,6 +35,7 @@ extern NSString * const DMYRepeaterInfoReceived;
 @property (assign, nonatomic) NSUInteger repeaterPort;
 
 @property (assign, nonatomic) id <DMYVocoderProtocol> vocoder;
+@property (nonatomic, readonly) DMYSlowDataHandler *slowData;
 
 @property (nonatomic, readonly, copy) NSString *urCall;
 @property (nonatomic, readonly, copy) NSString *myCall;
