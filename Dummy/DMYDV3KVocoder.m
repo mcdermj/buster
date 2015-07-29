@@ -121,6 +121,8 @@ static const struct dv3k_packet silencePacket = {
 
 NSString * const DMYVocoderDeviceChanged = @"DMYVocoderDeviceChanged";
 
+#pragma mark - Private interface
+
 @interface DMYDV3KVocoder () {
     int serialDescriptor;
     dispatch_queue_t dispatchQueue;
@@ -142,6 +144,8 @@ NSString * const DMYVocoderDeviceChanged = @"DMYVocoderDeviceChanged";
 - (BOOL) sendCtrlPacket:(struct dv3k_packet)packet expectResponse:(uint8)response;
 - (void) processPacket;
 @end
+
+#pragma mark - Device removal and insertion
 
 static bool isFTDIPort(io_object_t device) {
     io_object_t parent;
@@ -204,6 +208,8 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
 
 
 @implementation DMYDV3KVocoder
+
+#pragma mark - Lifecycle
 
 + (void) initialize {
     mach_port_t masterPort;
@@ -284,6 +290,12 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     return self;
 }
 
+- (void) dealloc {
+    free(responsePacket);
+}
+
+#pragma mark - Accessors
+
 - (void) setSpeed:(long)speed {
     if(_speed == speed) return;
     
@@ -305,6 +317,8 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         [self start];
     }
 }
+
+#pragma mark - Port enumeration
 
 + (NSArray *) ports {
     kern_return_t kernResult;
@@ -347,6 +361,27 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     mach_port_deallocate(mach_task_self(), masterPort);
 
     return [NSArray arrayWithArray:deviceArray];
+}
+
+#pragma mark - IO Functions
+
+- (BOOL) writePacket:(const struct dv3k_packet *)packet {
+    ssize_t bytes;
+    size_t bytesLeft;
+    
+    bytesLeft = dv3k_packet_size(*packet);
+    while(bytesLeft > 0) {
+        bytes = write(serialDescriptor, (((uint8_t *) packet) + dv3k_packet_size(*packet)) - bytesLeft, bytesLeft);
+        if(bytes < 0) {
+            if(errno == EAGAIN) continue;
+            NSLog(@"Couldn't read header: %s\n", strerror(errno));
+            return NO;
+        }
+        
+        bytesLeft -= (size_t) bytes;
+        
+    }
+    return YES;
 }
 
 - (BOOL) readPacket:(struct dv3k_packet *)packet {
@@ -403,41 +438,9 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     return YES;
 }
 
-- (BOOL) sendCtrlPacket:(struct dv3k_packet)packet expectResponse:(uint8)response {
 
-    if(status != DV3K_STOPPED) {
-        NSLog(@"Called sendCtrlPacket: when started\n");
-        return NO;
-    }
-    
-    if(write(serialDescriptor, &packet, dv3k_packet_size(packet)) == -1) {
-        NSLog(@"Couldn't write control packet\n");
-        return NO;
-    }
-    
-    if([self readPacket:responsePacket] == NO)
-        return NO;
-    
-    if(responsePacket->start_byte != DV3K_START_BYTE ||
-       responsePacket->header.packet_type != DV3K_TYPE_CONTROL ||
-       responsePacket->payload.ctrl.field_id != response) {
-        NSLog(@"Couldn't get control response\n");
-        return NO;
-    }
-
-    return YES;
-}
-
-- (BOOL) start {
+- (BOOL) openPort {
     struct termios portTermios;
-    
-    if(status != DV3K_STOPPED) {
-        NSLog(@"DV3K is not closed\n");
-        return YES;
-    }
-    
-    self.version = @"";
-    self.productId = @"";
     
     if(self.serialPort == nil || [self.serialPort isEqualToString:@""])
         return NO;
@@ -473,6 +476,54 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         close(serialDescriptor);
         return NO;
     }
+    
+    return YES;
+}
+
+- (BOOL) setNonblocking {
+    if(fcntl(serialDescriptor, F_SETFL, O_NONBLOCK | O_NDELAY) == -1) {
+        NSLog(@"Couldn't set O_NONBLOCK: %s\n", strerror(errno));
+        return NO;
+    }
+
+    return YES;
+}
+
+- (BOOL) sendCtrlPacket:(struct dv3k_packet)packet expectResponse:(uint8)response {
+    
+    if(status != DV3K_STOPPED) {
+        NSLog(@"Called sendCtrlPacket: when started\n");
+        return NO;
+    }
+    
+    if(![self writePacket:&packet])
+        return NO;
+    
+    if(![self readPacket:responsePacket])
+        return NO;
+    
+    if(responsePacket->start_byte != DV3K_START_BYTE ||
+       responsePacket->header.packet_type != DV3K_TYPE_CONTROL ||
+       responsePacket->payload.ctrl.field_id != response) {
+        NSLog(@"Couldn't get control response\n");
+        return NO;
+    }
+    
+    return YES;
+}
+
+#pragma mark - Flow Control
+
+- (BOOL) start {
+    if(status != DV3K_STOPPED) {
+        NSLog(@"DV3K is not closed\n");
+        return YES;
+    }
+    
+    self.version = @"";
+    self.productId = @"";
+    
+    [self openPort];
     
     //  Initialize the DV3K
     struct dv3k_packet ctrlPacket = {
@@ -526,9 +577,10 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     
     NSLog(@"DV3000 is now set up\n");
     
-    if(fcntl(serialDescriptor, F_SETFL, O_NONBLOCK | O_NDELAY) == -1) {
+    [self setNonblocking];
+    /* if(fcntl(serialDescriptor, F_SETFL, O_NONBLOCK | O_NDELAY) == -1) {
         NSLog(@"Couldn't set O_NONBLOCK: %s\n", strerror(errno));
-    }
+    } */
     
     //dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, (uintptr_t) serialDescriptor, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
     dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, (uintptr_t) serialDescriptor, 0, readDispatchQueue);
@@ -573,71 +625,51 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     status = DV3K_STOPPED;
 }
 
-- (void) dealloc {
-    free(responsePacket);
-}
+#pragma mark - Data handling
 
 - (void) decodeData:(void *) data lastPacket:(BOOL)last {
+    struct dv3k_packet *packet;
+    
     if(status != DV3K_STARTED)
         return;
     
-    memcpy(&dv3k_ambe.payload.ambe.data.data, data, sizeof(dv3k_ambe.payload.ambe.data.data));
+    packet = malloc(sizeof(struct dv3k_packet));
+    
+    memcpy(packet, &dv3k_ambe, sizeof(dv3k_ambe));
+    memcpy(&packet->payload.ambe.data.data, data, sizeof(packet->payload.ambe.data.data));
     
     dispatch_async(dispatchQueue, ^{
-        ssize_t bytes;
-        
-        bytes = write(serialDescriptor, &dv3k_ambe, dv3k_packet_size(dv3k_ambe));
-        if(bytes == -1) {
-            NSLog(@"Couldn't send AMBE packet: %s\n", strerror(errno));
-            return;
-        }
-        
-        if(bytes == 0) {
-            NSLog(@"No bytes written to serial port!");
-        }
+        [self writePacket:packet];
         
         if(last && self.beep) {
-            for(int i = 0; i < 5; ++i) {
-                bytes = write(serialDescriptor, &bleepPacket, dv3k_packet_size(bleepPacket));
-                if(bytes == -1) {
-                    NSLog(@"Couldn't write bleep packet: %s\n", strerror(errno));
-                    return;
-                }
-            }
+            for(int i = 0; i < 5; ++i)
+                [self writePacket:&bleepPacket];
             
             //  Write a silence packet to clean out the chain
-            bytes = write(serialDescriptor, &silencePacket, dv3k_packet_size(silencePacket));
-            if(bytes == -1) {
-                NSLog(@"Couldn't write silence packet: %s\n", strerror(errno));
-                return;
-            }
+            [self writePacket:&silencePacket];
         }
+        
+        free(packet);
     });
 }
 
 - (void) encodeData:(void *)  data lastPacket:(BOOL)last {
-    // XXX We shouldn't have to free the data.
-    if(status != DV3K_STARTED) {
-        free(data);
+    struct dv3k_packet *packet;
+    
+    if(status != DV3K_STARTED)
         return;
-    }
+    
+    packet = malloc(sizeof(struct dv3k_packet));
+    memcpy(packet, &dv3k_audio, sizeof(struct dv3k_packet));
+    memcpy(&packet->payload.audio.samples, data, sizeof(packet->payload.audio.samples));
+    
+    if(last)
+        dv3k_audio.payload.audio.cmode_value = htons(0x4000);
+    else
+        dv3k_audio.payload.audio.cmode_value = 0x0000;
     
     dispatch_async(dispatchQueue, ^{
-        ssize_t bytes;
-        
-        memcpy(&dv3k_audio.payload.audio.samples, data, sizeof(dv3k_audio.payload.audio.samples));
-        if(last)
-            dv3k_audio.payload.audio.cmode_value = htons(0x4000);
-        else
-            dv3k_audio.payload.audio.cmode_value = 0x0000;
-                
-        bytes = write(serialDescriptor, &dv3k_audio, dv3k_packet_size(dv3k_audio));
-        if(bytes == -1) {
-            NSLog(@"Couldn't send audio packet: %s\n", strerror(errno));
-            return;
-        }
-        
-        free(data);
+        [self writePacket:packet];
     });
 }
 

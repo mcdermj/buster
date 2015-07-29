@@ -533,7 +533,7 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
     inputAudioSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
     dispatch_source_set_timer(inputAudioSource, dispatch_time(DISPATCH_TIME_NOW, 0), 20ull * NSEC_PER_MSEC, 1ull * NSEC_PER_MSEC);
     
-    if(hardwareSampleRate == 8000.0) {
+    //if(hardwareSampleRate == 8000.0) {
         dispatch_source_set_event_handler(inputAudioSource, ^{
             // XXX We probably want to malloc the buffer list once and use it repeatedly.
             AudioBufferList bufferList;
@@ -546,7 +546,15 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
             bufferList.mBuffers[0].mDataByteSize = numSamples * sizeof(short);
             bufferList.mBuffers[0].mData = calloc(1, bufferList.mBuffers[0].mDataByteSize);
             
-            TPCircularBufferDequeueBufferListFrames(_recordBuffer, &numSamples, &bufferList, &timestamp, self.inputFormat);
+            if(hardwareSampleRate == 8000.0) {
+                TPCircularBufferDequeueBufferListFrames(_recordBuffer, &numSamples, &bufferList, &timestamp, self.inputFormat);
+            } else {
+                OSStatus error = AudioConverterFillComplexBuffer(inputConverter, audioConverterCallback, (__bridge void *)(self), &numSamples, &bufferList, NULL);
+                
+                if(error != noErr && error != kAudioConverterErr_UnspecifiedError)
+                    return;
+            }
+            
             if(!self.xmit && numSamples == 0) {
                 last = YES;
                 dispatch_suspend(inputAudioSource);
@@ -554,9 +562,9 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
             
             [self.vocoder encodeData:bufferList.mBuffers[0].mData lastPacket:last];
             
-            return;
+            free(bufferList.mBuffers[0].mData);
         });
-    } else {
+    /* } else {
         AudioConverterNew(self.inputFormat, &outputFormat, &inputConverter);
         
         dispatch_source_set_event_handler(inputAudioSource, ^{
@@ -580,9 +588,10 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
             }
             
             [self.vocoder encodeData:bufferList.mBuffers[0].mData lastPacket:last];
-           return;
+            
+            free(bufferList.mBuffers[0].mData);
         });
-    }
+    } */
     
     //  Start everything up.
     
