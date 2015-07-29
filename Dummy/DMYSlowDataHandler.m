@@ -91,7 +91,7 @@ NSString * const DMYSlowDataTextReceived = @"DMYSlowDataTextReceived";
     }
     
     char sequence = dataFrame[0][0] & SLOW_DATA_SEQUENCE_MASK;
-    if(sequence > 3) {
+    if(sequence > 3 || sequence < 0) {
         NSLog(@"Bad sequence 0x%02X", sequence);
         isTop = YES;
         return;
