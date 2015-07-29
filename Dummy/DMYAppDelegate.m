@@ -40,18 +40,19 @@
     DMYDataEngine *engine = [DMYDataEngine sharedInstance];
     
     [engine.network bind:@"xmitMyCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
+    [engine.network bind:@"xmitMyCall2" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall2" options:nil];
     [engine.network bind:@"xmitRpt1Call" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.rpt1Call" options:nil];
     [engine.network bind:@"xmitRpt2Call" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.rpt2Call" options:nil];
+    [engine.network.slowData bind:@"message" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.slowDataMessage" options:nil];
+    
     [engine.network bind:@"gatewayAddr" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.gatewayAddr" options:nil];
     [engine.network bind:@"gatewayPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.gatewayPort" options:nil];
     [engine.network bind:@"repeaterPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.repeaterPort" options:nil];
-    [engine.network.slowData bind:@"message" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.slowDataMessage" options:nil];
-    
-    [self bind:@"txKeyCode" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.shortcutValue" options:@{NSValueTransformerNameBindingOption: MASDictionaryTransformerName}];
     
     [engine.vocoder bind:@"speed" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPortBaud" options:nil];
     [engine.vocoder bind:@"serialPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPort" options:nil];
     
+    [self bind:@"txKeyCode" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.shortcutValue" options:@{NSValueTransformerNameBindingOption: MASDictionaryTransformerName}];
     
     NSString *portName = [[NSUserDefaults standardUserDefaults] stringForKey:@"dv3kSerialPort"];
     if(!portName) {

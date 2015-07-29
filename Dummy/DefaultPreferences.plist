@@ -4,20 +4,22 @@
 <dict>
 	<key>myCall</key>
 	<string>NO0CAL</string>
+	<key>myCall2</key>
+	<string></string>
+	<key>rpt1Call</key>
+	<string>NO0CAL G</string>
+	<key>rpt2Call</key>
+	<string>NO0CAL B</string>
+	<key>slowDataMessage</key>
+	<string>Buster 1.0</string>
 	<key>gatewayAddr</key>
 	<string>127.0.0.1</string>
 	<key>gatewayPort</key>
 	<real>20010</real>
-	<key>rpt2Call</key>
-	<string>NO0CAL B</string>
-	<key>dv3kSerialPortBaud</key>
-	<integer>230400</integer>
 	<key>repeaterPort</key>
 	<integer>20011</integer>
-	<key>rpt1Call</key>
-	<string>NO0CAL G</string>
-	<key>slowDataMessage</key>
-	<string>Buster 1.0</string>
+	<key>dv3kSerialPortBaud</key>
+	<integer>230400</integer>
 	<key>destinationCalls</key>
 	<array>
 		<string>CQCQCQ</string>

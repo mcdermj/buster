@@ -34,7 +34,9 @@
     if(self) {
         NSError *error = NULL;
         invalidChars = [NSCharacterSet characterSetWithCharactersInString:@"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz• "].invertedSet;
-        commandRegex = [NSRegularExpression regularExpressionWithPattern:@"[ ]{7}[A-Z]{1}" options:NSRegularExpressionCaseInsensitive error:&error];
+        commandRegex = [NSRegularExpression regularExpressionWithPattern:@"[ ]{7}[A-Z]{1}" options:NSRegularExpressionCaseInsensitive error:&error];\
+        
+        _maxLength = 8;
     }
     
     return self;
@@ -48,7 +50,7 @@
 - (BOOL) isPartialStringValid:(NSString *__autoreleasing *)partialStringPtr proposedSelectedRange:(NSRangePointer)proposedSelRangePtr originalString:(NSString *)origString originalSelectedRange:(NSRange)origSelRange errorDescription:(NSString *__autoreleasing *)error {
     
     NSString *proposedString = *partialStringPtr;
-    if(proposedString.length > 8) {
+    if(proposedString.length > _maxLength) {
         proposedSelRangePtr = &origSelRange;
         return NO;
     }

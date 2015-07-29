@@ -119,7 +119,9 @@ NSString * const DMYSlowDataTextReceived = @"DMYSlowDataTextReceived";
 }
 
 -(const void *)getDataForSequence:(NSUInteger)sequence {
-    if(sequence > 0 && sequence < 9) {
+    if(sequence == 0) {
+        return syncBytes;
+    } else if(sequence < 9) {
         return messageFrames[sequence - 1];
     } else {
         return filler;

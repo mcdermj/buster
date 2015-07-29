@@ -46,20 +46,27 @@
                                                       object: nil
                                                        queue: [NSOperationQueue mainQueue]
                                                   usingBlock:^(NSNotification *notification) {
-                                                                                                            
-                                                      weakSelf.urCall.stringValue = notification.userInfo[@"urCall"];
-                                                      weakSelf.myCall.stringValue = notification.userInfo[@"myCall"];
-                                                      weakSelf.rpt1Call.stringValue = notification.userInfo[@"rpt1Call"];
-                                                      weakSelf.rpt2Call.stringValue = notification.userInfo[@"rpt2Call"];
+                                                      NSMutableDictionary *header = [NSMutableDictionary dictionaryWithDictionary:notification.userInfo];
+                                                      
+                                                      if([((NSString *)header[@"myCall2"]) isEqualToString:@"    "])
+                                                          header[@"compositeMyCall"] = header[@"myCall"];
+                                                      else
+                                                          header[@"compositeMyCall"] = [NSString stringWithFormat:@"%@/%@", [header[@"myCall"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]], [header[@"myCall2"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+                                                      
+                                                      
+                                                      weakSelf.myCall.stringValue = header[@"compositeMyCall"];
+                                                      weakSelf.urCall.stringValue = header[@"urCall"];
+                                                      weakSelf.rpt1Call.stringValue = header[@"rpt1Call"];
+                                                      weakSelf.rpt2Call.stringValue = header[@"rpt2Call"];
                                                      
                                                       NSPredicate *currentFilterPredicate = self.heardTableController.filterPredicate;
                                                       self.heardTableController.filterPredicate = nil;
                                                       
-                                                      NSPredicate *streamIdPredicate = [NSPredicate predicateWithFormat:@"streamId == %@", notification.userInfo[@"streamId"]];
+                                                      NSPredicate *streamIdPredicate = [NSPredicate predicateWithFormat:@"streamId == %@", header[@"streamId"]];
                                                       NSArray *entries = [self.heardTableController.arrangedObjects filteredArrayUsingPredicate:streamIdPredicate];
                                                                                                                                               
                                                       if(entries.count == 0)
-                                                          [self.heardTableController addObject:notification.userInfo];
+                                                          [self.heardTableController addObject:header];
                                                       
                                                       self.heardTableController.filterPredicate = currentFilterPredicate;
                                                       
@@ -85,6 +92,7 @@
                                                       
                                                       if(entries.count != 1) {
                                                           NSLog(@"Found a freaky number of entries for predicate: %lu\n", (unsigned long)entries.count);
+                                                          self.heardTableController.filterPredicate = currentFilterPredicate;
                                                           return;
                                                       }
 

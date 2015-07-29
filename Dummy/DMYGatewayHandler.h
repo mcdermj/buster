@@ -37,20 +37,11 @@ extern NSString * const DMYRepeaterInfoReceived;
 @property (assign, nonatomic) id <DMYVocoderProtocol> vocoder;
 @property (nonatomic, readonly) DMYSlowDataHandler *slowData;
 
-@property (nonatomic, readonly, copy) NSString *urCall;
-@property (nonatomic, readonly, copy) NSString *myCall;
-@property (nonatomic, readonly, copy) NSString *rpt1Call;
-@property (nonatomic, readonly, copy) NSString *rpt2Call;
-@property (nonatomic, readonly, copy) NSString *myCall2;
-@property (nonatomic, readonly, assign) NSUInteger streamId;
-
 @property (copy, nonatomic) NSString *xmitMyCall;
+@property (copy, nonatomic) NSString *xmitMyCall2;
 @property (copy, nonatomic) NSString *xmitUrCall;
 @property (copy, nonatomic) NSString *xmitRpt1Call;
 @property (copy, nonatomic) NSString *xmitRpt2Call;
-
-@property (nonatomic, readonly, copy) NSString *localText;
-@property (nonatomic, readonly, copy) NSString *reflectorText;
 
 - (id) init;
 - (BOOL) start;

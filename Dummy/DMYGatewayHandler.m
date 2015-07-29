@@ -93,9 +93,14 @@ struct gatewayPacket {
     } payload;
 } __attribute__((packed));
 
+
+static const char GW_PACKET_TYPE_HEADER = 0x20;
+static const char GW_PACKET_TYPE_DATA = 0x21;
+static const char GW_PACKET_TYPE_POLL = 0x0A;
+
 static const struct gatewayPacket pollPacket = {
     .magic = "DSRP",
-    .packetType = 0x0A,
+    .packetType = GW_PACKET_TYPE_POLL,
     .payload.pollText = "Dummy v1.0 (Mac)"
 };
 
@@ -118,9 +123,10 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     dispatch_source_t dispatchSource;
     dispatch_source_t pollTimerSource;
     dispatch_queue_t dispatchQueue;
-    uint16 xmitStreamId;
-    uint8 xmitSequence;
-    uint8 sequence;
+    uint16 rxStreamId;
+    uint16 txStreamId;
+    uint8 txSequence;
+    uint8 rxSequence;
     BOOL running;
     NSThread *readThread;
     // struct gatewayPacket *incomingPacket;
@@ -132,16 +138,6 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     } status;
 }
 
-@property (nonatomic, copy) NSString *localText;
-@property (nonatomic, copy) NSString *reflectorText;
-
-@property (nonatomic, copy) NSString *urCall;
-@property (nonatomic, copy) NSString *myCall;
-@property (nonatomic, copy) NSString *rpt1Call;
-@property (nonatomic, copy) NSString *rpt2Call;
-@property (nonatomic, copy) NSString *myCall2;
-@property (nonatomic, assign) NSUInteger streamId;
-
 @property (nonatomic, readwrite) DMYSlowDataHandler *slowData;
 
 - (NSData *) constructRemoteAddrStruct;
@@ -149,6 +145,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 - (void) processPacket;
 - (uint16) calculateChecksum:(struct gatewayPacket)packet;
 - (void) sendBlankTransmissionWithUr:(NSString *)urCall;
+- (BOOL)sendPacket:(const struct gatewayPacket *)packet;
 
 @end
 
@@ -160,7 +157,8 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     self = [super init];
     if(self) {
         gatewaySocket = 0;
-        _streamId = 0;
+        rxStreamId = 0;
+        txStreamId = htons((short) random());
         
         _gatewayPort = 0;
         _repeaterPort = 0;
@@ -168,27 +166,21 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         
         _vocoder = nil;
         
-        _urCall = @"";
-        _myCall = @"";
-        _rpt1Call = @"";
-        _rpt2Call = @"";
-        _myCall2 = @"";
-        _xmitMyCall = @"";
-        _xmitUrCall = @"";
-        _xmitRpt1Call = @"";
-        _xmitRpt2Call = @"";
-        _reflectorText = @"";
-        _localText = @"";
+        self.xmitMyCall = @"";
+        self.xmitMyCall2 = @"";
+        self.xmitUrCall = @"";
+        self.xmitRpt1Call = @"";
+        self.xmitRpt2Call = @"";
         
         // incomingPacket = malloc(sizeof(struct gatewayPacket));
         
         status = GWY_STOPPED;
         
-        xmitStreamId = htons((short) random());
-        xmitSequence = 0;
+        
+        txSequence = 0;
         
         _slowData = [[DMYSlowDataHandler alloc] init];
-        self.slowData.message = @"Motley Fool";
+        self.slowData.message = @"";
         
         dispatch_queue_attr_t dispatchQueueAttr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, -1);
         dispatchQueue = dispatch_queue_create("net.nh6z.Dummy.NetworkIO", dispatchQueueAttr);
@@ -224,6 +216,27 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         [self start];
     }
 }
+
+- (void) setXmitMyCall2:(NSString *)xmitMyCall2 {
+    _xmitMyCall2 = [xmitMyCall2 stringByPaddingToLength:4 withString:@" " startingAtIndex:0];
+}
+
+- (void) setXmitMyCall:(NSString *)xmitMyCall {
+    _xmitMyCall = [xmitMyCall stringByPaddingToLength:8 withString:@" " startingAtIndex:0];
+}
+
+- (void) setXmitUrCall:(NSString *)xmitUrCall {
+    _xmitUrCall = [xmitUrCall stringByPaddingToLength:8 withString:@" " startingAtIndex:0];
+}
+
+- (void) setXmitRpt1Call:(NSString *)xmitRpt1Call {
+    _xmitRpt1Call = [xmitRpt1Call stringByPaddingToLength:8 withString:@" " startingAtIndex:0];
+}
+
+- (void) setXmitRpt2Call:(NSString *)xmitRpt2Call {
+    _xmitRpt2Call = [xmitRpt2Call stringByPaddingToLength:8 withString:@" " startingAtIndex:0];
+}
+
 
 #pragma mark - Flow Control
 
@@ -272,11 +285,8 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     dispatch_source_set_timer(pollTimerSource, dispatch_walltime(NULL, 0), 60ull * NSEC_PER_SEC, 1ull * NSEC_PER_SEC);
     dispatch_source_set_event_handler(pollTimerSource, ^{
         NSLog(@"Sending Poll\n");
-        if(send(gatewaySocket, &pollPacket, sizeof(pollPacket), 0) == -1) {
-            NSLog(@"Couldn't send poll packet: %s\n", strerror(errno));
+        if(![self sendPacket:&pollPacket])
             return;
-        }
-
     });
     dispatch_resume(pollTimerSource);
     
@@ -314,120 +324,113 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     [self sendBlankTransmissionWithUr:@"       U"];
 }
 
+- (void) fillHeader:(struct gatewayPacket *)packet {
+    strncpy((char *) packet->payload.dstarHeader.myCall, [self.xmitMyCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet->payload.dstarHeader.myCall));
+    strncpy((char *) packet->payload.dstarHeader.rpt2Call, [self.xmitRpt2Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet->payload.dstarHeader.rpt1Call));
+    strncpy((char *) packet->payload.dstarHeader.rpt1Call, [self.xmitRpt1Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet->payload.dstarHeader.rpt2Call));
+    strncpy((char *) packet->payload.dstarHeader.myCall2, [self.xmitMyCall2 cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet->payload.dstarHeader.myCall2));
+}
+
 - (void) sendBlankTransmissionWithUr:(NSString *)urCall {
     dispatch_async(dispatchQueue, ^{
-        struct gatewayPacket packet;
+        struct gatewayPacket packet = {};
         short linkStreamId;
         
-        memset(&packet, 0, sizeof(packet));
-        
         memcpy(&packet.magic, "DSRP", sizeof(packet.magic));
-        packet.packetType = 0x20;
+        packet.packetType = GW_PACKET_TYPE_HEADER;
         
         strncpy((char *) packet.payload.dstarHeader.urCall, [urCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.urCall));
         
-        // XXX This is generic code that should be constructed for whenever we need a header packet.
-        // XXX Maybe a fillHeader function
-        strncpy((char *) packet.payload.dstarHeader.myCall, [self.xmitMyCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.myCall));
-        strncpy((char *) packet.payload.dstarHeader.rpt2Call, [self.xmitRpt2Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt1Call));
-        strncpy((char *) packet.payload.dstarHeader.rpt1Call, [self.xmitRpt1Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt2Call));
-        
-        // XXX Change Me!
-        strncpy((char *) packet.payload.dstarHeader.myCall2, "HOME", sizeof(packet.payload.dstarHeader.myCall2));
+        [self fillHeader:&packet];
         
         linkStreamId = htons((short) random());
         packet.payload.dstarHeader.streamId = linkStreamId;
         
         packet.payload.dstarHeader.checksum = [self calculateChecksum:packet];
         
-        //   XXX Maybe the length should be shorter here
-        size_t packetLen = sizeof(packet.magic) + sizeof(packet.packetType) + sizeof(packet.payload.dstarHeader);
-        if(send(gatewaySocket, &packet, packetLen, 0) == -1) {
-            NSLog(@"Couldn't send link header: %s\n", strerror(errno));
+        if(![self sendPacket:&packet])
             return;
-        }
         
         //  Send the end stream packet
+        packet.packetType = GW_PACKET_TYPE_DATA;
         memset(&packet.payload, 0, sizeof(packet.payload));
-        packet.payload.dstarData.sequence = 0x40;
         packet.payload.dstarData.streamId = linkStreamId;
-        packet.packetType = 0x21;
-        packetLen = sizeof(packet.magic) + sizeof(packet.packetType) + sizeof(packet.payload.dstarData);
-        if(send(gatewaySocket, &packet, packetLen, 0) == -1) {
-            NSLog(@"Couldn't send link data: %s\n", strerror(errno));
+        packet.payload.dstarData.sequence = 0x40;
+        
+        if(![self sendPacket:&packet])
             return;
-        }
         
     });
 }
 
 
 - (void) sendAMBE:(void *)data lastPacket:(BOOL)last {
+    char *ambeData = malloc(sizeof(((struct gatewayPacket *)0)->payload.dstarData.ambeData));
+    memcpy(ambeData, data, sizeof(((struct gatewayPacket *)0)->payload.dstarData.ambeData));
+
     dispatch_async(dispatchQueue, ^{
-        //  XXX Should use a reusable struct
-        struct gatewayPacket packet;
-        size_t packetLen;
+        struct gatewayPacket packet = {};
         
-        memset(&packet, 0, sizeof(packet));
         memcpy(&packet.magic, "DSRP", sizeof(packet.magic));
+        packet.payload.dstarHeader.streamId = txStreamId;
         
-        if(xmitSequence == 0) {
-            packet.packetType = 0x20;
+        if(txSequence == 0) {
+            packet.packetType = GW_PACKET_TYPE_HEADER;
             strncpy((char *) packet.payload.dstarHeader.urCall, [self.xmitUrCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.urCall));
             
-            strncpy((char *) packet.payload.dstarHeader.myCall, [self.xmitMyCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.myCall));
-            strncpy((char *) packet.payload.dstarHeader.rpt2Call, [self.xmitRpt2Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt1Call));
-            strncpy((char *) packet.payload.dstarHeader.rpt1Call, [self.xmitRpt1Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.payload.dstarHeader.rpt2Call));
-            
-            // XXX Change Me!
-            strncpy((char *) packet.payload.dstarHeader.myCall2, "HOME", sizeof(packet.payload.dstarHeader.myCall2));
-            
-            packet.payload.dstarHeader.streamId = xmitStreamId;
+            [self fillHeader:&packet];
             
             packet.payload.dstarHeader.checksum = [self calculateChecksum:packet];
             
-            packetLen = sizeof(packet.magic) + sizeof(packet.packetType) + sizeof(packet.payload.dstarHeader);
-            if(send(gatewaySocket, &packet, packetLen, 0) == -1) {
-                NSLog(@"Couldn't send stream header: %s\n", strerror(errno));
+            if(![self sendPacket:&packet])
                 return;
-            }
-            
-            memset(&packet, 0, sizeof(packet));
-            memcpy(&packet.magic, "DSRP", sizeof(packet.magic));
         }
         
-        packet.packetType = 0x21;
-        memcpy(&packet.payload.dstarData.ambeData, data, sizeof(packet.payload.dstarData.ambeData));
-        packet.payload.dstarData.sequence = xmitSequence;
-        packet.payload.dstarData.streamId = xmitStreamId;
+        packet.packetType = GW_PACKET_TYPE_DATA;
+        memcpy(&packet.payload.dstarData.ambeData, ambeData, sizeof(packet.payload.dstarData.ambeData));
+        packet.payload.dstarData.sequence = txSequence;
         
-        if(xmitSequence != 0) {
-            // const char *slowBytes = [slowData getDataForSequence:xmitSequence];
-            memcpy(&packet.payload.dstarData.slowData, [self.slowData getDataForSequence:xmitSequence], sizeof(packet.payload.dstarData.slowData));
-            //memset(&packet.payload.dstarData.slowData, 'F', sizeof(packet.payload.dstarData.slowData));
-        } else {
-            // XXX Sync bytes should be put into a constant and memcpy'ed.  We can use this for later memcmp's as well.
-            packet.payload.dstarData.slowData[0] = 0x55;
-            packet.payload.dstarData.slowData[1] = 0x2D;
-            packet.payload.dstarData.slowData[2] = 0x16;
-        }
+        memcpy(&packet.payload.dstarData.slowData, [self.slowData getDataForSequence:txSequence], sizeof(packet.payload.dstarData.slowData));
         
         packet.payload.dstarData.errors = 0;
         
         if(last) {
-            xmitStreamId = htons((short) random());
+            txSequence = 0;
+            txStreamId = htons((short) random());
             packet.payload.dstarData.sequence &= 0x40;
-            NSLog(@"Last packet");
+        } else {
+            txSequence = (txSequence + 1) % 21;
         }
         
-        packetLen = sizeof(packet.magic) + sizeof(packet.packetType) + sizeof(packet.payload.dstarData);
-        if(send(gatewaySocket, &packet, packetLen, 0) == -1) {
-            NSLog(@"Couldn't send audio data: %s\n", strerror(errno));
-            return;
-        }
+        [self sendPacket:&packet];
         
-        xmitSequence = (xmitSequence + 1) % 21;
+        free(ambeData);
     });
+}
+
+- (BOOL)sendPacket:(const struct gatewayPacket *)packet {
+    size_t packetLen = sizeof(packet->magic) + sizeof(packet->packetType);
+    
+    switch(packet->packetType) {
+        case GW_PACKET_TYPE_DATA:
+            packetLen += sizeof(packet->payload.dstarData);
+            break;
+        case GW_PACKET_TYPE_HEADER:
+            packetLen += sizeof(packet->payload.dstarHeader);
+            break;
+        case GW_PACKET_TYPE_POLL:
+            packetLen += sizeof(packet->payload);
+            break;
+        default:
+            NSLog(@"Unknown packet type for transmission: 0x%02x", packet->packetType);
+            return NO;
+            break;
+    }
+    if(send(gatewaySocket, packet, packetLen, 0) == -1) {
+        NSLog(@"Couldn't send packet: %s\n", strerror(errno));
+        return NO;
+    }
+    return YES;
 }
 
 #pragma mark - Internal Methods
@@ -474,19 +477,6 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     return [NSData dataWithData:addrStructData];
 }
 
-- (NSDictionary *) header {
-    return @{
-              @"streamId": [NSNumber numberWithUnsignedInteger:self.streamId],
-              @"myCall": [NSString stringWithString:self.myCall],
-              @"urCall": [NSString stringWithString:self.urCall],
-              @"myCall2": [NSString stringWithString:self.myCall2],
-              @"rpt1Call": [NSString stringWithString:self.rpt1Call],
-              @"rpt2Call": [NSString stringWithString:self.rpt2Call],
-              @"time": [NSDate date],
-              @"message": @""
-            };
-}
-
 - (void) processPacket {
     ssize_t packetSize;
     struct gatewayPacket incomingPacket;
@@ -502,8 +492,6 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         NSLog(@"Bad packet magic: %c%c%c%c\n", incomingPacket.magic[0], incomingPacket.magic[1], incomingPacket.magic[2], incomingPacket.magic[3]);
         return;
     }
-    
-    __weak DMYGatewayHandler *weakSelf = self;
     
     switch(incomingPacket.packetType) {
         case 0x00: {
@@ -528,35 +516,39 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         case 0x04:
             NSLog(@"Packet is NETWORK_STATUS\n");
             break;
-        case 0x20: {
+        case GW_PACKET_TYPE_HEADER: {
             ssize_t expectedPacketSize = sizeof(incomingPacket.magic) + sizeof(incomingPacket.packetType) + sizeof(incomingPacket.payload.dstarHeader);
             if(packetSize != expectedPacketSize) {
                 NSLog(@"Header packet size doesn't match: expected %ld, got %ld", expectedPacketSize, packetSize);
             }
-            if(self.streamId != 0 && self.streamId != incomingPacket.payload.dstarHeader.streamId) {
+            if(rxStreamId != 0 && rxStreamId != incomingPacket.payload.dstarHeader.streamId) {
                 NSLog(@"Stream ID Mismatch on Header");
                 return;
             }
-            self.myCall = [[NSString alloc] initWithBytes:incomingPacket.payload.dstarHeader.myCall
-                                              length:sizeof(incomingPacket.payload.dstarHeader.myCall)
-                                            encoding:NSUTF8StringEncoding];
-            self.urCall = [[NSString alloc] initWithBytes:incomingPacket.payload.dstarHeader.urCall
-                                              length:sizeof(incomingPacket.payload.dstarHeader.urCall)
-                                            encoding:NSUTF8StringEncoding];
-            self.rpt1Call = [[NSString alloc] initWithBytes:incomingPacket.payload.dstarHeader.rpt1Call
-                                                length:sizeof(incomingPacket.payload.dstarHeader.rpt1Call)
-                                              encoding:NSUTF8StringEncoding];
-            self.rpt2Call = [[NSString alloc] initWithBytes:incomingPacket.payload.dstarHeader.rpt2Call
-                                                length:sizeof(incomingPacket.payload.dstarHeader.rpt2Call)
-                                              encoding:NSUTF8StringEncoding];
-            self.myCall2 = [[NSString alloc] initWithBytes:incomingPacket.payload.dstarHeader.myCall2
-                                               length:sizeof(incomingPacket.payload.dstarHeader.myCall2)
-                                             encoding:NSUTF8StringEncoding];
             
+            NSMutableDictionary *header = [[NSMutableDictionary alloc] init];
+            header[@"myCall"] = [[NSString alloc] initWithBytes:incomingPacket.payload.dstarHeader.myCall
+                                                         length:sizeof(incomingPacket.payload.dstarHeader.myCall)
+                                                       encoding:NSUTF8StringEncoding];
+            header[@"myCall2"] = [[NSString alloc] initWithBytes:incomingPacket.payload.dstarHeader.myCall2
+                                                          length:sizeof(incomingPacket.payload.dstarHeader.myCall2)
+                                                        encoding:NSUTF8StringEncoding];
+            header[@"urCall"] = [[NSString alloc] initWithBytes:incomingPacket.payload.dstarHeader.urCall
+                                                          length:sizeof(incomingPacket.payload.dstarHeader.urCall)
+                                                        encoding:NSUTF8StringEncoding];
+            header[@"rpt1Call"] = [[NSString alloc] initWithBytes:incomingPacket.payload.dstarHeader.rpt1Call
+                                                           length:sizeof(incomingPacket.payload.dstarHeader.rpt1Call)
+                                                         encoding:NSUTF8StringEncoding];
+            header[@"rpt2Call"] = [[NSString alloc] initWithBytes:incomingPacket.payload.dstarHeader.rpt2Call
+                                                           length:sizeof(incomingPacket.payload.dstarHeader.rpt2Call)
+                                                         encoding:NSUTF8StringEncoding];
+            header[@"streamId"] = [NSNumber numberWithUnsignedInteger:rxStreamId];
+            header[@"time"] = [NSDate date];
+            header[@"message"] = @"";
             
-            if(self.streamId == 0) {
-                self.streamId = incomingPacket.payload.dstarHeader.streamId;
-                NSDictionary *header = [self header];
+            if(rxStreamId == 0) {
+                rxStreamId = incomingPacket.payload.dstarHeader.streamId;
+                header[@"streamId"] = [NSNumber numberWithUnsignedInteger:rxStreamId];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkStreamStart
                                                                         object: self
@@ -564,10 +556,9 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
                      ];
                 });
                 
-                NSLog(@"New stream %lu: My: %@/%@ Ur: %@ RPT1: %@ RPT2: %@\n", (unsigned long) self.streamId, self.myCall, self.myCall2, self.urCall, self.rpt1Call, self.rpt2Call);
+                NSLog(@"New stream %lu: My: %@/%@ Ur: %@ RPT1: %@ RPT2: %@\n", (unsigned long) rxStreamId, header[@"myCall"], header[@"myCall2"], header[@"urCall"], header[@"rpt1Call"], header[@"rpt2Call"]);
             }
             
-            NSDictionary *header = [self header];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkHeaderReceived
                                                                     object: self
@@ -576,17 +567,17 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 
         }
             break;
-        case 0x21: {
+        case GW_PACKET_TYPE_DATA: {
             ssize_t expectedPacketSize = sizeof(incomingPacket.magic) + sizeof(incomingPacket.packetType) + sizeof(incomingPacket.payload.dstarData);
             if(packetSize != expectedPacketSize) {
                 NSLog(@"Data packet size doesn't match: expected %ld, got %ld", expectedPacketSize, packetSize);
             }
-           if(self.streamId != incomingPacket.payload.dstarData.streamId) {
+           if(rxStreamId != incomingPacket.payload.dstarData.streamId) {
                 //  If we have missed time for about 10 packets, this stream is probably over and we missed the end packet.
                 //  XXX This should probably be in a watchdog timer somehow.
                 if(CFAbsoluteTimeGetCurrent() > lastPacketTime + .200) {
                     NSLog(@"Stream timed out\n");
-                    self.streamId = 0;
+                    rxStreamId = 0;
                     lastPacketTime = CFAbsoluteTimeGetCurrent();
                     [[NSNotificationCenter defaultCenter] postNotificationName: DMYNetworkStreamEnd
                                                                         object: self
@@ -609,7 +600,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
                 
                 incomingPacket.payload.dstarData.sequence &= ~0x40;
                 NSDictionary *streamData = @{
-                                             @"streamId": [NSNumber numberWithUnsignedInteger:weakSelf.streamId],
+                                             @"streamId": [NSNumber numberWithUnsignedInteger:rxStreamId],
                                              @"time": [NSDate date]
                                              };
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -618,29 +609,29 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
                                                                       userInfo: streamData
                      ];
                 });
-                self.streamId = 0;
+                rxStreamId = 0;
             }
             
-            if(incomingPacket.payload.dstarData.sequence != sequence) {
+            if(incomingPacket.payload.dstarData.sequence != rxSequence) {
                 //  If the packet is more recent, reset the sequence, if not, wait for my next packet
-                if(isSequenceAhead(incomingPacket.payload.dstarData.sequence, sequence, 21)) {
-                    NSLog(@"Skipped packet: incoming %u, sequence = %u",incomingPacket.payload.dstarData.sequence, sequence);
-                    sequence = incomingPacket.payload.dstarData.sequence;
+                if(isSequenceAhead(incomingPacket.payload.dstarData.sequence, rxSequence, 21)) {
+                    NSLog(@"Skipped packet: incoming %u, sequence = %u",incomingPacket.payload.dstarData.sequence, rxSequence);
+                    rxSequence = incomingPacket.payload.dstarData.sequence;
                 } else {
-                    NSLog(@"Out of order packet: incoming = %u, sequence = %u\n", incomingPacket.payload.dstarData.sequence, sequence);
+                    NSLog(@"Out of order packet: incoming = %u, sequence = %u\n", incomingPacket.payload.dstarData.sequence, rxSequence);
                     return;
                 }
             }
             
-            if(self.streamId == 0)
-                sequence = 0;
-            else
-                sequence = (sequence + 1) % 21;
+            [self.slowData addData:incomingPacket.payload.dstarData.slowData streamId:rxStreamId];
             
-            [self.slowData addData:incomingPacket.payload.dstarData.slowData streamId:self.streamId];
+            if(rxStreamId == 0)
+                rxSequence = 0;
+            else
+                rxSequence = (rxSequence + 1) % 21;
             
             //  If streamId == 0, we are on the last packet of this stream.
-            [self.vocoder decodeData: incomingPacket.payload.dstarData.ambeData lastPacket:(self.streamId == 0)];
+            [self.vocoder decodeData: incomingPacket.payload.dstarData.ambeData lastPacket:(rxStreamId == 0)];
             break;
         }
         case 0x24:

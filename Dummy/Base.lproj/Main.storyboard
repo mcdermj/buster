@@ -477,12 +477,19 @@
                                                 <constraint firstAttribute="width" constant="35" id="edC-Mm-TQ2"/>
                                             </constraints>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="hgq-Ow-Dm0">
+                                                <customFormatter key="formatter" id="eYK-rG-zrI" customClass="DMYCallFormatter">
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maxLength">
+                                                            <integer key="value" value="4"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </customFormatter>
                                                 <font key="font" metaFont="fixedUser" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <connections>
-                                                <binding destination="QYk-Xy-JMt" name="value" keyPath="values.myCall2" id="4Ud-6G-e3z"/>
+                                                <binding destination="eDD-IH-9g9" name="value" keyPath="values.myCall2" id="rTP-gh-oba"/>
                                             </connections>
                                         </textField>
                                     </subviews>
@@ -830,7 +837,7 @@
                                                                     </binding>
                                                                 </connections>
                                                             </tableColumn>
-                                                            <tableColumn editable="NO" width="57" minWidth="57" maxWidth="57" id="tGH-A8-CdR">
+                                                            <tableColumn editable="NO" width="93" minWidth="93" maxWidth="93" id="tGH-A8-CdR">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="My">
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -844,7 +851,7 @@
                                                                 </textFieldCell>
                                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                 <connections>
-                                                                    <binding destination="Zyq-aq-WHS" name="value" keyPath="arrangedObjects.myCall" id="Lqc-iQ-hB5">
+                                                                    <binding destination="Zyq-aq-WHS" name="value" keyPath="arrangedObjects.compositeMyCall" id="Nr6-Vd-51c">
                                                                         <dictionary key="options">
                                                                             <bool key="NSConditionallySetsEditable" value="YES"/>
                                                                         </dictionary>
@@ -960,7 +967,7 @@
                                                 </subviews>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </clipView>
-                                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="QtN-F5-cQo">
+                                            <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="QtN-F5-cQo">
                                                 <rect key="frame" x="1" y="118.99681603908539" width="238" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
@@ -1066,7 +1073,7 @@
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="r8R-tJ-5jL" userLabel="My Field">
                                             <rect key="frame" x="114" y="96" width="62" height="17"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="58" id="9bC-Qt-ps3"/>
+                                                <constraint firstAttribute="width" constant="95" id="9bC-Qt-ps3"/>
                                                 <constraint firstAttribute="height" constant="17" id="ETf-5D-c4y"/>
                                             </constraints>
                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" id="EvJ-3L-C1v">

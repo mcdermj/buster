@@ -119,6 +119,16 @@ static const struct dv3k_packet silencePacket = {
     .payload.ambe.cmode.value = 0x0000
 };
 
+static const struct dv3k_packet dv3k_audio = {
+    .start_byte = DV3K_START_BYTE,
+    .header.packet_type = DV3K_TYPE_AUDIO,
+    .header.payload_length = htons(sizeof(dv3k_audio.payload.audio)),
+    .payload.audio.field_id = DV3K_AUDIO_FIELD_SPEECHD,
+    .payload.audio.num_samples = sizeof(dv3k_audio.payload.audio.samples) / sizeof(short),
+    .payload.audio.cmode_field_id = 0x02,
+    .payload.audio.cmode_value = htons(0x4000)
+};
+
 NSString * const DMYVocoderDeviceChanged = @"DMYVocoderDeviceChanged";
 
 #pragma mark - Private interface
@@ -129,7 +139,7 @@ NSString * const DMYVocoderDeviceChanged = @"DMYVocoderDeviceChanged";
     dispatch_queue_t readDispatchQueue;
     dispatch_source_t dispatchSource;
     struct dv3k_packet dv3k_ambe;
-    struct dv3k_packet dv3k_audio;
+    // struct dv3k_packet dv3k_audio;
     struct dv3k_packet *responsePacket;
     enum {
         DV3K_STOPPED,
@@ -260,13 +270,13 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         dv3k_ambe.payload.ambe.data.field_id = DV3K_AMBE_FIELD_CHAND;
         dv3k_ambe.payload.ambe.data.num_bits = sizeof(dv3k_ambe.payload.ambe.data.data) * 8;
         
-        dv3k_audio.start_byte = DV3K_START_BYTE;
+        /* dv3k_audio.start_byte = DV3K_START_BYTE;
         dv3k_audio.header.packet_type = DV3K_TYPE_AUDIO;
         dv3k_audio.header.payload_length = htons(sizeof(dv3k_ambe.payload.audio));
         dv3k_audio.payload.audio.field_id = DV3K_AUDIO_FIELD_SPEECHD;
         dv3k_audio.payload.audio.num_samples = sizeof(dv3k_audio.payload.audio.samples) / sizeof(short);
         dv3k_audio.payload.audio.cmode_field_id = 0x02;
-        dv3k_audio.payload.audio.cmode_value = htons(0x4000);
+        dv3k_audio.payload.audio.cmode_value = htons(0x4000); */
         
         
         dispatch_queue_attr_t dispatchQueueAttr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, -1);
@@ -664,12 +674,14 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     memcpy(&packet->payload.audio.samples, data, sizeof(packet->payload.audio.samples));
     
     if(last)
-        dv3k_audio.payload.audio.cmode_value = htons(0x4000);
+        packet->payload.audio.cmode_value = htons(0x4000);
     else
-        dv3k_audio.payload.audio.cmode_value = 0x0000;
+        packet->payload.audio.cmode_value = 0x0000;
     
     dispatch_async(dispatchQueue, ^{
         [self writePacket:packet];
+        
+        free(packet);
     });
 }
 

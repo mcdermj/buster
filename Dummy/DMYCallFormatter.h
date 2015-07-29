@@ -21,4 +21,6 @@
 
 @interface DMYCallFormatter : NSFormatter
 
+@property (nonatomic, assign) NSUInteger maxLength;
+
 @end
