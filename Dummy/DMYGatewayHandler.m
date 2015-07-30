@@ -146,6 +146,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 - (uint16) calculateChecksum:(struct gatewayPacket)packet;
 - (void) sendBlankTransmissionWithUr:(NSString *)urCall;
 - (BOOL)sendPacket:(const struct gatewayPacket *)packet;
+- (void) fillHeader:(struct gatewayPacket *)packet;
 
 @end
 
@@ -324,12 +325,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     [self sendBlankTransmissionWithUr:@"       U"];
 }
 
-- (void) fillHeader:(struct gatewayPacket *)packet {
-    strncpy((char *) packet->payload.dstarHeader.myCall, [self.xmitMyCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet->payload.dstarHeader.myCall));
-    strncpy((char *) packet->payload.dstarHeader.rpt2Call, [self.xmitRpt2Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet->payload.dstarHeader.rpt1Call));
-    strncpy((char *) packet->payload.dstarHeader.rpt1Call, [self.xmitRpt1Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet->payload.dstarHeader.rpt2Call));
-    strncpy((char *) packet->payload.dstarHeader.myCall2, [self.xmitMyCall2 cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet->payload.dstarHeader.myCall2));
-}
+#pragma mark - Sending to gateway
 
 - (void) sendBlankTransmissionWithUr:(NSString *)urCall {
     dispatch_async(dispatchQueue, ^{
@@ -434,6 +430,13 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 }
 
 #pragma mark - Internal Methods
+
+- (void) fillHeader:(struct gatewayPacket *)packet {
+    strncpy((char *) packet->payload.dstarHeader.myCall, [self.xmitMyCall cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet->payload.dstarHeader.myCall));
+    strncpy((char *) packet->payload.dstarHeader.rpt2Call, [self.xmitRpt2Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet->payload.dstarHeader.rpt1Call));
+    strncpy((char *) packet->payload.dstarHeader.rpt1Call, [self.xmitRpt1Call cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet->payload.dstarHeader.rpt2Call));
+    strncpy((char *) packet->payload.dstarHeader.myCall2, [self.xmitMyCall2 cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet->payload.dstarHeader.myCall2));
+}
 
 - (uint16) calculateChecksum:(struct gatewayPacket)packet {
     unsigned short crc = 0xFFFF;
