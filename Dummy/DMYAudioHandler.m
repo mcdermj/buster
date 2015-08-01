@@ -102,7 +102,7 @@ static OSStatus recordThreadCallback (void *userData, AudioUnitRenderActionFlags
     
     AudioBufferList *bufferList = TPCircularBufferPrepareEmptyAudioBufferListWithAudioFormat(audioHandler.recordBuffer, audioHandler.inputFormat, inNumberFrames, inTimeStamp);
     if(!bufferList) {
-        NSLog(@"recordBuffer is full\n");
+        NSLog(@"recordBuffer is full");
         return kIOReturnSuccess;
     }
     
@@ -252,8 +252,11 @@ static OSStatus AudioDevicesChanged(AudioObjectID inObjectID, UInt32 inNumberAdd
     
     _xmit = xmit;
     
+    //  Give it 100ms for the queue to fill a bit.
     if(_xmit)
-        dispatch_resume(inputAudioSource);
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 100ul * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+            dispatch_resume(inputAudioSource);
+        });
 }
 
 - (AudioDeviceID) defaultOutputDevice {
@@ -533,65 +536,40 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
     inputAudioSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
     dispatch_source_set_timer(inputAudioSource, dispatch_time(DISPATCH_TIME_NOW, 0), 20ull * NSEC_PER_MSEC, 1ull * NSEC_PER_MSEC);
     
-    //if(hardwareSampleRate == 8000.0) {
-        dispatch_source_set_event_handler(inputAudioSource, ^{
-            // XXX We probably want to malloc the buffer list once and use it repeatedly.
-            AudioBufferList bufferList;
-            AudioTimeStamp timestamp;
-            UInt32 numSamples = 160;
-            BOOL last = NO;
-            
-            bufferList.mNumberBuffers = 1;
-            bufferList.mBuffers[0].mNumberChannels = 1;
-            bufferList.mBuffers[0].mDataByteSize = numSamples * sizeof(short);
-            bufferList.mBuffers[0].mData = calloc(1, bufferList.mBuffers[0].mDataByteSize);
-            
-            if(hardwareSampleRate == 8000.0) {
-                TPCircularBufferDequeueBufferListFrames(_recordBuffer, &numSamples, &bufferList, &timestamp, self.inputFormat);
-            } else {
-                OSStatus error = AudioConverterFillComplexBuffer(inputConverter, audioConverterCallback, (__bridge void *)(self), &numSamples, &bufferList, NULL);
-                
-                if(error != noErr && error != kAudioConverterErr_UnspecifiedError)
-                    return;
-            }
-            
-            if(!self.xmit && numSamples == 0) {
-                last = YES;
-                dispatch_suspend(inputAudioSource);
-            }
-            
-            [self.vocoder encodeData:bufferList.mBuffers[0].mData lastPacket:last];
-            
-            free(bufferList.mBuffers[0].mData);
-        });
-    /* } else {
+    if(hardwareSampleRate != 8000.0)
         AudioConverterNew(self.inputFormat, &outputFormat, &inputConverter);
+    
+    dispatch_source_set_event_handler(inputAudioSource, ^{
+        AudioBufferList bufferList;
+        AudioTimeStamp timestamp;
+        UInt32 numSamples = 160;
+        BOOL last = NO;
         
-        dispatch_source_set_event_handler(inputAudioSource, ^{
-            UInt32 numSamples = 160;
-            AudioBufferList bufferList;
-            BOOL last = NO;
-            
-            bufferList.mNumberBuffers = 1;
-            bufferList.mBuffers[0].mNumberChannels = 1;
-            bufferList.mBuffers[0].mDataByteSize = numSamples * sizeof(short);
-            bufferList.mBuffers[0].mData = calloc(1, bufferList.mBuffers[0].mDataByteSize);
-            
+        bufferList.mNumberBuffers = 1;
+        bufferList.mBuffers[0].mNumberChannels = 1;
+        bufferList.mBuffers[0].mDataByteSize = numSamples * sizeof(short);
+        bufferList.mBuffers[0].mData = calloc(1, bufferList.mBuffers[0].mDataByteSize);
+        
+        if(hardwareSampleRate == 8000.0) {
+            TPCircularBufferDequeueBufferListFrames(_recordBuffer, &numSamples, &bufferList, &timestamp, self.inputFormat);
+        } else {
             OSStatus error = AudioConverterFillComplexBuffer(inputConverter, audioConverterCallback, (__bridge void *)(self), &numSamples, &bufferList, NULL);
             
-            if(error != noErr && error != kAudioConverterErr_UnspecifiedError)
+            if(error != noErr && error != kAudioConverterErr_UnspecifiedError) {
+                NSLog(@"Error in audio converter: %d", error);
                 return;
-            
-            if(!self.xmit && numSamples == 0) {
-                last = YES;
-                dispatch_suspend(inputAudioSource);
             }
-            
-            [self.vocoder encodeData:bufferList.mBuffers[0].mData lastPacket:last];
-            
-            free(bufferList.mBuffers[0].mData);
-        });
-    } */
+        }
+        
+        if(!self.xmit && numSamples == 0) {
+            last = YES;
+            dispatch_suspend(inputAudioSource);
+        }
+        
+        [self.vocoder encodeData:bufferList.mBuffers[0].mData lastPacket:last];
+        
+        free(bufferList.mBuffers[0].mData);
+    });
     
     //  Start everything up.
     
