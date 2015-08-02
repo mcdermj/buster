@@ -85,7 +85,6 @@ NSString * const BTRSlowDataTextReceived = @"BTRSlowDataTextReceived";
     UNSCRAMBLE(1);
     
     if((dataFrame[0][0] & SLOW_DATA_TYPE_MASK) != SLOW_DATA_TYPE_TEXT) {
-        // NSLog(@"Type is not slow data: 0x%02X", dataFrame[0][0]);
         isTop = YES;
         return;
     }

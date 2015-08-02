@@ -20,6 +20,8 @@
 
 #import "BTRDataEngine.h"
 
+#import "BTRDV3KSerialVocoder.h"
+
 @interface BTRDataEngine ()
 
 @end
@@ -39,7 +41,7 @@
     self = [super init];
     if(self) {
         _audio = [[BTRAudioHandler alloc] init];
-        _vocoder = [[BTRDV3KVocoder alloc] init];
+        _vocoder = [[BTRDV3KSerialVocoder alloc] init];
         _network = [[BTRGatewayHandler alloc] init];
         
         _network.vocoder = _vocoder;

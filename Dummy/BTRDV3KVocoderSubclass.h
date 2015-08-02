@@ -1,5 +1,5 @@
 //
-//  BTRVocoderProtocol.h
+//  BTRDV3KVocoderSubclass.m
 //
 //  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
 
@@ -17,15 +17,19 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-@class BTRAudioHandler;
+#import "BTRDV3KVocoder.h"
 
-@protocol BTRVocoderProtocol <NSObject>
-- (void) decodeData:(void *) data lastPacket:(BOOL)last;
-- (void) encodeData:(void *) data lastPacket:(BOOL)last;
+#import "BTRDV3KPacket.h"
 
-- (BOOL) start;
-- (void) stop;
+@interface BTRDV3KVocoder ()
 
-@property (nonatomic, assign) BTRAudioHandler *audio;
+@property (nonatomic, assign) BOOL started;
+@property (nonatomic, assign) int descriptor;
+
+- (BOOL) openPort;
+- (BOOL) setNonblocking;
+- (BOOL) readPacket:(struct dv3k_packet *)packet;
+- (BOOL) writePacket:(const struct dv3k_packet *)packet;
+- (void) closePort;
 
 @end

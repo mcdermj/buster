@@ -22,22 +22,12 @@
 #import "BTRVocoderProtocol.h"
 #import "BTRAudioHandler.h"
 
-extern NSString * const BTRVocoderDeviceChanged;
-
 @interface BTRDV3KVocoder : NSObject <BTRVocoderProtocol>
 
-+ (NSArray *)ports;
-
 - (id) init;
-- (BOOL) start;
-- (void) stop;
 
-@property (nonatomic, copy) NSString *serialPort;
-@property (nonatomic, assign) long speed;
 @property (nonatomic, assign) BOOL beep;
 @property (nonatomic, readonly, copy) NSString *productId;
 @property (nonatomic, readonly, copy) NSString *version;
-
-@property (nonatomic, assign) BTRAudioHandler *audio;
 
 @end

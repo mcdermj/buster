@@ -20,16 +20,15 @@
 #import <Foundation/Foundation.h>
 
 #import "BTRGatewayHandler.h"
-#import "BTRDV3KVocoder.h"
 #import "BTRAudioHandler.h"
+#import "BTRVocoderProtocol.h"
 
 @interface BTRDataEngine : NSObject
 
 @property (nonatomic, readonly) BTRGatewayHandler *network;
-@property (nonatomic, readonly) BTRDV3KVocoder *vocoder;
+@property (nonatomic, readonly) id <BTRVocoderProtocol> vocoder;
 @property (nonatomic, readonly) BTRAudioHandler *audio;
 
 +(BTRDataEngine *)sharedInstance;
-
 
 @end

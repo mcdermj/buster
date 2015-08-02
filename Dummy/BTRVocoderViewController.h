@@ -19,10 +19,10 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "BTRDV3KVocoder.h"
+#import "BTRDV3KSerialVocoder.h"
 
 @interface BTRVocoderViewController : NSViewController
 @property (weak) IBOutlet NSPopUpButton *serialPortPopup;
 
-@property (readonly) BTRDV3KVocoder *vocoder;
+@property (readonly) BTRDV3KSerialVocoder *vocoder;
 @end

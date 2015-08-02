@@ -1,5 +1,5 @@
 //
-//  BTRVocoderProtocol.h
+//  BTRDV3KSerialVocoder.h
 //
 //  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
 
@@ -17,15 +17,15 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-@class BTRAudioHandler;
+#import "BTRDV3KVocoderSubclass.h"
 
-@protocol BTRVocoderProtocol <NSObject>
-- (void) decodeData:(void *) data lastPacket:(BOOL)last;
-- (void) encodeData:(void *) data lastPacket:(BOOL)last;
+extern NSString * const BTRSerialVocoderDeviceChanged;
 
-- (BOOL) start;
-- (void) stop;
+@interface BTRDV3KSerialVocoder : BTRDV3KVocoder
 
-@property (nonatomic, assign) BTRAudioHandler *audio;
++ (NSArray *)ports;
+
+@property (nonatomic, copy) NSString *serialPort;
+@property (nonatomic, assign) long speed;
 
 @end

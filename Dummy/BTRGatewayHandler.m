@@ -124,14 +124,11 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     dispatch_source_t pollTimerSource;
     dispatch_source_t watchdogTimerSource;
     dispatch_queue_t dispatchQueue;
-    // uint16 rxStreamId;
     uint16 txStreamId;
     uint8 txSequence;
     uint8 rxSequence;
     BOOL running;
     NSThread *readThread;
-    // struct gatewayPacket *incomingPacket;
-    // CFAbsoluteTime lastPacketTime;
     
     enum {
         GWY_STOPPED,
@@ -175,8 +172,6 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         self.xmitUrCall = @"";
         self.xmitRpt1Call = @"";
         self.xmitRpt2Call = @"";
-        
-        // incomingPacket = malloc(sizeof(struct gatewayPacket));
         
         status = GWY_STOPPED;
         
@@ -618,22 +613,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
             if(packet->payload.dstarData.sequence & 0x40) {
                 NSLog(@"End stream %d\n", packet->payload.dstarData.streamId);
                 [self terminateIncomingStream];
-                packet->payload.dstarData.sequence &= ~0x40;
-                
-                /* dispatch_suspend(watchdogTimerSource);
-                self.lastPacketTime = CFAbsoluteTimeGetCurrent() + (3600.0 * 24.0 * 365.0);
-                
-                NSDictionary *streamData = @{
-                                             @"streamId": [NSNumber numberWithUnsignedInteger:self.rxStreamId],
-                                             @"time": [NSDate date]
-                                             };
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[NSNotificationCenter defaultCenter] postNotificationName: BTRNetworkStreamEnd
-                                                                        object: self
-                                                                      userInfo: streamData
-                     ];
-                });
-                self.rxStreamId = 0; */
+                packet->payload.dstarData.sequence &= ~0x40;                
             }
             
             if(packet->payload.dstarData.sequence != rxSequence) {

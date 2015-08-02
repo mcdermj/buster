@@ -20,13 +20,14 @@
 #import "BTRVocoderViewController.h"
 
 #import "BTRDataEngine.h"
+#import "BTRDV3KSerialVocoder.h"
 
 @interface BTRVocoderViewController ()
 @end
 
 @implementation BTRVocoderViewController
 
--(BTRDV3KVocoder *) vocoder {
+-(BTRDV3KSerialVocoder *) vocoder {
     return [BTRDataEngine sharedInstance].vocoder;
 }
 
@@ -34,14 +35,14 @@
     [super viewDidAppear];
 
     [self.serialPortPopup removeAllItems];
-    [self.serialPortPopup addItemsWithTitles:[BTRDV3KVocoder ports]];
+    [self.serialPortPopup addItemsWithTitles:[BTRDV3KSerialVocoder ports]];
     
-    [[NSNotificationCenter defaultCenter] addObserverForName: BTRVocoderDeviceChanged
+    [[NSNotificationCenter defaultCenter] addObserverForName: BTRSerialVocoderDeviceChanged
                                                       object: nil
                                                        queue: [NSOperationQueue mainQueue]
                                                   usingBlock:^(NSNotification *notification) {
                                                       [self.serialPortPopup removeAllItems];
-                                                      [self.serialPortPopup addItemsWithTitles:[BTRDV3KVocoder ports]];
+                                                      [self.serialPortPopup addItemsWithTitles:[BTRDV3KSerialVocoder ports]];
                                                    }
      ];
 }
