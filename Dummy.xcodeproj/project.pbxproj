@@ -16,6 +16,7 @@
 		093B9B0E1B50E2D500C2ABD0 /* DummyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B0D1B50E2D500C2ABD0 /* DummyTests.m */; };
 		093B9B191B50E3BD00C2ABD0 /* DMYGatewayHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B181B50E3BD00C2ABD0 /* DMYGatewayHandler.m */; };
 		093B9B1D1B52DBA000C2ABD0 /* DMYDV3KVocoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B1C1B52DBA000C2ABD0 /* DMYDV3KVocoder.m */; };
+		095249021B6DC79B0062F1A5 /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = 095249011B6DC79B0062F1A5 /* Credits.html */; };
 		0954910B1B64A78100A57FD2 /* DMYApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 0954910A1B64A78100A57FD2 /* DMYApplication.m */; };
 		0954911B1B64B5B600A57FD2 /* DMYGeneralPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0954911A1B64B5B600A57FD2 /* DMYGeneralPreferencesController.m */; };
 		095491281B64B8B100A57FD2 /* MASShortcut.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 095491231B64B8A900A57FD2 /* MASShortcut.framework */; };
@@ -80,6 +81,7 @@
 		093B9B1A1B5214C700C2ABD0 /* DMYVocoderProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DMYVocoderProtocol.h; sourceTree = "<group>"; };
 		093B9B1B1B52DBA000C2ABD0 /* DMYDV3KVocoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYDV3KVocoder.h; sourceTree = "<group>"; };
 		093B9B1C1B52DBA000C2ABD0 /* DMYDV3KVocoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMYDV3KVocoder.m; sourceTree = "<group>"; };
+		095249011B6DC79B0062F1A5 /* Credits.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Credits.html; sourceTree = "<group>"; };
 		095491091B64A78100A57FD2 /* DMYApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYApplication.h; sourceTree = "<group>"; };
 		0954910A1B64A78100A57FD2 /* DMYApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = DMYApplication.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		095491191B64B5B600A57FD2 /* DMYGeneralPreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMYGeneralPreferencesController.h; sourceTree = "<group>"; };
@@ -184,6 +186,7 @@
 		093B9AF41B50E2D500C2ABD0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				095249011B6DC79B0062F1A5 /* Credits.html */,
 				093B9AF51B50E2D500C2ABD0 /* Info.plist */,
 				093B9AF91B50E2D500C2ABD0 /* main.m */,
 				096F2B5B1B58ED1B00766A95 /* DefaultPreferences.plist */,
@@ -212,7 +215,7 @@
 			isa = PBXGroup;
 			children = (
 				095491231B64B8A900A57FD2 /* MASShortcut.framework */,
-				095491251B64B8A900A57FD2 /* MASShortcutTests.xctest */,
+				095491251B64B8A900A57FD2 /* Tests.xctest */,
 				095491271B64B8A900A57FD2 /* Demo.app */,
 			);
 			name = Products;
@@ -228,6 +231,7 @@
 				093B9AED1B50E2D500C2ABD0 /* Sources */,
 				093B9AEE1B50E2D500C2ABD0 /* Frameworks */,
 				093B9AEF1B50E2D500C2ABD0 /* Resources */,
+				095248FD1B6DC45D0062F1A5 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -308,7 +312,7 @@
 			remoteRef = 095491221B64B8A900A57FD2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		095491251B64B8A900A57FD2 /* MASShortcutTests.xctest */ = {
+		095491251B64B8A900A57FD2 /* Tests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			name = Tests.xctest;
@@ -331,6 +335,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				093B9AFF1B50E2D500C2ABD0 /* Images.xcassets in Resources */,
+				095249021B6DC79B0062F1A5 /* Credits.html in Resources */,
 				093B9B021B50E2D500C2ABD0 /* Main.storyboard in Resources */,
 				096F2B5C1B58ED1B00766A95 /* DefaultPreferences.plist in Resources */,
 			);
@@ -344,6 +349,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		095248FD1B6DC45D0062F1A5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/bash\n\n# This script automatically sets the version and short version string of\n# an Xcode project from the Git repository containing the project.\n#\n# To use this script in Xcode, add the script's path to a \"Run Script\" build\n# phase for your application target.\n\nset -o errexit\nset -o nounset\n\n# First, check for git in $PATH\nhash git 2>/dev/null || { echo >&2 \"Git required, not installed.  Aborting build number update script.\"; exit 0; }\n\n# Alternatively, we could use Xcode's copy of the Git binary,\n# but old Xcodes don't have this.\n#GIT=$(xcrun -find git)\n\n# Run Script build phases that operate on product files of the target that defines them should use the value of this build setting [TARGET_BUILD_DIR]. But Run Script build phases that operate on product files of other targets should use “BUILT_PRODUCTS_DIR” instead.\nINFO_PLIST=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n\n# Build version (closest-tag-or-branch \"-\" commits-since-tag \"-\" short-hash dirty-flag)\nBUILD_VERSION=$(git describe --tags --always --dirty=+)\n\n# Use the latest tag for short version (expected tag format \"n[.n[.n]]\")\nLATEST_TAG=$(git describe --tags --abbrev=0)\nCOMMIT_COUNT_SINCE_TAG=$(git rev-list --count ${LATEST_TAG}..)\nif [ $LATEST_TAG = \"start\" ]\nthen LATEST_TAG=0\nfi\nif [ $COMMIT_COUNT_SINCE_TAG = 0 ]; then\nSHORT_VERSION=\"$LATEST_TAG\"\nelse\n# increment final digit of tag and append \"d\" + commit-count-since-tag\n# e.g. commit after 1.0 is 1.1d1, commit after 1.0.0 is 1.0.1d1\n# this is the bit that requires /bin/bash\nOLD_IFS=$IFS\nIFS=\".\"\nVERSION_PARTS=($LATEST_TAG)\nLAST_PART=$((${#VERSION_PARTS[@]}-1))\n    VERSION_PARTS[$LAST_PART]=$((${VERSION_PARTS[${LAST_PART}]}+1))\n    SHORT_VERSION=\"${VERSION_PARTS[*]}d${COMMIT_COUNT_SINCE_TAG}\"\n    IFS=$OLD_IFS\n    fi\n    \n    # Bundle version (commits-on-master[-until-branch \".\" commits-on-branch])\n    # Assumes that two release branches will not diverge from the same commit on master.\n    if [ $(git rev-parse --abbrev-ref HEAD) = \"master\" ]; then\n    MASTER_COMMIT_COUNT=$(git rev-list --count HEAD)\n    BRANCH_COMMIT_COUNT=0\n    BUNDLE_VERSION=\"$MASTER_COMMIT_COUNT\"\n    else\n    MASTER_COMMIT_COUNT=$(git rev-list --count $(git rev-list master.. | tail -n 1)^)\n    BRANCH_COMMIT_COUNT=$(git rev-list --count master..)\n    if [ $BRANCH_COMMIT_COUNT = 0 ]\n    then BUNDLE_VERSION=\"$MASTER_COMMIT_COUNT\"\n    else BUNDLE_VERSION=\"${MASTER_COMMIT_COUNT}.${BRANCH_COMMIT_COUNT}\"\n    fi\n    fi\n    \n    defaults write \"$INFO_PLIST\" CFBundleBuildVersion \"$BUILD_VERSION\"\n    defaults write \"$INFO_PLIST\" CFBundleShortVersionString \"$SHORT_VERSION\"\n    defaults write \"$INFO_PLIST\" CFBundleVersion \"$BUNDLE_VERSION\"";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		093B9AED1B50E2D500C2ABD0 /* Sources */ = {
