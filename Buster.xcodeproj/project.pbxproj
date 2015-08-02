@@ -1,0 +1,622 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 47;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0924272E1B62F46600D568DE /* BTRAudioViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0924272D1B62F46600D568DE /* BTRAudioViewController.m */; };
+		093B9AF81B50E2D500C2ABD0 /* BTRAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9AF71B50E2D500C2ABD0 /* BTRAppDelegate.m */; };
+		093B9AFA1B50E2D500C2ABD0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9AF91B50E2D500C2ABD0 /* main.m */; };
+		093B9AFD1B50E2D500C2ABD0 /* BTRMainWindowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9AFC1B50E2D500C2ABD0 /* BTRMainWindowViewController.m */; };
+		093B9AFF1B50E2D500C2ABD0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 093B9AFE1B50E2D500C2ABD0 /* Images.xcassets */; };
+		093B9B021B50E2D500C2ABD0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 093B9B001B50E2D500C2ABD0 /* Main.storyboard */; };
+		093B9B0E1B50E2D500C2ABD0 /* BusterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B0D1B50E2D500C2ABD0 /* BusterTests.m */; };
+		093B9B191B50E3BD00C2ABD0 /* BTRGatewayHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B181B50E3BD00C2ABD0 /* BTRGatewayHandler.m */; };
+		093B9B1D1B52DBA000C2ABD0 /* BTRDV3KVocoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B1C1B52DBA000C2ABD0 /* BTRDV3KVocoder.m */; };
+		095249021B6DC79B0062F1A5 /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = 095249011B6DC79B0062F1A5 /* Credits.html */; };
+		0954910B1B64A78100A57FD2 /* BTRApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 0954910A1B64A78100A57FD2 /* BTRApplication.m */; };
+		0954911B1B64B5B600A57FD2 /* BTRGeneralPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0954911A1B64B5B600A57FD2 /* BTRGeneralPreferencesController.m */; };
+		095491281B64B8B100A57FD2 /* MASShortcut.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 095491231B64B8A900A57FD2 /* MASShortcut.framework */; };
+		095C3FAF1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c in Sources */ = {isa = PBXBuildFile; fileRef = 095C3FAD1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c */; };
+		096F2B5A1B58C06E00766A95 /* BTRCallFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 096F2B591B58C06E00766A95 /* BTRCallFormatter.m */; };
+		096F2B5C1B58ED1B00766A95 /* DefaultPreferences.plist in Resources */ = {isa = PBXBuildFile; fileRef = 096F2B5B1B58ED1B00766A95 /* DefaultPreferences.plist */; };
+		098B10F01B65FB22002C7A3B /* BTRDataEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 098B10EF1B65FB22002C7A3B /* BTRDataEngine.m */; };
+		09A5FDEE1B5794FA00AE9E1C /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */; };
+		09A5FDF11B57956A00AE9E1C /* BTRAudioHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 09A5FDF01B57956A00AE9E1C /* BTRAudioHandler.m */; };
+		09AB117B1B5A13970067B9FB /* BTRVocoderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09AB11791B5A13970067B9FB /* BTRVocoderViewController.m */; };
+		09E363EC1B66F46500F74DBB /* BTRSlowDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E363EB1B66F46500F74DBB /* BTRSlowDataHandler.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		093B9B081B50E2D500C2ABD0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 093B9AE91B50E2D400C2ABD0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 093B9AF01B50E2D500C2ABD0;
+			remoteInfo = Dummy;
+		};
+		095491221B64B8A900A57FD2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0954911C1B64B8A800A57FD2 /* MASShortcut.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0D827CD31990D4420010B8EF;
+			remoteInfo = MASShortcut;
+		};
+		095491241B64B8A900A57FD2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0954911C1B64B8A800A57FD2 /* MASShortcut.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0D827D8319910AFF0010B8EF;
+			remoteInfo = MASShortcutTests;
+		};
+		095491261B64B8A900A57FD2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0954911C1B64B8A800A57FD2 /* MASShortcut.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0D827D371990D5E70010B8EF;
+			remoteInfo = Demo;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0924272C1B62F46600D568DE /* BTRAudioViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRAudioViewController.h; sourceTree = "<group>"; };
+		0924272D1B62F46600D568DE /* BTRAudioViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRAudioViewController.m; sourceTree = "<group>"; };
+		093B9AF11B50E2D500C2ABD0 /* Buster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Buster.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		093B9AF51B50E2D500C2ABD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		093B9AF61B50E2D500C2ABD0 /* BTRAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = BTRAppDelegate.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		093B9AF71B50E2D500C2ABD0 /* BTRAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = BTRAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		093B9AF91B50E2D500C2ABD0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		093B9AFB1B50E2D500C2ABD0 /* BTRMainWindowViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BTRMainWindowViewController.h; sourceTree = "<group>"; };
+		093B9AFC1B50E2D500C2ABD0 /* BTRMainWindowViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BTRMainWindowViewController.m; sourceTree = "<group>"; };
+		093B9AFE1B50E2D500C2ABD0 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		093B9B011B50E2D500C2ABD0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		093B9B071B50E2D500C2ABD0 /* BusterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BusterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		093B9B0C1B50E2D500C2ABD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		093B9B0D1B50E2D500C2ABD0 /* BusterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BusterTests.m; sourceTree = "<group>"; };
+		093B9B171B50E3BD00C2ABD0 /* BTRGatewayHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRGatewayHandler.h; sourceTree = "<group>"; };
+		093B9B181B50E3BD00C2ABD0 /* BTRGatewayHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRGatewayHandler.m; sourceTree = "<group>"; };
+		093B9B1A1B5214C700C2ABD0 /* BTRVocoderProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BTRVocoderProtocol.h; sourceTree = "<group>"; };
+		093B9B1B1B52DBA000C2ABD0 /* BTRDV3KVocoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRDV3KVocoder.h; sourceTree = "<group>"; };
+		093B9B1C1B52DBA000C2ABD0 /* BTRDV3KVocoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRDV3KVocoder.m; sourceTree = "<group>"; };
+		095249011B6DC79B0062F1A5 /* Credits.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Credits.html; sourceTree = "<group>"; };
+		095491091B64A78100A57FD2 /* BTRApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = BTRApplication.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		0954910A1B64A78100A57FD2 /* BTRApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = BTRApplication.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		095491191B64B5B600A57FD2 /* BTRGeneralPreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRGeneralPreferencesController.h; sourceTree = "<group>"; };
+		0954911A1B64B5B600A57FD2 /* BTRGeneralPreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRGeneralPreferencesController.m; sourceTree = "<group>"; };
+		0954911C1B64B8A800A57FD2 /* MASShortcut.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MASShortcut.xcodeproj; path = MASShortcut/MASShortcut.xcodeproj; sourceTree = "<group>"; };
+		095C3FAD1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "TPCircularBuffer+AudioBufferList.c"; sourceTree = "<group>"; };
+		095C3FAE1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TPCircularBuffer+AudioBufferList.h"; sourceTree = "<group>"; };
+		096F2B581B58C06E00766A95 /* BTRCallFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRCallFormatter.h; sourceTree = "<group>"; };
+		096F2B591B58C06E00766A95 /* BTRCallFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRCallFormatter.m; sourceTree = "<group>"; };
+		096F2B5B1B58ED1B00766A95 /* DefaultPreferences.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DefaultPreferences.plist; sourceTree = "<group>"; };
+		098B10EE1B65FB22002C7A3B /* BTRDataEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRDataEngine.h; sourceTree = "<group>"; };
+		098B10EF1B65FB22002C7A3B /* BTRDataEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRDataEngine.m; sourceTree = "<group>"; };
+		09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TPCircularBuffer.c; sourceTree = "<group>"; };
+		09A5FDED1B5794FA00AE9E1C /* TPCircularBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPCircularBuffer.h; sourceTree = "<group>"; };
+		09A5FDEF1B57956A00AE9E1C /* BTRAudioHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = BTRAudioHandler.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		09A5FDF01B57956A00AE9E1C /* BTRAudioHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = BTRAudioHandler.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		09AB11781B5A13970067B9FB /* BTRVocoderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRVocoderViewController.h; sourceTree = "<group>"; };
+		09AB11791B5A13970067B9FB /* BTRVocoderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRVocoderViewController.m; sourceTree = "<group>"; };
+		09AB117A1B5A13970067B9FB /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
+		09E363EA1B66F46500F74DBB /* BTRSlowDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRSlowDataHandler.h; sourceTree = "<group>"; };
+		09E363EB1B66F46500F74DBB /* BTRSlowDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRSlowDataHandler.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		093B9AEE1B50E2D500C2ABD0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				095491281B64B8B100A57FD2 /* MASShortcut.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		093B9B041B50E2D500C2ABD0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		093B9AE81B50E2D400C2ABD0 = {
+			isa = PBXGroup;
+			children = (
+				0954911C1B64B8A800A57FD2 /* MASShortcut.xcodeproj */,
+				093B9AF31B50E2D500C2ABD0 /* Buster */,
+				093B9B0A1B50E2D500C2ABD0 /* BusterTests */,
+				093B9AF21B50E2D500C2ABD0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		093B9AF21B50E2D500C2ABD0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				093B9AF11B50E2D500C2ABD0 /* Buster.app */,
+				093B9B071B50E2D500C2ABD0 /* BusterTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		093B9AF31B50E2D500C2ABD0 /* Buster */ = {
+			isa = PBXGroup;
+			children = (
+				09AB117A1B5A13970067B9FB /* Prefix.pch */,
+				095491091B64A78100A57FD2 /* BTRApplication.h */,
+				0954910A1B64A78100A57FD2 /* BTRApplication.m */,
+				093B9AF61B50E2D500C2ABD0 /* BTRAppDelegate.h */,
+				093B9AF71B50E2D500C2ABD0 /* BTRAppDelegate.m */,
+				096F2B581B58C06E00766A95 /* BTRCallFormatter.h */,
+				096F2B591B58C06E00766A95 /* BTRCallFormatter.m */,
+				09AB11781B5A13970067B9FB /* BTRVocoderViewController.h */,
+				09AB11791B5A13970067B9FB /* BTRVocoderViewController.m */,
+				0924272C1B62F46600D568DE /* BTRAudioViewController.h */,
+				0924272D1B62F46600D568DE /* BTRAudioViewController.m */,
+				095491191B64B5B600A57FD2 /* BTRGeneralPreferencesController.h */,
+				0954911A1B64B5B600A57FD2 /* BTRGeneralPreferencesController.m */,
+				093B9AFB1B50E2D500C2ABD0 /* BTRMainWindowViewController.h */,
+				093B9AFC1B50E2D500C2ABD0 /* BTRMainWindowViewController.m */,
+				09A5FDED1B5794FA00AE9E1C /* TPCircularBuffer.h */,
+				09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */,
+				095C3FAD1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c */,
+				095C3FAE1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.h */,
+				098B10EE1B65FB22002C7A3B /* BTRDataEngine.h */,
+				098B10EF1B65FB22002C7A3B /* BTRDataEngine.m */,
+				093B9B1A1B5214C700C2ABD0 /* BTRVocoderProtocol.h */,
+				093B9B171B50E3BD00C2ABD0 /* BTRGatewayHandler.h */,
+				093B9B181B50E3BD00C2ABD0 /* BTRGatewayHandler.m */,
+				09E363EA1B66F46500F74DBB /* BTRSlowDataHandler.h */,
+				09E363EB1B66F46500F74DBB /* BTRSlowDataHandler.m */,
+				093B9B1B1B52DBA000C2ABD0 /* BTRDV3KVocoder.h */,
+				093B9B1C1B52DBA000C2ABD0 /* BTRDV3KVocoder.m */,
+				09A5FDEF1B57956A00AE9E1C /* BTRAudioHandler.h */,
+				09A5FDF01B57956A00AE9E1C /* BTRAudioHandler.m */,
+				093B9AFE1B50E2D500C2ABD0 /* Images.xcassets */,
+				093B9B001B50E2D500C2ABD0 /* Main.storyboard */,
+				093B9AF41B50E2D500C2ABD0 /* Supporting Files */,
+			);
+			name = Buster;
+			path = Dummy;
+			sourceTree = "<group>";
+		};
+		093B9AF41B50E2D500C2ABD0 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				095249011B6DC79B0062F1A5 /* Credits.html */,
+				093B9AF51B50E2D500C2ABD0 /* Info.plist */,
+				093B9AF91B50E2D500C2ABD0 /* main.m */,
+				096F2B5B1B58ED1B00766A95 /* DefaultPreferences.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		093B9B0A1B50E2D500C2ABD0 /* BusterTests */ = {
+			isa = PBXGroup;
+			children = (
+				093B9B0D1B50E2D500C2ABD0 /* BusterTests.m */,
+				093B9B0B1B50E2D500C2ABD0 /* Supporting Files */,
+			);
+			name = BusterTests;
+			path = DummyTests;
+			sourceTree = "<group>";
+		};
+		093B9B0B1B50E2D500C2ABD0 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				093B9B0C1B50E2D500C2ABD0 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		0954911D1B64B8A800A57FD2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				095491231B64B8A900A57FD2 /* MASShortcut.framework */,
+				095491251B64B8A900A57FD2 /* Tests.xctest */,
+				095491271B64B8A900A57FD2 /* Demo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		093B9AF01B50E2D500C2ABD0 /* Buster */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 093B9B111B50E2D500C2ABD0 /* Build configuration list for PBXNativeTarget "Buster" */;
+			buildPhases = (
+				093B9AED1B50E2D500C2ABD0 /* Sources */,
+				093B9AEE1B50E2D500C2ABD0 /* Frameworks */,
+				093B9AEF1B50E2D500C2ABD0 /* Resources */,
+				095248FD1B6DC45D0062F1A5 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Buster;
+			productName = Dummy;
+			productReference = 093B9AF11B50E2D500C2ABD0 /* Buster.app */;
+			productType = "com.apple.product-type.application";
+		};
+		093B9B061B50E2D500C2ABD0 /* BusterTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 093B9B141B50E2D500C2ABD0 /* Build configuration list for PBXNativeTarget "BusterTests" */;
+			buildPhases = (
+				093B9B031B50E2D500C2ABD0 /* Sources */,
+				093B9B041B50E2D500C2ABD0 /* Frameworks */,
+				093B9B051B50E2D500C2ABD0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				093B9B091B50E2D500C2ABD0 /* PBXTargetDependency */,
+			);
+			name = BusterTests;
+			productName = DummyTests;
+			productReference = 093B9B071B50E2D500C2ABD0 /* BusterTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		093B9AE91B50E2D400C2ABD0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = DMY;
+				LastUpgradeCheck = 0640;
+				ORGANIZATIONNAME = NH6Z;
+				TargetAttributes = {
+					093B9AF01B50E2D500C2ABD0 = {
+						CreatedOnToolsVersion = 6.4;
+					};
+					093B9B061B50E2D500C2ABD0 = {
+						CreatedOnToolsVersion = 6.4;
+						TestTargetID = 093B9AF01B50E2D500C2ABD0;
+					};
+				};
+			};
+			buildConfigurationList = 093B9AEC1B50E2D400C2ABD0 /* Build configuration list for PBXProject "Buster" */;
+			compatibilityVersion = "Xcode 6.3";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 093B9AE81B50E2D400C2ABD0;
+			productRefGroup = 093B9AF21B50E2D500C2ABD0 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 0954911D1B64B8A800A57FD2 /* Products */;
+					ProjectRef = 0954911C1B64B8A800A57FD2 /* MASShortcut.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				093B9AF01B50E2D500C2ABD0 /* Buster */,
+				093B9B061B50E2D500C2ABD0 /* BusterTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		095491231B64B8A900A57FD2 /* MASShortcut.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = MASShortcut.framework;
+			remoteRef = 095491221B64B8A900A57FD2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		095491251B64B8A900A57FD2 /* Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			name = Tests.xctest;
+			path = MASShortcutTests.xctest;
+			remoteRef = 095491241B64B8A900A57FD2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		095491271B64B8A900A57FD2 /* Demo.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = Demo.app;
+			remoteRef = 095491261B64B8A900A57FD2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		093B9AEF1B50E2D500C2ABD0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				093B9AFF1B50E2D500C2ABD0 /* Images.xcassets in Resources */,
+				095249021B6DC79B0062F1A5 /* Credits.html in Resources */,
+				093B9B021B50E2D500C2ABD0 /* Main.storyboard in Resources */,
+				096F2B5C1B58ED1B00766A95 /* DefaultPreferences.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		093B9B051B50E2D500C2ABD0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		095248FD1B6DC45D0062F1A5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/bash\n\n# This script automatically sets the version and short version string of\n# an Xcode project from the Git repository containing the project.\n#\n# To use this script in Xcode, add the script's path to a \"Run Script\" build\n# phase for your application target.\n\nset -o errexit\nset -o nounset\n\n# First, check for git in $PATH\nhash git 2>/dev/null || { echo >&2 \"Git required, not installed.  Aborting build number update script.\"; exit 0; }\n\n# Alternatively, we could use Xcode's copy of the Git binary,\n# but old Xcodes don't have this.\n#GIT=$(xcrun -find git)\n\n# Run Script build phases that operate on product files of the target that defines them should use the value of this build setting [TARGET_BUILD_DIR]. But Run Script build phases that operate on product files of other targets should use “BUILT_PRODUCTS_DIR” instead.\nINFO_PLIST=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n\n# Build version (closest-tag-or-branch \"-\" commits-since-tag \"-\" short-hash dirty-flag)\nBUILD_VERSION=$(git describe --tags --always --dirty=+)\n\n# Use the latest tag for short version (expected tag format \"n[.n[.n]]\")\nLATEST_TAG=$(git describe --tags --abbrev=0)\nCOMMIT_COUNT_SINCE_TAG=$(git rev-list --count ${LATEST_TAG}..)\nif [ $LATEST_TAG = \"start\" ]\nthen LATEST_TAG=0\nfi\nif [ $COMMIT_COUNT_SINCE_TAG = 0 ]; then\nSHORT_VERSION=\"$LATEST_TAG\"\nelse\n# increment final digit of tag and append \"d\" + commit-count-since-tag\n# e.g. commit after 1.0 is 1.1d1, commit after 1.0.0 is 1.0.1d1\n# this is the bit that requires /bin/bash\nOLD_IFS=$IFS\nIFS=\".\"\nVERSION_PARTS=($LATEST_TAG)\nLAST_PART=$((${#VERSION_PARTS[@]}-1))\n    VERSION_PARTS[$LAST_PART]=$((${VERSION_PARTS[${LAST_PART}]}+1))\n    SHORT_VERSION=\"${VERSION_PARTS[*]}d${COMMIT_COUNT_SINCE_TAG}\"\n    IFS=$OLD_IFS\n    fi\n    \n    # Bundle version (commits-on-master[-until-branch \".\" commits-on-branch])\n    # Assumes that two release branches will not diverge from the same commit on master.\n    if [ $(git rev-parse --abbrev-ref HEAD) = \"master\" ]; then\n    MASTER_COMMIT_COUNT=$(git rev-list --count HEAD)\n    BRANCH_COMMIT_COUNT=0\n    BUNDLE_VERSION=\"$MASTER_COMMIT_COUNT\"\n    else\n    MASTER_COMMIT_COUNT=$(git rev-list --count $(git rev-list master.. | tail -n 1)^)\n    BRANCH_COMMIT_COUNT=$(git rev-list --count master..)\n    if [ $BRANCH_COMMIT_COUNT = 0 ]\n    then BUNDLE_VERSION=\"$MASTER_COMMIT_COUNT\"\n    else BUNDLE_VERSION=\"${MASTER_COMMIT_COUNT}.${BRANCH_COMMIT_COUNT}\"\n    fi\n    fi\n    \n    defaults write \"$INFO_PLIST\" CFBundleBuildVersion \"$BUILD_VERSION\"\n    defaults write \"$INFO_PLIST\" CFBundleShortVersionString \"$SHORT_VERSION\"\n    defaults write \"$INFO_PLIST\" CFBundleVersion \"$BUNDLE_VERSION\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		093B9AED1B50E2D500C2ABD0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				09A5FDEE1B5794FA00AE9E1C /* TPCircularBuffer.c in Sources */,
+				093B9B191B50E3BD00C2ABD0 /* BTRGatewayHandler.m in Sources */,
+				0954911B1B64B5B600A57FD2 /* BTRGeneralPreferencesController.m in Sources */,
+				09AB117B1B5A13970067B9FB /* BTRVocoderViewController.m in Sources */,
+				098B10F01B65FB22002C7A3B /* BTRDataEngine.m in Sources */,
+				095C3FAF1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c in Sources */,
+				093B9B1D1B52DBA000C2ABD0 /* BTRDV3KVocoder.m in Sources */,
+				093B9AFD1B50E2D500C2ABD0 /* BTRMainWindowViewController.m in Sources */,
+				093B9AFA1B50E2D500C2ABD0 /* main.m in Sources */,
+				09A5FDF11B57956A00AE9E1C /* BTRAudioHandler.m in Sources */,
+				093B9AF81B50E2D500C2ABD0 /* BTRAppDelegate.m in Sources */,
+				0954910B1B64A78100A57FD2 /* BTRApplication.m in Sources */,
+				096F2B5A1B58C06E00766A95 /* BTRCallFormatter.m in Sources */,
+				09E363EC1B66F46500F74DBB /* BTRSlowDataHandler.m in Sources */,
+				0924272E1B62F46600D568DE /* BTRAudioViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		093B9B031B50E2D500C2ABD0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				093B9B0E1B50E2D500C2ABD0 /* BusterTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		093B9B091B50E2D500C2ABD0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 093B9AF01B50E2D500C2ABD0 /* Buster */;
+			targetProxy = 093B9B081B50E2D500C2ABD0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		093B9B001B50E2D500C2ABD0 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				093B9B011B50E2D500C2ABD0 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		093B9B0F1B50E2D500C2ABD0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		093B9B101B50E2D500C2ABD0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		093B9B121B50E2D500C2ABD0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_WARN_ASSIGN_ENUM = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Dummy/Prefix.pch;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = NO;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_PEDANTIC = NO;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = NO;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+				INFOPLIST_FILE = Dummy/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_NAME = Buster;
+			};
+			name = Debug;
+		};
+		093B9B131B50E2D500C2ABD0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_WARN_ASSIGN_ENUM = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Dummy/Prefix.pch;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = NO;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_PEDANTIC = NO;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = NO;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+				INFOPLIST_FILE = Dummy/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_NAME = Buster;
+			};
+			name = Release;
+		};
+		093B9B151B50E2D500C2ABD0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = DummyTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_NAME = BusterTests;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Dummy.app/Contents/MacOS/Dummy";
+			};
+			name = Debug;
+		};
+		093B9B161B50E2D500C2ABD0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = DummyTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_NAME = BusterTests;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Dummy.app/Contents/MacOS/Dummy";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		093B9AEC1B50E2D400C2ABD0 /* Build configuration list for PBXProject "Buster" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				093B9B0F1B50E2D500C2ABD0 /* Debug */,
+				093B9B101B50E2D500C2ABD0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		093B9B111B50E2D500C2ABD0 /* Build configuration list for PBXNativeTarget "Buster" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				093B9B121B50E2D500C2ABD0 /* Debug */,
+				093B9B131B50E2D500C2ABD0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		093B9B141B50E2D500C2ABD0 /* Build configuration list for PBXNativeTarget "BusterTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				093B9B151B50E2D500C2ABD0 /* Debug */,
+				093B9B161B50E2D500C2ABD0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 093B9AE91B50E2D400C2ABD0 /* Project object */;
+}
