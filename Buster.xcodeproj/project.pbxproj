@@ -27,6 +27,7 @@
 		09A5FDEE1B5794FA00AE9E1C /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */; };
 		09A5FDF11B57956A00AE9E1C /* BTRAudioHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 09A5FDF01B57956A00AE9E1C /* BTRAudioHandler.m */; };
 		09A994BA1B6DD2E40061A929 /* BTRDV3KSerialVocoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 09A994B91B6DD2E40061A929 /* BTRDV3KSerialVocoder.m */; };
+		09A994C31B6F1FA60061A929 /* MASShortcut.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 095491231B64B8A900A57FD2 /* MASShortcut.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		09AB117B1B5A13970067B9FB /* BTRVocoderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09AB11791B5A13970067B9FB /* BTRVocoderViewController.m */; };
 		09E363EC1B66F46500F74DBB /* BTRSlowDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E363EB1B66F46500F74DBB /* BTRSlowDataHandler.m */; };
 /* End PBXBuildFile section */
@@ -61,6 +62,19 @@
 			remoteInfo = Demo;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		09A994C21B6F1F990061A929 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				09A994C31B6F1FA60061A929 /* MASShortcut.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0924272C1B62F46600D568DE /* BTRAudioViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRAudioViewController.h; sourceTree = "<group>"; };
@@ -243,6 +257,7 @@
 				093B9AEE1B50E2D500C2ABD0 /* Frameworks */,
 				093B9AEF1B50E2D500C2ABD0 /* Resources */,
 				095248FD1B6DC45D0062F1A5 /* ShellScript */,
+				09A994C21B6F1F990061A929 /* CopyFiles */,
 			);
 			buildRules = (
 			);
