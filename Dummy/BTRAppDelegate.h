@@ -17,9 +17,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#import <Cocoa/Cocoa.h>
-
-#import <MASShortcut/Shortcut.h>
+@class MASShortcut;
 
 @interface BTRAppDelegate : NSObject <NSApplicationDelegate>
 

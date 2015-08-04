@@ -23,6 +23,7 @@
 #import "BTRApplication.h"
 #import "BTRDataEngine.h"
 #import "BTRSlowDataHandler.h"
+#import "BTRAudioHandler.h"
 
 @interface BTRMainWindowViewController () {
     NSInteger txButtonState;

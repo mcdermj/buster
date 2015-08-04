@@ -17,10 +17,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#import <Foundation/Foundation.h>
-
-#import "BTRVocoderProtocol.h"
-#import "BTRSlowDataHandler.h"
+@protocol BTRVocoderProtocol;
+@class BTRSlowDataHandler;
 
 #pragma mark - Notification Constants
 extern NSString * const BTRNetworkHeaderReceived;

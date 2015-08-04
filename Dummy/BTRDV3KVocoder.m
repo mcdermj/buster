@@ -22,6 +22,8 @@
 
 #import "BTRDataEngine.h"
 #import "BTRDV3KPacket.h"
+#import "BTRGatewayHandler.h"
+#import "BTRAudioHandler.h"
 
 static const struct dv3k_packet bleepPacket = {
     .start_byte = DV3K_START_BYTE,

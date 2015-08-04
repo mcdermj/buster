@@ -21,6 +21,9 @@
 #import "BTRDataEngine.h"
 
 #import "BTRDV3KSerialVocoder.h"
+#import "BTRDV3KNetworkVocoder.h"
+#import "BTRGatewayHandler.h"
+#import "BTRAudioHandler.h"
 
 @interface BTRDataEngine ()
 
@@ -41,7 +44,9 @@
     self = [super init];
     if(self) {
         _audio = [[BTRAudioHandler alloc] init];
-        _vocoder = [[BTRDV3KSerialVocoder alloc] init];
+        //_vocoder = [[BTRDV3KSerialVocoder alloc] init];
+        _vocoder = [[BTRDV3KNetworkVocoder alloc] init];
+        ((BTRDV3KNetworkVocoder *)self.vocoder).address = @"192.168.1.126";
         _network = [[BTRGatewayHandler alloc] init];
         
         _network.vocoder = _vocoder;

@@ -22,6 +22,8 @@
 
 #import "BTRAppDelegate.h"
 
+#import "MASShortcut.h"
+
 NSString * const BTRTxKeyDown = @"BTRTxKeyDown";
 NSString * const BTRTxKeyUp = @"BTRTxKeyUp";
 

@@ -20,6 +20,7 @@
 #import "BTRAudioViewController.h"
 
 #import "BTRDataEngine.h"
+#import "BTRAudioHandler.h"
 
 @interface BTRAudioViewController ()
 -(void)refreshDevices;

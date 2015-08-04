@@ -21,6 +21,10 @@
 
 #import "BTRDataEngine.h"
 #import "BTRDV3KSerialVocoder.h"
+#import "MASDictionaryTransformer.h"
+#import "BTRGatewayHandler.h"
+#import "BTRSlowDataHandler.h"
+#import "BTRAudioHandler.h"
 
 @interface BTRAppDelegate ()
 @end
@@ -48,8 +52,8 @@
     [engine.network bind:@"gatewayPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.gatewayPort" options:nil];
     [engine.network bind:@"repeaterPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.repeaterPort" options:nil];
     
-    [((BTRDV3KSerialVocoder *)engine.vocoder) bind:@"speed" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPortBaud" options:nil];
-    [((BTRDV3KSerialVocoder *)engine.vocoder) bind:@"serialPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPort" options:nil];
+    /* [((BTRDV3KSerialVocoder *)engine.vocoder) bind:@"speed" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPortBaud" options:nil];
+    [((BTRDV3KSerialVocoder *)engine.vocoder) bind:@"serialPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPort" options:nil]; */
     
     [self bind:@"txKeyCode" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.shortcutValue" options:@{NSValueTransformerNameBindingOption: MASDictionaryTransformerName}];
     

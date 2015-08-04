@@ -19,6 +19,9 @@
 
 #import "BTRGatewayHandler.h"
 
+#import "BTRSlowDataHandler.h"
+#import "BTRVocoderProtocol.h"
+
 #import <arpa/inet.h>
 #import <sys/ioctl.h>
 

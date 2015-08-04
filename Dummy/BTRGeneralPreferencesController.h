@@ -6,9 +6,7 @@
 //  Copyright (c) 2015 NH6Z. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
-
-#import <MASShortcut/Shortcut.h>
+@class MASShortcut, MASShortcutView;
 
 @interface BTRGeneralPreferencesController : NSViewController
 

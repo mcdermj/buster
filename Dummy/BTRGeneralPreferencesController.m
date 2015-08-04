@@ -8,6 +8,10 @@
 
 #import "BTRGeneralPreferencesController.h"
 
+#import "MASDictionaryTransformer.h"
+#import "MASShortcut.h"
+#import "MASShortcutView.h"
+
 @interface BTRGeneralPreferencesController ()
 @end
 
