@@ -41,7 +41,7 @@
 			containerPortal = 093B9AE91B50E2D400C2ABD0 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 093B9AF01B50E2D500C2ABD0;
-			remoteInfo = Dummy;
+			remoteInfo = Buster;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -196,7 +196,7 @@
 				093B9AF41B50E2D500C2ABD0 /* Supporting Files */,
 			);
 			name = Buster;
-			path = Dummy;
+			path = Buster;
 			sourceTree = "<group>";
 		};
 		093B9AF41B50E2D500C2ABD0 /* Supporting Files */ = {
@@ -217,7 +217,7 @@
 				093B9B0B1B50E2D500C2ABD0 /* Supporting Files */,
 			);
 			name = BusterTests;
-			path = DummyTests;
+			path = BusterTests;
 			sourceTree = "<group>";
 		};
 		093B9B0B1B50E2D500C2ABD0 /* Supporting Files */ = {
@@ -262,7 +262,7 @@
 			dependencies = (
 			);
 			name = Buster;
-			productName = Dummy;
+			productName = Buster;
 			productReference = 093B9AF11B50E2D500C2ABD0 /* Buster.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -280,7 +280,7 @@
 				093B9B091B50E2D500C2ABD0 /* PBXTargetDependency */,
 			);
 			name = BusterTests;
-			productName = DummyTests;
+			productName = BusterTests;
 			productReference = 093B9B071B50E2D500C2ABD0 /* BusterTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
@@ -506,7 +506,7 @@
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Dummy/Prefix.pch;
+				GCC_PREFIX_HEADER = Buster/Prefix.pch;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = NO;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
@@ -516,7 +516,7 @@
 				GCC_WARN_SIGN_COMPARE = NO;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
-				INFOPLIST_FILE = Dummy/Info.plist;
+				INFOPLIST_FILE = Buster/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = Buster;
 			};
@@ -531,7 +531,7 @@
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Dummy/Prefix.pch;
+				GCC_PREFIX_HEADER = Buster/Prefix.pch;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = NO;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
@@ -541,7 +541,7 @@
 				GCC_WARN_SIGN_COMPARE = NO;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
-				INFOPLIST_FILE = Dummy/Info.plist;
+				INFOPLIST_FILE = Buster/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = Buster;
 			};
@@ -560,10 +560,10 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = DummyTests/Info.plist;
+				INFOPLIST_FILE = BusterTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_NAME = BusterTests;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Dummy.app/Contents/MacOS/Dummy";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Buster.app/Contents/MacOS/Buster";
 			};
 			name = Debug;
 		};
@@ -576,10 +576,10 @@
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = DummyTests/Info.plist;
+				INFOPLIST_FILE = BusterTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_NAME = BusterTests;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Dummy.app/Contents/MacOS/Dummy";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Buster.app/Contents/MacOS/Buster";
 			};
 			name = Release;
 		};
