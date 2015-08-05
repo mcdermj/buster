@@ -20,6 +20,10 @@
 	<integer>20011</integer>
 	<key>dv3kSerialPortBaud</key>
 	<integer>230400</integer>
+	<key>dv3kNetworkAddress</key>
+	<string>127.0.0.1</string>
+	<key>dv3kNetworkPort</key>
+	<real>2048</real>
 	<key>destinationCalls</key>
 	<array>
 		<string>CQCQCQ</string>

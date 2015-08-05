@@ -19,6 +19,7 @@
 		095249021B6DC79B0062F1A5 /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = 095249011B6DC79B0062F1A5 /* Credits.html */; };
 		0954910B1B64A78100A57FD2 /* BTRApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 0954910A1B64A78100A57FD2 /* BTRApplication.m */; };
 		0954911B1B64B5B600A57FD2 /* BTRGeneralPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0954911A1B64B5B600A57FD2 /* BTRGeneralPreferencesController.m */; };
+		095544A71B71756F00090DB7 /* BTRVocoderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095544A61B71756F00090DB7 /* BTRVocoderViewController.m */; };
 		095C3FAF1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c in Sources */ = {isa = PBXBuildFile; fileRef = 095C3FAD1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c */; };
 		096F2B5A1B58C06E00766A95 /* BTRCallFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 096F2B591B58C06E00766A95 /* BTRCallFormatter.m */; };
 		096F2B5C1B58ED1B00766A95 /* DefaultPreferences.plist in Resources */ = {isa = PBXBuildFile; fileRef = 096F2B5B1B58ED1B00766A95 /* DefaultPreferences.plist */; };
@@ -31,7 +32,7 @@
 		09A994CC1B712E0E0061A929 /* MASShortcutValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 09A994CB1B712E0E0061A929 /* MASShortcutValidator.m */; };
 		09A994CF1B712E370061A929 /* MASShortcut.m in Sources */ = {isa = PBXBuildFile; fileRef = 09A994CE1B712E370061A929 /* MASShortcut.m */; };
 		09A994D31B7136AF0061A929 /* MASDictionaryTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 09A994D21B7136AF0061A929 /* MASDictionaryTransformer.m */; };
-		09AB117B1B5A13970067B9FB /* BTRVocoderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09AB11791B5A13970067B9FB /* BTRVocoderViewController.m */; };
+		09AB117B1B5A13970067B9FB /* BTRSerialVocoderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09AB11791B5A13970067B9FB /* BTRSerialVocoderViewController.m */; };
 		09E363EC1B66F46500F74DBB /* BTRSlowDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E363EB1B66F46500F74DBB /* BTRSlowDataHandler.m */; };
 /* End PBXBuildFile section */
 
@@ -82,6 +83,8 @@
 		0954910A1B64A78100A57FD2 /* BTRApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = BTRApplication.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		095491191B64B5B600A57FD2 /* BTRGeneralPreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRGeneralPreferencesController.h; sourceTree = "<group>"; };
 		0954911A1B64B5B600A57FD2 /* BTRGeneralPreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRGeneralPreferencesController.m; sourceTree = "<group>"; };
+		095544A51B71756F00090DB7 /* BTRVocoderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRVocoderViewController.h; sourceTree = "<group>"; };
+		095544A61B71756F00090DB7 /* BTRVocoderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRVocoderViewController.m; sourceTree = "<group>"; };
 		095C3FAD1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "TPCircularBuffer+AudioBufferList.c"; sourceTree = "<group>"; };
 		095C3FAE1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TPCircularBuffer+AudioBufferList.h"; sourceTree = "<group>"; };
 		096F2B581B58C06E00766A95 /* BTRCallFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRCallFormatter.h; sourceTree = "<group>"; };
@@ -108,8 +111,8 @@
 		09A994D01B712E4B0061A929 /* MASKeyCodes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MASKeyCodes.h; sourceTree = "<group>"; };
 		09A994D11B7136AF0061A929 /* MASDictionaryTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASDictionaryTransformer.h; sourceTree = "<group>"; };
 		09A994D21B7136AF0061A929 /* MASDictionaryTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MASDictionaryTransformer.m; sourceTree = "<group>"; };
-		09AB11781B5A13970067B9FB /* BTRVocoderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRVocoderViewController.h; sourceTree = "<group>"; };
-		09AB11791B5A13970067B9FB /* BTRVocoderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRVocoderViewController.m; sourceTree = "<group>"; };
+		09AB11781B5A13970067B9FB /* BTRSerialVocoderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRSerialVocoderViewController.h; sourceTree = "<group>"; };
+		09AB11791B5A13970067B9FB /* BTRSerialVocoderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRSerialVocoderViewController.m; sourceTree = "<group>"; };
 		09AB117A1B5A13970067B9FB /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		09E363EA1B66F46500F74DBB /* BTRSlowDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRSlowDataHandler.h; sourceTree = "<group>"; };
 		09E363EB1B66F46500F74DBB /* BTRSlowDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRSlowDataHandler.m; sourceTree = "<group>"; };
@@ -162,8 +165,10 @@
 				093B9AF71B50E2D500C2ABD0 /* BTRAppDelegate.m */,
 				096F2B581B58C06E00766A95 /* BTRCallFormatter.h */,
 				096F2B591B58C06E00766A95 /* BTRCallFormatter.m */,
-				09AB11781B5A13970067B9FB /* BTRVocoderViewController.h */,
-				09AB11791B5A13970067B9FB /* BTRVocoderViewController.m */,
+				09AB11781B5A13970067B9FB /* BTRSerialVocoderViewController.h */,
+				09AB11791B5A13970067B9FB /* BTRSerialVocoderViewController.m */,
+				095544A51B71756F00090DB7 /* BTRVocoderViewController.h */,
+				095544A61B71756F00090DB7 /* BTRVocoderViewController.m */,
 				0924272C1B62F46600D568DE /* BTRAudioViewController.h */,
 				0924272D1B62F46600D568DE /* BTRAudioViewController.m */,
 				095491191B64B5B600A57FD2 /* BTRGeneralPreferencesController.h */,
@@ -195,7 +200,6 @@
 				093B9B001B50E2D500C2ABD0 /* Main.storyboard */,
 				093B9AF41B50E2D500C2ABD0 /* Supporting Files */,
 			);
-			name = Buster;
 			path = Buster;
 			sourceTree = "<group>";
 		};
@@ -216,7 +220,6 @@
 				093B9B0D1B50E2D500C2ABD0 /* BusterTests.m */,
 				093B9B0B1B50E2D500C2ABD0 /* Supporting Files */,
 			);
-			name = BusterTests;
 			path = BusterTests;
 			sourceTree = "<group>";
 		};
@@ -370,7 +373,7 @@
 				09A994C61B707C8D0061A929 /* BTRDV3KNetworkVocoder.m in Sources */,
 				0954911B1B64B5B600A57FD2 /* BTRGeneralPreferencesController.m in Sources */,
 				09A994BA1B6DD2E40061A929 /* BTRDV3KSerialVocoder.m in Sources */,
-				09AB117B1B5A13970067B9FB /* BTRVocoderViewController.m in Sources */,
+				09AB117B1B5A13970067B9FB /* BTRSerialVocoderViewController.m in Sources */,
 				098B10F01B65FB22002C7A3B /* BTRDataEngine.m in Sources */,
 				095C3FAF1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c in Sources */,
 				093B9B1D1B52DBA000C2ABD0 /* BTRDV3KVocoder.m in Sources */,
@@ -383,6 +386,7 @@
 				09A994CC1B712E0E0061A929 /* MASShortcutValidator.m in Sources */,
 				09A994C91B712DF40061A929 /* MASShortcutView.m in Sources */,
 				096F2B5A1B58C06E00766A95 /* BTRCallFormatter.m in Sources */,
+				095544A71B71756F00090DB7 /* BTRVocoderViewController.m in Sources */,
 				09E363EC1B66F46500F74DBB /* BTRSlowDataHandler.m in Sources */,
 				0924272E1B62F46600D568DE /* BTRAudioViewController.m in Sources */,
 			);

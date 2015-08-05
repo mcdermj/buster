@@ -1,7 +1,7 @@
 //
-//  BTRDataEngine.h
+//  BTRSerialVocoderViewController.h
 //
-//  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
+// Copyright (c) 2010-2015 - Jeremy C. McDermond (NH6Z)
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -17,16 +17,12 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#import "BTRVocoderProtocol.h"
+@class BTRDV3KSerialVocoder;
 
-@class BTRGatewayHandler, BTRAudioHandler, BTRVocoderProtocol;
+@interface BTRSerialVocoderViewController : NSViewController
+@property (weak) IBOutlet NSPopUpButton *serialPortPopup;
+@property (weak) IBOutlet NSTextField *productId;
+@property (weak) IBOutlet NSTextField *version;
 
-@interface BTRDataEngine : NSObject
-
-@property (nonatomic, readonly) BTRGatewayHandler *network;
-@property (nonatomic) id <BTRVocoderProtocol> vocoder;
-@property (nonatomic, readonly) BTRAudioHandler *audio;
-
-+(BTRDataEngine *)sharedInstance;
-
+@property (readonly) BTRDV3KSerialVocoder *vocoder;
 @end

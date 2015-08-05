@@ -19,32 +19,82 @@
 
 #import "BTRVocoderViewController.h"
 
-#import "BTRDataEngine.h"
 #import "BTRDV3KSerialVocoder.h"
+#import "BTRDV3KNetworkVocoder.h"
+#import "BTRDataEngine.h"
 
 @interface BTRVocoderViewController ()
+
 @end
 
 @implementation BTRVocoderViewController
 
--(BTRDV3KSerialVocoder *) vocoder {
-    return [BTRDataEngine sharedInstance].vocoder;
+- (void)viewDidLoad {
+    
+    NSUInteger serialIndex = [self.tabViewItems indexOfObjectPassingTest:^BOOL (id obj, NSUInteger idx, BOOL *stop) {
+        NSTabViewItem *item = (NSTabViewItem *) obj;
+        if([item.identifier isEqualToString:@"serial"])
+            return YES;
+        
+        return NO;
+    }];
+    
+    NSUInteger networkIndex = [self.tabViewItems indexOfObjectPassingTest:^BOOL (id obj, NSUInteger idx, BOOL *stop) {
+        NSTabViewItem *item = (NSTabViewItem *) obj;
+        if([item.identifier isEqualToString:@"network"])
+            return YES;
+        
+        return NO;
+    }];
+    
+    if([[BTRDataEngine sharedInstance].vocoder class] == [BTRDV3KSerialVocoder class]) {
+        self.selectedTabViewItemIndex = serialIndex;
+    } else if([[BTRDataEngine sharedInstance].vocoder class] == [BTRDV3KNetworkVocoder class]) {
+        self.selectedTabViewItemIndex = networkIndex;
+    }
+    
+    [super viewDidLoad];
+    // Do view setup here.
 }
 
-- (void)viewDidAppear {
-    [super viewDidAppear];
-
-    [self.serialPortPopup removeAllItems];
-    [self.serialPortPopup addItemsWithTitles:[BTRDV3KSerialVocoder ports]];
+- (void) replaceCurrentVocoderWith:(BTRDV3KVocoder *)vocoder {
+    BTRDV3KVocoder *oldVocoder = [BTRDataEngine sharedInstance].vocoder;
     
-    [[NSNotificationCenter defaultCenter] addObserverForName: BTRSerialVocoderDeviceChanged
-                                                      object: nil
-                                                       queue: [NSOperationQueue mainQueue]
-                                                  usingBlock:^(NSNotification *notification) {
-                                                      [self.serialPortPopup removeAllItems];
-                                                      [self.serialPortPopup addItemsWithTitles:[BTRDV3KSerialVocoder ports]];
-                                                   }
-     ];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [oldVocoder stop];
+        [BTRDataEngine sharedInstance].vocoder = vocoder;
+        [vocoder start];
+        
+    });
+    
+    for(NSString *binding in [oldVocoder exposedBindings])
+        [oldVocoder unbind:binding];
+}
+
+- (void) tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem {
+    [super tabView:tabView didSelectTabViewItem:tabViewItem];
+    
+    if([tabViewItem.identifier isEqualToString:@"serial"]) {
+        //  We got the serial vocoder here, do the initialization.
+        if([[BTRDataEngine sharedInstance].vocoder class] == [BTRDV3KSerialVocoder class])
+            return;
+        
+        BTRDV3KSerialVocoder *serialVocoder = [[BTRDV3KSerialVocoder alloc] init];
+        [serialVocoder bind:@"speed" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPortBaud" options:nil];
+        [serialVocoder bind:@"serialPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPort" options:nil];
+        
+        [self replaceCurrentVocoderWith:serialVocoder];
+    } else if([tabViewItem.identifier isEqualToString:@"network"]) {
+        //  We got the network vocoder here, do the initialization.
+        if([[BTRDataEngine sharedInstance].vocoder class] == [BTRDV3KNetworkVocoder class])
+            return;
+
+        BTRDV3KNetworkVocoder *networkVocoder = [[BTRDV3KNetworkVocoder alloc] init];
+        [networkVocoder bind:@"address" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kNetworkAddress" options:nil];
+        [networkVocoder bind:@"port" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kNetworkPort" options:nil];
+        
+        [self replaceCurrentVocoderWith:networkVocoder];
+    }
 }
 
 @end

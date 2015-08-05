@@ -44,17 +44,20 @@
     self = [super init];
     if(self) {
         _audio = [[BTRAudioHandler alloc] init];
-        //_vocoder = [[BTRDV3KSerialVocoder alloc] init];
-        _vocoder = [[BTRDV3KNetworkVocoder alloc] init];
-        ((BTRDV3KNetworkVocoder *)self.vocoder).address = @"192.168.1.126";
-        _network = [[BTRGatewayHandler alloc] init];
+        self.vocoder = [[BTRDV3KSerialVocoder alloc] init];
+       _network = [[BTRGatewayHandler alloc] init];
         
-        _network.vocoder = _vocoder;
-        _audio.vocoder = _vocoder;
         _vocoder.audio = _audio;
     }
     
     return self;
+}
+
+- (void) setVocoder:(id<BTRVocoderProtocol>)vocoder {
+    _vocoder = vocoder;
+    
+    _network.vocoder = vocoder;
+    _audio.vocoder = vocoder;
 }
 
 @end
