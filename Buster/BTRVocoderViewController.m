@@ -22,8 +22,12 @@
 #import "BTRDV3KSerialVocoder.h"
 #import "BTRDV3KNetworkVocoder.h"
 #import "BTRDataEngine.h"
+#import "BTRVocoderDrivers.h"
+#import "BTRSerialVocoderViewController.h"
 
 @interface BTRVocoderViewController ()
+
+@property (nonatomic, assign) NSViewController *configurationViewController;
 
 @end
 
@@ -31,7 +35,7 @@
 
 - (void)viewDidLoad {
     
-    NSUInteger serialIndex = [self.tabViewItems indexOfObjectPassingTest:^BOOL (id obj, NSUInteger idx, BOOL *stop) {
+    /* NSUInteger serialIndex = [self.tabViewItems indexOfObjectPassingTest:^BOOL (id obj, NSUInteger idx, BOOL *stop) {
         NSTabViewItem *item = (NSTabViewItem *) obj;
         if([item.identifier isEqualToString:@"serial"])
             return YES;
@@ -51,27 +55,53 @@
         self.selectedTabViewItemIndex = serialIndex;
     } else if([[BTRDataEngine sharedInstance].vocoder class] == [BTRDV3KNetworkVocoder class]) {
         self.selectedTabViewItemIndex = networkIndex;
+    } */
+    [self.vocoderType removeAllItems];
+    for(Class driver in [BTRVocoderDrivers vocoderDrivers]) {
+        [self.vocoderType addItemWithTitle:[driver name]];
+        NSMenuItem *addedItem = [self.vocoderType itemWithTitle:[driver name]];
+        addedItem.representedObject = driver;
+
+        NSLog(@"Driver class %@ name %@", driver, [driver name]);
     }
     
+    Class currentDriver = ((NSMenuItem *)self.vocoderType.itemArray[0]).representedObject;
+    NSViewController *newConfigurationController = [currentDriver configurationViewController];
+    [self addChildViewController:newConfigurationController];
+    [self.view addSubview:newConfigurationController.view];
+    self.configurationViewController = newConfigurationController;
+    
     [super viewDidLoad];
-    // Do view setup here.
 }
+
+-(void)selectVocoder:(id)sender {
+    Class driver = self.vocoderType.selectedItem.representedObject;
+    
+    NSLog(@"doing select vocoder");
+    
+    NSViewController *newConfigurationController = [driver configurationViewController];
+    [self removeChildViewControllerAtIndex:[self.childViewControllers indexOfObject:self.configurationViewController]];
+    [self addChildViewController:newConfigurationController];
+    
+    [self.view replaceSubview:self.configurationViewController.view with:newConfigurationController.view];
+    self.configurationViewController = newConfigurationController;
+ }
 
 - (void) replaceCurrentVocoderWith:(BTRDV3KVocoder *)vocoder {
     BTRDV3KVocoder *oldVocoder = [BTRDataEngine sharedInstance].vocoder;
     
+    [oldVocoder stop];
+    [BTRDataEngine sharedInstance].vocoder = vocoder;
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [oldVocoder stop];
-        [BTRDataEngine sharedInstance].vocoder = vocoder;
         [vocoder start];
-        
     });
     
     for(NSString *binding in [oldVocoder exposedBindings])
         [oldVocoder unbind:binding];
 }
 
-- (void) tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem {
+/* - (void) tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem {
     [super tabView:tabView didSelectTabViewItem:tabViewItem];
     
     if([tabViewItem.identifier isEqualToString:@"serial"]) {
@@ -95,6 +125,6 @@
         
         [self replaceCurrentVocoderWith:networkVocoder];
     }
-}
+} */
 
 @end

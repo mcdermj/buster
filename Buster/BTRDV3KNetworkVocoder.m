@@ -20,6 +20,9 @@
 
 #import "BTRDV3KNetworkVocoder.h"
 #import "BTRDV3KVocoderSubclass.h"
+#import "BTRVocoderDrivers.h"
+#import "BTRNetworkVocoderViewController.h"
+#import "BTRSerialVocoderViewController.h"
 
 #import <arpa/inet.h>
 #import <sys/ioctl.h>
@@ -30,6 +33,10 @@
 
 @implementation BTRDV3KNetworkVocoder
 
++(void) load {
+    [BTRVocoderDrivers registerVocoderDriver:self];
+}
+
 - (id) init {
     self = [super init];
     if(self) {
@@ -38,6 +45,16 @@
     }
     return self;
 }
+
++(NSString *) name {
+    return @"Network DV3000";
+}
+
++(NSViewController *)configurationViewController {
+    return [[BTRNetworkVocoderViewController alloc] initWithNibName:@"BTRNetworkVocoderView" bundle:nil];
+    //return [[BTRSerialVocoderViewController alloc] initWithNibName:@"BTRSerialVocoderView" bundle:nil];
+}
+
 
 - (BOOL) openPort {
     if([self.address isEqualToString:@""] || self.port == 0)

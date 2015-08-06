@@ -28,6 +28,8 @@
 
 #import "BTRDV3KPacket.h"
 #import "BTRDataEngine.h"
+#import "BTRVocoderDrivers.h"
+#import "BTRSerialVocoderViewController.h"
 
 NSString * const BTRSerialVocoderDeviceChanged = @"BTRSerialVocoderDeviceChanged";
 
@@ -104,6 +106,10 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
 
 @implementation BTRDV3KSerialVocoder
 
++(void) load {
+    [BTRVocoderDrivers registerVocoderDriver:self];
+}
+
 #pragma mark - Accessors
 
 - (void) setSpeed:(long)speed {
@@ -126,6 +132,14 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         [self stop];
         [self start];
     }
+}
+
++(NSString *) name {
+    return @"Thumb DV";
+}
+
++(NSViewController *) configurationViewController {
+    return [[BTRSerialVocoderViewController alloc] initWithNibName:@"BTRSerialVocoderView" bundle:nil];
 }
 
 #pragma mark - Port enumeration

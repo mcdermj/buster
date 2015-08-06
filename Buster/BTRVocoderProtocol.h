@@ -26,6 +26,9 @@
 - (BOOL) start;
 - (void) stop;
 
++(NSString *)name;
++(NSViewController *)configurationViewController;
+
 @property (nonatomic, assign) BTRAudioHandler *audio;
 
 @end

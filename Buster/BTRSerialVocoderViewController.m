@@ -27,8 +27,21 @@
 
 @implementation BTRSerialVocoderViewController
 
--(BTRDV3KSerialVocoder *) vocoder {
-    return [BTRDataEngine sharedInstance].vocoder;
+- (void) bindAll {
+    if([[BTRDataEngine sharedInstance].vocoder class] == [BTRDV3KSerialVocoder class]) {
+        NSLog(@"Vocoder is a serial, we are going to bind");
+        [self.productId bind:@"value" toObject:[BTRDataEngine sharedInstance].vocoder withKeyPath:@"productId" options:nil];
+        [self.version bind:@"value" toObject:[BTRDataEngine sharedInstance].vocoder withKeyPath:@"version" options:nil];
+    }
+}
+
+- (void) unbindAll {
+    [self.productId unbind:@"value"];
+    [self.version unbind:@"value"];
+}
+
+- (void) viewDidLoad {
+    [[BTRDataEngine sharedInstance] addObserver:self forKeyPath:@"vocoder" options:NSKeyValueObservingOptionNew context:nil];
 }
 
 - (void)viewDidAppear {
@@ -46,14 +59,21 @@
                                                   }
      ];
     
-    [self.productId bind:@"value" toObject:[BTRDataEngine sharedInstance].vocoder withKeyPath:@"productId" options:nil];
-    [self.version bind:@"value" toObject:[BTRDataEngine sharedInstance].vocoder withKeyPath:@"version" options:nil];
+    [self bindAll];
 }
 
 - (void)viewWillDisappear {
-    for(NSString *binding in [self exposedBindings])
-        [self unbind:binding];
+    
+    NSLog(@"Disappearing");
+    [self unbindAll];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    NSLog(@"Change observed in vocoder");
+    
+    [self unbindAll];
+    [self bindAll];
 }
 @end

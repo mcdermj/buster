@@ -23,7 +23,7 @@
 	<key>dv3kNetworkAddress</key>
 	<string>127.0.0.1</string>
 	<key>dv3kNetworkPort</key>
-	<real>2048</real>
+	<integer>2460</integer>
 	<key>destinationCalls</key>
 	<array>
 		<string>CQCQCQ</string>

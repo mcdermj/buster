@@ -114,29 +114,40 @@ static const struct dv3k_packet dv3k_audio = {
 }
 
 #pragma mark - Methods for subclasses to implement
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-type"
 - (BOOL) openPort {
     [self doesNotRecognizeSelector:_cmd];
-    return NO;
 }
 
 - (BOOL) setNonblocking {
     [self doesNotRecognizeSelector:_cmd];
-    return NO;
 }
 
 - (BOOL) readPacket:(struct dv3k_packet *)packet {
     [self doesNotRecognizeSelector:_cmd];
-    return NO;
 }
 
 - (BOOL) writePacket:(const struct dv3k_packet *)packet {
     [self doesNotRecognizeSelector:_cmd];
-    return NO;
 }
 
 -(void) closePort {
     [self doesNotRecognizeSelector:_cmd];
 }
+
++(NSString *) name {
+    [self doesNotRecognizeSelector:_cmd];
+}
+
++(NSViewController *)configurationViewController {
+    NSLog(@"Crap!");
+    return nil;
+    // [self doesNotRecognizeSelector:_cmd];
+}
+
+#pragma clang diagnostic pop
 
 #pragma mark - Packet sending
 
@@ -195,6 +206,7 @@ static const struct dv3k_packet dv3k_audio = {
         [self closePort];
         return NO;
     }
+
     NSString *tmpProductId = [NSString stringWithCString:responsePacket->payload.ctrl.data.prodid encoding:NSUTF8StringEncoding];
     
     ctrlPacket.payload.ctrl.field_id = DV3K_CONTROL_VERSTRING;
@@ -246,11 +258,13 @@ static const struct dv3k_packet dv3k_audio = {
     
     NSLog(@"Completed serial setup\n");
     
-    self.productId = tmpProductId;
-    self.version = tmpVersion;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.productId = tmpProductId;
+        self.version = tmpVersion;
+    });
     
-    NSLog(@"Product ID is %@\n", self.productId);
-    NSLog(@"Version is %@\n", self.version);
+    NSLog(@"Product ID is %@\n", tmpProductId);
+    NSLog(@"Version is %@\n", tmpVersion);
     
     self.started = YES;
     
