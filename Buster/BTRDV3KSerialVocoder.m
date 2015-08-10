@@ -28,10 +28,7 @@
 
 #import "BTRDV3KPacket.h"
 #import "BTRDataEngine.h"
-#import "BTRVocoderDrivers.h"
 #import "BTRSerialVocoderViewController.h"
-
-NSString * const BTRSerialVocoderDeviceChanged = @"BTRSerialVocoderDeviceChanged";
 
 #pragma mark - Device removal and insertion
 
@@ -76,7 +73,8 @@ static void VocoderAdded(void *refCon, io_iterator_t iterator) {
             [self start];
         }
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:BTRSerialVocoderDeviceChanged object: nil];
+        if(self.configurationViewController)
+            [(BTRSerialVocoderViewController *)self.configurationViewController refreshDevices];
     });
 }
 
@@ -92,14 +90,18 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
                 [self stop];
             });
     };
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:BTRSerialVocoderDeviceChanged object: nil];
+ 
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5ull * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+        if(self.configurationViewController)
+            [(BTRSerialVocoderViewController *)self.configurationViewController refreshDevices];
+    });
 }
 
 @interface BTRDV3KSerialVocoder () {
     IONotificationPortRef gNotifyPort;
     io_iterator_t deviceAddedIterator;
     io_iterator_t deviceRemovedIterator;
+    BTRSerialVocoderViewController *_configurationViewController;
 }
 
 @end
@@ -107,7 +109,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
 @implementation BTRDV3KSerialVocoder
 
 +(void) load {
-    [BTRVocoderDrivers registerVocoderDriver:self];
+    [[BTRDataEngine sharedInstance] registerVocoderDriver:self];
 }
 
 #pragma mark - Accessors
@@ -134,12 +136,17 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     }
 }
 
+
 +(NSString *) name {
     return @"Thumb DV";
 }
 
-+(NSViewController *) configurationViewController {
-    return [[BTRSerialVocoderViewController alloc] initWithNibName:@"BTRSerialVocoderView" bundle:nil];
+-(NSViewController *) configurationViewController {
+    if(!_configurationViewController) {
+        _configurationViewController = [[BTRSerialVocoderViewController alloc] initWithNibName:@"BTRSerialVocoderView" bundle:nil];
+        _configurationViewController.driver = self;
+    }
+    return _configurationViewController;
 }
 
 #pragma mark - Port enumeration
@@ -190,7 +197,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
 - (id) init {
     self = [super init];
     if(self) {
-        self.speed = 0;
+        self.speed = 230400;
         self.serialPort = @"";
         
         mach_port_t masterPort;

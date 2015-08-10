@@ -1282,11 +1282,14 @@
             <objects>
                 <viewController id="j40-Ta-dZo" customClass="BTRVocoderViewController" sceneMemberID="viewController">
                     <view key="view" id="5Qn-ag-Rae">
-                        <rect key="frame" x="0.0" y="0.0" width="424" height="279"/>
+                        <rect key="frame" x="0.0" y="0.0" width="424" height="233"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9vt-yH-YFp">
-                                <rect key="frame" x="138" y="235" width="150" height="26"/>
+                            <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9vt-yH-YFp" userLabel="Driver Menu">
+                                <rect key="frame" x="176" y="189" width="73" height="26"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="d4T-y0-aKp"/>
+                                </constraints>
                                 <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="hpu-en-1B7" id="QyJ-b8-Aee">
                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="menu"/>
@@ -1302,7 +1305,21 @@
                                     <action selector="selectVocoder:" target="j40-Ta-dZo" id="aA1-PH-ycD"/>
                                 </connections>
                             </popUpButton>
+                            <containerView identifier="Configuration" translatesAutoresizingMaskIntoConstraints="NO" id="GCH-3n-e3r">
+                                <rect key="frame" x="-1" y="-1" width="426" height="185"/>
+                                <connections>
+                                    <segue destination="UzW-6E-6FP" kind="embed" id="0aO-KH-zdx"/>
+                                </connections>
+                            </containerView>
                         </subviews>
+                        <constraints>
+                            <constraint firstItem="GCH-3n-e3r" firstAttribute="top" secondItem="9vt-yH-YFp" secondAttribute="bottom" constant="8" symbolic="YES" id="6pN-bX-5NB"/>
+                            <constraint firstAttribute="centerX" secondItem="9vt-yH-YFp" secondAttribute="centerX" id="TVU-Vg-WJj"/>
+                            <constraint firstItem="9vt-yH-YFp" firstAttribute="top" secondItem="5Qn-ag-Rae" secondAttribute="top" constant="20" id="mOD-q9-gr6"/>
+                            <constraint firstAttribute="bottom" secondItem="GCH-3n-e3r" secondAttribute="bottom" constant="-1" id="pGy-20-B5o"/>
+                            <constraint firstItem="GCH-3n-e3r" firstAttribute="leading" secondItem="5Qn-ag-Rae" secondAttribute="leading" constant="-1" id="rOG-F0-qvQ"/>
+                            <constraint firstAttribute="trailing" secondItem="GCH-3n-e3r" secondAttribute="trailing" constant="-1" id="s0q-8u-ZfO"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="vocoderType" destination="9vt-yH-YFp" id="wgd-XQ-NEU"/>
@@ -1310,7 +1327,19 @@
                 </viewController>
                 <customObject id="nvC-gc-sMP" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1255" y="382.5"/>
+            <point key="canvasLocation" x="1255" y="468.5"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="fVQ-sf-eLE">
+            <objects>
+                <viewController id="UzW-6E-6FP" sceneMemberID="viewController">
+                    <view key="view" id="DLU-9I-AT5">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </view>
+                </viewController>
+                <customObject id="UYw-3e-O2a" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
         </scene>
     </scenes>
     <resources>

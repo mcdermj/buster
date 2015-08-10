@@ -52,17 +52,17 @@
     [engine.network bind:@"gatewayPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.gatewayPort" options:nil];
     [engine.network bind:@"repeaterPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.repeaterPort" options:nil];
     
-    [((BTRDV3KSerialVocoder *)engine.vocoder) bind:@"speed" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPortBaud" options:nil];
-    [((BTRDV3KSerialVocoder *)engine.vocoder) bind:@"serialPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPort" options:nil];
+    /* [((BTRDV3KSerialVocoder *)engine.vocoder) bind:@"speed" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPortBaud" options:nil];
+    [((BTRDV3KSerialVocoder *)engine.vocoder) bind:@"serialPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPort" options:nil]; */
     
     [self bind:@"txKeyCode" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.shortcutValue" options:@{NSValueTransformerNameBindingOption: MASDictionaryTransformerName}];
     
-    NSString *portName = [[NSUserDefaults standardUserDefaults] stringForKey:@"dv3kSerialPort"];
+    /* NSString *portName = [[NSUserDefaults standardUserDefaults] stringForKey:@"dv3kSerialPort"];
     if(!portName) {
         NSArray *ports = [BTRDV3KSerialVocoder ports];
         if(ports.count == 1)
             [[NSUserDefaults standardUserDefaults] setObject:ports[0] forKey:@"dv3kSerialPort"];
-    }
+    } */
 
     NSString *inputUid = [[NSUserDefaults standardUserDefaults] stringForKey:@"inputAudioDevice"];
     if(!inputUid) {
@@ -82,12 +82,12 @@
                 engine.audio.outputDevice = ((NSNumber *)entry[@"id"]).intValue;
     }
     
-    [[NSNotificationCenter defaultCenter] addObserverForName: BTRSerialVocoderDeviceChanged
+    /* [[NSNotificationCenter defaultCenter] addObserverForName: BTRSerialVocoderDeviceChanged
                                                       object: nil
                                                        queue: [NSOperationQueue mainQueue]
                                                   usingBlock: ^(NSNotification *notification) {
                                                         [[NSUserDefaults standardUserDefaults] setObject:((BTRDV3KSerialVocoder *)engine.vocoder).serialPort forKey:@"dv3kSerialPort"];
-                                                  }];
+                                                  }]; */
     
     [[NSNotificationCenter defaultCenter] addObserverForName: BTRAudioDeviceChanged
                                                       object: nil

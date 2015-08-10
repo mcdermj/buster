@@ -25,6 +25,9 @@
 #import "BTRGatewayHandler.h"
 #import "BTRAudioHandler.h"
 
+// XXX
+#import "BTRSerialVocoderViewController.h"
+
 static const struct dv3k_packet bleepPacket = {
     .start_byte = DV3K_START_BYTE,
     .header.packet_type = DV3K_TYPE_AMBE,
@@ -108,6 +111,11 @@ static const struct dv3k_packet dv3k_audio = {
     return self;
 }
 
+- (void) setProductId:(NSString *)productId {
+    _productId = [NSString stringWithString:productId];
+    ((BTRSerialVocoderViewController *)self.configurationViewController).productId.stringValue = productId;
+}
+
 - (void) dealloc {
     free(responsePacket);
     NSLog(@"In dealloc for %@", [self className]);
@@ -141,10 +149,8 @@ static const struct dv3k_packet dv3k_audio = {
     [self doesNotRecognizeSelector:_cmd];
 }
 
-+(NSViewController *)configurationViewController {
-    NSLog(@"Crap!");
-    return nil;
-    // [self doesNotRecognizeSelector:_cmd];
+-(NSViewController *)configurationViewController {
+    [self doesNotRecognizeSelector:_cmd];
 }
 
 #pragma clang diagnostic pop

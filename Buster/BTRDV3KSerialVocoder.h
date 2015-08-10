@@ -19,8 +19,6 @@
 
 #import "BTRDV3KVocoderSubclass.h"
 
-extern NSString * const BTRSerialVocoderDeviceChanged;
-
 @interface BTRDV3KSerialVocoder : BTRDV3KVocoder
 
 + (NSArray *)ports;

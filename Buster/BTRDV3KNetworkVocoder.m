@@ -20,21 +20,22 @@
 
 #import "BTRDV3KNetworkVocoder.h"
 #import "BTRDV3KVocoderSubclass.h"
-#import "BTRVocoderDrivers.h"
+#import "BTRDataEngine.h"
 #import "BTRNetworkVocoderViewController.h"
-#import "BTRSerialVocoderViewController.h"
 
 #import <arpa/inet.h>
 #import <sys/ioctl.h>
 
-@interface BTRDV3KNetworkVocoder ()
+@interface BTRDV3KNetworkVocoder () {
+    BTRNetworkVocoderViewController *_configurationViewController;
+}
 
 @end
 
 @implementation BTRDV3KNetworkVocoder
 
 +(void) load {
-    [BTRVocoderDrivers registerVocoderDriver:self];
+    [[BTRDataEngine sharedInstance] registerVocoderDriver:self];
 }
 
 - (id) init {
@@ -50,9 +51,12 @@
     return @"Network DV3000";
 }
 
-+(NSViewController *)configurationViewController {
-    return [[BTRNetworkVocoderViewController alloc] initWithNibName:@"BTRNetworkVocoderView" bundle:nil];
-    //return [[BTRSerialVocoderViewController alloc] initWithNibName:@"BTRSerialVocoderView" bundle:nil];
+-(NSViewController *)configurationViewController {
+    if(!_configurationViewController) {
+        _configurationViewController = [[BTRNetworkVocoderViewController alloc] initWithNibName:@"BTRNetworkVocoderView" bundle:nil];
+        _configurationViewController.driver = self;
+    }
+    return _configurationViewController;
 }
 
 
@@ -89,13 +93,6 @@
         .sin_port = htons(self.port),
         .sin_addr.s_addr = inet_addr([self.address cStringUsingEncoding:NSUTF8StringEncoding])
     };
-    
-    //  Don't need to bind a port if we're using a random local port.
-    /* if(bind(self.descriptor, (const struct sockaddr *) &address, (socklen_t) sizeof(address))) {
-        NSLog(@"Couldn't bind gateway socket: %s\n", strerror(errno));
-        return NO;
-    } */
-    
     
     if(connect(self.descriptor, (const struct sockaddr *) &address, (socklen_t) sizeof(address))) {
         NSLog(@"Couldn't connect socket: %s\n", strerror(errno));

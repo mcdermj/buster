@@ -16,7 +16,7 @@
 @end
 
 @implementation BTRNetworkVocoderViewController
-- (void) bindAll {
+/* - (void) bindAll {
     if([[BTRDataEngine sharedInstance].vocoder class] == [BTRDV3KNetworkVocoder class]) {
         NSLog(@"Vocoder is a network, we are going to bind");
         [self.productId bind:@"value" toObject:[BTRDataEngine sharedInstance].vocoder withKeyPath:@"productId" options:nil];
@@ -36,7 +36,7 @@
 - (void)viewDidAppear {
     [super viewDidAppear];
     
-    [self bindAll];
+    //[self bindAll];
 }
 
 - (void)viewWillDisappear {
@@ -48,7 +48,11 @@
     NSLog(@"Change observed in vocoder");
     
     [self unbindAll];
-    [self bindAll];
+    //[self bindAll];
+} */
+
+-(void)dealloc {
+    NSLog(@"Deallocing");
 }
 
 @end

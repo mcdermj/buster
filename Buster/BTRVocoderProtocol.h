@@ -27,8 +27,8 @@
 - (void) stop;
 
 +(NSString *)name;
-+(NSViewController *)configurationViewController;
 
 @property (nonatomic, assign) BTRAudioHandler *audio;
+@property (nonatomic, readonly) NSViewController *configurationViewController;
 
 @end
