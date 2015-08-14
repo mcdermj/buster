@@ -27,49 +27,22 @@
 
 @implementation BTRSerialVocoderViewController
 
-/* - (void) bindAll {
-    if([[BTRDataEngine sharedInstance].vocoder class] == [BTRDV3KSerialVocoder class]) {
-        NSLog(@"Vocoder is a serial, we are going to bind");
-        [self.productId bind:@"value" toObject:[BTRDataEngine sharedInstance].vocoder withKeyPath:@"productId" options:nil];
-        [self.version bind:@"value" toObject:[BTRDataEngine sharedInstance].vocoder withKeyPath:@"version" options:nil];
-    }
+- (id) init {
+    self = [super initWithNibName:@"BTRSerialVocoderView" bundle:nil];
+    
+    return self;
 }
-
-- (void) unbindAll {
-    [self.productId unbind:@"value"];
-    [self.version unbind:@"value"];
-}
-
-- (void) viewDidLoad {
-    [[BTRDataEngine sharedInstance] addObserver:self forKeyPath:@"vocoder" options:NSKeyValueObservingOptionNew context:nil];
-} */
 
 - (void)viewDidAppear {
     [super viewDidAppear];
     
     [self refreshDevices];
-    // [self bindAll];
 }
 
 -(void)refreshDevices {
     [self.serialPortPopup removeAllItems];
     [self.serialPortPopup addItemsWithTitles:[BTRDV3KSerialVocoder ports]];
 }
-
-/* - (void)viewWillDisappear {
-    
-    NSLog(@"Disappearing");
-    [self unbindAll];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    NSLog(@"Change observed in vocoder");
-    
-    [self unbindAll];
-    [self bindAll];
-} */
 
 -(void)dealloc {
     NSLog(@"Deallocing");

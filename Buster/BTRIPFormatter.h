@@ -1,5 +1,5 @@
 //
-//  BTRVocoderProtocol.h
+//  BTRIPFormatter.h
 //
 //  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
 
@@ -17,18 +17,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-@class BTRAudioHandler;
+#import <Foundation/Foundation.h>
 
-@protocol BTRVocoderProtocol <NSObject>
-- (void) decodeData:(void *) data lastPacket:(BOOL)last;
-- (void) encodeData:(void *) data lastPacket:(BOOL)last;
-
-- (BOOL) start;
-- (void) stop;
-
-+(NSString *)driverName;
-
-@property (nonatomic, assign) BTRAudioHandler *audio;
-@property (nonatomic, readonly) NSViewController *configurationViewController;
+@interface BTRIPFormatter : NSFormatter
 
 @end

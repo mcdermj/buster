@@ -73,8 +73,8 @@ static const struct dv3k_packet dv3k_audio = {
     struct dv3k_packet *responsePacket;
 }
 
-@property (nonatomic, readwrite, copy) NSString *productId;
-@property (nonatomic, readwrite, copy) NSString *version;
+/* @property (nonatomic, readwrite, copy) NSString *productId;
+@property (nonatomic, readwrite, copy) NSString *version; */
 
 - (BOOL) sendCtrlPacket:(struct dv3k_packet)packet expectResponse:(uint8)response;
 - (void) processPacket;
@@ -111,11 +111,6 @@ static const struct dv3k_packet dv3k_audio = {
     return self;
 }
 
-- (void) setProductId:(NSString *)productId {
-    _productId = [NSString stringWithString:productId];
-    ((BTRSerialVocoderViewController *)self.configurationViewController).productId.stringValue = productId;
-}
-
 - (void) dealloc {
     free(responsePacket);
     NSLog(@"In dealloc for %@", [self className]);
@@ -145,7 +140,7 @@ static const struct dv3k_packet dv3k_audio = {
     [self doesNotRecognizeSelector:_cmd];
 }
 
-+(NSString *) name {
++(NSString *) driverName {
     [self doesNotRecognizeSelector:_cmd];
 }
 
@@ -192,6 +187,8 @@ static const struct dv3k_packet dv3k_audio = {
     self.productId = @"";
     
     [self openPort];
+    
+    NSLog(@"Port opened, initializing");
     
     //  Initialize the DV3K
     struct dv3k_packet ctrlPacket = {
@@ -256,9 +253,9 @@ static const struct dv3k_packet dv3k_audio = {
         [weakSelf processPacket];
     });
     
-    dispatch_source_set_cancel_handler(dispatchSource, ^{
+    /* dispatch_source_set_cancel_handler(dispatchSource, ^{
         [self closePort];
-    });
+    }); */
     
     dispatch_resume(dispatchSource);
     
@@ -284,6 +281,7 @@ static const struct dv3k_packet dv3k_audio = {
     }
     
     dispatch_source_cancel(dispatchSource);
+    [self closePort];
     
     self.productId = @"";
     self.version = @"";

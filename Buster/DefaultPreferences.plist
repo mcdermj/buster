@@ -18,12 +18,12 @@
 	<real>20010</real>
 	<key>repeaterPort</key>
 	<integer>20011</integer>
-	<key>dv3kSerialPortBaud</key>
+	<key>DV3KSerialVocoderSpeed</key>
 	<integer>230400</integer>
-	<key>dv3kNetworkAddress</key>
-	<string>127.0.0.1</string>
-	<key>dv3kNetworkPort</key>
+	<key>DV3KNetworkVocoderPort</key>
 	<integer>2460</integer>
+	<key>VocoderDriver</key>
+	<string>BTRDV3KSerialVocoder</string>
 	<key>destinationCalls</key>
 	<array>
 		<string>CQCQCQ</string>

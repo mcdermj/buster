@@ -12,5 +12,4 @@
 
 @property (weak) IBOutlet NSTextField *productId;
 @property (weak) IBOutlet NSTextField *version;
-@property (nonatomic, weak) BTRDV3KNetworkVocoder *driver;
 @end

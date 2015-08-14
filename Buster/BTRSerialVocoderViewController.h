@@ -23,8 +23,8 @@
 @property (weak) IBOutlet NSPopUpButton *serialPortPopup;
 @property (weak) IBOutlet NSTextField *productId;
 @property (weak) IBOutlet NSTextField *version;
-@property (nonatomic, weak) BTRDV3KSerialVocoder *driver;
 
 -(void)refreshDevices;
+- (id) init;
 
 @end

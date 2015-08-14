@@ -36,10 +36,10 @@
     
     [self.vocoderType removeAllItems];
     for(Class driver in [[BTRDataEngine sharedInstance] vocoderDrivers]) {
-        [self.vocoderType addItemWithTitle:[driver name]];
-        NSMenuItem *addedItem = [self.vocoderType itemWithTitle:[driver name]];
+        [self.vocoderType addItemWithTitle:[driver driverName]];
+        NSMenuItem *addedItem = [self.vocoderType itemWithTitle:[driver driverName]];
         addedItem.representedObject = driver;
-        if([[[[BTRDataEngine sharedInstance].vocoder class] name] isEqualToString:[driver name]])
+        if([[[[BTRDataEngine sharedInstance].vocoder class] driverName] isEqualToString:[driver driverName]])
             [self.vocoderType selectItem:addedItem];
     }
     
@@ -89,7 +89,7 @@
     
     [self replaceConfigurationViewControllerWith:[newVocoder configurationViewController]];
     [self replaceCurrentVocoderWith:newVocoder];
-    [[NSUserDefaults standardUserDefaults] setObject:[driver name] forKey:@"VocoderDriver"];
+    [[NSUserDefaults standardUserDefaults] setObject:NSStringFromClass(driver) forKey:@"VocoderDriver"];
  }
 
 -(void) replaceCurrentVocoderWith:(id <BTRVocoderProtocol>)vocoder {

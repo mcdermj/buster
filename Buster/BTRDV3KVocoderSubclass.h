@@ -25,6 +25,9 @@
 
 @property (nonatomic, assign) BOOL started;
 @property (nonatomic, assign) int descriptor;
+@property (nonatomic, readwrite, copy) NSString *productId;
+@property (nonatomic, readwrite, copy) NSString *version;
+
 
 - (BOOL) openPort;
 - (BOOL) setNonblocking;

@@ -52,18 +52,8 @@
     [engine.network bind:@"gatewayPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.gatewayPort" options:nil];
     [engine.network bind:@"repeaterPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.repeaterPort" options:nil];
     
-    /* [((BTRDV3KSerialVocoder *)engine.vocoder) bind:@"speed" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPortBaud" options:nil];
-    [((BTRDV3KSerialVocoder *)engine.vocoder) bind:@"serialPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.dv3kSerialPort" options:nil]; */
-    
     [self bind:@"txKeyCode" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.shortcutValue" options:@{NSValueTransformerNameBindingOption: MASDictionaryTransformerName}];
     
-    /* NSString *portName = [[NSUserDefaults standardUserDefaults] stringForKey:@"dv3kSerialPort"];
-    if(!portName) {
-        NSArray *ports = [BTRDV3KSerialVocoder ports];
-        if(ports.count == 1)
-            [[NSUserDefaults standardUserDefaults] setObject:ports[0] forKey:@"dv3kSerialPort"];
-    } */
-
     NSString *inputUid = [[NSUserDefaults standardUserDefaults] stringForKey:@"inputAudioDevice"];
     if(!inputUid) {
         engine.audio.inputDevice = engine.audio.defaultInputDevice;
@@ -81,13 +71,6 @@
             if([entry[@"uid"] isEqualToString:outputUid])
                 engine.audio.outputDevice = ((NSNumber *)entry[@"id"]).intValue;
     }
-    
-    /* [[NSNotificationCenter defaultCenter] addObserverForName: BTRSerialVocoderDeviceChanged
-                                                      object: nil
-                                                       queue: [NSOperationQueue mainQueue]
-                                                  usingBlock: ^(NSNotification *notification) {
-                                                        [[NSUserDefaults standardUserDefaults] setObject:((BTRDV3KSerialVocoder *)engine.vocoder).serialPort forKey:@"dv3kSerialPort"];
-                                                  }]; */
     
     [[NSNotificationCenter defaultCenter] addObserverForName: BTRAudioDeviceChanged
                                                       object: nil
@@ -108,15 +91,23 @@
 
 
     
-    [engine.audio start];
-    if(![engine.vocoder start]){
-        NSAlert *alert = [[NSAlert alloc] init];
-        alert.alertStyle = NSWarningAlertStyle;
-        alert.messageText = @"Cannot Open the Serial Port";
-        alert.informativeText = @"Please check your serial port and speed settings in the Perferences menu";
-        [alert runModal];
-    };
-    [engine.network start];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [engine.audio start];
+        if(![engine.vocoder start])
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSAlert *alert = [[NSAlert alloc] init];
+                alert.alertStyle = NSWarningAlertStyle;
+                alert.messageText = @"Cannot Open the Serial Port";
+                alert.informativeText = @"Please check your serial port and speed settings in the Perferences menu";
+                [alert runModal];
+            });
+        [engine.network start];
+    });
+    
+    NSHost *host = [NSHost hostWithName:@"128.193.128.3"];
+    NSLog(@"address is %@", host.address);
+    host = [NSHost hostWithName:@"www.kattare.com"];
+    NSLog(@"address is %@", host.address);
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

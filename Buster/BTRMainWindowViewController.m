@@ -36,7 +36,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.reflectorTableView registerForDraggedTypes:@[ @"com.nh6z.Dummy.reflector" ]];
+    [self.reflectorTableView registerForDraggedTypes:@[ @"net.nh6z.Dummy.reflector" ]];
     self.reflectorTableView.dataSource = self;
     
     self.heardTableView.delegate = self;
@@ -251,7 +251,7 @@
     NSDictionary *reflector = self.reflectorTableController.arrangedObjects[row];
     
     NSPasteboardItem *item = [[NSPasteboardItem alloc] init];
-    [item setPropertyList:reflector forType:@"com.nh6z.Dummy.reflector"];
+    [item setPropertyList:reflector forType:@"net.nh6z.Dummy.reflector"];
     
     return item;
 }
@@ -262,7 +262,7 @@
 }
 
 -(BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
-    NSDictionary *reflector = [info.draggingPasteboard propertyListForType:@"com.nh6z.Dummy.reflector"];
+    NSDictionary *reflector = [info.draggingPasteboard propertyListForType:@"net.nh6z.Dummy.reflector"];
     
     if(tableView != self.reflectorTableView)
         return NO;

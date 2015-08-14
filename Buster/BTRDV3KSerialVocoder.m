@@ -119,10 +119,10 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     
     _speed = speed;
     
-    if(self.started == YES) {
+    if(self.started)
         [self stop];
-        [self start];
-    }
+    
+    [self start];
 }
 
 - (void) setSerialPort:(NSString *)serialPort {
@@ -130,21 +130,20 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     
     _serialPort = serialPort;
     
-    if(self.started == YES) {
+    if(self.started)
         [self stop];
-        [self start];
-    }
+    
+    [self start];
 }
 
 
-+(NSString *) name {
++(NSString *) driverName {
     return @"Thumb DV";
 }
 
 -(NSViewController *) configurationViewController {
     if(!_configurationViewController) {
-        _configurationViewController = [[BTRSerialVocoderViewController alloc] initWithNibName:@"BTRSerialVocoderView" bundle:nil];
-        _configurationViewController.driver = self;
+        _configurationViewController = [[BTRSerialVocoderViewController alloc] init];
     }
     return _configurationViewController;
 }
@@ -197,8 +196,15 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
 - (id) init {
     self = [super init];
     if(self) {
-        self.speed = 230400;
-        self.serialPort = @"";
+        _speed = [[NSUserDefaults standardUserDefaults] integerForKey:@"DV3KSerialVocoderSpeed"];
+        _serialPort = [[NSUserDefaults standardUserDefaults] stringForKey:@"DV3KSerialVocoderPort"];
+        if(!_serialPort) {
+            NSArray *ports = [BTRDV3KSerialVocoder ports];
+            if(ports.count == 1)
+                _serialPort = ports[0];
+            else
+                _serialPort = @"";
+        }
         
         mach_port_t masterPort;
         NSMutableDictionary *matchingDict;
@@ -235,14 +241,43 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         while(IOIteratorNext(deviceRemovedIterator));
         
         mach_port_deallocate(mach_task_self(), masterPort);
+        
+        BTRDV3KSerialVocoder __weak *weakSelf = self;
+        [[NSNotificationCenter defaultCenter] addObserverForName:NSUserDefaultsDidChangeNotification
+                                                          object:nil
+                                                           queue:[NSOperationQueue mainQueue]
+                                                      usingBlock: ^(NSNotification *notification) {
+                                                          NSLog(@"User defaults changing");
+                                                          weakSelf.speed = [[NSUserDefaults standardUserDefaults] integerForKey:@"DV3KSerialVocoderSpeed"];
+                                                          NSString *serialPort =[[NSUserDefaults standardUserDefaults] stringForKey:@"DV3KSerialVocoderPort"];
+                                                          if(serialPort)
+                                                              weakSelf.serialPort = serialPort;
+                                                      }];
     }
     return self;
 }
 
 - (void) dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSUserDefaultsDidChangeNotification object:nil];
     IOObjectRelease(deviceAddedIterator);
     IOObjectRelease(deviceRemovedIterator);
     IONotificationPortDestroy(gNotifyPort);
+}
+
+- (void) setProductId:(NSString *)productId {
+    super.productId = productId;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        ((BTRSerialVocoderViewController *)self.configurationViewController).productId.stringValue = productId;
+    });
+}
+
+- (void) setVersion:(NSString *)version {
+    super.version = version;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        ((BTRSerialVocoderViewController *)self.configurationViewController).version.stringValue = version;
+    });
 }
 
 - (BOOL) openPort {
@@ -250,6 +285,8 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     
     if(self.serialPort == nil || [self.serialPort isEqualToString:@""])
         return NO;
+    
+    NSLog(@"Opening %@ at %ld baud", self.serialPort, self.speed);
     
     self.descriptor = open([self.serialPort cStringUsingEncoding:NSUTF8StringEncoding], O_RDWR | O_NOCTTY);
     if(self.descriptor == -1) {
@@ -269,7 +306,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     portTermios.c_cflag    |= CS8 | CRTSCTS;
     portTermios.c_oflag    &= ~(OPOST);
     portTermios.c_cc[VMIN] = 0;
-    portTermios.c_cc[VTIME] = 5;
+    portTermios.c_cc[VTIME] = 1;
     
     if(tcsetattr(self.descriptor, TCSANOW, &portTermios) == -1) {
         NSLog(@"Cannot set terminal attributes: %s\n", strerror(errno));
@@ -302,6 +339,8 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     }
 }
 
+#pragma mark - IO Functions
+
 - (BOOL) readPacket:(struct dv3k_packet *)packet {
     ssize_t bytes;
     size_t bytesLeft;
@@ -309,7 +348,8 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     packet->start_byte = 0x00;
     
     int i;
-    for(i = 0; i < sizeof(struct dv3k_packet); ++i) {
+    int tries = self.started ? sizeof(struct dv3k_packet) : 10;
+    for(i = 0; i < tries; ++i) {
         bytes = read(self.descriptor, packet, 1);
         if(bytes == -1 && errno != EAGAIN) {
             NSLog(@"Couldn't read start byte: %s\n", strerror(errno));
@@ -355,8 +395,6 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     
     return YES;
 }
-
-#pragma mark - IO Functions
 
 - (BOOL) writePacket:(const struct dv3k_packet *)packet {
     ssize_t bytes;

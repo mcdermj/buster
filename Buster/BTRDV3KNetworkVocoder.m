@@ -41,27 +41,79 @@
 - (id) init {
     self = [super init];
     if(self) {
-        self.address = @"";
-        self.port = 2460;
+        _address = @"";
+        _port = 2460;
+        
+        BTRDV3KNetworkVocoder __weak *weakSelf = self;
+        [[NSNotificationCenter defaultCenter] addObserverForName:NSUserDefaultsDidChangeNotification
+                                                          object:nil
+                                                           queue:[NSOperationQueue mainQueue]
+                                                      usingBlock: ^(NSNotification *notification) {
+                                                          NSLog(@"User defaults changing");
+                                                          weakSelf.port = (short) [[NSUserDefaults standardUserDefaults] integerForKey:@"DV3KNetworkVocoderPort"];
+                                                          NSString *address =[[NSUserDefaults standardUserDefaults] stringForKey:@"DV3KNetworkVocoderAddress"];
+                                                          if(address)
+                                                              weakSelf.address = address;
+                                                      }];
+
     }
     return self;
 }
 
-+(NSString *) name {
++(NSString *) driverName {
     return @"Network DV3000";
+}
+
+- (void) setProductId:(NSString *)productId {
+    super.productId = productId;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        ((BTRNetworkVocoderViewController *)self.configurationViewController).productId.stringValue = productId;
+    });
+}
+
+- (void) setVersion:(NSString *)version {
+    super.version = version;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        ((BTRNetworkVocoderViewController *)self.configurationViewController).version.stringValue = version;
+    });
+}
+
+- (void) setPort:(short)port {
+    if(_port == port) return;
+    
+    _port = port;
+    
+    if(self.started)
+        [self stop];
+    
+    [self start];
+}
+
+- (void) setAddress:(NSString *)address {
+    if([address isEqualToString:_address]) return;
+    
+    _address = address;
+    
+    if(self.started)
+        [self stop];
+    
+    [self start];
 }
 
 -(NSViewController *)configurationViewController {
     if(!_configurationViewController) {
-        _configurationViewController = [[BTRNetworkVocoderViewController alloc] initWithNibName:@"BTRNetworkVocoderView" bundle:nil];
-        _configurationViewController.driver = self;
+        _configurationViewController = [[BTRNetworkVocoderViewController alloc] init];
     }
     return _configurationViewController;
 }
 
 
 - (BOOL) openPort {
-    if([self.address isEqualToString:@""] || self.port == 0)
+    NSHost *destination = [NSHost hostWithAddress:self.address];
+    
+    if(!destination.address || self.port == 0)
         return NO;
     
     self.descriptor = socket(PF_INET, SOCK_DGRAM, 0);
@@ -76,22 +128,20 @@
         return NO;
     }
     
-    /* NSMutableData *addrStructData = [[NSMutableData alloc] initWithLength:sizeof(struct sockaddr_in)];
-    
-    struct sockaddr_in *addrStruct = [addrStructData mutableBytes];
-    addrStruct->sin_len = sizeof(struct sockaddr_in);
-    addrStruct->sin_family = AF_INET;
-    addrStruct->sin_port = htons(self.gatewayPort);
-    addrStruct->sin_addr.s_addr = inet_addr([self.gatewayAddr cStringUsingEncoding:NSUTF8StringEncoding]);
-    
-    return [NSData dataWithData:addrStructData]; */
-
-    
+    struct timeval tv = {
+        .tv_sec = 1,
+        .tv_usec = 0
+    };
+    if(setsockopt(self.descriptor, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv))) {
+        NSLog(@"Couldn't set socket timeout: %s", strerror(errno));
+        return NO;
+    }
+        
     struct sockaddr_in address = {
         .sin_len = sizeof(struct sockaddr_in),
         .sin_family = AF_INET,
         .sin_port = htons(self.port),
-        .sin_addr.s_addr = inet_addr([self.address cStringUsingEncoding:NSUTF8StringEncoding])
+        .sin_addr.s_addr = inet_addr([destination.address cStringUsingEncoding:NSUTF8StringEncoding])
     };
     
     if(connect(self.descriptor, (const struct sockaddr *) &address, (socklen_t) sizeof(address))) {

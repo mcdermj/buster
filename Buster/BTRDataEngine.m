@@ -46,8 +46,10 @@
     self = [super init];
     if(self) {
         _audio = [[BTRAudioHandler alloc] init];
-        self.vocoder = [[BTRDV3KSerialVocoder alloc] init];
-       _network = [[BTRGatewayHandler alloc] init];
+        // self.vocoder = [[BTRDV3KSerialVocoder alloc] init];
+        _network = [[BTRGatewayHandler alloc] init];
+        Class driver = NSClassFromString([[NSUserDefaults standardUserDefaults] stringForKey:@"VocoderDriver"]);
+        self.vocoder = [[driver alloc] init];
         
         _vocoder.audio = _audio;
         _vocoderDrivers = [[NSMutableArray alloc] init];

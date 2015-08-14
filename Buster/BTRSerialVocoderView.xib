@@ -30,16 +30,19 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="21" id="5f0-kb-TdU"/>
                     </constraints>
-                    <popUpButtonCell key="cell" type="push" title="230400" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="De9-nA-aXD">
+                    <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="De9-nA-aXD">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="menu"/>
                         <menu key="menu" id="dau-iq-aCi">
                             <items>
-                                <menuItem title="230400" state="on" id="fbZ-50-nfo"/>
+                                <menuItem title="230400" id="fbZ-50-nfo"/>
                                 <menuItem title="460800" id="mKw-u6-kf7"/>
                             </items>
                         </menu>
                     </popUpButtonCell>
+                    <connections>
+                        <binding destination="MWm-DI-znE" name="selectedValue" keyPath="values.DV3KSerialVocoderSpeed" id="mJY-HP-tVx"/>
+                    </connections>
                 </popUpButton>
                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sz0-YY-29Z">
                     <rect key="frame" x="91" y="95" width="312" height="26"/>
@@ -57,6 +60,9 @@
                             </items>
                         </menu>
                     </popUpButtonCell>
+                    <connections>
+                        <binding destination="MWm-DI-znE" name="selectedValue" keyPath="values.DV3KSerialVocoderPort" id="u1h-UY-a1G"/>
+                    </connections>
                 </popUpButton>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="q1f-WM-gz2">
                     <rect key="frame" x="26" y="45" width="61" height="14"/>
@@ -128,5 +134,7 @@
             </constraints>
             <point key="canvasLocation" x="468" y="294.5"/>
         </customView>
+        <userDefaultsController id="5ai-Pz-tPy"/>
+        <userDefaultsController representsSharedInstance="YES" id="MWm-DI-znE"/>
     </objects>
 </document>
