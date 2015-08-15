@@ -33,10 +33,16 @@
     return self;
 }
 
+-(void)viewDidLoad {
+    NSLog(@"View Loaded");
+}
+
 - (void)viewDidAppear {
     [super viewDidAppear];
     
     [self refreshDevices];
+    self.version.stringValue = self.driver.version;
+    self.productId.stringValue = self.driver.productId;
 }
 
 -(void)refreshDevices {

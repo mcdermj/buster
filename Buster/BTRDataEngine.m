@@ -25,6 +25,8 @@
 #import "BTRGatewayHandler.h"
 #import "BTRAudioHandler.h"
 
+static NSMutableArray *vocoderDrivers = nil;
+
 @interface BTRDataEngine () {
     NSMutableArray *_vocoderDrivers;
 }
@@ -46,7 +48,6 @@
     self = [super init];
     if(self) {
         _audio = [[BTRAudioHandler alloc] init];
-        // self.vocoder = [[BTRDV3KSerialVocoder alloc] init];
         _network = [[BTRGatewayHandler alloc] init];
         Class driver = NSClassFromString([[NSUserDefaults standardUserDefaults] stringForKey:@"VocoderDriver"]);
         self.vocoder = [[driver alloc] init];
@@ -65,12 +66,15 @@
     _audio.vocoder = vocoder;
 }
 
--(void)registerVocoderDriver:(Class)driver {
-    [_vocoderDrivers addObject:driver];
++(void)registerVocoderDriver:(Class)driver {
+    if(!vocoderDrivers)
+        vocoderDrivers = [[NSMutableArray alloc] init];
+    
+    [vocoderDrivers addObject:driver];
 }
 
--(NSArray *)vocoderDrivers {
-    return [NSArray arrayWithArray:_vocoderDrivers];
++(NSArray *)vocoderDrivers {
+    return [NSArray arrayWithArray:vocoderDrivers];
 }
 
 @end

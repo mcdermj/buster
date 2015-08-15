@@ -35,7 +35,7 @@
     [super viewDidLoad];
     
     [self.vocoderType removeAllItems];
-    for(Class driver in [[BTRDataEngine sharedInstance] vocoderDrivers]) {
+    for(Class driver in [BTRDataEngine vocoderDrivers]) {
         [self.vocoderType addItemWithTitle:[driver driverName]];
         NSMenuItem *addedItem = [self.vocoderType itemWithTitle:[driver driverName]];
         addedItem.representedObject = driver;

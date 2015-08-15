@@ -26,10 +26,10 @@
 @property (nonatomic, readonly) BTRGatewayHandler *network;
 @property (nonatomic) id <BTRVocoderProtocol> vocoder;
 @property (nonatomic, readonly) BTRAudioHandler *audio;
-@property (nonatomic, readonly) NSArray *vocoderDrivers;
 
 +(BTRDataEngine *)sharedInstance;
 
--(void)registerVocoderDriver:(Class)driver;
++(void)registerVocoderDriver:(Class)driver;
++(NSArray *)vocoderDrivers;
 
 @end

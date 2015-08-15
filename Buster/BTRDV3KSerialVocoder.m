@@ -109,7 +109,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
 @implementation BTRDV3KSerialVocoder
 
 +(void) load {
-    [[BTRDataEngine sharedInstance] registerVocoderDriver:self];
+    [BTRDataEngine registerVocoderDriver:self];
 }
 
 #pragma mark - Accessors
@@ -144,7 +144,8 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
 -(NSViewController *) configurationViewController {
     if(!_configurationViewController) {
         _configurationViewController = [[BTRSerialVocoderViewController alloc] init];
-    }
+        _configurationViewController.driver = self;
+     }
     return _configurationViewController;
 }
 

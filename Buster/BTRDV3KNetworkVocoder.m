@@ -35,7 +35,7 @@
 @implementation BTRDV3KNetworkVocoder
 
 +(void) load {
-    [[BTRDataEngine sharedInstance] registerVocoderDriver:self];
+    [BTRDataEngine registerVocoderDriver:self];
 }
 
 - (id) init {
