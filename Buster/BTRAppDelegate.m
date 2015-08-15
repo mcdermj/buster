@@ -26,6 +26,8 @@
 #import "BTRSlowDataHandler.h"
 #import "BTRAudioHandler.h"
 
+#import "BTRDPlusAuthenticator.h"
+
 @interface BTRAppDelegate ()
 @end
 
@@ -39,7 +41,7 @@
     NSDictionary *defaultPrefs =
     [NSDictionary dictionaryWithContentsOfURL:defaultPrefsFile];
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultPrefs];
-    
+
     BTRDataEngine *engine = [BTRDataEngine sharedInstance];
     
     [engine.network bind:@"xmitMyCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
@@ -104,10 +106,9 @@
         [engine.network start];
     });
     
-    NSHost *host = [NSHost hostWithName:@"128.193.128.3"];
-    NSLog(@"address is %@", host.address);
-    host = [NSHost hostWithName:@"www.kattare.com"];
-    NSLog(@"address is %@", host.address);
+    
+    BTRDPlusAuthenticator *authenticator = [[BTRDPlusAuthenticator alloc] init];
+    [authenticator authenticate];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
