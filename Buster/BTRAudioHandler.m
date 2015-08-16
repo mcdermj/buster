@@ -64,8 +64,8 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation);
     } status;
 }
 
-@property (nonatomic, readwrite, assign) AudioDeviceID defaultInputDevice;
-@property (nonatomic, readwrite, assign) AudioDeviceID defaultOutputDevice;
+@property (nonatomic, readwrite) AudioDeviceID defaultInputDevice;
+@property (nonatomic, readwrite) AudioDeviceID defaultOutputDevice;
 
 @property (nonatomic, readonly) TPCircularBuffer *recordBuffer;
 @property (nonatomic, readonly) AudioStreamBasicDescription *inputFormat;

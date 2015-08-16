@@ -19,6 +19,6 @@
 
 @interface BTRCallFormatter : NSFormatter
 
-@property (nonatomic, assign) NSUInteger maxLength;
+@property (nonatomic) NSUInteger maxLength;
 
 @end

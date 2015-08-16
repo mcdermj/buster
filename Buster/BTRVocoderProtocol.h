@@ -28,7 +28,7 @@
 
 +(NSString *)driverName;
 
-@property (nonatomic, assign) BTRAudioHandler *audio;
+@property (nonatomic) BTRAudioHandler *audio;
 @property (nonatomic, readonly) NSViewController *configurationViewController;
 
 @end

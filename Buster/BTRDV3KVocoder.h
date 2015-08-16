@@ -25,7 +25,7 @@
 
 - (id) init;
 
-@property (nonatomic, assign) BOOL beep;
+@property (nonatomic) BOOL beep;
 @property (nonatomic, readonly, copy) NSString *productId;
 @property (nonatomic, readonly, copy) NSString *version;
 

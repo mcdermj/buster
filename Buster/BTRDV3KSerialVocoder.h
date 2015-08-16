@@ -24,6 +24,6 @@
 + (NSArray *)ports;
 
 @property (nonatomic, copy) NSString *serialPort;
-@property (nonatomic, assign) long speed;
+@property (nonatomic) long speed;
 
 @end

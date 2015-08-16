@@ -23,6 +23,6 @@
 
 // XXX This should probably be NSHost!
 @property (nonatomic, copy) NSString *address;
-@property (nonatomic, assign) short port;
+@property (nonatomic) short port;
 
 @end

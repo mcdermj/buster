@@ -21,6 +21,6 @@
 @property (nonatomic, weak) IBOutlet NSPopUpButton *outputDeviceMenu;
 @property (nonatomic, weak) IBOutlet NSPopUpButton *inputDeviceMenu;
 
-@property (nonatomic, assign) NSInteger selectedInput;
-@property (nonatomic, assign) NSInteger selectedOutput;
+@property (nonatomic) NSInteger selectedInput;
+@property (nonatomic) NSInteger selectedOutput;
 @end

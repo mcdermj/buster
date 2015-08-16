@@ -140,8 +140,8 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 }
 
 @property (nonatomic, readwrite) BTRSlowDataHandler *slowData;
-@property (nonatomic, assign) uint16 rxStreamId;
-@property (nonatomic, assign) CFAbsoluteTime lastPacketTime;
+@property (nonatomic) uint16 rxStreamId;
+@property (nonatomic) CFAbsoluteTime lastPacketTime;
 
 - (NSData *) constructRemoteAddrStruct;
 - (NSData *) constructLocalAddrStruct;

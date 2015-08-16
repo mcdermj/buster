@@ -23,7 +23,7 @@
 
 @interface BTRVocoderViewController ()
 
-@property (nonatomic, assign) NSViewController *configurationViewController;
+@property (nonatomic) NSViewController *configurationViewController;
 
 -(void)replaceConfigurationViewControllerWith:(NSViewController *)viewController;
 

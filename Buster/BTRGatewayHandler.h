@@ -29,10 +29,10 @@ extern NSString * const BTRRepeaterInfoReceived;
 @interface BTRGatewayHandler : NSObject
 
 @property (copy, nonatomic) NSString *gatewayAddr;
-@property (assign, nonatomic) NSUInteger gatewayPort;
-@property (assign, nonatomic) NSUInteger repeaterPort;
+@property (nonatomic) NSUInteger gatewayPort;
+@property (nonatomic) NSUInteger repeaterPort;
 
-@property (assign, nonatomic) id <BTRVocoderProtocol> vocoder;
+@property (nonatomic) id <BTRVocoderProtocol> vocoder;
 @property (nonatomic, readonly) BTRSlowDataHandler *slowData;
 
 @property (copy, nonatomic) NSString *xmitMyCall;
