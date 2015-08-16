@@ -28,7 +28,9 @@
 
 #import "BTRDPlusAuthenticator.h"
 
-@interface BTRAppDelegate ()
+@interface BTRAppDelegate () {
+    BTRDPlusAuthenticator *authenticator;
+}
 @end
 
 @implementation BTRAppDelegate
@@ -106,9 +108,9 @@
         [engine.network start];
     });
     
-    
-    BTRDPlusAuthenticator *authenticator = [[BTRDPlusAuthenticator alloc] init];
-    [authenticator authenticate];
+    while(![BTRDPlusAuthenticator sharedInstance].isAuthenticated);
+    NSLog(@"Reflectors: %@", [BTRDPlusAuthenticator sharedInstance].reflectorList);
+    //authenticator = [[BTRDPlusAuthenticator alloc] initWithAuthCall:@"NH6Z"];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
