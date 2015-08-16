@@ -211,7 +211,7 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
         for(int i = 0; i < numRecords; ++i)
             if((strnlen(response->records[i].address, sizeof(response->records[i].address)) > 0) && (response->records[i].flags & 0x8000))
                 [newReflectorList addObject:@{ @"address": [NSString stringWithCString:response->records[i].address encoding:NSUTF8StringEncoding],
-                                            @"name": [NSString stringWithCString:response->records[i].name encoding:NSUTF8StringEncoding],
+                                            @"name": [[NSString stringWithCString:response->records[i].name encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]],
                                             @"flags": [NSNumber numberWithUnsignedShort:response->records[i].flags]
                                             }
                  ];

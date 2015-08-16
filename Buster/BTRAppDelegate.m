@@ -26,10 +26,10 @@
 #import "BTRSlowDataHandler.h"
 #import "BTRAudioHandler.h"
 
-#import "BTRDPlusAuthenticator.h"
+#import "BTRDPlusLink.h"
 
 @interface BTRAppDelegate () {
-    BTRDPlusAuthenticator *authenticator;
+    BTRDPlusLink *link;
 }
 @end
 
@@ -108,9 +108,7 @@
         [engine.network start];
     });
     
-    while(![BTRDPlusAuthenticator sharedInstance].isAuthenticated);
-    NSLog(@"Reflectors: %@", [BTRDPlusAuthenticator sharedInstance].reflectorList);
-    //authenticator = [[BTRDPlusAuthenticator alloc] initWithAuthCall:@"NH6Z"];
+    link = [[BTRDPlusLink alloc] initWithTarget:@"REF001"];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

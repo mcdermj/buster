@@ -24,6 +24,7 @@
 		096BFCDD1B7DEC4000C94260 /* BTRIPFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 096BFCDC1B7DEC4000C94260 /* BTRIPFormatter.m */; };
 		096F2B5A1B58C06E00766A95 /* BTRCallFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 096F2B591B58C06E00766A95 /* BTRCallFormatter.m */; };
 		096F2B5C1B58ED1B00766A95 /* DefaultPreferences.plist in Resources */ = {isa = PBXBuildFile; fileRef = 096F2B5B1B58ED1B00766A95 /* DefaultPreferences.plist */; };
+		09796FF21B800B5A0043089D /* BTRDPlusLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 09796FF11B800B5A0043089D /* BTRDPlusLink.m */; };
 		098B10F01B65FB22002C7A3B /* BTRDataEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 098B10EF1B65FB22002C7A3B /* BTRDataEngine.m */; };
 		09A5FDEE1B5794FA00AE9E1C /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */; };
 		09A5FDF11B57956A00AE9E1C /* BTRAudioHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 09A5FDF01B57956A00AE9E1C /* BTRAudioHandler.m */; };
@@ -97,6 +98,8 @@
 		096F2B581B58C06E00766A95 /* BTRCallFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRCallFormatter.h; sourceTree = "<group>"; };
 		096F2B591B58C06E00766A95 /* BTRCallFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRCallFormatter.m; sourceTree = "<group>"; };
 		096F2B5B1B58ED1B00766A95 /* DefaultPreferences.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DefaultPreferences.plist; sourceTree = "<group>"; };
+		09796FF01B800B5A0043089D /* BTRDPlusLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRDPlusLink.h; sourceTree = "<group>"; };
+		09796FF11B800B5A0043089D /* BTRDPlusLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRDPlusLink.m; sourceTree = "<group>"; };
 		098B10EE1B65FB22002C7A3B /* BTRDataEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRDataEngine.h; sourceTree = "<group>"; };
 		098B10EF1B65FB22002C7A3B /* BTRDataEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRDataEngine.m; sourceTree = "<group>"; };
 		09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TPCircularBuffer.c; sourceTree = "<group>"; };
@@ -197,6 +200,8 @@
 				093B9B181B50E3BD00C2ABD0 /* BTRGatewayHandler.m */,
 				09E589C81B7EAC1800A962B5 /* BTRDPlusAuthenticator.h */,
 				09E589C91B7EAC1800A962B5 /* BTRDPlusAuthenticator.m */,
+				09796FF01B800B5A0043089D /* BTRDPlusLink.h */,
+				09796FF11B800B5A0043089D /* BTRDPlusLink.m */,
 				09E363EA1B66F46500F74DBB /* BTRSlowDataHandler.h */,
 				09E363EB1B66F46500F74DBB /* BTRSlowDataHandler.m */,
 				09A5FDEF1B57956A00AE9E1C /* BTRAudioHandler.h */,
@@ -423,6 +428,7 @@
 				09A994D31B7136AF0061A929 /* MASDictionaryTransformer.m in Sources */,
 				09A5FDF11B57956A00AE9E1C /* BTRAudioHandler.m in Sources */,
 				093B9AF81B50E2D500C2ABD0 /* BTRAppDelegate.m in Sources */,
+				09796FF21B800B5A0043089D /* BTRDPlusLink.m in Sources */,
 				0954910B1B64A78100A57FD2 /* BTRApplication.m in Sources */,
 				09A994CC1B712E0E0061A929 /* MASShortcutValidator.m in Sources */,
 				09A994C91B712DF40061A929 /* MASShortcutView.m in Sources */,
