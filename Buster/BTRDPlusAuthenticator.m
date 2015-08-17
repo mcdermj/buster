@@ -123,9 +123,10 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
 }
 
 - (void) startAuthTimer {
+    [self authenticate];
     BTRDPlusAuthenticator __weak *weakSelf = self;
     authTimerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
-    dispatch_source_set_timer(authTimerSource, dispatch_walltime(NULL, 0), 6ull * NSEC_PER_HOUR, 60ull * NSEC_PER_SEC);
+    dispatch_source_set_timer(authTimerSource, dispatch_walltime(NULL, 6ull * NSEC_PER_HOUR), 6ull * NSEC_PER_HOUR, 60ull * NSEC_PER_SEC);
     dispatch_source_set_event_handler(authTimerSource, ^{
         NSLog(@"Performing DPlus Authentication");
         // XXX Do something with authentication failure here.  NSNotification?

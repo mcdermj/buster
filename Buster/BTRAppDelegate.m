@@ -108,7 +108,7 @@
         [engine.network start];
     });
     
-    link = [[BTRDPlusLink alloc] initWithTarget:@"REF001"];
+    link = [[BTRDPlusLink alloc] initWithTarget:@"REF001 A"];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
