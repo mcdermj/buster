@@ -23,13 +23,13 @@
 #import "BTRDV3KSerialVocoder.h"
 #import "MASDictionaryTransformer.h"
 #import "BTRGatewayHandler.h"
-#import "BTRSlowDataHandler.h"
+#import "BTRSlowDataCoder.h"
 #import "BTRAudioHandler.h"
 
 #import "BTRDPlusLink.h"
 
 @interface BTRAppDelegate () {
-    BTRDPlusLink *link;
+    // BTRDPlusLink *link;
 }
 @end
 
@@ -46,7 +46,7 @@
 
     BTRDataEngine *engine = [BTRDataEngine sharedInstance];
     
-    [engine.network bind:@"xmitMyCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
+    /* [engine.network bind:@"xmitMyCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
     [engine.network bind:@"xmitMyCall2" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall2" options:nil];
     [engine.network bind:@"xmitRpt1Call" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.rpt1Call" options:nil];
     [engine.network bind:@"xmitRpt2Call" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.rpt2Call" options:nil];
@@ -54,7 +54,7 @@
     
     [engine.network bind:@"gatewayAddr" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.gatewayAddr" options:nil];
     [engine.network bind:@"gatewayPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.gatewayPort" options:nil];
-    [engine.network bind:@"repeaterPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.repeaterPort" options:nil];
+    [engine.network bind:@"repeaterPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.repeaterPort" options:nil]; */
     
     [self bind:@"txKeyCode" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.shortcutValue" options:@{NSValueTransformerNameBindingOption: MASDictionaryTransformerName}];
     
@@ -105,10 +105,16 @@
                 alert.informativeText = @"Please check your serial port and speed settings in the Perferences menu";
                 [alert runModal];
             });
-        [engine.network start];
+        // [engine.network start];
     });
     
-    link = [[BTRDPlusLink alloc] initWithTarget:@"REF001 A"];
+    /* link = [[BTRDPlusLink alloc] init];
+    [link linkTo:@"REF001 C"];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSLog(@"Unlinking after 20 seconds");
+        [link unlink];
+     }); */
+
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

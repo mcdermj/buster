@@ -17,7 +17,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#import "BTRSlowDataHandler.h"
+#import "BTRSlowDataCoder.h"
 
 const char syncBytes[] = { 0x55, 0x2D, 0x16 };
 const char scrambler[] = { 0x70, 0x4F, 0x93 };
@@ -37,7 +37,7 @@ NSString * const BTRSlowDataTextReceived = @"BTRSlowDataTextReceived";
 #define SCRAMBLE(x)     for(int j = 0; j < 3; ++j) \
                             messageFrames[(x)][j] ^= scrambler[j];
 
-@interface BTRSlowDataHandler () {
+@interface BTRSlowDataCoder () {
     char dataFrame[2][3];
     char messageFrames[8][3];
     BOOL isTop;
@@ -45,7 +45,7 @@ NSString * const BTRSlowDataTextReceived = @"BTRSlowDataTextReceived";
 }
 @end
 
-@implementation BTRSlowDataHandler
+@implementation BTRSlowDataCoder
 
 -(id) init {
     self = [super init];

@@ -22,7 +22,7 @@
 #import "BTRGatewayHandler.h"
 #import "BTRApplication.h"
 #import "BTRDataEngine.h"
-#import "BTRSlowDataHandler.h"
+#import "BTRSlowDataCoder.h"
 #import "BTRAudioHandler.h"
 
 @interface BTRMainWindowViewController () {
@@ -193,7 +193,7 @@
     
     [self.view.window makeFirstResponder:nil];
     
-    [BTRDataEngine sharedInstance].network.xmitUrCall = self.xmitUrCall.objectValue;
+    //[BTRDataEngine sharedInstance].network.xmitUrCall = self.xmitUrCall.objectValue;
     [BTRDataEngine sharedInstance].audio.xmit = YES;
     self.statusLED.image = [NSImage imageNamed:@"Red LED"];
     
@@ -209,7 +209,7 @@
 
 -(void)endTx {
     [BTRDataEngine sharedInstance].audio.xmit = NO;
-    [BTRDataEngine sharedInstance].network.xmitUrCall = @"";
+    //[BTRDataEngine sharedInstance].network.xmitUrCall = @"";
     self.statusLED.image = [NSImage imageNamed:@"Gray LED"];
 }
 

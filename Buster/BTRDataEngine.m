@@ -22,8 +22,9 @@
 
 #import "BTRDV3KSerialVocoder.h"
 #import "BTRDV3KNetworkVocoder.h"
-#import "BTRGatewayHandler.h"
 #import "BTRAudioHandler.h"
+#import "BTRSlowDataCoder.h"
+#import "BTRDPlusLink.h"
 
 static NSMutableArray *vocoderDrivers = nil;
 
@@ -48,18 +49,24 @@ static NSMutableArray *vocoderDrivers = nil;
     self = [super init];
     if(self) {
         _audio = [[BTRAudioHandler alloc] init];
-        _network = [[BTRGatewayHandler alloc] init];
+        _network = [[BTRDPlusLink alloc] init];
         Class driver = NSClassFromString([[NSUserDefaults standardUserDefaults] stringForKey:@"VocoderDriver"]);
         self.vocoder = [[driver alloc] init];
         
         _vocoder.audio = _audio;
         _vocoderDrivers = [[NSMutableArray alloc] init];
+        
+        _slowData = [[BTRSlowDataCoder alloc] init];
     }
     
     return self;
 }
 
-- (void) setVocoder:(id<BTRVocoderProtocol>)vocoder {
+-(void) dealloc {
+    //  Need to unlink here.
+}
+
+- (void) setVocoder:(id<BTRVocoderDriver>)vocoder {
     _vocoder = vocoder;
     
     _network.vocoder = vocoder;

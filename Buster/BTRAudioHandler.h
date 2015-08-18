@@ -19,7 +19,7 @@
 
 #import <AudioToolbox/AudioToolbox.h>
 
-@protocol BTRVocoderProtocol;
+@protocol BTRVocoderDriver;
 
 extern NSString * const BTRAudioDeviceChanged;
 
@@ -34,7 +34,7 @@ extern NSString * const BTRAudioDeviceChanged;
 
 -(void)setInputDevice:(AudioDeviceID)_inputDevice andOutputDevice:(AudioDeviceID)_outputDevice;
 
-@property (nonatomic) id<BTRVocoderProtocol> vocoder;
+@property (nonatomic) id<BTRVocoderDriver> vocoder;
 @property (nonatomic) AudioDeviceID inputDevice;
 @property (nonatomic) AudioDeviceID outputDevice;
 @property (nonatomic, readonly) AudioDeviceID defaultInputDevice;

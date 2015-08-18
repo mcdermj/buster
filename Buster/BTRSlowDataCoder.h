@@ -19,7 +19,7 @@
 
 extern NSString * const BTRSlowDataTextReceived;
 
-@interface BTRSlowDataHandler : NSObject
+@interface BTRSlowDataCoder : NSObject
 
 -(void)addData:(void *)data streamId:(NSUInteger)streamId;
 -(const void *)getDataForSequence:(NSUInteger)sequence;

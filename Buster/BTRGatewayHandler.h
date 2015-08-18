@@ -17,8 +17,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-@protocol BTRVocoderProtocol;
-@class BTRSlowDataHandler;
+@protocol BTRVocoderDriver;
+@class BTRSlowDataCoder;
 
 #pragma mark - Notification Constants
 extern NSString * const BTRNetworkHeaderReceived;
@@ -32,8 +32,8 @@ extern NSString * const BTRRepeaterInfoReceived;
 @property (nonatomic) NSUInteger gatewayPort;
 @property (nonatomic) NSUInteger repeaterPort;
 
-@property (nonatomic) id <BTRVocoderProtocol> vocoder;
-@property (nonatomic, readonly) BTRSlowDataHandler *slowData;
+@property (nonatomic) id <BTRVocoderDriver> vocoder;
+@property (nonatomic, readonly) BTRSlowDataCoder *slowData;
 
 @property (copy, nonatomic) NSString *xmitMyCall;
 @property (copy, nonatomic) NSString *xmitMyCall2;

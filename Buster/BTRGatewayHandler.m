@@ -19,8 +19,9 @@
 
 #import "BTRGatewayHandler.h"
 
-#import "BTRSlowDataHandler.h"
-#import "BTRVocoderProtocol.h"
+#import "BTRSlowDataCoder.h"
+#import "BTRVocoderDriver.h"
+#import "BTRDPlusLink.h"
 
 #import <arpa/inet.h>
 #import <sys/ioctl.h>
@@ -101,11 +102,11 @@ static const char GW_PACKET_TYPE_HEADER = 0x20;
 static const char GW_PACKET_TYPE_DATA = 0x21;
 static const char GW_PACKET_TYPE_POLL = 0x0A;
 
-static const struct gatewayPacket pollPacket = {
+/*static const struct gatewayPacket pollPacket = {
     .magic = "DSRP",
     .packetType = GW_PACKET_TYPE_POLL,
     .payload.pollText = "Dummy v1.0 (Mac)"
-};
+}; */
 
 
 NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
@@ -139,9 +140,10 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     } status;
 }
 
-@property (nonatomic, readwrite) BTRSlowDataHandler *slowData;
+@property (nonatomic, readwrite) BTRSlowDataCoder *slowData;
 @property (nonatomic) uint16 rxStreamId;
 @property (nonatomic) CFAbsoluteTime lastPacketTime;
+@property (nonatomic) BTRDPlusLink *dplus;
 
 - (NSData *) constructRemoteAddrStruct;
 - (NSData *) constructLocalAddrStruct;
@@ -182,11 +184,13 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
         
         txSequence = 0;
         
-        _slowData = [[BTRSlowDataHandler alloc] init];
+        _slowData = [[BTRSlowDataCoder alloc] init];
         self.slowData.message = @"";
         
         dispatch_queue_attr_t dispatchQueueAttr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, -1);
         dispatchQueue = dispatch_queue_create("net.nh6z.Dummy.NetworkIO", dispatchQueueAttr);
+        
+        _dplus = [[BTRDPlusLink alloc] init];
     }
     return self;
 }
@@ -314,14 +318,14 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     
     //  XXX Should set up a timer here for the poll interval.
     //  XXX This should eventually be put on the read serial queue.
-    pollTimerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+    /* pollTimerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
     dispatch_source_set_timer(pollTimerSource, dispatch_walltime(NULL, 0), 60ull * NSEC_PER_SEC, 1ull * NSEC_PER_SEC);
     dispatch_source_set_event_handler(pollTimerSource, ^{
         NSLog(@"Sending Poll\n");
         if(![self sendPacket:&pollPacket])
             return;
     });
-    dispatch_resume(pollTimerSource);
+    dispatch_resume(pollTimerSource); */
     
     watchdogTimerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, mainQueue);
     dispatch_source_set_timer(watchdogTimerSource, dispatch_time(DISPATCH_TIME_NOW, 0), 500ull * NSEC_PER_MSEC, 100ull * NSEC_PER_MSEC);
@@ -351,17 +355,20 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 #pragma mark - Linking
 
 - (void) linkTo:(NSString *)reflector {
-    dispatch_async(dispatchQueue, ^{
+     /* dispatch_async(dispatchQueue, ^{
         NSMutableString *linkCmd = [NSMutableString stringWithString:reflector];
         [linkCmd deleteCharactersInRange:NSMakeRange(6, 1)];
         [linkCmd appendString:@"L"];
 
         [self sendBlankTransmissionWithUr:linkCmd];
-    });
+    }); */
+    
+    [self.dplus linkTo:reflector];
 }
 
 - (void) unlink {
-    [self sendBlankTransmissionWithUr:@"       U"];
+    //[self sendBlankTransmissionWithUr:@"       U"];
+    [self.dplus unlink];
 }
 
 #pragma mark - Sending to gateway

@@ -19,7 +19,7 @@
 
 @class BTRAudioHandler;
 
-@protocol BTRVocoderProtocol <NSObject>
+@protocol BTRVocoderDriver <NSObject>
 - (void) decodeData:(void *) data lastPacket:(BOOL)last;
 - (void) encodeData:(void *) data lastPacket:(BOOL)last;
 

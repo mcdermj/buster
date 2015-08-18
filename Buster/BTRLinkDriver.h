@@ -1,5 +1,5 @@
 //
-//  BTRDataEngine.h
+//  BTRLinkDriver.h
 //
 //  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
 
@@ -18,20 +18,15 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #import "BTRVocoderDriver.h"
-#import "BTRLinkDriver.h"
 
-@class BTRAudioHandler, BTRVocoderProtocol, BTRSlowDataCoder;
+@protocol BTRLinkDriver
 
-@interface BTRDataEngine : NSObject
-
-@property (nonatomic, readonly) id <BTRLinkDriver> network;
+@property (nonatomic, readonly, getter=isLinked) BOOL linked;
+@property (nonatomic, readonly, copy) NSString *linkTarget;
 @property (nonatomic) id <BTRVocoderDriver> vocoder;
-@property (nonatomic, readonly) BTRAudioHandler *audio;
-@property (nonatomic, readonly) BTRSlowDataCoder *slowData;
 
-+(BTRDataEngine *)sharedInstance;
+-(void)linkTo:(NSString *)linkTarget;
+-(void)unlink;
 
-+(void)registerVocoderDriver:(Class)driver;
-+(NSArray *)vocoderDrivers;
-
+-(void) sendAMBE:(void *)data lastPacket:(BOOL)last;
 @end
