@@ -88,7 +88,9 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
     static BTRDPlusAuthenticator *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[self alloc] initWithAuthCall:@"NH6Z"];
+        sharedInstance = [[self alloc] init];
+        [sharedInstance bind:@"authCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
+        [sharedInstance startAuthTimer];
     });
     return sharedInstance;
 }
@@ -108,6 +110,18 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
     return self;
 }
 
+- (id) init {
+    self = [super init];
+    if(self) {
+        _authenticationHost = [NSHost hostWithName:@"opendstar.org"];
+        _reflectorList = @[ ];
+        _authCall = @"";
+        _suffix = '2';
+        _authenticated = NO;
+    }
+    return self;
+}
+
 - (void) dealloc {
     dispatch_source_cancel(authTimerSource);
 }
@@ -118,7 +132,9 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
     
     _authCall = [authCall copy];
     
-    dispatch_source_cancel(authTimerSource);
+    if(authTimerSource)
+        dispatch_source_cancel(authTimerSource);
+    
     [self startAuthTimer];
 }
 

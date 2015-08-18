@@ -201,8 +201,6 @@
 				09E589CB1B82880B00A962B5 /* BTRLinkDriver.h */,
 				093B9B171B50E3BD00C2ABD0 /* BTRGatewayHandler.h */,
 				093B9B181B50E3BD00C2ABD0 /* BTRGatewayHandler.m */,
-				09E589C81B7EAC1800A962B5 /* BTRDPlusAuthenticator.h */,
-				09E589C91B7EAC1800A962B5 /* BTRDPlusAuthenticator.m */,
 				09E363EA1B66F46500F74DBB /* BTRSlowDataCoder.h */,
 				09E363EB1B66F46500F74DBB /* BTRSlowDataCoder.m */,
 				09A5FDEF1B57956A00AE9E1C /* BTRAudioHandler.h */,
@@ -293,6 +291,8 @@
 		09E589CC1B828FBA00A962B5 /* Link Drivers */ = {
 			isa = PBXGroup;
 			children = (
+				09E589C81B7EAC1800A962B5 /* BTRDPlusAuthenticator.h */,
+				09E589C91B7EAC1800A962B5 /* BTRDPlusAuthenticator.m */,
 				09796FF01B800B5A0043089D /* BTRDPlusLink.h */,
 				09796FF11B800B5A0043089D /* BTRDPlusLink.m */,
 			);

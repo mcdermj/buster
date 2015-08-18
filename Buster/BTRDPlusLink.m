@@ -538,6 +538,14 @@ static const struct dplus_packet ambeTemplate = {
         return [obj[@"name"] isEqualToString:targetReflector];
     }];
     if(reflectorIndex == NSNotFound) {
+       infoDict = @{ @"local": [NSString stringWithFormat:@"Couldn't find %@", linkTarget],
+                                    @"reflector": linkTarget,
+                                    @"status": @"" };
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:BTRRepeaterInfoReceived object:self userInfo:infoDict];
+        });
+
         NSLog(@"Couldn't find reflector %@", linkTarget);
         return;
     }
@@ -566,6 +574,9 @@ static const struct dplus_packet ambeTemplate = {
 }
 
 -(void)unlink {
+    if(!self.isLinked)
+        return;
+    
     BTRDPlusLink __weak *weakSelf = self;
     int tries = 0;
     
