@@ -28,5 +28,12 @@
 	<array>
 		<string>CQCQCQ</string>
 	</array>
+	<key>shortcutValue</key>
+	<dict>
+		<key>keyCode</key>
+		<integer>96</integer>
+		<key>modifierFlags</key>
+		<integer>0</integer>
+	</dict>
 </dict>
 </plist>
