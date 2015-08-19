@@ -19,8 +19,15 @@
 
 #import "BTRVocoderDriver.h"
 
-@interface BTRLinkDriver : NSObject
+enum linkState {
+    UNLINKED,
+    LINKING,
+    LINKED
+};
 
+@protocol BTRLinkDriverProtocol
+
+//@property (nonatomic, readonly, getter=isLinked) BOOL linked;
 @property (nonatomic, readonly) enum linkState linkState;
 @property (nonatomic, readonly, copy) NSString *linkTarget;
 @property (nonatomic) id <BTRVocoderDriver> vocoder;
@@ -29,6 +36,4 @@
 -(void)unlink;
 
 -(void) sendAMBE:(void *)data lastPacket:(BOOL)last;
-
-
-@end
+@end 

@@ -45,6 +45,7 @@
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultPrefs];
 
     BTRDataEngine *engine = [BTRDataEngine sharedInstance];
+    [engine.slowData bind:@"message" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.slowDataMessage" options:nil];
     
     /* [engine.network bind:@"xmitMyCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
     [engine.network bind:@"xmitMyCall2" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall2" options:nil];
@@ -106,15 +107,7 @@
                 [alert runModal];
             });
         // [engine.network start];
-    });
-    
-    /* link = [[BTRDPlusLink alloc] init];
-    [link linkTo:@"REF001 C"];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSLog(@"Unlinking after 20 seconds");
-        [link unlink];
-     }); */
-
+    });    
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

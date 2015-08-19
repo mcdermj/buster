@@ -109,7 +109,7 @@ static const char GW_PACKET_TYPE_POLL = 0x0A;
 }; */
 
 
-NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
+/* NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     uint8 halfmax = max / 2;
     
     if(counter < halfmax) {
@@ -120,7 +120,7 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     }
     
     return NO;
-}
+} */
 
 @interface BTRGatewayHandler () {
     int gatewaySocket;

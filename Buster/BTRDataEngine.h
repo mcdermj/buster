@@ -18,13 +18,13 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #import "BTRVocoderDriver.h"
-#import "BTRLinkDriver.h"
+#import "BTRLinkDriverProtocol.h"
 
 @class BTRAudioHandler, BTRVocoderProtocol, BTRSlowDataCoder;
 
 @interface BTRDataEngine : NSObject
 
-@property (nonatomic, readonly) id <BTRLinkDriver> network;
+@property (nonatomic, readonly) id <BTRLinkDriverProtocol> network;
 @property (nonatomic) id <BTRVocoderDriver> vocoder;
 @property (nonatomic, readonly) BTRAudioHandler *audio;
 @property (nonatomic, readonly) BTRSlowDataCoder *slowData;
