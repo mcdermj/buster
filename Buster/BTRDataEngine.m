@@ -98,16 +98,23 @@ static NSMutableArray *linkDrivers = nil;
 }
 
 -(void)linkTo:(NSString *)reflector {
-    /* if(self.network.linkState != UNLINKED)
-        [self.network unlink]; */
+    if([self.network.linkTarget isEqualToString:reflector])
+        return;
+    
     NSLog(@"In LinkTo:");
     for(Class driver in [BTRDataEngine linkDrivers]) {
         if([driver canHandleLinkTo:reflector]) {
-            self.network = [[driver alloc] init];
-            [self.network linkTo:reflector];
+            [self.network unlink];
+            self.network = [[driver alloc] initWithLinkTo:reflector];
             self.network.vocoder = self.vocoder;
         }
     }
+}
+
+-(void)unlink {
+    NSLog(@"Unlinking");
+    [self.network unlink];
+    self.network = nil;
 }
 
 @end

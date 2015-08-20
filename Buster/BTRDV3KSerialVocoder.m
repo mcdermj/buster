@@ -221,6 +221,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         matchingDict = CFBridgingRelease(IOServiceMatching(kIOSerialBSDServiceValue));
         if(matchingDict == NULL) {
             NSLog(@"IOServiceMatching returned a NULL dictionary.\n");
+            return nil;
         } else {
             [matchingDict setValue:[NSString stringWithCString:kIOSerialBSDRS232Type encoding:NSUTF8StringEncoding]
                             forKey:[NSString stringWithCString:kIOSerialBSDTypeKey encoding:NSUTF8StringEncoding]];

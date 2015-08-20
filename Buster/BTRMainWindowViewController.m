@@ -224,7 +224,7 @@
 }
 
 - (IBAction)doUnlink:(id)sender {
-    [[BTRDataEngine sharedInstance].network unlink];
+    [[BTRDataEngine sharedInstance] unlink];
 }
 
 #pragma mark - Text Editing Control

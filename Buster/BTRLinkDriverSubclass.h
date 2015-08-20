@@ -27,32 +27,46 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
 
 @interface BTRLinkDriver ()
 
--(id)initWithPort:(short)port packetSize:(size_t)packetSize;
+//
+//  Methods for the subclass to override
+//
 -(void)processPacket:(NSData *)packet;
--(void)sendPacket:(NSData *)packet;
 -(NSString *)getAddressForReflector:(NSString *)reflector;
 -(void)sendPoll;
 -(void)sendUnlink;
 -(void)sendLink;
--(void)terminateCurrentStream;
+
+//
+//  Utility methods for the subclasses
+//
 -(uint16) calculateChecksum:(void *)data length:(size_t)length;
+-(void)sendPacket:(NSData *)packet;
+
+//
+//  Pass off the AMBE and Header data to the rest of the system.
+//  These need to be called when the link receives AMBE and Header packets respectively.
+//
 -(void)processAMBE:(void *)voice forId:(unsigned short)id withSequence:(char)sequence andData:(char *)data;
 -(void)processHeader:(NSDictionary *)header;
 
-//  XXX A bunch of this stuff can move when we're done.
-@property (nonatomic, readwrite) enum linkState linkState;
+// -(void)unlink;
+
+//
+//  Override these to set the parameters in the subclass.
+//
+@property (nonatomic, readonly) CFAbsoluteTime pollInterval;
+@property (nonatomic, readonly) unsigned short clientPort;
+@property (nonatomic, readonly) unsigned short serverPort;
+@property (nonatomic, readonly) size_t packetSize;
+
+//
+//  Properties subclasses might need.  You should take care of making sure linkState is correct.
+//
 @property (nonatomic, readwrite, copy) NSString * linkTarget;
-@property (nonatomic) int socket;
-@property (nonatomic) dispatch_source_t dispatchSource;
-@property (nonatomic) dispatch_source_t watchdogTimerSource;
-@property (nonatomic) dispatch_source_t pollTimerSource;
-@property (nonatomic) dispatch_source_t linkWatchdogTimerSource;
-@property (nonatomic) dispatch_queue_t writeQueue;
-@property (nonatomic) unsigned short rxStreamId;
+@property (nonatomic, readwrite) enum linkState linkState;
+
+//  XXX A bunch of this stuff can move when we're done.
 @property (nonatomic) unsigned short txStreamId;
-@property (nonatomic) char rxSequence;
 @property (nonatomic) char txSequence;
-@property (nonatomic) CFAbsoluteTime lastPacketTime;
-@property (nonatomic) CFAbsoluteTime lastLinkPacketTime;
 
 @end

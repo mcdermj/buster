@@ -29,12 +29,10 @@ enum linkState {
 
 +(BOOL)canHandleLinkTo:(NSString *)reflector;
 
-//@property (nonatomic, readonly, getter=isLinked) BOOL linked;
-@property (nonatomic, readonly) enum linkState linkState;
 @property (nonatomic, readonly, copy) NSString *linkTarget;
 @property (nonatomic) id <BTRVocoderDriver> vocoder;
 
--(void)linkTo:(NSString *)linkTarget;
+-(id)initWithLinkTo:(NSString *)linkTarget;
 -(void)unlink;
 
 -(void) sendAMBE:(void *)data lastPacket:(BOOL)last;

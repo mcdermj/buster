@@ -217,6 +217,7 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
             bytesRead = recv(authSocket, buffer + (length - bytesLeft), bytesLeft, 0);
             if(bytesRead == -1) {
                 NSLog(@"Couldn't read rest of packet: %s", strerror(errno));
+                free(buffer);
                 close(authSocket);
                 return;
             }

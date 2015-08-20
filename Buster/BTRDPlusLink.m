@@ -145,8 +145,8 @@ static const struct dplus_packet ambeTemplate = {
     [BTRDataEngine registerLinkDriver:self];
 }
 
-- (id) init {
-    self = [super initWithPort:20001 packetSize:sizeof(struct dplus_packet)];
+- (id) initWithLinkTo:(NSString *)linkTarget {
+    self = [super initWithLinkTo:linkTarget];
     if(self) {
         struct dplus_packet unlinkPacket = {
             .length = 0x05,
@@ -173,6 +173,22 @@ static const struct dplus_packet ambeTemplate = {
     }
     
     return self;
+}
+
+-(CFAbsoluteTime)pollInterval {
+    return 1.0;
+}
+
+-(unsigned short)clientPort {
+    return 20001;
+}
+
+-(unsigned short)serverPort {
+    return 20001;
+}
+
+-(size_t)packetSize {
+    return sizeof(struct dplus_packet);
 }
 
 -(void)sendPoll {
@@ -282,15 +298,16 @@ static const struct dplus_packet ambeTemplate = {
     if(self.linkState != LINKED)
         return;
     
+    BTRDPlusLink __weak *weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         struct dplus_packet packet = {};
         
         //  If the sequence is 0, send a header packet.
-        if(self.txSequence == 0) {
-            NSLog(@"Sending header for stream %hu", self.txStreamId);
+        if(weakSelf.txSequence == 0) {
+            NSLog(@"Sending header for stream %hu", weakSelf.txStreamId);
             memcpy(&packet, &headerTemplate, sizeof(struct dplus_packet));
             
-            packet.data.header.id = self.txStreamId;
+            packet.data.header.id = weakSelf.txStreamId;
             
             //  XXX This should get the global value
             strncpy(packet.data.headerData.myCall, [[[[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"] stringByPaddingToLength:8 withString:@" " startingAtIndex:0] cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.data.headerData.myCall));
@@ -299,33 +316,33 @@ static const struct dplus_packet ambeTemplate = {
             // NSString *rpt1Call = [NSString stringWithFormat:@"%@ D", [[[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"] stringByPaddingToLength:6 withString:@" " startingAtIndex:0]];
             strncpy(packet.data.headerData.rpt1Call, [[[[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"] stringByPaddingToLength:8 withString:@" " startingAtIndex:0] cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.data.headerData.rpt1Call));
             
-            strncpy(packet.data.headerData.rpt2Call, [[self.linkTarget stringByPaddingToLength:8 withString:@" " startingAtIndex:0] cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.data.headerData.rpt2Call));
+            strncpy(packet.data.headerData.rpt2Call, [[weakSelf.linkTarget stringByPaddingToLength:8 withString:@" " startingAtIndex:0] cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.data.headerData.rpt2Call));
 
-            packet.data.headerData.sum = [self calculateChecksum:&packet.data.headerData.flags length:(sizeof(packet.data.headerData.myCall) * 4) +
+            packet.data.headerData.sum = [weakSelf calculateChecksum:&packet.data.headerData.flags length:(sizeof(packet.data.headerData.myCall) * 4) +
                                         sizeof(packet.data.headerData.myCall2) +
                                         sizeof(packet.data.headerData.flags)];
             
-            [self sendPacket:[NSData dataWithBytes:&packet length:dplus_packet_size(packet)]];
+            [weakSelf sendPacket:[NSData dataWithBytes:&packet length:dplus_packet_size(packet)]];
         }
         
         memcpy(&packet, &ambeTemplate, sizeof(struct dplus_packet));
-        packet.data.header.sequence = self.txSequence;
-        packet.data.header.id = self.txStreamId;
+        packet.data.header.sequence = weakSelf.txSequence;
+        packet.data.header.id = weakSelf.txStreamId;
         memcpy(&packet.data.ambeData.voice, data, sizeof(packet.data.ambeData.voice));
-        memcpy(&packet.data.ambeData.data, [[BTRDataEngine sharedInstance].slowData getDataForSequence:self.txSequence], sizeof(packet.data.ambeData.data));
+        memcpy(&packet.data.ambeData.data, [[BTRDataEngine sharedInstance].slowData getDataForSequence:weakSelf.txSequence], sizeof(packet.data.ambeData.data));
         
         if(last) {
-            self.txSequence = 0;
-            self.txStreamId = (short) random();
+            weakSelf.txSequence = 0;
+            weakSelf.txStreamId = (short) random();
             packet.data.header.sequence |= 0x40;
             packet.length = 0x8020;
             memcpy(&packet.data.ambeData.endPattern, DPLUS_END_PATTERN, sizeof(packet.data.ambeData.endPattern));
             memcpy(&packet.data.ambeData.voice, DPLUS_NULL_PATTERN, sizeof(packet.data.ambeData.voice));
         } else {
-            self.txSequence = (self.txSequence + 1) % 21;
+            weakSelf.txSequence = (weakSelf.txSequence + 1) % 21;
         }
         
-        [self sendPacket:[NSData dataWithBytes:&packet length:dplus_packet_size(packet)]];
+        [weakSelf sendPacket:[NSData dataWithBytes:&packet length:dplus_packet_size(packet)]];
     });
 }
 

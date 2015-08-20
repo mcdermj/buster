@@ -37,5 +37,6 @@
 +(NSArray *)linkDrivers;
 
 -(void)linkTo:(NSString *)reflector;
+-(void)unlink;
 
 @end

@@ -363,12 +363,12 @@ static const char GW_PACKET_TYPE_POLL = 0x0A;
         [self sendBlankTransmissionWithUr:linkCmd];
     }); */
     
-    [self.dplus linkTo:reflector];
+    //[self.dplus linkTo:reflector];
 }
 
 - (void) unlink {
     //[self sendBlankTransmissionWithUr:@"       U"];
-    [self.dplus unlink];
+    //[self.dplus unlink];
 }
 
 #pragma mark - Sending to gateway
@@ -407,7 +407,7 @@ static const char GW_PACKET_TYPE_POLL = 0x0A;
 
 
 - (void) sendAMBE:(void *)data lastPacket:(BOOL)last {
-    char *ambeData = malloc(sizeof(((struct gatewayPacket *)0)->payload.dstarData.ambeData));
+    uint8 *ambeData = malloc(sizeof(((struct gatewayPacket *)0)->payload.dstarData.ambeData));
     memcpy(ambeData, data, sizeof(((struct gatewayPacket *)0)->payload.dstarData.ambeData));
 
     dispatch_async(dispatchQueue, ^{

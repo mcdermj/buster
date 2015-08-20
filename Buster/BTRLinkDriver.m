@@ -62,9 +62,58 @@ static const unsigned short ccittTab[] = {
     0x7bc7,0x6a4e,0x58d5,0x495c,0x3de3,0x2c6a,0x1ef1,0x0f78
 };
 
+@interface BTRNetworkTimer : NSObject
+@property (nonatomic) dispatch_source_t timerSource;
+@property (nonatomic) CFAbsoluteTime lastEventTime;
+
+-(id)initWithTimeout:(CFAbsoluteTime)timeout failureHandler:(void(^)())failureHandler;
+-(void)ping;
+@end
+
+@implementation BTRNetworkTimer
+
+-(id)initWithTimeout:(CFAbsoluteTime)timeout failureHandler:(void(^)())failureHandler {
+    self = [super init];
+    if(self) {
+        _lastEventTime = CFAbsoluteTimeGetCurrent() + (3600.0 * 24.0 * 365.0);
+        _timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+        unsigned long long period = (unsigned long long) ((timeout / 10) * NSEC_PER_SEC);
+        dispatch_source_set_timer(_timerSource, dispatch_time(DISPATCH_TIME_NOW, 0), period, period / 10);
+        BTRNetworkTimer __weak *weakSelf = self;
+        dispatch_source_set_event_handler(_timerSource, ^{
+            NSLog(@"Timer firing");
+            if(CFAbsoluteTimeGetCurrent() > weakSelf.lastEventTime + timeout) {
+                NSLog(@"Timer expired after %f seconds", CFAbsoluteTimeGetCurrent() - weakSelf.lastEventTime);
+                failureHandler();
+            }
+        });
+        dispatch_resume(_timerSource);
+    }
+    
+    return self;
+}
+
+-(void) dealloc {
+    dispatch_source_cancel(self.timerSource);
+}
+
+-(void) ping {
+    self.lastEventTime = CFAbsoluteTimeGetCurrent();
+}
+@end
+
 @interface BTRLinkDriver ()
 
-@property (nonatomic) short port;
+@property (nonatomic) BTRNetworkTimer *linkTimer;
+@property (nonatomic) BTRNetworkTimer *qsoTimer;
+@property (nonatomic) int socket;
+@property (nonatomic) dispatch_source_t dispatchSource;
+@property (nonatomic) dispatch_source_t pollTimerSource;
+@property (nonatomic) dispatch_queue_t writeQueue;
+@property (nonatomic) unsigned short rxStreamId;
+@property (nonatomic) char rxSequence;
+
+-(void)terminateCurrentStream;
 
 @end
 
@@ -76,122 +125,149 @@ static const unsigned short ccittTab[] = {
     return NO;
 }
 
--(id)initWithPort:(short)port packetSize:(size_t)packetSize {
+-(id)initWithLinkTo:(NSString *)linkTarget {
     self = [super init];
     if(self) {
         _linkTarget = @"";
         _linkState = UNLINKED;
         _rxStreamId = 0;
         _txStreamId = (short) random();
-        _lastPacketTime = CFAbsoluteTimeGetCurrent() + (3600.0 * 24.0 * 365.0);
-        _lastLinkPacketTime = CFAbsoluteTimeGetCurrent() + (3600.0 * 24.0 * 365.0);
         _vocoder = nil;
         _rxSequence = 0;
         _txSequence = 0;
-        _port = port;
         
-        dispatch_queue_attr_t dispatchQueueAttr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, -1);
-        _writeQueue = dispatch_queue_create("net.nh6z.Dummy.DPlusWrite", dispatchQueueAttr);
-        
-        _socket = socket(PF_INET, SOCK_DGRAM, 0);
-        if(_socket == -1) {
-            NSLog(@"Error opening socket: %s\n", strerror(errno));
-            return nil;
-        }
-        
-        int one = 1;
-        if(setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one))) {
-            NSLog(@"Couldn't set socket to SO_REUSEADDR: %s\n", strerror(errno));
-            return nil;
-        }
-        
-        if(fcntl(_socket, F_SETFL, O_NONBLOCK) == -1) {
-            NSLog(@"Couldn't set socket to nonblocking: %s\n", strerror(errno));
-            return nil;
-        }
-        
-        struct sockaddr_in addr = {
-            .sin_len = sizeof(struct sockaddr_in),
-            .sin_family = AF_INET,
-            .sin_port = htons(port),
-            .sin_addr.s_addr = INADDR_ANY
-        };
-        
-        if(bind(_socket, (const struct sockaddr *) &addr, (socklen_t) sizeof(addr))) {
-            NSLog(@"Couldn't bind gateway socket: %s\n", strerror(errno));
-            return nil;
-        }
-        
-        dispatch_queue_t mainQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
-        _dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, (uintptr_t) _socket, 0, mainQueue);
+        self.linkTarget = [linkTarget copy];
         BTRLinkDriver __weak *weakSelf = self;
-        dispatch_source_set_event_handler(_dispatchSource, ^{
-            void *incomingPacket = malloc(packetSize);
-            size_t bytesRead;
-            
-            do {
-                bytesRead = recv(weakSelf.socket, incomingPacket, packetSize, 0);
-                if(bytesRead == -1) {
-                    if(errno == EAGAIN)
-                        break;
-                    NSLog(@"Couldn't read DPlus packet: %s", strerror(errno));
-                    return;
-                }
-                
-                weakSelf.lastLinkPacketTime = CFAbsoluteTimeGetCurrent();
-                
-                [weakSelf processPacket:[NSData dataWithBytes:incomingPacket length:bytesRead]];
-                
-             } while(packetSize > 0);
-        });
         
-        dispatch_resume(_dispatchSource);
-        
-        //  Set a watchdog timer for incoming transmissions.  If we don't receive a packet within 5s, terminate the stream.
-        _watchdogTimerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, mainQueue);
-        dispatch_source_set_timer(_watchdogTimerSource, dispatch_time(DISPATCH_TIME_NOW, 0), 500ull * NSEC_PER_MSEC, 100ull * NSEC_PER_MSEC);
-        dispatch_source_set_event_handler(_watchdogTimerSource, ^{
-            if(CFAbsoluteTimeGetCurrent() > weakSelf.lastPacketTime + 5.0) {
-                NSLog(@"Watchdog terminating stream %d due to inactivity for %f sec.", weakSelf.rxStreamId, CFAbsoluteTimeGetCurrent() - weakSelf.lastPacketTime);
-                [weakSelf terminateCurrentStream];
-            }
-        });
-        
-        //  Set a watchdog timer for the link itself.  If we don't hear a packet from the link target in 30 seconds, terminate the link.
-        _linkWatchdogTimerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, mainQueue);
-        dispatch_source_set_timer(_linkWatchdogTimerSource, dispatch_time(DISPATCH_TIME_NOW, 0), 3ull * NSEC_PER_SEC, 1ull * NSEC_PER_SEC);
-        dispatch_source_set_event_handler(_linkWatchdogTimerSource, ^{
-            if(CFAbsoluteTimeGetCurrent() > weakSelf.lastLinkPacketTime + 30.0) {
-                NSLog(@"Watchdog terminating link due to inactivity for %f sec.", CFAbsoluteTimeGetCurrent() - weakSelf.lastLinkPacketTime);
-                [weakSelf unlink];
-            }
-        });
-        
-        //  Poll the link target every second.
-        _pollTimerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, mainQueue);
-        dispatch_source_set_timer(_pollTimerSource, dispatch_time(DISPATCH_TIME_NOW, 0), 1ull * NSEC_PER_SEC, 100ull * NSEC_PER_MSEC);
-        dispatch_source_set_event_handler(_pollTimerSource, ^{
-            [weakSelf sendPoll];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+            [weakSelf connect];
         });
     }
     
     return self;
 }
 
+-(void)connect {
+    dispatch_queue_attr_t dispatchQueueAttr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, -1);
+    _writeQueue = dispatch_queue_create("net.nh6z.Buster.LinkWrite", dispatchQueueAttr);
+    
+    _socket = socket(PF_INET, SOCK_DGRAM, 0);
+    if(_socket == -1) {
+        NSLog(@"Error opening socket: %s\n", strerror(errno));
+        return;
+    }
+    
+    int one = 1;
+    if(setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one))) {
+        NSLog(@"Couldn't set socket to SO_REUSEADDR: %s\n", strerror(errno));
+        return;
+    }
+    
+    if(fcntl(_socket, F_SETFL, O_NONBLOCK) == -1) {
+        NSLog(@"Couldn't set socket to nonblocking: %s\n", strerror(errno));
+        return;
+    }
+    
+    struct sockaddr_in clientAddr = {
+        .sin_len = sizeof(struct sockaddr_in),
+        .sin_family = AF_INET,
+        .sin_port = htons(self.clientPort),
+        .sin_addr.s_addr = INADDR_ANY
+    };
+    
+    if(bind(_socket, (const struct sockaddr *) &clientAddr, (socklen_t) sizeof(clientAddr))) {
+        NSLog(@"Couldn't bind gateway socket: %s\n", strerror(errno));
+        return;
+    }
+    
+    _dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, (uintptr_t) _socket, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+    BTRLinkDriver __weak *weakSelf = self;
+    dispatch_source_set_event_handler(_dispatchSource, ^{
+        void *incomingPacket = malloc(self.packetSize);
+        size_t bytesRead;
+        
+        do {
+            bytesRead = recv(weakSelf.socket, incomingPacket, self.packetSize, 0);
+            if(bytesRead == -1) {
+                if(errno == EAGAIN)
+                    break;
+                NSLog(@"Couldn't read DPlus packet: %s", strerror(errno));
+                free(incomingPacket);
+                return;
+            }
+            
+            [weakSelf.linkTimer ping];
+            
+            [weakSelf processPacket:[NSData dataWithBytes:incomingPacket length:bytesRead]];
+        } while(bytesRead > 0);
+        free(incomingPacket);
+    });
+    
+    dispatch_resume(_dispatchSource);
+    
+    NSDictionary *infoDict = @{ @"local": [NSString stringWithFormat:@"Linking to %@", self.linkTarget],
+                                @"reflector": self.linkTarget,
+                                @"status": @"" };
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:BTRRepeaterInfoReceived object:weakSelf userInfo:infoDict];
+    });
+    
+    NSString *reflectorAddress = [self getAddressForReflector:(NSString *)[[self.linkTarget substringWithRange:NSMakeRange(0, 7)] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+    if(!reflectorAddress) {
+        infoDict = @{ @"local": [NSString stringWithFormat:@"Couldn't find %@", self.linkTarget],
+                      @"reflector": self.linkTarget,
+                      @"status": @"" };
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:BTRRepeaterInfoReceived object:weakSelf userInfo:infoDict];
+        });
+        
+        NSLog(@"Couldn't find reflector %@", self.linkTarget);
+        return;
+    }
+    
+    struct sockaddr_in serverAddr = {
+        .sin_len = sizeof(struct sockaddr_in),
+        .sin_family = AF_INET,
+        .sin_port = htons(self.serverPort),
+        .sin_addr.s_addr = inet_addr([reflectorAddress cStringUsingEncoding:NSUTF8StringEncoding])
+    };
+    
+    NSLog(@"Linking to %@ at %@", self.linkTarget, reflectorAddress);
+    
+    if(connect(self.socket, (const struct sockaddr *) &serverAddr, (socklen_t) sizeof(serverAddr))) {
+        NSLog(@"Couldn't connect socket: %s\n", strerror(errno));
+        return;
+    }
+    
+    NSLog(@"Link Connection Complete");
+    
+    [self sendLink];
+
+}
+
 - (void) dealloc  {
-    if(_dispatchSource)
-        dispatch_source_cancel(self.dispatchSource);
-    
-    if(_watchdogTimerSource)
-        dispatch_source_cancel(self.watchdogTimerSource);
-    
-    if(_linkWatchdogTimerSource)
-        dispatch_source_cancel(self.linkWatchdogTimerSource);
-    
-    if(_pollTimerSource)
-        dispatch_source_cancel(self.pollTimerSource);
-    
+    NSLog(@"Calling dealloc");
+    //[self unlink];
+    // XXX This should be on the cancel handler.
     close(self.socket);
+}
+
+-(void)startPoll {
+    BTRLinkDriver __weak *weakSelf = self;
+    
+    self.pollTimerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+    dispatch_source_set_timer(self.pollTimerSource, dispatch_time(DISPATCH_TIME_NOW, 0), (unsigned long long)(self.pollInterval * NSEC_PER_SEC), (unsigned long long)(self.pollInterval * NSEC_PER_SEC) / 10);
+    dispatch_source_set_event_handler(self.pollTimerSource, ^{
+        [weakSelf sendPoll];
+    });
+    dispatch_resume(self.pollTimerSource);
+}
+
+-(void)stopPoll {
+    dispatch_source_cancel(self.pollTimerSource);
+    self.pollTimerSource = nil;
 }
 
 #pragma clang diagnostic push
@@ -214,6 +290,18 @@ static const unsigned short ccittTab[] = {
 -(NSString *)getAddressForReflector:(NSString *)reflector {
     [self doesNotRecognizeSelector:_cmd];
 }
+-(CFAbsoluteTime)pollInterval {
+    [self doesNotRecognizeSelector:_cmd];
+}
+-(unsigned short)clientPort {
+    [self doesNotRecognizeSelector:_cmd];
+}
+-(unsigned short)serverPort {
+    [self doesNotRecognizeSelector:_cmd];
+}
+-(size_t)packetSize {
+    [self doesNotRecognizeSelector:_cmd];
+}
 #pragma clang diagnostic pop
 
 -(void)setLinkState:(enum linkState)linkState {
@@ -222,43 +310,52 @@ static const unsigned short ccittTab[] = {
 
     switch(linkState) {
         case UNLINKED: {
+            BTRLinkDriver __weak *weakSelf = self;
             NSDictionary *infoDict = @{ @"local": @"Unlinked",
                                         @"reflector": self.linkTarget,
                                         @"status": @"" };
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:BTRRepeaterInfoReceived object:self userInfo:infoDict];
+                [[NSNotificationCenter defaultCenter] postNotificationName:BTRRepeaterInfoReceived object:weakSelf userInfo:infoDict];
             });
             
-            dispatch_suspend(self.dispatchSource);
-            dispatch_suspend(self.pollTimerSource);
-            dispatch_suspend(self.linkWatchdogTimerSource);
+            [self stopPoll];
+            self.linkTimer = nil;
+            dispatch_source_cancel(self.dispatchSource);
             break;
         }
         case LINKING: {
+            BTRLinkDriver __weak *weakSelf = self;
             NSDictionary *infoDict = @{ @"local": [NSString stringWithFormat:@"Connected to %@", self.linkTarget],
                                         @"reflector": self.linkTarget,
                                         @"status": @"" };
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:BTRRepeaterInfoReceived object:self userInfo:infoDict];
+                [[NSNotificationCenter defaultCenter] postNotificationName:BTRRepeaterInfoReceived object:weakSelf userInfo:infoDict];
             });
             
-            dispatch_resume(self.pollTimerSource);
-            dispatch_resume(self.linkWatchdogTimerSource);
+            [self startPoll];
+            
+            self.linkTimer = [[BTRNetworkTimer alloc] initWithTimeout:30.0 failureHandler:^{
+                [weakSelf unlink];
+            }];
             break;
         }
         case LINKED: {
+            BTRLinkDriver __weak *weakSelf = self;
+            
             NSDictionary *infoDict = @{ @"local": [NSString stringWithFormat:@"Linked to %@", self.linkTarget],
                                         @"reflector": self.linkTarget,
                                         @"status": @"" };
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:BTRRepeaterInfoReceived object:self userInfo:infoDict];
+                [[NSNotificationCenter defaultCenter] postNotificationName:BTRRepeaterInfoReceived object:weakSelf userInfo:infoDict];
             });
             if(_linkState == UNLINKED) {
-                dispatch_resume(self.pollTimerSource);
-                dispatch_resume(self.linkWatchdogTimerSource);
+                [self startPoll];
+                self.linkTimer = [[BTRNetworkTimer alloc] initWithTimeout:30.0 failureHandler:^{
+                    [weakSelf unlink];
+                }];
             }
         }
     }
@@ -267,20 +364,20 @@ static const unsigned short ccittTab[] = {
 }
 
 -(void) terminateCurrentStream {
+    BTRLinkDriver __weak *weakSelf = self;
     NSDictionary *streamData = @{
                                  @"streamId": [NSNumber numberWithUnsignedInteger:self.rxStreamId],
                                  @"time": [NSDate date]
                                  };
     dispatch_async(dispatch_get_main_queue(), ^{
         [[NSNotificationCenter defaultCenter] postNotificationName: BTRNetworkStreamEnd
-                                                            object: self
+                                                            object: weakSelf
                                                           userInfo: streamData
          ];
     });
     NSLog(@"Stream %d ends", self.rxStreamId);
     self.rxStreamId = 0;
-    self.lastPacketTime = CFAbsoluteTimeGetCurrent() + (3600.0 * 24.0 * 365.0);
-    dispatch_suspend(self.watchdogTimerSource);
+    self.qsoTimer = nil;
 }
 
 -(void)unlink {
@@ -302,15 +399,16 @@ static const unsigned short ccittTab[] = {
             break;
     } while(self.linkState != UNLINKED);
     
-    self.lastLinkPacketTime = CFAbsoluteTimeGetCurrent() + (3600.0 * 24.0 * 365.0);
+    self.linkTimer = nil;
     
     NSLog(@"Unlinked from %@", self.linkTarget);
     self.linkTarget = @"";
 }
 
 - (void) sendPacket:(NSData *)packet {
+    BTRLinkDriver __weak *weakSelf = self;
     dispatch_async(self.writeQueue, ^{
-        size_t bytesSent = send(self.socket, packet.bytes, packet.length, 0);
+        size_t bytesSent = send(weakSelf.socket, packet.bytes, packet.length, 0);
         if(bytesSent == -1) {
             NSLog(@"Couldn't write link request: %s", strerror(errno));
             return;
@@ -320,55 +418,6 @@ static const unsigned short ccittTab[] = {
             return;
         }
     });
-}
-
-- (void) linkTo:(NSString *)linkTarget {
-    if(self.linkState == LINKED)
-        [self unlink];
-    
-    NSDictionary *infoDict = @{ @"local": [NSString stringWithFormat:@"Linking to %@", linkTarget],
-                                @"reflector": linkTarget,
-                                @"status": @"" };
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:BTRRepeaterInfoReceived object:self userInfo:infoDict];
-    });
-    
-    NSString *reflectorAddress = [self getAddressForReflector:(NSString *)[[linkTarget substringWithRange:NSMakeRange(0, 7)] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
-    if(!reflectorAddress) {
-        infoDict = @{ @"local": [NSString stringWithFormat:@"Couldn't find %@", linkTarget],
-                      @"reflector": linkTarget,
-                      @"status": @"" };
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:BTRRepeaterInfoReceived object:self userInfo:infoDict];
-        });
-        
-        NSLog(@"Couldn't find reflector %@", linkTarget);
-        return;
-    }
-    
-    struct sockaddr_in addr = {
-        .sin_len = sizeof(struct sockaddr_in),
-        .sin_family = AF_INET,
-        .sin_port = htons(self.port),
-        .sin_addr.s_addr = inet_addr([reflectorAddress cStringUsingEncoding:NSUTF8StringEncoding])
-    };
-    
-    NSLog(@"Linking to %@ at %@", linkTarget, reflectorAddress);
-    
-    if(connect(self.socket, (const struct sockaddr *) &addr, (socklen_t) sizeof(addr))) {
-        NSLog(@"Couldn't connect socket: %s\n", strerror(errno));
-        return;
-    }
-    
-    NSLog(@"Link Connection Complete");
-    
-    // dispatch_resume(self.dispatchSource);
-        
-    self.linkTarget = [linkTarget copy];
-    [self sendLink];
-
 }
 
 - (uint16) calculateChecksum:(void *)data length:(size_t)length {
@@ -390,7 +439,7 @@ static const unsigned short ccittTab[] = {
     if(self.rxStreamId != id)
         return;
     
-    self.lastPacketTime = CFAbsoluteTimeGetCurrent();
+    [self.qsoTimer ping];
     
     //  If the 0x40 bit of the sequence is set, this is the last packet of the stream.
     if(sequence & 0x40) {
@@ -426,19 +475,24 @@ static const unsigned short ccittTab[] = {
 }
 
 -(void)processHeader:(NSDictionary *)header {
+    BTRLinkDriver __weak *weakSelf = self;
+    
     if(self.rxStreamId == 0) {
         NSLog(@"New stream %@", header);
         self.rxStreamId = ((NSNumber *)header[@"streamId"]).unsignedShortValue;
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName: BTRNetworkStreamStart
-                                                                object: self
+                                                                object: weakSelf
                                                               userInfo: header
              ];
         });
-        dispatch_resume(self.watchdogTimerSource);
+        
+        self.qsoTimer = [[BTRNetworkTimer alloc] initWithTimeout:5.0 failureHandler: ^{
+            [weakSelf terminateCurrentStream];
+        }];
     }
     
-    self.lastPacketTime = CFAbsoluteTimeGetCurrent();
+    [self.qsoTimer ping];
     NSLog(@"Received header %@", header);
 }
 
