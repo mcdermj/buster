@@ -21,6 +21,8 @@
 #import "BTRLinkDriverSubclass.h"
 #import "BTRGatewayHandler.h"
 #import "BTRLinkDriverProtocol.h"
+#import "BTRDataEngine.h"
+#import "BTRSlowDataCoder.h"
 
 #import <arpa/inet.h>
 #import <sys/ioctl.h>
@@ -62,11 +64,17 @@ static const unsigned short ccittTab[] = {
 
 @interface BTRLinkDriver ()
 
+@property (nonatomic) short port;
+
 @end
 
 @implementation BTRLinkDriver
 
 @synthesize vocoder = _vocoder;
+
++(BOOL)canHandleLinkTo:(NSString *)reflector {
+    return NO;
+}
 
 -(id)initWithPort:(short)port packetSize:(size_t)packetSize {
     self = [super init];
@@ -80,6 +88,7 @@ static const unsigned short ccittTab[] = {
         _vocoder = nil;
         _rxSequence = 0;
         _txSequence = 0;
+        _port = port;
         
         dispatch_queue_attr_t dispatchQueueAttr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, -1);
         _writeQueue = dispatch_queue_create("net.nh6z.Dummy.DPlusWrite", dispatchQueueAttr);
@@ -131,7 +140,7 @@ static const unsigned short ccittTab[] = {
                 
                 weakSelf.lastLinkPacketTime = CFAbsoluteTimeGetCurrent();
                 
-                [weakSelf processPacket:incomingPacket];
+                [weakSelf processPacket:[NSData dataWithBytes:incomingPacket length:bytesRead]];
                 
              } while(packetSize > 0);
         });
@@ -170,16 +179,24 @@ static const unsigned short ccittTab[] = {
 }
 
 - (void) dealloc  {
-    dispatch_cancel(self.dispatchSource);
-    dispatch_cancel(self.watchdogTimerSource);
-    dispatch_cancel(self.linkWatchdogTimerSource);
-    dispatch_cancel(self.pollTimerSource);
+    if(_dispatchSource)
+        dispatch_source_cancel(self.dispatchSource);
+    
+    if(_watchdogTimerSource)
+        dispatch_source_cancel(self.watchdogTimerSource);
+    
+    if(_linkWatchdogTimerSource)
+        dispatch_source_cancel(self.linkWatchdogTimerSource);
+    
+    if(_pollTimerSource)
+        dispatch_source_cancel(self.pollTimerSource);
+    
     close(self.socket);
 }
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wreturn-type"
--(void)processPacket:(void *)packet {
+-(void)processPacket:(NSData *)packet {
     [self doesNotRecognizeSelector:_cmd];
 }
 -(void)sendAMBE:(void *)data lastPacket:(BOOL)last {
@@ -202,8 +219,6 @@ static const unsigned short ccittTab[] = {
 -(void)setLinkState:(enum linkState)linkState {
     if(_linkState == linkState)
         return;
-    
-    _linkState = linkState;
 
     switch(linkState) {
         case UNLINKED: {
@@ -215,7 +230,7 @@ static const unsigned short ccittTab[] = {
                 [[NSNotificationCenter defaultCenter] postNotificationName:BTRRepeaterInfoReceived object:self userInfo:infoDict];
             });
             
-            // dispatch_suspend(self.dispatchSource);
+            dispatch_suspend(self.dispatchSource);
             dispatch_suspend(self.pollTimerSource);
             dispatch_suspend(self.linkWatchdogTimerSource);
             break;
@@ -241,8 +256,14 @@ static const unsigned short ccittTab[] = {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:BTRRepeaterInfoReceived object:self userInfo:infoDict];
             });
+            if(_linkState == UNLINKED) {
+                dispatch_resume(self.pollTimerSource);
+                dispatch_resume(self.linkWatchdogTimerSource);
+            }
         }
     }
+               
+    _linkState = linkState;
 }
 
 -(void) terminateCurrentStream {
@@ -330,7 +351,7 @@ static const unsigned short ccittTab[] = {
     struct sockaddr_in addr = {
         .sin_len = sizeof(struct sockaddr_in),
         .sin_family = AF_INET,
-        .sin_port = htons(20001),
+        .sin_port = htons(self.port),
         .sin_addr.s_addr = inet_addr([reflectorAddress cStringUsingEncoding:NSUTF8StringEncoding])
     };
     
@@ -344,10 +365,10 @@ static const unsigned short ccittTab[] = {
     NSLog(@"Link Connection Complete");
     
     // dispatch_resume(self.dispatchSource);
-    
-    [self sendLink];
-    
+        
     self.linkTarget = [linkTarget copy];
+    [self sendLink];
+
 }
 
 - (uint16) calculateChecksum:(void *)data length:(size_t)length {
@@ -362,6 +383,63 @@ static const unsigned short ccittTab[] = {
     crc = ~crc;
     
     return ((uint16) crc);
+}
+
+-(void)processAMBE:(void *)voice forId:(unsigned short)id withSequence:(char)sequence andData:(char *)data {
+    //  Ignore packets not in our current stream
+    if(self.rxStreamId != id)
+        return;
+    
+    self.lastPacketTime = CFAbsoluteTimeGetCurrent();
+    
+    //  If the 0x40 bit of the sequence is set, this is the last packet of the stream.
+    if(sequence & 0x40) {
+        [self terminateCurrentStream];
+        sequence &= ~0x40;
+    }
+    
+    if(sequence != self.rxSequence) {
+        //  If the packet is more recent, reset the sequence, if not, wait for my next packet
+        if(isSequenceAhead(sequence, self.rxSequence, 21)) {
+            NSLog(@"Skipped packet: incoming %u, sequence = %u",sequence, self.rxSequence);
+            self.rxSequence = sequence;
+        } else {
+            NSLog(@"Out of order packet: incoming = %u, sequence = %u\n", sequence, self.rxSequence);
+            return;
+        }
+    }
+    
+    //  XXX These should be using a local variable set by the DataEngine.
+    [[BTRDataEngine sharedInstance].slowData addData:data streamId:self.rxStreamId];
+    
+    if(self.rxStreamId == 0)
+        self.rxSequence = 0;
+    else
+        self.rxSequence = (self.rxSequence + 1) % 21;
+    
+    //  If streamId == 0, we are on the last packet of this stream.
+    [self.vocoder decodeData:voice lastPacket:(self.rxStreamId == 0)];
+    
+    
+    // NSLog(@"AMBE packet received for stream %d", packet->data.header.id);
+
+}
+
+-(void)processHeader:(NSDictionary *)header {
+    if(self.rxStreamId == 0) {
+        NSLog(@"New stream %@", header);
+        self.rxStreamId = ((NSNumber *)header[@"streamId"]).unsignedShortValue;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName: BTRNetworkStreamStart
+                                                                object: self
+                                                              userInfo: header
+             ];
+        });
+        dispatch_resume(self.watchdogTimerSource);
+    }
+    
+    self.lastPacketTime = CFAbsoluteTimeGetCurrent();
+    NSLog(@"Received header %@", header);
 }
 
 @end

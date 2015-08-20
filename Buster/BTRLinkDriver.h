@@ -18,8 +18,9 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #import "BTRVocoderDriver.h"
+#import "BTRLinkDriverProtocol.h"
 
-@interface BTRLinkDriver : NSObject
+@interface BTRLinkDriver : NSObject <BTRLinkDriverProtocol>
 
 @property (nonatomic, readonly) enum linkState linkState;
 @property (nonatomic, readonly, copy) NSString *linkTarget;

@@ -32,6 +32,10 @@
 +(BTRDataEngine *)sharedInstance;
 
 +(void)registerVocoderDriver:(Class)driver;
++(void)registerLinkDriver:(Class)driver;
 +(NSArray *)vocoderDrivers;
++(NSArray *)linkDrivers;
+
+-(void)linkTo:(NSString *)reflector;
 
 @end

@@ -23,17 +23,21 @@ NS_INLINE BOOL isSequenceAhead(uint8 incoming, uint8 counter, uint8 max) {
     return NO;
 }
 
+#define AMBE_NULL_PATTERN { 0x9E, 0x8D, 0x32, 0x88, 0x26, 0x1A, 0x3F, 0x61, 0xE8 }
+
 @interface BTRLinkDriver ()
 
 -(id)initWithPort:(short)port packetSize:(size_t)packetSize;
--(void)processPacket:(void *)packet;
+-(void)processPacket:(NSData *)packet;
 -(void)sendPacket:(NSData *)packet;
 -(NSString *)getAddressForReflector:(NSString *)reflector;
 -(void)sendPoll;
 -(void)sendUnlink;
 -(void)sendLink;
 -(void)terminateCurrentStream;
-- (uint16) calculateChecksum:(void *)data length:(size_t)length;
+-(uint16) calculateChecksum:(void *)data length:(size_t)length;
+-(void)processAMBE:(void *)voice forId:(unsigned short)id withSequence:(char)sequence andData:(char *)data;
+-(void)processHeader:(NSDictionary *)header;
 
 //  XXX A bunch of this stuff can move when we're done.
 @property (nonatomic, readwrite) enum linkState linkState;

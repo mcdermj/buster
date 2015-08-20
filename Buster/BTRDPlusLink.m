@@ -132,6 +132,19 @@ static const struct dplus_packet ambeTemplate = {
 
 @implementation BTRDPlusLink
 
++(BOOL)canHandleLinkTo:(NSString*)linkTarget {
+    NSString *reflector = [[linkTarget substringWithRange:NSMakeRange(0, 7)] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+
+    if([BTRDPlusAuthenticator sharedInstance].reflectorList[reflector])
+        return YES;
+    
+    return NO;
+}
+
++(void) load {
+    [BTRDataEngine registerLinkDriver:self];
+}
+
 - (id) init {
     self = [super initWithPort:20001 packetSize:sizeof(struct dplus_packet)];
     if(self) {
@@ -175,18 +188,11 @@ static const struct dplus_packet ambeTemplate = {
 }
 
 -(NSString *)getAddressForReflector:(NSString *)reflector {
-    NSUInteger reflectorIndex = [[BTRDPlusAuthenticator sharedInstance].reflectorList indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
-        return [obj[@"name"] isEqualToString:reflector];
-    }];
-    
-    if(reflectorIndex == NSNotFound)
-        return nil;
-    
-    return [BTRDPlusAuthenticator sharedInstance].reflectorList[reflectorIndex][@"address"];
+    return [BTRDPlusAuthenticator sharedInstance].reflectorList[reflector];
 }
 
--(void)processPacket:(void *)data {
-    struct dplus_packet *incomingPacket = (struct dplus_packet *)data;
+-(void)processPacket:(NSData *)data {
+    struct dplus_packet *incomingPacket = (struct dplus_packet *)data.bytes;
     
     switch(incomingPacket->length & 0xF000) {
         case 0x8000:
@@ -194,7 +200,25 @@ static const struct dplus_packet ambeTemplate = {
                 NSLog(@"Invalid magic on a DPlus data packet: %s", incomingPacket->data.header.magic);
                 return;
             }
-            [self processDataPacket:incomingPacket];
+            switch(incomingPacket->data.header.type) {
+                case 0x10: {
+                    NSDictionary *header = @{
+                                             @"rpt1Call" : call_to_nsstring(incomingPacket->data.headerData.rpt1Call),
+                                             @"rpt2Call" : call_to_nsstring(incomingPacket->data.headerData.rpt2Call),
+                                             @"myCall" : call_to_nsstring(incomingPacket->data.headerData.myCall),
+                                             @"myCall2" : call_to_nsstring(incomingPacket->data.headerData.myCall2),
+                                             @"urCall" : call_to_nsstring(incomingPacket->data.headerData.urCall),
+                                             @"streamId" : [NSNumber numberWithUnsignedInteger:incomingPacket->data.header.id],
+                                             @"time" : [NSDate date],
+                                             @"message" : @""
+                                             };
+                    [self processHeader:header];
+                    break;
+                }
+                case 0x20:
+                    [self processAMBE:incomingPacket->data.ambeData.voice forId:incomingPacket->data.header.id withSequence:incomingPacket->data.header.sequence andData:incomingPacket->data.ambeData.data];
+                    break;
+            }
             break;
         case 0x6000:
             //  Poll packet, can ignore because the link last packet time is set in the superclass.
@@ -253,81 +277,6 @@ static const struct dplus_packet ambeTemplate = {
     }
 }
 
-- (void)processDataPacket:(struct dplus_packet *)packet {
-    switch(packet->data.header.type) {
-        case 0x10: {
-            NSDictionary *header = @{
-                                     @"rpt1Call" : call_to_nsstring(packet->data.headerData.rpt1Call),
-                                     @"rpt2Call" : call_to_nsstring(packet->data.headerData.rpt2Call),
-                                     @"myCall" : call_to_nsstring(packet->data.headerData.myCall),
-                                     @"myCall2" : call_to_nsstring(packet->data.headerData.myCall2),
-                                     @"urCall" : call_to_nsstring(packet->data.headerData.urCall),
-                                     @"streamId" : [NSNumber numberWithUnsignedInteger:packet->data.header.id],
-                                     @"time" : [NSDate date],
-                                     @"message" : @""
-            };
-            
-            if(![header[@"rpt1Call"] isEqualToString:self.linkTarget] && ![header[@"rpt2Call"] isEqualToString:self.linkTarget]) {
-                // NSLog(@"Received header for uninterested module");
-                return;
-            }
-            
-            if(self.rxStreamId == 0) {
-                NSLog(@"New stream %@", header);
-                self.rxStreamId = packet->data.header.id;
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[NSNotificationCenter defaultCenter] postNotificationName: BTRNetworkStreamStart
-                                                                        object: self
-                                                                      userInfo: header
-                     ];
-                });
-                dispatch_resume(self.watchdogTimerSource);
-            }
-            
-            self.lastPacketTime = CFAbsoluteTimeGetCurrent();
-            // NSLog(@"Received header %@", header);
-            break;
-        }
-        case 0x20:
-            //  Ignore packets not in our current stream
-            if(self.rxStreamId != packet->data.header.id)
-                return;
-            
-            self.lastPacketTime = CFAbsoluteTimeGetCurrent();
-            
-            //  If the 0x40 bit of the sequence is set, this is the last packet of the stream.
-            if(packet->data.header.sequence & 0x40) {
-                [self terminateCurrentStream];
-                packet->data.header.sequence &= ~0x40;
-            }
-            
-            if(packet->data.header.sequence != self.rxSequence) {
-                //  If the packet is more recent, reset the sequence, if not, wait for my next packet
-                if(isSequenceAhead(packet->data.header.sequence, self.rxSequence, 21)) {
-                    NSLog(@"Skipped packet: incoming %u, sequence = %u",packet->data.header.sequence, self.rxSequence);
-                    self.rxSequence = packet->data.header.sequence;
-                } else {
-                    NSLog(@"Out of order packet: incoming = %u, sequence = %u\n", packet->data.header.sequence, self.rxSequence);
-                    return;
-                }
-            }
-            
-             //  XXX These should be using a local variable set by the DataEngine.
-            [[BTRDataEngine sharedInstance].slowData addData:packet->data.ambeData.data streamId:self.rxStreamId];
-            
-            if(self.rxStreamId == 0)
-                self.rxSequence = 0;
-            else
-                self.rxSequence = (self.rxSequence + 1) % 21;
-            
-            //  If streamId == 0, we are on the last packet of this stream.
-            [self.vocoder decodeData: packet->data.ambeData.voice lastPacket:(self.rxStreamId == 0)];
-
-            
-            // NSLog(@"AMBE packet received for stream %d", packet->data.header.id);
-            break;
-    }
-}
 
 -(void) sendAMBE:(void *)data lastPacket:(BOOL)last {
     if(self.linkState != LINKED)
@@ -379,7 +328,5 @@ static const struct dplus_packet ambeTemplate = {
         [self sendPacket:[NSData dataWithBytes:&packet length:dplus_packet_size(packet)]];
     });
 }
-
-
 
 @end

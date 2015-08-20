@@ -25,13 +25,15 @@
 #import "BTRAudioHandler.h"
 #import "BTRSlowDataCoder.h"
 #import "BTRDPlusLink.h"
+#import "BTRDExtraLink.h"
 
 static NSMutableArray *vocoderDrivers = nil;
+static NSMutableArray *linkDrivers = nil;
 
-@interface BTRDataEngine () {
-    NSMutableArray *_vocoderDrivers;
-}
+@interface BTRDataEngine ()
 
+@property (nonatomic, readwrite) id <BTRLinkDriverProtocol> network;
+@property (nonatomic, readwrite) BTRAudioHandler *audio;
 @end
 
 @implementation BTRDataEngine
@@ -49,12 +51,12 @@ static NSMutableArray *vocoderDrivers = nil;
     self = [super init];
     if(self) {
         _audio = [[BTRAudioHandler alloc] init];
-        _network = [[BTRDPlusLink alloc] init];
+        _network = nil;
+        // _network = [[BTRDExtraLink alloc] init];
         Class driver = NSClassFromString([[NSUserDefaults standardUserDefaults] stringForKey:@"VocoderDriver"]);
         self.vocoder = [[driver alloc] init];
         
         _vocoder.audio = _audio;
-        _vocoderDrivers = [[NSMutableArray alloc] init];
         
         _slowData = [[BTRSlowDataCoder alloc] init];
     }
@@ -69,8 +71,8 @@ static NSMutableArray *vocoderDrivers = nil;
 - (void) setVocoder:(id<BTRVocoderDriver>)vocoder {
     _vocoder = vocoder;
     
-    _network.vocoder = vocoder;
-    _audio.vocoder = vocoder;
+    self.network.vocoder = vocoder;
+    self.audio.vocoder = vocoder;
 }
 
 +(void)registerVocoderDriver:(Class)driver {
@@ -80,8 +82,32 @@ static NSMutableArray *vocoderDrivers = nil;
     [vocoderDrivers addObject:driver];
 }
 
++(void)registerLinkDriver:(Class)driver {
+    if(!linkDrivers)
+        linkDrivers = [[NSMutableArray alloc] init];
+    
+    [linkDrivers addObject:driver];
+}
+
 +(NSArray *)vocoderDrivers {
     return [NSArray arrayWithArray:vocoderDrivers];
+}
+
++(NSArray *)linkDrivers {
+    return [NSArray arrayWithArray:linkDrivers];
+}
+
+-(void)linkTo:(NSString *)reflector {
+    /* if(self.network.linkState != UNLINKED)
+        [self.network unlink]; */
+    NSLog(@"In LinkTo:");
+    for(Class driver in [BTRDataEngine linkDrivers]) {
+        if([driver canHandleLinkTo:reflector]) {
+            self.network = [[driver alloc] init];
+            [self.network linkTo:reflector];
+            self.network.vocoder = self.vocoder;
+        }
+    }
 }
 
 @end

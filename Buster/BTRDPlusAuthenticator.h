@@ -20,7 +20,7 @@
 @interface BTRDPlusAuthenticator : NSObject
 
 @property (nonatomic, copy) NSString *authCall;
-@property (nonatomic, readonly) NSArray *reflectorList;
+@property (nonatomic, readonly) NSDictionary *reflectorList;
 @property (nonatomic, getter=isAuthenticated, readonly) BOOL authenticated;
 
 + (BTRDPlusAuthenticator *) sharedInstance;

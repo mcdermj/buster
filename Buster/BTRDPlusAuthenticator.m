@@ -73,7 +73,7 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
 }
 
 @property (nonatomic) NSHost *authenticationHost;
-@property (nonatomic, readwrite) NSArray *reflectorList;
+@property (nonatomic, readwrite) NSDictionary *reflectorList;
 @property (nonatomic, getter=isAuthenticated, readwrite) BOOL authenticated;
 @property (nonatomic, readonly) char suffix;
 
@@ -100,7 +100,7 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
     self = [super init];
     if(self) {
         _authenticationHost = [NSHost hostWithName:@"opendstar.org"];
-        _reflectorList = @[ ];
+        _reflectorList = nil;
         _authCall = [authCall copy];
         _suffix = '2';
         _authenticated = NO;
@@ -114,7 +114,7 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
     self = [super init];
     if(self) {
         _authenticationHost = [NSHost hostWithName:@"opendstar.org"];
-        _reflectorList = @[ ];
+        _reflectorList = nil;
         _authCall = @"";
         _suffix = '2';
         _authenticated = NO;
@@ -192,7 +192,7 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
     
     unsigned short length = 0;
     ssize_t bytesRead = 0;
-    NSMutableArray *newReflectorList = [NSMutableArray arrayWithCapacity:10];
+    NSMutableDictionary *newReflectorList = [NSMutableDictionary dictionaryWithCapacity:10];
     
     while((bytesRead = recv(authSocket, &length, sizeof(length), 0)) != 0) {
         if(bytesRead == -1) {
@@ -227,16 +227,19 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
         unsigned long numRecords = (length - sizeof(response->header)) / sizeof(struct reflector_record);
         for(int i = 0; i < numRecords; ++i)
             if((strnlen(response->records[i].address, sizeof(response->records[i].address)) > 0) && (response->records[i].flags & 0x8000))
-                [newReflectorList addObject:@{ @"address": [NSString stringWithCString:response->records[i].address encoding:NSUTF8StringEncoding],
+                newReflectorList[[[NSString stringWithCString:response->records[i].name encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]] = [NSString stringWithCString:response->records[i].address encoding:NSUTF8StringEncoding];
+                
+                
+                /* [newReflectorList addObject:@{ @"address": [NSString stringWithCString:response->records[i].address encoding:NSUTF8StringEncoding],
                                             @"name": [[NSString stringWithCString:response->records[i].name encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]],
                                             @"flags": [NSNumber numberWithUnsignedShort:response->records[i].flags]
                                             }
-                 ];
+                 ]; */
         
         free(buffer);
     }
     
-    self.reflectorList = [NSArray arrayWithArray:newReflectorList];
+    self.reflectorList = [NSDictionary dictionaryWithDictionary:newReflectorList];
     
     NSLog(@"Received %ld responses from authentication server", self.reflectorList.count);
     

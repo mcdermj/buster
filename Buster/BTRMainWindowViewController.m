@@ -175,7 +175,8 @@
     if(reflector.length < 8)
         return;
     
-    [[BTRDataEngine sharedInstance].network linkTo:reflector];
+    NSLog(@"In doLink:");
+    [[BTRDataEngine sharedInstance] linkTo:reflector];
 }
 
 -(void) addReflector:(id)sender {

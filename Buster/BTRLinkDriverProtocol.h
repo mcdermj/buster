@@ -27,6 +27,8 @@ enum linkState {
 
 @protocol BTRLinkDriverProtocol
 
++(BOOL)canHandleLinkTo:(NSString *)reflector;
+
 //@property (nonatomic, readonly, getter=isLinked) BOOL linked;
 @property (nonatomic, readonly) enum linkState linkState;
 @property (nonatomic, readonly, copy) NSString *linkTarget;
