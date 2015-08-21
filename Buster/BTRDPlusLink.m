@@ -44,35 +44,9 @@ struct dplus_packet {
                 } module;
             };
         } link;
-        struct {
-            struct {
-                char magic[4];
-                char type;
-                char unknown[4];
-                char band[3];
-                unsigned short id;
-                char sequence;
-            } header;
-            union {
-                struct {
-                    char flags[3];
-                    char rpt2Call[8];
-                    char rpt1Call[8];
-                    char urCall[8];
-                    char myCall[8];
-                    char myCall2[4];
-                    unsigned short sum;
-                } headerData;
-                struct {
-                    char voice[9];
-                    char data[3];
-                    char endPattern[6];
-                } ambeData;
-            };
-        } data;
+        struct dstarFrame frame;
     };
 };
-
 #pragma pack(pop)
 
 #define dplus_packet_size(a) ((a).length & 0x0FFF)
@@ -81,6 +55,7 @@ static const char DPLUS_TYPE_POLL = 0x00;
 static const char DPLUS_TYPE_LINK = 0x18;
 static const char DPLUS_TYPE_LINKMODULE = 0x04;
 
+// XXX This is AMBE junk
 static const char DPLUS_END_PATTERN[] = { 0x55, 0x55, 0x55, 0x55, 0xC8, 0x7A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 static const char DPLUS_NULL_PATTERN[] = { 0x9E, 0x8D, 0x32, 0x88, 0x26, 0x1A, 0x3F, 0x61, 0xE8 };
 
@@ -94,32 +69,32 @@ static const struct dplus_packet linkModuleTemplate = {
 
 static const struct dplus_packet headerTemplate = {
     .length = 0x803A,
-    .data.header.magic = "DSVT",
-    .data.header.type = 0x10,
-    .data.header.unknown = { 0x00, 0x00, 0x00, 0x20 },
-    .data.header.band = { 0x00, 0x02, 0x01 },
-    .data.header.id = 0,
-    .data.header.sequence = 0x80,
-    .data.headerData.flags = { 0x00, 0x00, 0x00 },
-    .data.headerData.myCall = "        ",
-    .data.headerData.urCall = "CQCQCQ  ",
-    .data.headerData.rpt1Call = "        ",
-    .data.headerData.rpt2Call = "        ",
-    .data.headerData.myCall2 = "    ",
-    .data.headerData.sum = 0xFFFF
+    .frame.magic = "DSVT",
+    .frame.type = 0x10,
+    .frame.unknown = { 0x00, 0x00, 0x00, 0x20 },
+    .frame.band = { 0x00, 0x02, 0x01 },
+    .frame.id = 0,
+    .frame.sequence = 0x80,
+    .frame.header.flags = { 0x00, 0x00, 0x00 },
+    .frame.header.myCall = "        ",
+    .frame.header.urCall = "CQCQCQ  ",
+    .frame.header.rpt1Call = "        ",
+    .frame.header.rpt2Call = "        ",
+    .frame.header.myCall2 = "    ",
+    .frame.header.sum = 0xFFFF
 };
 
 static const struct dplus_packet ambeTemplate = {
     .length = 0x801D,
-    .data.header.magic = "DSVT",
-    .data.header.type = 0x20,
-    .data.header.unknown = { 0x00, 0x00, 0x00, 0x20 },
-    .data.header.band = { 0x00, 0x02, 0x01 },
-    .data.header.id = 0,
-    .data.header.sequence = 0,
-    .data.ambeData.voice = { 0 },
-    .data.ambeData.data = { 0 },
-    .data.ambeData.endPattern = { 0 }
+    .frame.magic = "DSVT",
+    .frame.type = 0x20,
+    .frame.unknown = { 0x00, 0x00, 0x00, 0x20 },
+    .frame.band = { 0x00, 0x02, 0x01 },
+    .frame.id = 0,
+    .frame.sequence = 0,
+    .frame.ambe.voice = { 0 },
+    .frame.ambe.data = { 0 },
+    .frame.ambe.endPattern = { 0 }
 };
 
 
@@ -212,19 +187,19 @@ static const struct dplus_packet ambeTemplate = {
     
     switch(incomingPacket->length & 0xF000) {
         case 0x8000:
-            if(strncmp(incomingPacket->data.header.magic, "DSVT", 4)) {
-                NSLog(@"Invalid magic on a DPlus data packet: %s", incomingPacket->data.header.magic);
+            if(strncmp(incomingPacket->frame.magic, "DSVT", 4)) {
+                NSLog(@"Invalid magic on a DPlus data packet: %s", incomingPacket->frame.magic);
                 return;
             }
-            switch(incomingPacket->data.header.type) {
+            switch(incomingPacket->frame.type) {
                 case 0x10: {
                     NSDictionary *header = @{
-                                             @"rpt1Call" : call_to_nsstring(incomingPacket->data.headerData.rpt1Call),
-                                             @"rpt2Call" : call_to_nsstring(incomingPacket->data.headerData.rpt2Call),
-                                             @"myCall" : call_to_nsstring(incomingPacket->data.headerData.myCall),
-                                             @"myCall2" : call_to_nsstring(incomingPacket->data.headerData.myCall2),
-                                             @"urCall" : call_to_nsstring(incomingPacket->data.headerData.urCall),
-                                             @"streamId" : [NSNumber numberWithUnsignedInteger:incomingPacket->data.header.id],
+                                             @"rpt1Call" : call_to_nsstring(incomingPacket->frame.header.rpt1Call),
+                                             @"rpt2Call" : call_to_nsstring(incomingPacket->frame.header.rpt2Call),
+                                             @"myCall" : call_to_nsstring(incomingPacket->frame.header.myCall),
+                                             @"myCall2" : call_to_nsstring(incomingPacket->frame.header.myCall2),
+                                             @"urCall" : call_to_nsstring(incomingPacket->frame.header.urCall),
+                                             @"streamId" : [NSNumber numberWithUnsignedInteger:incomingPacket->frame.id],
                                              @"time" : [NSDate date],
                                              @"message" : @""
                                              };
@@ -232,7 +207,7 @@ static const struct dplus_packet ambeTemplate = {
                     break;
                 }
                 case 0x20:
-                    [self processAMBE:incomingPacket->data.ambeData.voice forId:incomingPacket->data.header.id withSequence:incomingPacket->data.header.sequence andData:incomingPacket->data.ambeData.data];
+                    [self processAMBE:incomingPacket->frame.ambe.voice forId:incomingPacket->frame.id withSequence:incomingPacket->frame.sequence andData:incomingPacket->frame.ambe.data];
                     break;
             }
             break;
@@ -263,7 +238,7 @@ static const struct dplus_packet ambeTemplate = {
                     self.linkState = LINKING;
                     NSMutableData *linkPacket = [NSMutableData dataWithBytes:&linkModuleTemplate length:dplus_packet_size(linkModuleTemplate)];
                 
-                    memcpy(((struct dplus_packet *) linkPacket.bytes)->link.module.repeater, [[BTRDPlusAuthenticator sharedInstance].authCall cStringUsingEncoding:NSUTF8StringEncoding], [BTRDPlusAuthenticator sharedInstance].authCall.length);
+                    memcpy(((struct dplus_packet *) linkPacket.bytes)->link.module.repeater, [BTRDPlusAuthenticator sharedInstance].authCall.UTF8String, [BTRDPlusAuthenticator sharedInstance].authCall.length);
                     [self sendPacket:linkPacket];
                     break;
                 }
@@ -307,37 +282,37 @@ static const struct dplus_packet ambeTemplate = {
             NSLog(@"Sending header for stream %hu", weakSelf.txStreamId);
             memcpy(&packet, &headerTemplate, sizeof(struct dplus_packet));
             
-            packet.data.header.id = weakSelf.txStreamId;
+            packet.frame.id = weakSelf.txStreamId;
             
             //  XXX This should get the global value
-            strncpy(packet.data.headerData.myCall, [[[[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"] stringByPaddingToLength:8 withString:@" " startingAtIndex:0] cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.data.headerData.myCall));
-            strncpy(packet.data.headerData.myCall2, [[[[NSUserDefaults standardUserDefaults] stringForKey:@"myCall2"] stringByPaddingToLength:4 withString:@" " startingAtIndex:0] cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.data.headerData.myCall2));
+            strncpy(packet.frame.header.myCall, [[[[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"] stringByPaddingToLength:8 withString:@" " startingAtIndex:0] cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.frame.header.myCall));
+            strncpy(packet.frame.header.myCall2, [[[[NSUserDefaults standardUserDefaults] stringForKey:@"myCall2"] stringByPaddingToLength:4 withString:@" " startingAtIndex:0] cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.frame.header.myCall2));
             
             // NSString *rpt1Call = [NSString stringWithFormat:@"%@ D", [[[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"] stringByPaddingToLength:6 withString:@" " startingAtIndex:0]];
-            strncpy(packet.data.headerData.rpt1Call, [[[[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"] stringByPaddingToLength:8 withString:@" " startingAtIndex:0] cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.data.headerData.rpt1Call));
+            strncpy(packet.frame.header.rpt1Call, [[[[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"] stringByPaddingToLength:8 withString:@" " startingAtIndex:0] cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.frame.header.rpt1Call));
             
-            strncpy(packet.data.headerData.rpt2Call, [[weakSelf.linkTarget stringByPaddingToLength:8 withString:@" " startingAtIndex:0] cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.data.headerData.rpt2Call));
+            strncpy(packet.frame.header.rpt2Call, [[weakSelf.linkTarget stringByPaddingToLength:8 withString:@" " startingAtIndex:0] cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.frame.header.rpt2Call));
 
-            packet.data.headerData.sum = [weakSelf calculateChecksum:&packet.data.headerData.flags length:(sizeof(packet.data.headerData.myCall) * 4) +
-                                        sizeof(packet.data.headerData.myCall2) +
-                                        sizeof(packet.data.headerData.flags)];
+            packet.frame.header.sum = [weakSelf calculateChecksum:&packet.frame.header.flags length:(sizeof(packet.frame.header.myCall) * 4) +
+                                        sizeof(packet.frame.header.myCall2) +
+                                        sizeof(packet.frame.header.flags)];
             
             [weakSelf sendPacket:[NSData dataWithBytes:&packet length:dplus_packet_size(packet)]];
         }
         
         memcpy(&packet, &ambeTemplate, sizeof(struct dplus_packet));
-        packet.data.header.sequence = weakSelf.txSequence;
-        packet.data.header.id = weakSelf.txStreamId;
-        memcpy(&packet.data.ambeData.voice, data, sizeof(packet.data.ambeData.voice));
-        memcpy(&packet.data.ambeData.data, [[BTRDataEngine sharedInstance].slowData getDataForSequence:weakSelf.txSequence], sizeof(packet.data.ambeData.data));
+        packet.frame.sequence = weakSelf.txSequence;
+        packet.frame.id = weakSelf.txStreamId;
+        memcpy(&packet.frame.ambe.voice, data, sizeof(packet.frame.ambe.voice));
+        memcpy(&packet.frame.ambe.data, [[BTRDataEngine sharedInstance].slowData getDataForSequence:weakSelf.txSequence], sizeof(packet.frame.ambe.data));
         
         if(last) {
             weakSelf.txSequence = 0;
             weakSelf.txStreamId = (short) random();
-            packet.data.header.sequence |= 0x40;
+            packet.frame.sequence |= 0x40;
             packet.length = 0x8020;
-            memcpy(&packet.data.ambeData.endPattern, DPLUS_END_PATTERN, sizeof(packet.data.ambeData.endPattern));
-            memcpy(&packet.data.ambeData.voice, DPLUS_NULL_PATTERN, sizeof(packet.data.ambeData.voice));
+            memcpy(&packet.frame.ambe.endPattern, DPLUS_END_PATTERN, sizeof(packet.frame.ambe.endPattern));
+            memcpy(&packet.frame.ambe.voice, DPLUS_NULL_PATTERN, sizeof(packet.frame.ambe.voice));
         } else {
             weakSelf.txSequence = (weakSelf.txSequence + 1) % 21;
         }

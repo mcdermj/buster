@@ -22,29 +22,7 @@ struct dextra_packet {
             char response[3];
             char terminator;
         } link;
-        struct {
-            char magic[4];  //  "DSVT"
-            char type;  //  0x20 = AMBE, 0x10 = Header
-            char unknown[4]; // { 0x00, 0x00, 0x00, 0x20 }
-            char band[3]; //  { 0x00, 0x02, 0x01 }
-            unsigned short id;
-            char sequence;
-            union {
-                struct {
-                    char voice[9];
-                    char data[3];
-                } ambe;
-                struct {
-                    char flags[3];
-                    char rpt2Call[8];
-                    char rpt1Call[8];
-                    char urCall[8];
-                    char myCall[8];
-                    char myCall2[4];
-                    unsigned short sum;
-                } header;
-            };
-        } data;
+        struct dstarFrame frame;
     };
 };
 #pragma pack(pop)
@@ -57,30 +35,30 @@ static const struct dextra_packet linkTemplate = {
 };
 
 static const struct dextra_packet headerTemplate = {
-    .data.magic = "DSVT",
-    .data.type = 0x10,
-    .data.unknown = { 0x00, 0x00, 0x00, 0x20 },
-    .data.band = { 0x00, 0x02, 0x01 },
-    .data.id = 0,
-    .data.sequence = 0x80,
-    .data.header.flags = { 0x00, 0x00, 0x00 },
-    .data.header.rpt2Call = "        ",
-    .data.header.rpt1Call = "        ",
-    .data.header.urCall = "        ",
-    .data.header.myCall = "        ",
-    .data.header.myCall2 = "    ",
-    .data.header.sum = 0xFFFF
+    .frame.magic = "DSVT",
+    .frame.type = 0x10,
+    .frame.unknown = { 0x00, 0x00, 0x00, 0x20 },
+    .frame.band = { 0x00, 0x02, 0x01 },
+    .frame.id = 0,
+    .frame.sequence = 0x80,
+    .frame.header.flags = { 0x00, 0x00, 0x00 },
+    .frame.header.rpt2Call = "        ",
+    .frame.header.rpt1Call = "        ",
+    .frame.header.urCall = "        ",
+    .frame.header.myCall = "        ",
+    .frame.header.myCall2 = "    ",
+    .frame.header.sum = 0xFFFF
 };
 
 static const struct dextra_packet ambeTemplate = {
-    .data.magic = "DSVT",
-    .data.type = 0x10,
-    .data.unknown = { 0x00, 0x00, 0x00, 0x20 },
-    .data.band = { 0x00, 0x02, 0x01 },
-    .data.id = 0,
-    .data.sequence = 0,
-    .data.ambe.voice = AMBE_NULL_PATTERN,
-    .data.ambe.data = { 0 }
+    .frame.magic = "DSVT",
+    .frame.type = 0x10,
+    .frame.unknown = { 0x00, 0x00, 0x00, 0x20 },
+    .frame.band = { 0x00, 0x02, 0x01 },
+    .frame.id = 0,
+    .frame.sequence = 0,
+    .frame.ambe.voice = AMBE_NULL_PATTERN,
+    .frame.ambe.data = { 0 }
 };
 static NSDictionary *_reflectorList;
 
@@ -139,16 +117,16 @@ static NSDictionary *_reflectorList;
 -(void)processPacket:(NSData *)packetData {
     struct dextra_packet *packet = (struct dextra_packet *) packetData.bytes;
     
-    if(!strncmp(packet->data.magic, "DSVT", 4)) {
-        switch(packet->data.type) {
+    if(!strncmp(packet->frame.magic, "DSVT", 4)) {
+        switch(packet->frame.type) {
             case 0x10: {
                 NSDictionary *header = @{
-                                         @"rpt1Call" : call_to_nsstring(packet->data.header.rpt1Call),
-                                         @"rpt2Call" : call_to_nsstring(packet->data.header.rpt2Call),
-                                         @"myCall" : call_to_nsstring(packet->data.header.myCall),
-                                         @"myCall2" : call_to_nsstring(packet->data.header.myCall2),
-                                         @"urCall" : call_to_nsstring(packet->data.header.urCall),
-                                         @"streamId" : [NSNumber numberWithUnsignedInteger:packet->data.id],
+                                         @"rpt1Call" : [NSString stringWithCallsign:packet->frame.header.rpt1Call],
+                                         @"rpt2Call" : [NSString stringWithCallsign:packet->frame.header.rpt2Call],
+                                         @"myCall" : [NSString stringWithCallsign:packet->frame.header.myCall],
+                                         @"myCall2" : [NSString stringWithShortCallsign:packet->frame.header.myCall2],
+                                         @"urCall" : [NSString stringWithCallsign:packet->frame.header.urCall],
+                                         @"streamId" : [NSNumber numberWithUnsignedInteger:packet->frame.id],
                                          @"time" : [NSDate date],
                                          @"message" : @""
                                          };
@@ -156,16 +134,19 @@ static NSDictionary *_reflectorList;
                 break;
             }
             case 0x20:
-                [self processAMBE:packet->data.ambe.voice forId:packet->data.id withSequence:packet->data.sequence andData:packet->data.ambe.data];
+                [self processAMBE:packet->frame.ambe.voice forId:packet->frame.id withSequence:packet->frame.sequence andData:packet->frame.ambe.data];
                 break;
         }
         NSLog(@"Got data packet");
     } else {
         NSLog(@"Got link packet");
-        if([self.linkTarget isEqualToString:[[[NSString alloc] initWithBytes:packet->link.callsign length:8 encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]]) {
-            NSLog(@"Packet doesn't come from expected reflector");
+        // XXX This check is broken!  It needs to be *EITHER* the reflector call, *OR* our call.
+        // NSString *target = [[self.linkTarget substringWithRange:NSMakeRange(0, 7)] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        /* if(![self.linkTarget.callWithoutModule isEqualToString:[NSString stringWithCallsign:&(packet->link.callsign)]]) {
+            NSLog(@"Packet doesn't come from expected reflector: %@", [NSString stringWithCallsign:&(packet->link.callsign)]);
+            NSLog(@"Link Target is %@", self.linkTarget);
             return;
-        }
+        } */
         switch(packetData.length) {
             case 9:
                 //  Poll packet.  Ignore because this is handled in the superclass.
@@ -200,36 +181,35 @@ static NSDictionary *_reflectorList;
             NSLog(@"Sending header for stream %hu", weakSelf.txStreamId);
             memcpy(&packet, &headerTemplate, sizeof(struct dextra_packet));
             
-            packet.data.id = weakSelf.txStreamId;
+            packet.frame.id = weakSelf.txStreamId;
             
             //  XXX This should get the global value
-            strncpy(packet.data.header.myCall, [[[[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"] stringByPaddingToLength:8 withString:@" " startingAtIndex:0] cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.data.header.myCall));
-            strncpy(packet.data.header.myCall2, [[[[NSUserDefaults standardUserDefaults] stringForKey:@"myCall2"] stringByPaddingToLength:4 withString:@" " startingAtIndex:0] cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.data.header.myCall2));
+            strncpy(packet.frame.header.myCall, [[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"].paddedCall.UTF8String, sizeof(packet.frame.header.myCall));
+            strncpy(packet.frame.header.myCall2, [[[[NSUserDefaults standardUserDefaults] stringForKey:@"myCall2"] stringByPaddingToLength:4 withString:@" " startingAtIndex:0] cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.frame.header.myCall2));
             
-            // NSString *rpt1Call = [NSString stringWithFormat:@"%@ D", [[[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"] stringByPaddingToLength:6 withString:@" " startingAtIndex:0]];
-            strncpy(packet.data.header.rpt1Call, [[[[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"] stringByPaddingToLength:8 withString:@" " startingAtIndex:0] cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.data.header.rpt1Call));
+            strncpy(packet.frame.header.rpt1Call, [[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"].paddedCall.UTF8String, sizeof(packet.frame.header.rpt1Call));
             
-            strncpy(packet.data.header.rpt2Call, [[weakSelf.linkTarget stringByPaddingToLength:8 withString:@" " startingAtIndex:0] cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.data.header.rpt2Call));
+            strncpy(packet.frame.header.rpt2Call, weakSelf.linkTarget.paddedCall.UTF8String, sizeof(packet.frame.header.rpt2Call));
             
             /* packet.data.header.sum = [weakSelf calculateChecksum:&packet.data.header.flags length:(sizeof(packet.data.header.myCall) * 4) +
                                           sizeof(packet.data.header.myCall2) +
                                           sizeof(packet.data.header.flags)]; */
-            packet.data.header.sum = 0x0101;
+            packet.frame.header.sum = 0x0101;
             
             [weakSelf sendPacket:[NSData dataWithBytes:&packet length:56]];
         }
         
         memcpy(&packet, &ambeTemplate, sizeof(struct dextra_packet));
-        packet.data.sequence = weakSelf.txSequence;
-        packet.data.id = weakSelf.txStreamId;
-        memcpy(&packet.data.ambe.voice, data, sizeof(packet.data.ambe.voice));
+        packet.frame.sequence = weakSelf.txSequence;
+        packet.frame.id = weakSelf.txStreamId;
+        memcpy(&packet.frame.ambe.voice, data, sizeof(packet.frame.ambe.voice));
         
         if(last) {
             weakSelf.txSequence = 0;
             weakSelf.txStreamId = (short) random();
-            packet.data.sequence |= 0x40;
+            packet.frame.sequence |= 0x40;
         } else {
-            memcpy(&packet.data.ambe.data, [[BTRDataEngine sharedInstance].slowData getDataForSequence:weakSelf.txSequence], sizeof(packet.data.ambe.data));
+            memcpy(&packet.frame.ambe.data, [[BTRDataEngine sharedInstance].slowData getDataForSequence:weakSelf.txSequence], sizeof(packet.frame.ambe.data));
             weakSelf.txSequence = (weakSelf.txSequence + 1) % 21;
         }
         

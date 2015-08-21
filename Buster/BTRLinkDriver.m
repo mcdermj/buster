@@ -62,6 +62,25 @@ static const unsigned short ccittTab[] = {
     0x7bc7,0x6a4e,0x58d5,0x495c,0x3de3,0x2c6a,0x1ef1,0x0f78
 };
 
+@implementation NSString (BTRCallsignUtils)
+-(NSString *)paddedCall {
+    return [self stringByPaddingToLength:8 withString:@" " startingAtIndex:0];
+}
+
+-(NSString *)callWithoutModule {
+    return [[self substringWithRange:NSMakeRange(0, 7)] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+}
+
++(NSString *)stringWithCallsign:(void *)callsign {
+    return [[[NSString alloc] initWithBytes:callsign length:8 encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+}
+
++(NSString *)stringWithShortCallsign:(void *)callsign {
+    return [[[NSString alloc] initWithBytes:callsign length:4 encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+}
+
+@end
+
 @interface BTRNetworkTimer : NSObject
 @property (nonatomic) dispatch_source_t timerSource;
 @property (nonatomic) CFAbsoluteTime lastEventTime;
