@@ -77,6 +77,7 @@
 		0924272C1B62F46600D568DE /* BTRAudioViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRAudioViewController.h; sourceTree = "<group>"; };
 		0924272D1B62F46600D568DE /* BTRAudioViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRAudioViewController.m; sourceTree = "<group>"; };
 		09318EE91B87B67800B1E1FE /* BTRLinkDriverProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRLinkDriverProtocol.m; sourceTree = "<group>"; };
+		09318EEB1B87C5FD00B1E1FE /* Buster.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Buster.entitlements; sourceTree = "<group>"; };
 		093B9AF11B50E2D500C2ABD0 /* Buster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Buster.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		093B9AF51B50E2D500C2ABD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		093B9AF61B50E2D500C2ABD0 /* BTRAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = BTRAppDelegate.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -214,6 +215,7 @@
 				09A5FDF01B57956A00AE9E1C /* BTRAudioHandler.m */,
 				093B9AFE1B50E2D500C2ABD0 /* Images.xcassets */,
 				093B9B001B50E2D500C2ABD0 /* Main.storyboard */,
+				09318EEB1B87C5FD00B1E1FE /* Buster.entitlements */,
 				093B9AF41B50E2D500C2ABD0 /* Supporting Files */,
 			);
 			path = Buster;
@@ -364,6 +366,11 @@
 				TargetAttributes = {
 					093B9AF01B50E2D500C2ABD0 = {
 						CreatedOnToolsVersion = 6.4;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 1;
+							};
+						};
 					};
 					093B9B061B50E2D500C2ABD0 = {
 						CreatedOnToolsVersion = 6.4;
@@ -582,6 +589,7 @@
 				CLANG_WARN_ASSIGN_ENUM = YES;
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				CODE_SIGN_ENTITLEMENTS = Buster/Buster.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Buster/Prefix.pch;
@@ -607,6 +615,7 @@
 				CLANG_WARN_ASSIGN_ENUM = YES;
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				CODE_SIGN_ENTITLEMENTS = Buster/Buster.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Buster/Prefix.pch;
