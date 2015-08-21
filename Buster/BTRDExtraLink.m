@@ -126,7 +126,7 @@ static NSDictionary *_reflectorList;
 
 -(void)sendPoll {
     NSMutableData *pollPacket = [NSMutableData dataWithBytes:&linkTemplate length:9];
-    NSString *myCall = [[[[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"] stringByPaddingToLength:8 withString:@" " startingAtIndex:0] substringWithRange:NSMakeRange(0, 7)];
+    NSString *myCall = [self.myCall.paddedCall substringWithRange:NSMakeRange(0, 7)];
     memcpy(pollPacket.mutableBytes, myCall.UTF8String, 7);
     ((char *) pollPacket.mutableBytes)[8] = 0x00;
     [self sendPacket:pollPacket];
@@ -136,12 +136,15 @@ static NSDictionary *_reflectorList;
     NSMutableData *linkPacket = [NSMutableData dataWithBytes:&linkTemplate length:11];
     struct dextra_packet *packet = (struct dextra_packet *)linkPacket.mutableBytes;
     
-    NSString *myCall = [[[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"] stringByPaddingToLength:8 withString:@" " startingAtIndex:0];
-    NSString *callOnly = [myCall substringWithRange:NSMakeRange(0, 7)];
+    NSString *callOnly = [self.myCall.paddedCall substringWithRange:NSMakeRange(0, 7)];
     
-    packet->link.module = (char) [myCall characterAtIndex:7];
+    //  XXX This works but is ugly.  characterAtIndex returns an unichar, and we should really
+    //  XXX do some sort of real UTF8 conversion rather than just casting it down.
+    //  XXX Maybe it doesn't make much of a difference since the module should only be
+    //  XXX in the range of A-Z.
+    packet->link.module = (char) [self.myCall.paddedCall characterAtIndex:7];
     packet->link.reflectorModule = module;
-    memcpy(packet->link.callsign, [callOnly cStringUsingEncoding:NSUTF8StringEncoding], callOnly.length);
+    memcpy(packet->link.callsign, callOnly.UTF8String, callOnly.length);
     
     [self sendPacket:linkPacket];
 }

@@ -37,6 +37,8 @@ enum linkState {
 
 @property (nonatomic, readonly, copy) NSString *linkTarget;
 @property (nonatomic) id <BTRVocoderDriver> vocoder;
+@property (nonatomic, copy)NSString *myCall;
+@property (nonatomic, copy)NSString *myCall2;
 
 -(id)initWithLinkTo:(NSString *)linkTarget;
 -(void)unlink;

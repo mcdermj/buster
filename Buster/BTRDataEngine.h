@@ -24,7 +24,7 @@
 
 @interface BTRDataEngine : NSObject
 
-@property (nonatomic, readonly) id <BTRLinkDriverProtocol> network;
+@property (nonatomic, readonly) NSObject <BTRLinkDriverProtocol> *network;
 @property (nonatomic) id <BTRVocoderDriver> vocoder;
 @property (nonatomic, readonly) BTRAudioHandler *audio;
 @property (nonatomic, readonly) BTRSlowDataCoder *slowData;

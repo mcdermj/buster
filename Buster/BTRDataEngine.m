@@ -32,7 +32,7 @@ static NSMutableArray *linkDrivers = nil;
 
 @interface BTRDataEngine ()
 
-@property (nonatomic, readwrite) id <BTRLinkDriverProtocol> network;
+@property (nonatomic, readwrite) NSObject <BTRLinkDriverProtocol> *network;
 @property (nonatomic, readwrite) BTRAudioHandler *audio;
 @end
 
@@ -104,17 +104,23 @@ static NSMutableArray *linkDrivers = nil;
     NSLog(@"In LinkTo:");
     for(Class driver in [BTRDataEngine linkDrivers]) {
         if([driver canHandleLinkTo:reflector]) {
-            [self.network unlink];
+            [self unlink];
             self.network = [[driver alloc] initWithLinkTo:reflector];
             self.network.vocoder = self.vocoder;
+            [self.network bind:@"myCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
+            [self.network bind:@"myCall2" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall2" options:nil];
         }
     }
 }
 
 -(void)unlink {
     NSLog(@"Unlinking");
-    [self.network unlink];
-    self.network = nil;
+    if(self.network) {
+        [self.network unlink];
+        [self.network unbind:@"myCall"];
+        [self.network unbind:@"myCall2"];
+        self.network = nil;
+    }
 }
 
 @end

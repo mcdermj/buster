@@ -146,6 +146,8 @@ static const unsigned short ccittTab[] = {
 @implementation BTRLinkDriver
 
 @synthesize vocoder = _vocoder;
+@synthesize myCall = _myCall;
+@synthesize myCall2 = _myCall2;
 
 +(BOOL)canHandleLinkTo:(NSString *)reflector {
     return NO;
@@ -547,10 +549,9 @@ static const unsigned short ccittTab[] = {
             
             header.id = weakSelf.txStreamId;
             
-            //  XXX This should get the global value
-            strncpy(header.header.myCall, [[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"].paddedCall.UTF8String, sizeof(header.header.myCall));
-            strncpy(header.header.myCall2, [[NSUserDefaults standardUserDefaults] stringForKey:@"myCall2"].paddedShortCall.UTF8String, sizeof(header.header.myCall2));
-            strncpy(header.header.rpt1Call, [[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"].paddedCall.UTF8String, sizeof(header.header.rpt1Call));
+            strncpy(header.header.myCall, weakSelf.myCall.paddedCall.UTF8String, sizeof(header.header.myCall));
+            strncpy(header.header.myCall2, weakSelf.myCall2.paddedShortCall.UTF8String, sizeof(header.header.myCall2));
+            strncpy(header.header.rpt1Call, weakSelf.myCall.paddedCall.UTF8String, sizeof(header.header.rpt1Call));
             strncpy(header.header.rpt2Call, weakSelf.linkTarget.paddedCall.UTF8String, sizeof(header.header.rpt2Call));
             
             header.header.sum = [weakSelf calculateChecksum:&header.header];
