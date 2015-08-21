@@ -211,7 +211,7 @@ static const unsigned short ccittTab[] = {
     _dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, (uintptr_t) _socket, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
     BTRLinkDriver __weak *weakSelf = self;
     dispatch_source_set_event_handler(_dispatchSource, ^{
-        void *incomingPacket = malloc(self.packetSize);
+        void *incomingPacket = malloc(weakSelf.packetSize);
         size_t bytesRead;
         
         do {
