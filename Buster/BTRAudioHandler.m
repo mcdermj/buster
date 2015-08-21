@@ -24,8 +24,8 @@
 
 #import "TPCircularBuffer.h"
 #import "TPCircularBuffer+AudioBufferList.h"
-#import "BTRGatewayHandler.h"
 #import "BTRVocoderDriver.h"
+#import "BTRLinkDriverProtocol.h"
 
 static const AudioComponentDescription componentDescription = {
     .componentType = kAudioUnitType_Output,

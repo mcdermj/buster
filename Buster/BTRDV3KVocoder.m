@@ -22,7 +22,6 @@
 
 #import "BTRDataEngine.h"
 #import "BTRDV3KPacket.h"
-#import "BTRGatewayHandler.h"
 #import "BTRAudioHandler.h"
 
 // XXX

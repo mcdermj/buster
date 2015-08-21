@@ -19,6 +19,12 @@
 
 #import "BTRVocoderDriver.h"
 
+#pragma mark - Notification Constants
+extern NSString * const BTRNetworkHeaderReceived;
+extern NSString * const BTRNetworkStreamStart;
+extern NSString * const BTRNetworkStreamEnd;
+extern NSString * const BTRRepeaterInfoReceived;
+
 enum linkState {
     UNLINKED,
     LINKING,

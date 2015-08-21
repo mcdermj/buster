@@ -8,7 +8,6 @@
 
 #import "BTRDExtraLink.h"
 
-#import "BTRGatewayHandler.h"
 #import "BTRDataEngine.h"
 #import "BTRSlowDataCoder.h"
 

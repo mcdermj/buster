@@ -24,7 +24,6 @@
 #import <sys/ioctl.h>
 
 #import "BTRDPlusAuthenticator.h"
-#import "BTRGatewayHandler.h"
 #import "BTRDataEngine.h"
 #import "BTRSlowDataCoder.h"
 

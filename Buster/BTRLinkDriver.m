@@ -19,7 +19,6 @@
 
 #import "BTRLinkDriver.h"
 #import "BTRLinkDriverSubclass.h"
-#import "BTRGatewayHandler.h"
 #import "BTRLinkDriverProtocol.h"
 #import "BTRDataEngine.h"
 #import "BTRSlowDataCoder.h"

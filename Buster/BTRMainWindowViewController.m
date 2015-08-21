@@ -19,7 +19,6 @@
 
 #import "BTRMainWindowViewController.h"
 
-#import "BTRGatewayHandler.h"
 #import "BTRApplication.h"
 #import "BTRDataEngine.h"
 #import "BTRSlowDataCoder.h"
