@@ -22,7 +22,7 @@ struct dextra_packet {
             char response[3];
             char terminator;
         } link;
-        struct dstarFrame frame;
+        struct dstar_frame frame;
     };
 };
 #pragma pack(pop)
@@ -34,32 +34,6 @@ static const struct dextra_packet linkTemplate = {
     .link.response[0] = 0x00
 };
 
-static const struct dextra_packet headerTemplate = {
-    .frame.magic = "DSVT",
-    .frame.type = 0x10,
-    .frame.unknown = { 0x00, 0x00, 0x00, 0x20 },
-    .frame.band = { 0x00, 0x02, 0x01 },
-    .frame.id = 0,
-    .frame.sequence = 0x80,
-    .frame.header.flags = { 0x00, 0x00, 0x00 },
-    .frame.header.rpt2Call = "        ",
-    .frame.header.rpt1Call = "        ",
-    .frame.header.urCall = "        ",
-    .frame.header.myCall = "        ",
-    .frame.header.myCall2 = "    ",
-    .frame.header.sum = 0xFFFF
-};
-
-static const struct dextra_packet ambeTemplate = {
-    .frame.magic = "DSVT",
-    .frame.type = 0x10,
-    .frame.unknown = { 0x00, 0x00, 0x00, 0x20 },
-    .frame.band = { 0x00, 0x02, 0x01 },
-    .frame.id = 0,
-    .frame.sequence = 0,
-    .frame.ambe.voice = AMBE_NULL_PATTERN,
-    .frame.ambe.data = { 0 }
-};
 static NSDictionary *_reflectorList;
 
 @interface BTRDExtraLink ()
@@ -118,25 +92,7 @@ static NSDictionary *_reflectorList;
     struct dextra_packet *packet = (struct dextra_packet *) packetData.bytes;
     
     if(!strncmp(packet->frame.magic, "DSVT", 4)) {
-        switch(packet->frame.type) {
-            case 0x10: {
-                NSDictionary *header = @{
-                                         @"rpt1Call" : [NSString stringWithCallsign:packet->frame.header.rpt1Call],
-                                         @"rpt2Call" : [NSString stringWithCallsign:packet->frame.header.rpt2Call],
-                                         @"myCall" : [NSString stringWithCallsign:packet->frame.header.myCall],
-                                         @"myCall2" : [NSString stringWithShortCallsign:packet->frame.header.myCall2],
-                                         @"urCall" : [NSString stringWithCallsign:packet->frame.header.urCall],
-                                         @"streamId" : [NSNumber numberWithUnsignedInteger:packet->frame.id],
-                                         @"time" : [NSDate date],
-                                         @"message" : @""
-                                         };
-                [self processHeader:header];
-                break;
-            }
-            case 0x20:
-                [self processAMBE:packet->frame.ambe.voice forId:packet->frame.id withSequence:packet->frame.sequence andData:packet->frame.ambe.data];
-                break;
-        }
+        [self processFrame:&packet->frame];
         NSLog(@"Got data packet");
     } else {
         NSLog(@"Got link packet");
@@ -169,54 +125,6 @@ static NSDictionary *_reflectorList;
     }    
 }
 
--(void)sendAMBE:(void *)data lastPacket:(BOOL)last {
-    if(self.linkState != LINKED)
-        return;
-    BTRDExtraLink __weak *weakSelf = self;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        struct dextra_packet packet = {};
-        
-        //  If the sequence is 0, send a header packet.
-        if(weakSelf.txSequence == 0) {
-            NSLog(@"Sending header for stream %hu", weakSelf.txStreamId);
-            memcpy(&packet, &headerTemplate, sizeof(struct dextra_packet));
-            
-            packet.frame.id = weakSelf.txStreamId;
-            
-            //  XXX This should get the global value
-            strncpy(packet.frame.header.myCall, [[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"].paddedCall.UTF8String, sizeof(packet.frame.header.myCall));
-            strncpy(packet.frame.header.myCall2, [[[[NSUserDefaults standardUserDefaults] stringForKey:@"myCall2"] stringByPaddingToLength:4 withString:@" " startingAtIndex:0] cStringUsingEncoding:NSUTF8StringEncoding], sizeof(packet.frame.header.myCall2));
-            
-            strncpy(packet.frame.header.rpt1Call, [[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"].paddedCall.UTF8String, sizeof(packet.frame.header.rpt1Call));
-            
-            strncpy(packet.frame.header.rpt2Call, weakSelf.linkTarget.paddedCall.UTF8String, sizeof(packet.frame.header.rpt2Call));
-            
-            /* packet.data.header.sum = [weakSelf calculateChecksum:&packet.data.header.flags length:(sizeof(packet.data.header.myCall) * 4) +
-                                          sizeof(packet.data.header.myCall2) +
-                                          sizeof(packet.data.header.flags)]; */
-            packet.frame.header.sum = 0x0101;
-            
-            [weakSelf sendPacket:[NSData dataWithBytes:&packet length:56]];
-        }
-        
-        memcpy(&packet, &ambeTemplate, sizeof(struct dextra_packet));
-        packet.frame.sequence = weakSelf.txSequence;
-        packet.frame.id = weakSelf.txStreamId;
-        memcpy(&packet.frame.ambe.voice, data, sizeof(packet.frame.ambe.voice));
-        
-        if(last) {
-            weakSelf.txSequence = 0;
-            weakSelf.txStreamId = (short) random();
-            packet.frame.sequence |= 0x40;
-        } else {
-            memcpy(&packet.frame.ambe.data, [[BTRDataEngine sharedInstance].slowData getDataForSequence:weakSelf.txSequence], sizeof(packet.frame.ambe.data));
-            weakSelf.txSequence = (weakSelf.txSequence + 1) % 21;
-        }
-        
-        [weakSelf sendPacket:[NSData dataWithBytes:&packet length:27]];
-    });
-
-}
 -(void)sendPoll {
     NSMutableData *pollPacket = [NSMutableData dataWithBytes:&linkTemplate length:9];
     NSString *myCall = [[[[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"] stringByPaddingToLength:8 withString:@" " startingAtIndex:0] substringWithRange:NSMakeRange(0, 7)];
@@ -246,6 +154,10 @@ static NSDictionary *_reflectorList;
 
 -(void)sendLink {
     [self sendLinkPacketWithModule:(char) [self.linkTarget characterAtIndex:7]];
+}
+
+-(void)sendFrame:(struct dstar_frame *)frame {
+    [self sendPacket:[NSData dataWithBytes:frame length:dstar_frame_size(frame)]];
 }
 
 -(NSString *)getAddressForReflector:(NSString *)reflector {

@@ -67,6 +67,10 @@ static const unsigned short ccittTab[] = {
     return [self stringByPaddingToLength:8 withString:@" " startingAtIndex:0];
 }
 
+-(NSString *)paddedShortCall {
+    return [self stringByPaddingToLength:4 withString:@" " startingAtIndex:0];
+}
+
 -(NSString *)callWithoutModule {
     return [[self substringWithRange:NSMakeRange(0, 7)] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 }
@@ -131,8 +135,12 @@ static const unsigned short ccittTab[] = {
 @property (nonatomic) dispatch_queue_t writeQueue;
 @property (nonatomic) unsigned short rxStreamId;
 @property (nonatomic) char rxSequence;
+@property (nonatomic) unsigned short txStreamId;
+@property (nonatomic) char txSequence;
+@property (nonatomic, readwrite, copy) NSString * linkTarget;
 
 -(void)terminateCurrentStream;
+-(uint16)calculateChecksum:(struct dstar_header_data *)header;
 
 @end
 
@@ -294,9 +302,6 @@ static const unsigned short ccittTab[] = {
 -(void)processPacket:(NSData *)packet {
     [self doesNotRecognizeSelector:_cmd];
 }
--(void)sendAMBE:(void *)data lastPacket:(BOOL)last {
-    [self doesNotRecognizeSelector:_cmd];
-}
 -(void)sendPoll {
     [self doesNotRecognizeSelector:_cmd];
 }
@@ -304,6 +309,9 @@ static const unsigned short ccittTab[] = {
     [self doesNotRecognizeSelector:_cmd];
 }
 -(void)sendLink {
+    [self doesNotRecognizeSelector:_cmd];
+}
+-(void)sendFrame:(struct dstar_frame *)frame {
     [self doesNotRecognizeSelector:_cmd];
 }
 -(NSString *)getAddressForReflector:(NSString *)reflector {
@@ -439,11 +447,11 @@ static const unsigned short ccittTab[] = {
     });
 }
 
-- (uint16) calculateChecksum:(void *)data length:(size_t)length {
+- (uint16) calculateChecksum:(struct dstar_header_data *)header {
     unsigned short crc = 0xFFFF;
     
-    for(char *packetPointer = (char *) data;
-        packetPointer < ((char *) data) + length;
+    for(char *packetPointer = (char *) header;
+        packetPointer < (char *) &(header->sum);
         ++packetPointer) {
         crc = (crc >> 8) ^ ccittTab[(crc & 0x00FF) ^ *packetPointer];
     }
@@ -453,66 +461,122 @@ static const unsigned short ccittTab[] = {
     return ((uint16) crc);
 }
 
--(void)processAMBE:(void *)voice forId:(unsigned short)id withSequence:(char)sequence andData:(char *)data {
-    //  Ignore packets not in our current stream
-    if(self.rxStreamId != id)
+-(void)processFrame:(struct dstar_frame *)frame {
+    BTRLinkDriver __weak *weakSelf = self;
+
+    switch(frame->type) {
+        case 0x10: {
+            NSDictionary *header = @{
+                                     @"rpt1Call" : [NSString stringWithCallsign:frame->header.rpt1Call],
+                                     @"rpt2Call" : [NSString stringWithCallsign:frame->header.rpt2Call],
+                                     @"myCall" : [NSString stringWithCallsign:frame->header.myCall],
+                                     @"myCall2" : [NSString stringWithShortCallsign:frame->header.myCall2],
+                                     @"urCall" : [NSString stringWithCallsign:frame->header.urCall],
+                                     @"streamId" : [NSNumber numberWithUnsignedInteger:frame->id],
+                                     @"time" : [NSDate date],
+                                     @"message" : @""
+                                     };
+            
+            if(self.rxStreamId == 0) {
+                NSLog(@"New stream %@", header);
+                self.rxStreamId = frame->id;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter] postNotificationName: BTRNetworkStreamStart
+                                                                        object: weakSelf
+                                                                      userInfo: header
+                     ];
+                });
+                
+                self.qsoTimer = [[BTRNetworkTimer alloc] initWithTimeout:5.0 failureHandler: ^{
+                    [weakSelf terminateCurrentStream];
+                }];
+            }
+            
+            [self.qsoTimer ping];
+            NSLog(@"Received header %@", header);
+            break;
+        }
+        case 0x20:
+            //  Ignore packets not in our current stream
+            if(self.rxStreamId != frame->id)
+                return;
+            
+            [self.qsoTimer ping];
+            
+            //  If the 0x40 bit of the sequence is set, this is the last packet of the stream.
+            if(frame->sequence & 0x40) {
+                [self terminateCurrentStream];
+                frame->sequence &= ~0x40;
+            }
+            
+            if(frame->sequence != self.rxSequence) {
+                //  If the packet is more recent, reset the sequence, if not, wait for my next packet
+                if(isSequenceAhead(frame->sequence, self.rxSequence, 21)) {
+                    NSLog(@"Skipped packet: incoming %u, sequence = %u",frame->sequence, self.rxSequence);
+                    self.rxSequence = frame->sequence;
+                } else {
+                    NSLog(@"Out of order packet: incoming = %u, sequence = %u\n", frame->sequence, self.rxSequence);
+                    return;
+                }
+            }
+            
+            //  XXX These should be using a local variable set by the DataEngine.
+            [[BTRDataEngine sharedInstance].slowData addData:frame->ambe.data streamId:self.rxStreamId];
+            
+            if(self.rxStreamId == 0)
+                self.rxSequence = 0;
+            else
+                self.rxSequence = (self.rxSequence + 1) % 21;
+            
+            //  If streamId == 0, we are on the last packet of this stream.
+            [self.vocoder decodeData:frame->ambe.voice lastPacket:(self.rxStreamId == 0)];
+            break;
+    }
+}
+
+-(void) sendAMBE:(void *)data lastPacket:(BOOL)last {
+    if(self.linkState != LINKED)
         return;
     
-    [self.qsoTimer ping];
-    
-    //  If the 0x40 bit of the sequence is set, this is the last packet of the stream.
-    if(sequence & 0x40) {
-        [self terminateCurrentStream];
-        sequence &= ~0x40;
-    }
-    
-    if(sequence != self.rxSequence) {
-        //  If the packet is more recent, reset the sequence, if not, wait for my next packet
-        if(isSequenceAhead(sequence, self.rxSequence, 21)) {
-            NSLog(@"Skipped packet: incoming %u, sequence = %u",sequence, self.rxSequence);
-            self.rxSequence = sequence;
-        } else {
-            NSLog(@"Out of order packet: incoming = %u, sequence = %u\n", sequence, self.rxSequence);
-            return;
-        }
-    }
-    
-    //  XXX These should be using a local variable set by the DataEngine.
-    [[BTRDataEngine sharedInstance].slowData addData:data streamId:self.rxStreamId];
-    
-    if(self.rxStreamId == 0)
-        self.rxSequence = 0;
-    else
-        self.rxSequence = (self.rxSequence + 1) % 21;
-    
-    //  If streamId == 0, we are on the last packet of this stream.
-    [self.vocoder decodeData:voice lastPacket:(self.rxStreamId == 0)];
-    
-    
-    // NSLog(@"AMBE packet received for stream %d", packet->data.header.id);
-
-}
-
--(void)processHeader:(NSDictionary *)header {
     BTRLinkDriver __weak *weakSelf = self;
-    
-    if(self.rxStreamId == 0) {
-        NSLog(@"New stream %@", header);
-        self.rxStreamId = ((NSNumber *)header[@"streamId"]).unsignedShortValue;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName: BTRNetworkStreamStart
-                                                                object: weakSelf
-                                                              userInfo: header
-             ];
-        });
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        //  If the sequence is 0, send a header packet.
+        if(weakSelf.txSequence == 0) {
+            NSLog(@"Sending header for stream %hu", weakSelf.txStreamId);
+            struct dstar_frame header;
+            memcpy(&header, &dstar_header_template, sizeof(struct dstar_frame));
+            
+            header.id = weakSelf.txStreamId;
+            
+            //  XXX This should get the global value
+            strncpy(header.header.myCall, [[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"].paddedCall.UTF8String, sizeof(header.header.myCall));
+            strncpy(header.header.myCall2, [[NSUserDefaults standardUserDefaults] stringForKey:@"myCall2"].paddedShortCall.UTF8String, sizeof(header.header.myCall2));
+            strncpy(header.header.rpt1Call, [[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"].paddedCall.UTF8String, sizeof(header.header.rpt1Call));
+            strncpy(header.header.rpt2Call, weakSelf.linkTarget.paddedCall.UTF8String, sizeof(header.header.rpt2Call));
+            
+            header.header.sum = [weakSelf calculateChecksum:&header.header];
+            
+            [weakSelf sendFrame:&header];
+        }
         
-        self.qsoTimer = [[BTRNetworkTimer alloc] initWithTimeout:5.0 failureHandler: ^{
-            [weakSelf terminateCurrentStream];
-        }];
-    }
-    
-    [self.qsoTimer ping];
-    NSLog(@"Received header %@", header);
+        struct dstar_frame ambe;
+        memcpy(&ambe, &dstar_ambe_template, sizeof(struct dstar_frame));
+        ambe.sequence = weakSelf.txSequence;
+        ambe.id = weakSelf.txStreamId;
+        memcpy(&ambe.ambe.data, [[BTRDataEngine sharedInstance].slowData getDataForSequence:weakSelf.txSequence], sizeof(ambe.ambe.data));
+        
+        if(last) {
+            weakSelf.txSequence = 0;
+            weakSelf.txStreamId = (short) random();
+            ambe.sequence |= 0x40;
+        } else {
+            memcpy(&ambe.ambe.voice, data, sizeof(ambe.ambe.voice));
+            weakSelf.txSequence = (weakSelf.txSequence + 1) % 21;
+        }
+        
+        [weakSelf sendFrame:&ambe];
+    });
 }
+
 
 @end

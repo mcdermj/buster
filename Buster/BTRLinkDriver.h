@@ -22,11 +22,4 @@
 
 @interface BTRLinkDriver : NSObject <BTRLinkDriverProtocol>
 
-// @property (nonatomic, readonly) enum linkState linkState;
-@property (nonatomic, readonly, copy) NSString *linkTarget;
-@property (nonatomic) id <BTRVocoderDriver> vocoder;
-
--(void) sendAMBE:(void *)data lastPacket:(BOOL)last;
-
-
 @end
