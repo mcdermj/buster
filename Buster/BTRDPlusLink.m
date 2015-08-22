@@ -181,6 +181,9 @@ static const struct dplus_packet linkModuleTemplate = {
                     self.linkState = UNLINKED;
                     break;
                 case 0x01: {
+                    if(self.linkState != CONNECTED)
+                        return;
+                    
                     NSLog(@"DPlus reports linked");
                     self.linkState = LINKING;
                     NSMutableData *linkPacket = [NSMutableData dataWithBytes:&linkModuleTemplate length:dplus_packet_size(linkModuleTemplate)];
@@ -195,6 +198,9 @@ static const struct dplus_packet linkModuleTemplate = {
             }
             break;
         case DPLUS_TYPE_LINKMODULE:
+            if(self.linkState != LINKING)
+                return;
+            
             if(!strncmp(packet->link.module.repeater, "OKRW", 4)) {
                 NSLog(@"Received ACK from repeater, we are now linked");
                 self.linkState = LINKED;

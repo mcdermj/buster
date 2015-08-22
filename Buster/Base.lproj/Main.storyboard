@@ -570,11 +570,11 @@
             <objects>
                 <viewController id="XfG-lQ-9wD" customClass="BTRMainWindowViewController" sceneMemberID="viewController">
                     <view key="view" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="610" height="354"/>
+                        <rect key="frame" x="0.0" y="0.0" width="654" height="354"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="avZ-AZ-WVn" userLabel="Reflector Table">
-                                <rect key="frame" x="534" y="18" width="77" height="337"/>
+                                <rect key="frame" x="578" y="18" width="77" height="337"/>
                                 <clipView key="contentView" id="BYJ-Mb-T1W">
                                     <rect key="frame" x="1" y="17" width="238" height="117"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -625,13 +625,13 @@
                                 </tableHeaderView>
                             </scrollView>
                             <box autoresizesSubviews="NO" focusRingType="none" title="Heard List" boxType="custom" borderType="line" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="rwq-R5-EeB">
-                                <rect key="frame" x="-1" y="-1" width="536" height="227"/>
+                                <rect key="frame" x="-1" y="-1" width="580" height="227"/>
                                 <view key="contentView">
-                                    <rect key="frame" x="1" y="1" width="534" height="225"/>
+                                    <rect key="frame" x="1" y="1" width="578" height="225"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pwT-ch-zJC">
-                                            <rect key="frame" x="425" y="201" width="100" height="15"/>
+                                            <rect key="frame" x="469" y="201" width="100" height="15"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="100" id="c2D-Lc-28Z"/>
                                             </constraints>
@@ -650,7 +650,7 @@
                                             </connections>
                                         </searchField>
                                         <scrollView focusRingType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ofW-7P-voU" userLabel="Heard List Table">
-                                            <rect key="frame" x="-1" y="-1" width="536" height="192"/>
+                                            <rect key="frame" x="-1" y="-1" width="580" height="192"/>
                                             <clipView key="contentView" focusRingType="none" id="9L5-uZ-DAf">
                                                 <rect key="frame" x="1" y="17" width="238" height="117"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -788,7 +788,7 @@
                                                                     </binding>
                                                                 </connections>
                                                             </tableColumn>
-                                                            <tableColumn editable="NO" width="90" minWidth="90" maxWidth="1000" id="0i9-j5-Odc">
+                                                            <tableColumn editable="NO" width="113" minWidth="90" maxWidth="1000" id="0i9-j5-Odc">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Message">
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -813,7 +813,7 @@
                                                 </subviews>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </clipView>
-                                            <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="QtN-F5-cQo">
+                                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="QtN-F5-cQo">
                                                 <rect key="frame" x="1" y="118.99681603908539" width="238" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
@@ -842,66 +842,10 @@
                                 <color key="fillColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                 <font key="titleFont" metaFont="smallSystemBold"/>
                             </box>
-                            <button translatesAutoresizingMaskIntoConstraints="NO" id="Y9w-7c-W1y" userLabel="Add Reflector Button">
-                                <rect key="frame" x="534" y="-1" width="20" height="20"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="20" id="Ecs-Ko-r8K"/>
-                                    <constraint firstAttribute="height" constant="20" id="guu-9s-RMI"/>
-                                </constraints>
-                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" controlSize="mini" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Rf1-cN-zGv">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="miniSystem"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="addReflector:" target="XfG-lQ-9wD" id="j3y-VF-RfY"/>
-                                </connections>
-                            </button>
-                            <button translatesAutoresizingMaskIntoConstraints="NO" id="HHn-S8-cIi" userLabel="Remove Reflector Button">
-                                <rect key="frame" x="553" y="-1" width="20" height="20"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="20" id="ob5-cH-RN9"/>
-                                    <constraint firstAttribute="height" constant="20" id="thb-mh-7Sp"/>
-                                </constraints>
-                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSRemoveTemplate" imagePosition="overlaps" alignment="center" controlSize="mini" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="nGi-gZ-3nL">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="miniSystem"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="remove:" target="3qO-F1-Tqi" id="Npm-gj-g4r"/>
-                                </connections>
-                            </button>
-                            <button translatesAutoresizingMaskIntoConstraints="NO" id="iRe-lQ-G1N" userLabel="Link Button">
-                                <rect key="frame" x="572" y="-1" width="20" height="20"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="20" id="1eu-2d-4Ba"/>
-                                    <constraint firstAttribute="height" constant="20" id="pJ0-IE-VVB"/>
-                                </constraints>
-                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSFollowLinkFreestandingTemplate" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="EFb-c4-Q8v">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="doLink:" target="XfG-lQ-9wD" id="x91-3L-zSe"/>
-                                </connections>
-                            </button>
-                            <button translatesAutoresizingMaskIntoConstraints="NO" id="Yut-Jt-PgF" userLabel="Unlink Button">
-                                <rect key="frame" x="591" y="-1" width="20" height="20"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="20" id="fIq-fL-zK3"/>
-                                    <constraint firstAttribute="height" constant="20" id="nfz-bQ-q8H"/>
-                                </constraints>
-                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSInvalidDataFreestandingTemplate" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="bG6-5T-KCw">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="doUnlink:" target="XfG-lQ-9wD" id="hFF-fy-IPA"/>
-                                </connections>
-                            </button>
                             <box autoresizesSubviews="NO" title="Current" borderType="none" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="Udf-BZ-wIu">
-                                <rect key="frame" x="-3" y="238" width="541" height="118"/>
+                                <rect key="frame" x="-3" y="238" width="585" height="118"/>
                                 <view key="contentView">
-                                    <rect key="frame" x="0.0" y="0.0" width="541" height="118"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="585" height="118"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0Xh-fy-bLz">
@@ -1129,11 +1073,68 @@
                                     <constraint firstItem="HzL-tx-D3E" firstAttribute="centerY" secondItem="NYr-Rg-kUM" secondAttribute="centerY" id="vMR-RM-jDa"/>
                                     <constraint firstItem="HzL-tx-D3E" firstAttribute="centerY" secondItem="dld-SW-2h6" secondAttribute="centerY" id="wre-4R-uDT"/>
                                     <constraint firstItem="mVD-lY-7a6" firstAttribute="leading" secondItem="Udf-BZ-wIu" secondAttribute="leading" constant="16" id="wx3-fY-HPF"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="0X0-tB-ZWL" secondAttribute="trailing" constant="20" id="ygh-Yk-mIy"/>
                                 </constraints>
                                 <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                 <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <font key="titleFont" metaFont="smallSystemBold"/>
                             </box>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="Y9w-7c-W1y" userLabel="Add Reflector Button">
+                                <rect key="frame" x="578" y="-1" width="20" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="20" id="Ecs-Ko-r8K"/>
+                                    <constraint firstAttribute="height" constant="20" id="guu-9s-RMI"/>
+                                </constraints>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" controlSize="mini" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Rf1-cN-zGv">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="miniSystem"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="addReflector:" target="XfG-lQ-9wD" id="j3y-VF-RfY"/>
+                                </connections>
+                            </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="HHn-S8-cIi" userLabel="Remove Reflector Button">
+                                <rect key="frame" x="597" y="-1" width="20" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="20" id="ob5-cH-RN9"/>
+                                    <constraint firstAttribute="height" constant="20" id="thb-mh-7Sp"/>
+                                </constraints>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSRemoveTemplate" imagePosition="overlaps" alignment="center" controlSize="mini" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="nGi-gZ-3nL">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="miniSystem"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="remove:" target="3qO-F1-Tqi" id="Npm-gj-g4r"/>
+                                </connections>
+                            </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="iRe-lQ-G1N" userLabel="Link Button">
+                                <rect key="frame" x="616" y="-1" width="20" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="20" id="1eu-2d-4Ba"/>
+                                    <constraint firstAttribute="height" constant="20" id="pJ0-IE-VVB"/>
+                                </constraints>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSFollowLinkFreestandingTemplate" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="EFb-c4-Q8v">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="doLink:" target="XfG-lQ-9wD" id="x91-3L-zSe"/>
+                                </connections>
+                            </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="Yut-Jt-PgF" userLabel="Unlink Button">
+                                <rect key="frame" x="635" y="-1" width="20" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="20" id="fIq-fL-zK3"/>
+                                    <constraint firstAttribute="height" constant="20" id="nfz-bQ-q8H"/>
+                                </constraints>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSInvalidDataFreestandingTemplate" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="bG6-5T-KCw">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="doUnlink:" target="XfG-lQ-9wD" id="hFF-fy-IPA"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="HHn-S8-cIi" firstAttribute="top" secondItem="avZ-AZ-WVn" secondAttribute="bottom" constant="-1" id="84Y-ir-GMj"/>
@@ -1186,7 +1187,7 @@
                     </connections>
                 </arrayController>
             </objects>
-            <point key="canvasLocation" x="114" y="901"/>
+            <point key="canvasLocation" x="250.5" y="901"/>
         </scene>
         <!--Audio-->
         <scene sceneID="elY-lg-nZP">

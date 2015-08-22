@@ -92,9 +92,7 @@ static NSDictionary *_reflectorList;
     
     if(!strncmp(packet->frame.magic, "DSVT", 4)) {
         [self processFrame:&packet->frame];
-        NSLog(@"Got data packet");
     } else {
-        NSLog(@"Got link packet");
         // XXX This check is broken!  It needs to be *EITHER* the reflector call, *OR* our call.
         // NSString *target = [[self.linkTarget substringWithRange:NSMakeRange(0, 7)] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         /* if(![self.linkTarget.callWithoutModule isEqualToString:[NSString stringWithCallsign:&(packet->link.callsign)]]) {

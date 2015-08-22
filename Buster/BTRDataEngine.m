@@ -52,7 +52,6 @@ static NSMutableArray *linkDrivers = nil;
     if(self) {
         _audio = [[BTRAudioHandler alloc] init];
         _network = nil;
-        // _network = [[BTRDExtraLink alloc] init];
         Class driver = NSClassFromString([[NSUserDefaults standardUserDefaults] stringForKey:@"VocoderDriver"]);
         self.vocoder = [[driver alloc] init];
         
@@ -65,7 +64,6 @@ static NSMutableArray *linkDrivers = nil;
 }
 
 -(void) dealloc {
-    //  Need to unlink here.
 }
 
 - (void) setVocoder:(id<BTRVocoderDriver>)vocoder {
@@ -101,7 +99,6 @@ static NSMutableArray *linkDrivers = nil;
     if([self.network.linkTarget isEqualToString:reflector])
         return;
     
-    NSLog(@"In LinkTo:");
     for(Class driver in [BTRDataEngine linkDrivers]) {
         if([driver canHandleLinkTo:reflector]) {
             [self unlink];
@@ -114,13 +111,12 @@ static NSMutableArray *linkDrivers = nil;
 }
 
 -(void)unlink {
-    NSLog(@"Unlinking");
-    if(self.network) {
-        [self.network unlink];
-        [self.network unbind:@"myCall"];
-        [self.network unbind:@"myCall2"];
-        self.network = nil;
-    }
+        if(self.network) {
+            [self.network unlink];
+            [self.network unbind:@"myCall"];
+            [self.network unbind:@"myCall2"];
+            self.network = nil;
+        }
 }
 
 @end
