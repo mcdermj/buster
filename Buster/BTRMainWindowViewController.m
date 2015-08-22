@@ -174,9 +174,17 @@
     if(reflector.length < 8)
         return;
     
-    NSLog(@"In doLink:");
-    [[BTRDataEngine sharedInstance] linkTo:reflector];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        [[BTRDataEngine sharedInstance] linkTo:reflector];
+    });
 }
+
+- (IBAction)doUnlink:(id)sender {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        [[BTRDataEngine sharedInstance] unlink];
+    });
+}
+
 
 -(void) addReflector:(id)sender {
     NSMutableDictionary *newObject = [NSMutableDictionary dictionaryWithDictionary:@{ @"reflector": @"REFXXX C"}];
@@ -220,10 +228,6 @@
         [self endTx];
     
     txButtonState = self.txButton.state;
-}
-
-- (IBAction)doUnlink:(id)sender {
-    [[BTRDataEngine sharedInstance] unlink];
 }
 
 #pragma mark - Text Editing Control

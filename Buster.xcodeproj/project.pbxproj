@@ -74,6 +74,7 @@
 		0908EF831B84FDBE007B76F5 /* BTRDExtraLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRDExtraLink.h; sourceTree = "<group>"; };
 		0908EF841B84FDBE007B76F5 /* BTRDExtraLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRDExtraLink.m; sourceTree = "<group>"; };
 		0908EF861B852541007B76F5 /* DExtraReflectors.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DExtraReflectors.plist; sourceTree = "<group>"; };
+		0908EF881B87DAAD007B76F5 /* DStarUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DStarUtils.h; sourceTree = "<group>"; };
 		0924272C1B62F46600D568DE /* BTRAudioViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRAudioViewController.h; sourceTree = "<group>"; };
 		0924272D1B62F46600D568DE /* BTRAudioViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRAudioViewController.m; sourceTree = "<group>"; };
 		09318EE91B87B67800B1E1FE /* BTRLinkDriverProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRLinkDriverProtocol.m; sourceTree = "<group>"; };
@@ -188,6 +189,7 @@
 				09A994D91B71E21A0061A929 /* Vocoder Drivers */,
 				09E589CC1B828FBA00A962B5 /* Link Drivers */,
 				09AB117A1B5A13970067B9FB /* Prefix.pch */,
+				0908EF881B87DAAD007B76F5 /* DStarUtils.h */,
 				093B9B1A1B5214C700C2ABD0 /* BTRVocoderDriver.h */,
 				09E589CB1B82880B00A962B5 /* BTRLinkDriverProtocol.h */,
 				09318EE91B87B67800B1E1FE /* BTRLinkDriverProtocol.m */,

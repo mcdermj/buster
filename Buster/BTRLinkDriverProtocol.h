@@ -27,6 +27,7 @@ extern NSString * const BTRRepeaterInfoReceived;
 
 enum linkState {
     UNLINKED,
+    CONNECTED,
     LINKING,
     LINKED
 };
