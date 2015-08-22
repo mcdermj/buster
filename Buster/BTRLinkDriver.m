@@ -68,7 +68,6 @@
         dispatch_source_set_timer(_timerSource, dispatch_time(DISPATCH_TIME_NOW, 0), period, period / 10);
         BTRNetworkTimer __weak *weakSelf = self;
         dispatch_source_set_event_handler(_timerSource, ^{
-            NSLog(@"Timer firing");
             if(CFAbsoluteTimeGetCurrent() > weakSelf.lastEventTime + timeout) {
                 NSLog(@"Timer expired after %f seconds", CFAbsoluteTimeGetCurrent() - weakSelf.lastEventTime);
                 failureHandler();
@@ -102,6 +101,7 @@
 @property (nonatomic) unsigned short txStreamId;
 @property (nonatomic) char txSequence;
 @property (nonatomic, readwrite, copy) NSString * linkTarget;
+@property (nonatomic) CFAbsoluteTime connectTime;
 
 -(void)terminateCurrentStream;
 
@@ -235,8 +235,22 @@
     
     NSLog(@"Link Connection Complete");
     
-    [self sendLink];
-
+    self.linkState = CONNECTED;
+    
+    dispatch_source_t retrySource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+    dispatch_source_set_timer(retrySource, dispatch_time(DISPATCH_TIME_NOW, 0), 500ull * NSEC_PER_MSEC, 1ull * NSEC_PER_MSEC);
+    dispatch_source_set_event_handler(retrySource, ^{
+        if(weakSelf.linkState != CONNECTED || CFAbsoluteTimeGetCurrent() > weakSelf.connectTime + 10.0) {
+            dispatch_source_cancel(retrySource);
+            return;
+        }
+        
+        NSLog(@"Firing");
+        
+        [weakSelf sendLink];
+    });
+    self.connectTime = CFAbsoluteTimeGetCurrent();
+    dispatch_resume(retrySource);
 }
 
 - (void) dealloc  {
@@ -316,7 +330,7 @@
             dispatch_source_cancel(self.dispatchSource);
             break;
         }
-        case LINKING: {
+        case CONNECTED: {
             BTRLinkDriver __weak *weakSelf = self;
             NSDictionary *infoDict = @{ @"local": [NSString stringWithFormat:@"Connected to %@", self.linkTarget],
                                         @"reflector": self.linkTarget,
@@ -331,6 +345,9 @@
             self.linkTimer = [[BTRNetworkTimer alloc] initWithTimeout:30.0 failureHandler:^{
                 [weakSelf unlink];
             }];
+        }
+        case LINKING: {
+            
             break;
         }
         case LINKED: {
