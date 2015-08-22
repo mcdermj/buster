@@ -95,18 +95,40 @@ static NSMutableArray *linkDrivers = nil;
     return [NSArray arrayWithArray:linkDrivers];
 }
 
++(BOOL)isDestinationValid:(NSString *)destination {
+    NSUInteger linkIndex = [[BTRDataEngine linkDrivers] indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+        BOOL test = [obj canHandleLinkTo:destination];
+        if(test)
+            *stop = YES;
+        
+        return test;
+    }];
+    
+    return(linkIndex != NSNotFound);
+}
+
 -(void)linkTo:(NSString *)reflector {
     if([self.network.linkTarget isEqualToString:reflector])
         return;
     
+    [self unlink];
+    
     for(Class driver in [BTRDataEngine linkDrivers]) {
         if([driver canHandleLinkTo:reflector]) {
-            [self unlink];
-            self.network = [[driver alloc] initWithLinkTo:reflector];
+           self.network = [[driver alloc] initWithLinkTo:reflector];
             self.network.vocoder = self.vocoder;
             [self.network bind:@"myCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
             [self.network bind:@"myCall2" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall2" options:nil];
         }
+    }
+    
+    BTRDataEngine __weak *weakSelf = self;
+    if(self.network == nil) {
+        NSLog(@"Sending link failed notification");
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:BTRNetworkLinkFailed object:weakSelf userInfo:@{ @"error": [NSString stringWithFormat:@"Destination %@ not found", reflector]}];
+        });
+
     }
 }
 

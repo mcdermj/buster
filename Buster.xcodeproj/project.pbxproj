@@ -12,6 +12,7 @@
 		0908EF871B852541007B76F5 /* DExtraReflectors.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0908EF861B852541007B76F5 /* DExtraReflectors.plist */; };
 		0924272E1B62F46600D568DE /* BTRAudioViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0924272D1B62F46600D568DE /* BTRAudioViewController.m */; };
 		09318EEA1B87B67800B1E1FE /* BTRLinkDriverProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 09318EE91B87B67800B1E1FE /* BTRLinkDriverProtocol.m */; };
+		09318EEE1B88AAC500B1E1FE /* BTRDestinationCallFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 09318EED1B88AAC500B1E1FE /* BTRDestinationCallFormatter.m */; };
 		093B9AF81B50E2D500C2ABD0 /* BTRAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9AF71B50E2D500C2ABD0 /* BTRAppDelegate.m */; };
 		093B9AFA1B50E2D500C2ABD0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9AF91B50E2D500C2ABD0 /* main.m */; };
 		093B9AFD1B50E2D500C2ABD0 /* BTRMainWindowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9AFC1B50E2D500C2ABD0 /* BTRMainWindowViewController.m */; };
@@ -79,6 +80,8 @@
 		0924272D1B62F46600D568DE /* BTRAudioViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRAudioViewController.m; sourceTree = "<group>"; };
 		09318EE91B87B67800B1E1FE /* BTRLinkDriverProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRLinkDriverProtocol.m; sourceTree = "<group>"; };
 		09318EEB1B87C5FD00B1E1FE /* Buster.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Buster.entitlements; sourceTree = "<group>"; };
+		09318EEC1B88AAC500B1E1FE /* BTRDestinationCallFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRDestinationCallFormatter.h; sourceTree = "<group>"; };
+		09318EED1B88AAC500B1E1FE /* BTRDestinationCallFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRDestinationCallFormatter.m; sourceTree = "<group>"; };
 		093B9AF11B50E2D500C2ABD0 /* Buster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Buster.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		093B9AF51B50E2D500C2ABD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		093B9AF61B50E2D500C2ABD0 /* BTRAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = BTRAppDelegate.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -199,6 +202,8 @@
 				093B9AF71B50E2D500C2ABD0 /* BTRAppDelegate.m */,
 				096F2B581B58C06E00766A95 /* BTRCallFormatter.h */,
 				096F2B591B58C06E00766A95 /* BTRCallFormatter.m */,
+				09318EEC1B88AAC500B1E1FE /* BTRDestinationCallFormatter.h */,
+				09318EED1B88AAC500B1E1FE /* BTRDestinationCallFormatter.m */,
 				096BFCDB1B7DEC4000C94260 /* BTRIPFormatter.h */,
 				096BFCDC1B7DEC4000C94260 /* BTRIPFormatter.m */,
 				095544A51B71756F00090DB7 /* BTRVocoderViewController.h */,
@@ -456,6 +461,7 @@
 				096BFCDD1B7DEC4000C94260 /* BTRIPFormatter.m in Sources */,
 				098B10F01B65FB22002C7A3B /* BTRDataEngine.m in Sources */,
 				095C3FAF1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c in Sources */,
+				09318EEE1B88AAC500B1E1FE /* BTRDestinationCallFormatter.m in Sources */,
 				093B9B1D1B52DBA000C2ABD0 /* BTRDV3KVocoder.m in Sources */,
 				093B9AFD1B50E2D500C2ABD0 /* BTRMainWindowViewController.m in Sources */,
 				093B9AFA1B50E2D500C2ABD0 /* main.m in Sources */,

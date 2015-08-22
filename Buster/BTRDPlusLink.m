@@ -73,9 +73,10 @@ static const struct dplus_packet linkModuleTemplate = {
 @implementation BTRDPlusLink
 
 +(BOOL)canHandleLinkTo:(NSString*)linkTarget {
-    NSString *reflector = [[linkTarget substringWithRange:NSMakeRange(0, 7)] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-
-    if([BTRDPlusAuthenticator sharedInstance].reflectorList[reflector])
+    if(linkTarget.length != 8)
+        return NO;
+    
+    if([BTRDPlusAuthenticator sharedInstance].reflectorList[linkTarget.callWithoutModule])
         return YES;
     
     return NO;
@@ -206,6 +207,11 @@ static const struct dplus_packet linkModuleTemplate = {
                 self.linkState = LINKED;
             } else if(!strncmp(packet->link.module.repeater, "BUSY", 4)) {
                 NSLog(@"Received NACK from repeater, link failed");
+                BTRDPlusLink __weak *weakSelf = self;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:BTRNetworkLinkFailed object:weakSelf userInfo:@{ @"error": [NSString stringWithFormat:@"Reflector %@ refused connection", weakSelf.linkTarget]}];
+                });
+
                 [self unlink];
             } else {
                 NSLog(@"Unknown link packet received");

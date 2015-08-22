@@ -146,6 +146,13 @@
         self.heardTableController.filterPredicate = currentFilterPredicate;
     }];
     
+    [[NSNotificationCenter defaultCenter] addObserverForName:BTRNetworkLinkFailed object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+        NSAlert *alert = [[NSAlert alloc] init];
+        alert.messageText = notification.userInfo[@"error"];
+        [alert beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse response){ }];
+    }];
+
+    
     [self.txButton setPeriodicDelay:.1f interval:.1f];
     txButtonState = NSOffState;
 }
@@ -187,7 +194,7 @@
 
 
 -(void) addReflector:(id)sender {
-    NSMutableDictionary *newObject = [NSMutableDictionary dictionaryWithDictionary:@{ @"reflector": @"REFXXX C"}];
+    NSMutableDictionary *newObject = [NSMutableDictionary dictionaryWithDictionary:@{ @"reflector": @"REFXXX C" }];
     [self.reflectorTableController addObject:newObject];
     
     NSInteger insertedObjectIndex = [self.reflectorTableController.arrangedObjects indexOfObject:newObject];
@@ -278,6 +285,24 @@
         [self.reflectorTableController insertObject:reflector atArrangedObjectIndex:row];
     else
         [self.reflectorTableController insertObject:reflector atArrangedObjectIndex:row - 1];
+    
+    return YES;
+}
+
+#pragma mark - Reflector cell validation
+
+-(BOOL)control:(NSControl *)control didFailToFormatString:(NSString *)string errorDescription:(NSString *)error {
+    if(control != self.reflectorTableView) {
+        NSLog(@"Control is not reflector list");
+        return NO;
+    }
+    NSLog(@"Reflector string is invalid: %@", string);
+    
+    [self.reflectorTableController remove:string];
+    
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.messageText = error;
+    [alert beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse response){ }];
     
     return YES;
 }

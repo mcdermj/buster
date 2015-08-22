@@ -245,8 +245,6 @@
             return;
         }
         
-        NSLog(@"Firing");
-        
         [weakSelf sendLink];
     });
     self.connectTime = CFAbsoluteTimeGetCurrent();
@@ -332,7 +330,7 @@
         }
         case CONNECTED: {
             BTRLinkDriver __weak *weakSelf = self;
-            NSDictionary *infoDict = @{ @"local": [NSString stringWithFormat:@"Connected to %@", self.linkTarget],
+            NSDictionary *infoDict = @{ @"local": [NSString stringWithFormat:@"Connected to %@, waiting for link acknowledgment", self.linkTarget],
                                         @"reflector": self.linkTarget,
                                         @"status": @"" };
             

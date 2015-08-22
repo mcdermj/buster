@@ -1,5 +1,5 @@
 //
-//  BTRDataEngine.h
+//  BTRDestinationCallFormatter.m
 //
 //  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
 
@@ -17,27 +17,26 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#import "BTRVocoderDriver.h"
-#import "BTRLinkDriverProtocol.h"
 
-@class BTRAudioHandler, BTRVocoderProtocol, BTRSlowDataCoder;
+#import "BTRDestinationCallFormatter.h"
+#import "BTRDataEngine.h"
 
-@interface BTRDataEngine : NSObject
+@interface BTRDestinationCallFormatter ()
 
-@property (nonatomic, readonly) NSObject <BTRLinkDriverProtocol> *network;
-@property (nonatomic) id <BTRVocoderDriver> vocoder;
-@property (nonatomic, readonly) BTRAudioHandler *audio;
-@property (nonatomic, readonly) BTRSlowDataCoder *slowData;
+@end
 
-+(BTRDataEngine *)sharedInstance;
+@implementation BTRDestinationCallFormatter
 
-+(void)registerVocoderDriver:(Class)driver;
-+(void)registerLinkDriver:(Class)driver;
-+(NSArray *)vocoderDrivers;
-+(NSArray *)linkDrivers;
-+(BOOL)isDestinationValid:(NSString *)destination;
+- (BOOL) getObjectValue:(out __autoreleasing id *)obj forString:(NSString *)string errorDescription:(out NSString *__autoreleasing *)error {
+    *obj = [string stringByReplacingOccurrencesOfString:@"•" withString:@" "];
 
--(void)linkTo:(NSString *)reflector;
--(void)unlink;
+    if(![BTRDataEngine isDestinationValid:*obj]) {
+        if(error)
+            *error = @"Link destination not found";
+        return NO;
+    }
+        
+    return YES;
+}
 
 @end

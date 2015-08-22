@@ -24,6 +24,7 @@ extern NSString * const BTRNetworkHeaderReceived;
 extern NSString * const BTRNetworkStreamStart;
 extern NSString * const BTRNetworkStreamEnd;
 extern NSString * const BTRRepeaterInfoReceived;
+extern NSString * const BTRNetworkLinkFailed;
 
 enum linkState {
     UNLINKED,

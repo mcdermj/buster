@@ -249,7 +249,6 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
                                                           object:nil
                                                            queue:[NSOperationQueue mainQueue]
                                                       usingBlock: ^(NSNotification *notification) {
-                                                          NSLog(@"User defaults changing");
                                                           weakSelf.speed = [[NSUserDefaults standardUserDefaults] integerForKey:@"DV3KSerialVocoderSpeed"];
                                                           NSString *serialPort =[[NSUserDefaults standardUserDefaults] stringForKey:@"DV3KSerialVocoderPort"];
                                                           if(serialPort)

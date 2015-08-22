@@ -51,9 +51,10 @@ static NSDictionary *_reflectorList;
 }
 
 +(BOOL)canHandleLinkTo:(NSString*)linkTarget {
-    NSString *reflector = [[linkTarget substringWithRange:NSMakeRange(0, 7)] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    if(linkTarget.length != 8)
+        return NO;
     
-    if([BTRDExtraLink reflectorList][reflector])
+    if([BTRDExtraLink reflectorList][linkTarget.callWithoutModule])
         return YES;
     
     return NO;
@@ -111,6 +112,11 @@ static NSDictionary *_reflectorList;
                     NSLog(@"Got ACK, going linked");
                 } else if(!strncmp(packet->link.response, "NAK", 3)) {
                     NSLog(@"Got NAK, unlinking");
+                    BTRDExtraLink __weak *weakSelf = self;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[NSNotificationCenter defaultCenter] postNotificationName:BTRNetworkLinkFailed object:weakSelf userInfo:@{ @"error": [NSString stringWithFormat:@"Reflector %@ refused connection", weakSelf.linkTarget]}];
+                    });
+
                     [self unlink];
                 } else
                     NSLog(@"Unknown link acknowledgment");
@@ -153,6 +159,7 @@ static NSDictionary *_reflectorList;
 }
 
 -(void)sendLink {
+    NSLog(@"Sending link packet");
     [self sendLinkPacketWithModule:(char) [self.linkTarget characterAtIndex:7]];
 }
 
