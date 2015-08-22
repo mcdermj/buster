@@ -373,6 +373,7 @@
 				TargetAttributes = {
 					093B9AF01B50E2D500C2ABD0 = {
 						CreatedOnToolsVersion = 6.4;
+						DevelopmentTeam = 45GE4EAF74;
 						SystemCapabilities = {
 							com.apple.Sandbox = {
 								enabled = 1;
@@ -598,6 +599,7 @@
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CODE_SIGN_ENTITLEMENTS = Buster/Buster.entitlements;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Buster/Prefix.pch;
@@ -624,6 +626,7 @@
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CODE_SIGN_ENTITLEMENTS = Buster/Buster.entitlements;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Buster/Prefix.pch;
