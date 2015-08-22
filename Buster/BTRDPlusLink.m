@@ -84,6 +84,7 @@ static const struct dplus_packet linkModuleTemplate = {
 
 +(void) load {
     [BTRDataEngine registerLinkDriver:self];
+    [BTRDPlusAuthenticator sharedInstance];
 }
 
 - (id) initWithLinkTo:(NSString *)linkTarget {
