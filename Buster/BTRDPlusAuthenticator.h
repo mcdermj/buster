@@ -25,6 +25,4 @@
 
 + (BTRDPlusAuthenticator *) sharedInstance;
 
-- (id) initWithAuthCall:(NSString *)authCall;
-
 @end

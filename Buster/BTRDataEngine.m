@@ -34,6 +34,7 @@ static NSMutableArray *linkDrivers = nil;
 
 @property (nonatomic, readwrite) NSObject <BTRLinkDriverProtocol> *network;
 @property (nonatomic, readwrite) BTRAudioHandler *audio;
+@property (nonatomic, copy) NSString *sleepDestination;
 @end
 
 @implementation BTRDataEngine
@@ -58,6 +59,21 @@ static NSMutableArray *linkDrivers = nil;
         _vocoder.audio = _audio;
         
         _slowData = [[BTRSlowDataCoder alloc] init];
+        
+        BTRDataEngine __weak *weakSelf = self;
+        
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserverForName:NSWorkspaceWillSleepNotification object:NULL queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+            [weakSelf.audio stop];
+            [weakSelf.vocoder stop];
+            weakSelf.sleepDestination = weakSelf.network.linkTarget;
+            [weakSelf.network unlink];
+        }];
+        
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserverForName:NSWorkspaceDidWakeNotification object:NULL queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+            [weakSelf.audio start];
+            [weakSelf.vocoder start];
+            [weakSelf linkTo:self.sleepDestination];
+        }];
     }
     
     return self;
@@ -108,6 +124,9 @@ static NSMutableArray *linkDrivers = nil;
 }
 
 -(void)linkTo:(NSString *)reflector {
+    if(!reflector)
+        return;
+    
     if([self.network.linkTarget isEqualToString:reflector])
         return;
     

@@ -95,21 +95,6 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
     return sharedInstance;
 }
 
-
-- (id) initWithAuthCall:(NSString *)authCall {
-    self = [super init];
-    if(self) {
-        _authenticationHost = [NSHost hostWithName:@"opendstar.org"];
-        _reflectorList = nil;
-        _authCall = [authCall copy];
-        _suffix = '2';
-        _authenticated = NO;
-        
-        [self startAuthTimer];
-    }
-    return self;
-}
-
 - (id) init {
     self = [super init];
     if(self) {
@@ -118,6 +103,12 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
         _authCall = @"";
         _suffix = '2';
         _authenticated = NO;
+        
+        BTRDPlusAuthenticator __weak *weakSelf = self;
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserverForName:NSWorkspaceDidWakeNotification object:NULL queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+            NSLog(@"Waking from sleep, reauthenticating");
+            [weakSelf authenticate];
+        }];
     }
     return self;
 }
@@ -144,7 +135,6 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
     authTimerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
     dispatch_source_set_timer(authTimerSource, dispatch_walltime(NULL, 6ull * NSEC_PER_HOUR), 6ull * NSEC_PER_HOUR, 60ull * NSEC_PER_SEC);
     dispatch_source_set_event_handler(authTimerSource, ^{
-        NSLog(@"Performing DPlus Authentication");
         // XXX Do something with authentication failure here.  NSNotification?
         [weakSelf authenticate];
     });
@@ -153,6 +143,8 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
 
 -(void) authenticate {
     self.authenticated = NO;
+    
+    NSLog(@"Performing DPlus authentication");
     
     int authSocket = socket(PF_INET, SOCK_STREAM, 0);
     if(authSocket == -1) {

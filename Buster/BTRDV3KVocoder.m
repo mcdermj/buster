@@ -185,7 +185,8 @@ static const struct dv3k_packet dv3k_audio = {
     self.version = @"";
     self.productId = @"";
     
-    [self openPort];
+    if(![self openPort])
+        return NO;
     
     NSLog(@"Port opened, initializing");
     
