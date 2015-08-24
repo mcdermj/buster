@@ -306,6 +306,9 @@
 -(size_t)packetSize {
     [self doesNotRecognizeSelector:_cmd];
 }
+-(BOOL)hasReliableChecksum {
+    [self doesNotRecognizeSelector:_cmd];
+}
 #pragma clang diagnostic pop
 
 -(void)setLinkState:(enum linkState)linkState {
@@ -435,7 +438,7 @@
             [self.qsoTimer ping];
             
             uint16 calculatedSum = dstar_calc_sum(&frame->header);
-            if(frame->header.sum != 0xFFFF && frame->header.sum != calculatedSum) {
+            if(self.hasReliableChecksum && frame->header.sum != 0xFFFF && frame->header.sum != calculatedSum) {
                 NSLog(@"Header checksum mismatch: expected 0x%04hX calculated 0x%04hX", frame->header.sum, calculatedSum);
                 return;
             }
@@ -496,7 +499,7 @@
                 }
             }
             
-            //  XXX These should be using a local variable set by the DataEngine.
+            //  XXX This should be using a local variable set by the DataEngine.
             [[BTRDataEngine sharedInstance].slowData addData:frame->ambe.data streamId:self.rxStreamId];
             
             if(self.rxStreamId == 0)

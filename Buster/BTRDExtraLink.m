@@ -87,6 +87,10 @@ static NSDictionary *_reflectorList;
     return sizeof(struct dextra_packet);
 }
 
+-(BOOL)hasReliableChecksum {
+    return YES;
+}
+
 
 -(void)processPacket:(NSData *)packetData {
     struct dextra_packet *packet = (struct dextra_packet *) packetData.bytes;

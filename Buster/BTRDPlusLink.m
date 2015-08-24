@@ -133,6 +133,10 @@ static const struct dplus_packet linkModuleTemplate = {
     return sizeof(struct dplus_packet);
 }
 
+-(BOOL)hasReliableChecksum {
+    return NO;
+}
+
 -(void)sendPoll {
     [self sendPacket:self.pollPacket];
 }

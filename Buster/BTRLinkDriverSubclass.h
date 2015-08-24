@@ -42,6 +42,7 @@
 @property (nonatomic, readonly) unsigned short clientPort;
 @property (nonatomic, readonly) unsigned short serverPort;
 @property (nonatomic, readonly) size_t packetSize;
+@property (nonatomic, readonly) BOOL hasReliableChecksum;
 
 //
 //  Properties subclasses might need.  You should take care of making sure linkState is correct.
