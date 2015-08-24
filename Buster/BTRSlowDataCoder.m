@@ -38,8 +38,8 @@ NSString * const BTRSlowDataTextReceived = @"BTRSlowDataTextReceived";
                             messageFrames[(x)][j] ^= scrambler[j];
 
 @interface BTRSlowDataCoder () {
-    char dataFrame[2][3];
-    char messageFrames[8][3];
+    unsigned char dataFrame[2][3];
+    unsigned char messageFrames[8][3];
     BOOL isTop;
     NSMutableString *messageData;
 }
@@ -51,7 +51,7 @@ NSString * const BTRSlowDataTextReceived = @"BTRSlowDataTextReceived";
     self = [super init];
     if(self) {
         isTop = YES;
-        messageData = [NSMutableString stringWithString:@"                    "];
+        messageData = [NSMutableString stringWithString:messageData.string = [@"" stringByPaddingToLength:20 withString:@" " startingAtIndex:0]];
     }
     return self;
 }
@@ -89,7 +89,7 @@ NSString * const BTRSlowDataTextReceived = @"BTRSlowDataTextReceived";
         return;
     }
     
-    char sequence = dataFrame[0][0] & SLOW_DATA_SEQUENCE_MASK;
+    unsigned char sequence = dataFrame[0][0] & SLOW_DATA_SEQUENCE_MASK;
     if(sequence > 3 || sequence < 0) {
         NSLog(@"Bad sequence 0x%02X", sequence);
         isTop = YES;
@@ -101,7 +101,7 @@ NSString * const BTRSlowDataTextReceived = @"BTRSlowDataTextReceived";
         isTop = YES;
         return;
     }
-    [messageData replaceCharactersInRange:NSMakeRange(sequence * 5, 5) withString:replacementString];
+    [messageData replaceCharactersInRange:NSMakeRange(((NSUInteger)sequence) * 5, 5) withString:replacementString];
     
     if(sequence == 3) {
         //  Send the notification and reset messageData
@@ -111,7 +111,7 @@ NSString * const BTRSlowDataTextReceived = @"BTRSlowDataTextReceived";
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:BTRSlowDataTextReceived object:nil userInfo:notificationData];
         });
-        messageData.string = @"                    ";
+        messageData.string = [@"" stringByPaddingToLength:20 withString:@" " startingAtIndex:0];
     }
 
     isTop = YES;
