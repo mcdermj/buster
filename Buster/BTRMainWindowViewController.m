@@ -99,6 +99,7 @@
                                                       });
                                                       dispatch_resume(weakSelf.qsoTimer);
                                                       
+                                                      header[@"color"] = [NSColor colorWithCalibratedRed:0.088 green:0.373 blue:0.139 alpha:1.000];
                                                       
                                                       if(![weakSelf updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {}])
                                                           [weakSelf.heardTableController addObject:header];
@@ -122,6 +123,7 @@
                                                       [weakSelf updateQsoId:notification.userInfo[@"streamId"] usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
                                                           NSDate *headerTime = notification.userInfo[@"time"];
                                                           qso[@"duration"] = [NSNumber numberWithDouble:[headerTime timeIntervalSinceDate:qso[@"time"]]];
+                                                          qso[@"color"] = [NSColor blackColor];
                                                       }];
                                                       
                                                       weakSelf.statusLED.image = [NSImage imageNamed:@"Gray LED"];
@@ -321,6 +323,20 @@
     [alert beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse response){ }];
     
     return YES;
+}
+
+#pragma mark - Heard List QSO Coloring
+
+-(void)tableView:(NSTableView *)tableView willDisplayCell:(id)cellObj forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+    if(tableView != self.heardTableView)
+        return;
+    
+    NSTextFieldCell *cell = cellObj;
+    
+    NSDictionary *entry = self.heardTableController.arrangedObjects[row];
+    
+    //cell.drawsBackground = YES;
+    cell.textColor = entry[@"color"];
 }
 
 @end

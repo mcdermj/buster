@@ -602,6 +602,9 @@
                                                                 </connections>
                                                             </tableColumn>
                                                         </tableColumns>
+                                                        <connections>
+                                                            <outlet property="delegate" destination="XfG-lQ-9wD" id="CKi-KD-3nf"/>
+                                                        </connections>
                                                     </tableView>
                                                 </subviews>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
