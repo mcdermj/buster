@@ -28,6 +28,8 @@
     NSInteger txButtonState;
 }
 
+@property (nonatomic) dispatch_source_t qsoTimer;
+
 @end
 
 @implementation BTRMainWindowViewController
@@ -58,6 +60,34 @@
                                                       weakSelf.urCall.stringValue = header[@"urCall"];
                                                       weakSelf.rpt1Call.stringValue = header[@"rpt1Call"];
                                                       weakSelf.rpt2Call.stringValue = header[@"rpt2Call"];
+                                                      
+                                                      NSNumber *streamId = header[@"streamId"];
+                                                      self.qsoTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
+                                                      dispatch_source_set_timer(self.qsoTimer, dispatch_time(DISPATCH_TIME_NOW, 100ull * NSEC_PER_MSEC), 100ull * NSEC_PER_MSEC, 10ull * NSEC_PER_MSEC);
+                                                      dispatch_source_set_event_handler(self.qsoTimer, ^{
+                                                            //  Update qso here
+                                                          NSPredicate *currentFilterPredicate = self.heardTableController.filterPredicate;
+                                                          self.heardTableController.filterPredicate = nil;
+                                                          
+                                                          NSPredicate *streamIdPredicate = [NSPredicate predicateWithFormat:@"streamId == %@", streamId];
+                                                          NSArray *entries = [self.heardTableController.arrangedObjects filteredArrayUsingPredicate:streamIdPredicate];
+                                                          
+                                                          if(entries.count != 1) {
+                                                              NSLog(@"Found a freaky number of entries for predicate: %lu\n", (unsigned long)entries.count);
+                                                              self.heardTableController.filterPredicate = currentFilterPredicate;
+                                                              return;
+                                                          }
+                                                          
+                                                          NSMutableDictionary *newEntry = [NSMutableDictionary dictionaryWithDictionary:entries[0]];
+                                                          newEntry[@"duration"] = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSinceDate:entries[0][@"time"]]];
+                                                          [self.heardTableController removeObject:entries[0]];
+                                                          [self.heardTableController addObject:[NSDictionary dictionaryWithDictionary:newEntry]];
+                                                          
+                                                          self.heardTableController.filterPredicate = currentFilterPredicate;
+                                                          
+                                                      });
+                                                      dispatch_resume(self.qsoTimer);
+
                                                      
                                                       NSPredicate *currentFilterPredicate = self.heardTableController.filterPredicate;
                                                       self.heardTableController.filterPredicate = nil;
@@ -83,6 +113,8 @@
                                                       weakSelf.rpt1Call.stringValue = @"";
                                                       weakSelf.rpt2Call.stringValue = @"";
                                                       weakSelf.shortTextMessageField.stringValue = @"";
+                                                      
+                                                      dispatch_source_cancel(self.qsoTimer);
                                                       
                                                       NSPredicate *currentFilterPredicate = self.heardTableController.filterPredicate;
                                                       self.heardTableController.filterPredicate = nil;
