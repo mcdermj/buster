@@ -34,6 +34,34 @@
 
 @implementation BTRMainWindowViewController
 
+-(BOOL)updateQsoId:(NSNumber *)streamId usingBlock:(void(^)(NSMutableDictionary *, NSUInteger))block {
+    NSPredicate *currentFilterPredicate = self.heardTableController.filterPredicate;
+    self.heardTableController.filterPredicate = nil;
+    
+    NSUInteger qsoIndex = [self.heardTableController.arrangedObjects indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+        NSDictionary *entry = (NSDictionary *) obj;
+        if([((NSNumber *)entry[@"streamId"]) isEqualToNumber:streamId]) {
+            *stop = YES;
+            return YES;
+        }
+        
+        return NO;
+    }];
+    
+    if(qsoIndex == NSNotFound)
+        return NO;
+    
+    NSDictionary *qso = self.heardTableController.arrangedObjects[qsoIndex];
+    NSMutableDictionary *newQso = [NSMutableDictionary dictionaryWithDictionary:qso];
+    block(newQso, qsoIndex);
+    
+    [self.heardTableController removeObject:qso];
+    [self.heardTableController addObject:newQso];
+    
+    self.heardTableController.filterPredicate = currentFilterPredicate;
+    return YES;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -62,45 +90,20 @@
                                                       weakSelf.rpt2Call.stringValue = header[@"rpt2Call"];
                                                       
                                                       NSNumber *streamId = header[@"streamId"];
-                                                      self.qsoTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
-                                                      dispatch_source_set_timer(self.qsoTimer, dispatch_time(DISPATCH_TIME_NOW, 100ull * NSEC_PER_MSEC), 100ull * NSEC_PER_MSEC, 10ull * NSEC_PER_MSEC);
-                                                      dispatch_source_set_event_handler(self.qsoTimer, ^{
-                                                            //  Update qso here
-                                                          NSPredicate *currentFilterPredicate = self.heardTableController.filterPredicate;
-                                                          self.heardTableController.filterPredicate = nil;
-                                                          
-                                                          NSPredicate *streamIdPredicate = [NSPredicate predicateWithFormat:@"streamId == %@", streamId];
-                                                          NSArray *entries = [self.heardTableController.arrangedObjects filteredArrayUsingPredicate:streamIdPredicate];
-                                                          
-                                                          if(entries.count != 1) {
-                                                              NSLog(@"Found a freaky number of entries for predicate: %lu\n", (unsigned long)entries.count);
-                                                              self.heardTableController.filterPredicate = currentFilterPredicate;
-                                                              return;
-                                                          }
-                                                          
-                                                          NSMutableDictionary *newEntry = [NSMutableDictionary dictionaryWithDictionary:entries[0]];
-                                                          newEntry[@"duration"] = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSinceDate:entries[0][@"time"]]];
-                                                          [self.heardTableController removeObject:entries[0]];
-                                                          [self.heardTableController addObject:[NSDictionary dictionaryWithDictionary:newEntry]];
-                                                          
-                                                          self.heardTableController.filterPredicate = currentFilterPredicate;
-                                                          
+                                                      weakSelf.qsoTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
+                                                      dispatch_source_set_timer(weakSelf.qsoTimer, dispatch_time(DISPATCH_TIME_NOW, 100ull * NSEC_PER_MSEC), 100ull * NSEC_PER_MSEC, 10ull * NSEC_PER_MSEC);
+                                                      dispatch_source_set_event_handler(weakSelf.qsoTimer, ^{
+                                                          [weakSelf updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
+                                                              qso[@"duration"] = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSinceDate:qso[@"time"]]];
+                                                           }];
                                                       });
-                                                      dispatch_resume(self.qsoTimer);
-
-                                                     
-                                                      NSPredicate *currentFilterPredicate = self.heardTableController.filterPredicate;
-                                                      self.heardTableController.filterPredicate = nil;
+                                                      dispatch_resume(weakSelf.qsoTimer);
                                                       
-                                                      NSPredicate *streamIdPredicate = [NSPredicate predicateWithFormat:@"streamId == %@", header[@"streamId"]];
-                                                      NSArray *entries = [self.heardTableController.arrangedObjects filteredArrayUsingPredicate:streamIdPredicate];
-                                                                                                                                              
-                                                      if(entries.count == 0)
-                                                          [self.heardTableController addObject:header];
                                                       
-                                                      self.heardTableController.filterPredicate = currentFilterPredicate;
-                                                      
-                                                      self.statusLED.image = [NSImage imageNamed:@"Green LED"];
+                                                      if(![weakSelf updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {}])
+                                                          [weakSelf.heardTableController addObject:header];
+                                                                                                           
+                                                      weakSelf.statusLED.image = [NSImage imageNamed:@"Green LED"];
                                                   }
      ];
     
@@ -114,31 +117,14 @@
                                                       weakSelf.rpt2Call.stringValue = @"";
                                                       weakSelf.shortTextMessageField.stringValue = @"";
                                                       
-                                                      dispatch_source_cancel(self.qsoTimer);
+                                                      dispatch_source_cancel(weakSelf.qsoTimer);
                                                       
-                                                      NSPredicate *currentFilterPredicate = self.heardTableController.filterPredicate;
-                                                      self.heardTableController.filterPredicate = nil;
+                                                      [weakSelf updateQsoId:notification.userInfo[@"streamId"] usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
+                                                          NSDate *headerTime = notification.userInfo[@"time"];
+                                                          qso[@"duration"] = [NSNumber numberWithDouble:[headerTime timeIntervalSinceDate:qso[@"time"]]];
+                                                      }];
                                                       
-                                                      NSPredicate *streamIdPredicate = [NSPredicate predicateWithFormat:@"streamId == %@", notification.userInfo[@"streamId"]];
-                                                      NSArray *entries = [self.heardTableController.arrangedObjects filteredArrayUsingPredicate:streamIdPredicate];
-                                                      
-                                                      if(entries.count != 1) {
-                                                          NSLog(@"Found a freaky number of entries for predicate: %lu\n", (unsigned long)entries.count);
-                                                          self.heardTableController.filterPredicate = currentFilterPredicate;
-                                                          return;
-                                                      }
-
-                                                      NSDate *headerTime = notification.userInfo[@"time"];
-                                                      NSDate *startTime = entries[0][@"time"];
-                                                      NSMutableDictionary *newHeader = [NSMutableDictionary dictionaryWithDictionary:entries[0]];
-                                                      newHeader[@"duration"] = [NSNumber numberWithDouble:[headerTime timeIntervalSinceDate:startTime]];
-                                                      
-                                                      [self.heardTableController removeObject:entries[0]];
-                                                      [self.heardTableController addObject:[NSDictionary dictionaryWithDictionary:newHeader]];
-                                                      
-                                                      self.heardTableController.filterPredicate = currentFilterPredicate;
-                                                      
-                                                      self.statusLED.image = [NSImage imageNamed:@"Gray LED"];
+                                                      weakSelf.statusLED.image = [NSImage imageNamed:@"Gray LED"];
                                                   }
      ];
     
@@ -240,7 +226,6 @@
     
     [self.view.window makeFirstResponder:nil];
     
-    //[BTRDataEngine sharedInstance].network.xmitUrCall = self.xmitUrCall.objectValue;
     [BTRDataEngine sharedInstance].audio.xmit = YES;
     self.statusLED.image = [NSImage imageNamed:@"Red LED"];
     
@@ -256,7 +241,6 @@
 
 -(void)endTx {
     [BTRDataEngine sharedInstance].audio.xmit = NO;
-    //[BTRDataEngine sharedInstance].network.xmitUrCall = @"";
     self.statusLED.image = [NSImage imageNamed:@"Gray LED"];
 }
 
