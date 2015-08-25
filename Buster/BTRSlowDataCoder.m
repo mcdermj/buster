@@ -20,7 +20,7 @@
 #import "BTRSlowDataCoder.h"
 
 const char syncBytes[] = { 0x55, 0x2D, 0x16 };
-const char scrambler[] = { 0x70, 0x4F, 0x93 };
+const char scrambler[] = { 0x70, 0x4F, 0x93, 0x70, 0x4F, 0x93 };
 const char filler[] = { 0x66, 0x66, 0x66 };
 
 const char SLOW_DATA_TYPE_MASK = 0xF0;
@@ -29,20 +29,18 @@ const char SLOW_DATA_TYPE_TEXT = 0x40;
 
 NSString * const BTRSlowDataTextReceived = @"BTRSlowDataTextReceived";
 
-//  These macros are kinda ugly, we might want to axe them for inline functions.
-
-#define UNSCRAMBLE(x)   for(int i = 0; i < 3; ++i) \
-                            dataFrame[(x)][i] = ((char *)data)[i] ^ scrambler[i];
-
-#define SCRAMBLE(x)     for(int j = 0; j < 3; ++j) \
-                            messageFrames[(x)][j] ^= scrambler[j];
+NS_INLINE void SCRAMBLE(unsigned char *data) {
+    for(int i = 0; i < 6; ++i)
+        data[i] ^= scrambler[i];
+}
 
 @interface BTRSlowDataCoder () {
     unsigned char dataFrame[2][3];
     unsigned char messageFrames[8][3];
-    BOOL isTop;
-    NSMutableString *messageData;
 }
+
+@property (nonatomic) NSMutableData *messageData;
+@property (nonatomic, getter=isTop) BOOL top;
 @end
 
 @implementation BTRSlowDataCoder
@@ -50,71 +48,81 @@ NSString * const BTRSlowDataTextReceived = @"BTRSlowDataTextReceived";
 -(id) init {
     self = [super init];
     if(self) {
-        isTop = YES;
-        messageData = [NSMutableString stringWithString:messageData.string = [@"" stringByPaddingToLength:20 withString:@" " startingAtIndex:0]];
+        _top = YES;
+        _messageData = [NSMutableData dataWithLength:20];
+        memset(_messageData.mutableBytes, ' ', 20);
     }
     return self;
 }
 
 -(void)setMessage:(NSString *)message {
-    _message = [message stringByPaddingToLength:20 withString:@" " startingAtIndex:0];
+    
+    NSParameterAssert(message != nil);
+    
+    char txMessageBytes[20];
+    memset(txMessageBytes, ' ', 20);
+    memcpy(txMessageBytes, message.UTF8String, strnlen(message.UTF8String, 20));
+    
+    _message = [NSString stringWithUTF8String:txMessageBytes];
     
     for(int i = 0; i < 8; i = i + 2) {
         int firstIndex = (i * 5) / 2;
         messageFrames[i][0] = 0x40 | ((char) i / 2);
         
-        memcpy(&messageFrames[i][1], [[self.message substringWithRange:NSMakeRange(firstIndex, 2)] cStringUsingEncoding:NSUTF8StringEncoding], 2);
-        SCRAMBLE(i)
-        memcpy(messageFrames[i+1], [[self.message substringWithRange:NSMakeRange(firstIndex + 2, 3)] cStringUsingEncoding:NSUTF8StringEncoding], 3);
-        SCRAMBLE(i+1)
+        memcpy(&messageFrames[i][1], &txMessageBytes[firstIndex], 5);
+        SCRAMBLE(messageFrames[i]);
     }
  }
 
 -(void)addData:(void *)data streamId:(NSUInteger)streamId {
+    
+    NSParameterAssert(data != NULL);
+    NSParameterAssert(streamId > 0);
+    
     if(!memcmp(data, syncBytes, 3)) {
-        isTop = YES;
+        self.top = YES;
         return;
     }
     
-    if(isTop) {
-        UNSCRAMBLE(0)
-        isTop = NO;
+    if(self.isTop) {
+        memcpy(dataFrame, data, 3);
+        self.top = NO;
         return;
     }
     
-    UNSCRAMBLE(1);
+    memcpy(dataFrame[1], data, 3);
+    SCRAMBLE((unsigned char *) dataFrame);
     
     if((dataFrame[0][0] & SLOW_DATA_TYPE_MASK) != SLOW_DATA_TYPE_TEXT) {
-        isTop = YES;
+        self.top = YES;
         return;
     }
     
     unsigned char sequence = dataFrame[0][0] & SLOW_DATA_SEQUENCE_MASK;
-    if(sequence > 3 || sequence < 0) {
+    if(sequence > 3) {
         NSLog(@"Bad sequence 0x%02X", sequence);
-        isTop = YES;
+        self.top = YES;
         return;
     }
-    NSString *replacementString = [[NSString alloc] initWithBytes:((char*) dataFrame) + 1 length:5 encoding:NSUTF8StringEncoding];
-    if(replacementString == nil) {
-        NSLog(@"Something went wrong with the string!");
-        isTop = YES;
-        return;
-    }
-    [messageData replaceCharactersInRange:NSMakeRange(((NSUInteger)sequence) * 5, 5) withString:replacementString];
+    
+    [self.messageData replaceBytesInRange:NSMakeRange(sequence * 5, 5) withBytes:((unsigned char *) dataFrame) + 1];
     
     if(sequence == 3) {
         //  Send the notification and reset messageData
-        NSDictionary *notificationData = @{ @"text": [NSString stringWithString:messageData],
-                                            @"streamId": [NSNumber numberWithUnsignedInteger:streamId]};
+        NSString *rxMessage = [[NSString alloc] initWithData:self.messageData encoding:NSUTF8StringEncoding];
+        if(rxMessage) {
+            NSDictionary *notificationData = @{ @"text": rxMessage,
+                                                @"streamId": [NSNumber numberWithUnsignedInteger:streamId]};
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:BTRSlowDataTextReceived object:nil userInfo:notificationData];
+            });
+        }
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:BTRSlowDataTextReceived object:nil userInfo:notificationData];
-        });
-        messageData.string = [@"" stringByPaddingToLength:20 withString:@" " startingAtIndex:0];
+        memset(self.messageData.mutableBytes, ' ', 20);
     }
 
-    isTop = YES;
+    self.top = YES;
 }
 
 -(const void *)getDataForSequence:(NSUInteger)sequence {

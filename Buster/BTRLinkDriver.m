@@ -482,6 +482,9 @@
             
             [self.qsoTimer ping];
             
+            //  XXX This should be using a local variable set by the DataEngine.
+            [[BTRDataEngine sharedInstance].slowData addData:frame->ambe.data streamId:self.rxStreamId];
+            
             //  If the 0x40 bit of the sequence is set, this is the last packet of the stream.
             if(frame->sequence & 0x40) {
                 [self terminateCurrentStream];
@@ -498,9 +501,6 @@
                     return;
                 }
             }
-            
-            //  XXX This should be using a local variable set by the DataEngine.
-            [[BTRDataEngine sharedInstance].slowData addData:frame->ambe.data streamId:self.rxStreamId];
             
             if(self.rxStreamId == 0)
                 self.rxSequence = 0;
