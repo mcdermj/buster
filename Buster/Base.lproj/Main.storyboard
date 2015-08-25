@@ -148,7 +148,7 @@
                 <customObject id="Voe-Tx-rLC" customClass="BTRAppDelegate"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="642" y="-156"/>
+            <point key="canvasLocation" x="410" y="-59"/>
         </scene>
         <!--Window Controller-->
         <scene sceneID="R2V-B0-nI4">
@@ -166,7 +166,7 @@
                 </windowController>
                 <customObject id="Oky-zY-oP4" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="127" y="527"/>
+            <point key="canvasLocation" x="71" y="663"/>
         </scene>
         <!--Preferences-->
         <scene sceneID="lmm-p7-N0X">
@@ -353,7 +353,7 @@
                 <userDefaultsController id="eDD-IH-9g9"/>
                 <userDefaultsController id="NAR-ze-Bfq"/>
             </objects>
-            <point key="canvasLocation" x="1255" y="-118"/>
+            <point key="canvasLocation" x="966" y="119"/>
         </scene>
         <!--Main Window View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -476,7 +476,7 @@
                                                                     </binding>
                                                                 </connections>
                                                             </tableColumn>
-                                                            <tableColumn editable="NO" width="93" minWidth="93" maxWidth="93" id="tGH-A8-CdR">
+                                                            <tableColumn editable="NO" width="86" minWidth="86" maxWidth="86" id="tGH-A8-CdR">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="My">
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -503,7 +503,7 @@
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                                 </tableHeaderCell>
-                                                                <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" id="v59-pX-kS2">
+                                                                <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" placeholderString="" id="v59-pX-kS2">
                                                                     <customFormatter key="formatter" id="r86-CO-5cX" customClass="BTRCallFormatter"/>
                                                                     <font key="font" metaFont="fixedUser" size="11"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -982,7 +982,7 @@
                     </connections>
                 </arrayController>
             </objects>
-            <point key="canvasLocation" x="250" y="901"/>
+            <point key="canvasLocation" x="71" y="1054"/>
         </scene>
         <!--Audio-->
         <scene sceneID="elY-lg-nZP">
@@ -1071,7 +1071,7 @@
                 <customObject id="B0j-BN-CLv" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <userDefaultsController id="daA-mL-Cd4"/>
             </objects>
-            <point key="canvasLocation" x="1255" y="117"/>
+            <point key="canvasLocation" x="966" y="304"/>
         </scene>
         <!--Vocoder View Controller-->
         <scene sceneID="WY5-J8-QDS">
@@ -1103,9 +1103,6 @@
                             </popUpButton>
                             <containerView identifier="Configuration" translatesAutoresizingMaskIntoConstraints="NO" id="GCH-3n-e3r">
                                 <rect key="frame" x="-1" y="-1" width="426" height="185"/>
-                                <connections>
-                                    <segue destination="UzW-6E-6FP" kind="embed" id="0aO-KH-zdx"/>
-                                </connections>
                             </containerView>
                         </subviews>
                         <constraints>
@@ -1123,19 +1120,7 @@
                 </viewController>
                 <customObject id="nvC-gc-sMP" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1255" y="468.5"/>
-        </scene>
-        <!--View Controller-->
-        <scene sceneID="fVQ-sf-eLE">
-            <objects>
-                <viewController id="UzW-6E-6FP" sceneMemberID="viewController">
-                    <view key="view" id="DLU-9I-AT5">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </view>
-                </viewController>
-                <customObject id="UYw-3e-O2a" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-            </objects>
+            <point key="canvasLocation" x="966" y="507.5"/>
         </scene>
     </scenes>
     <resources>
