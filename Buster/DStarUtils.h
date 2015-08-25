@@ -102,20 +102,6 @@ NS_INLINE uint16 dstar_calc_sum(struct dstar_header_data *header) {
 
     return (~crc);
 }
-/* - (uint16) calculateChecksum:(struct dstar_header_data *)header {
-    unsigned short crc = 0xFFFF;
-    
-    for(char *packetPointer = (char *) header;
-        packetPointer < (char *) &(header->sum);
-        ++packetPointer) {
-        crc = (crc >> 8) ^ ccittTab[(crc & 0x00FF) ^ *packetPointer];
-    }
-    
-    crc = ~crc;
-    
-    return ((uint16) crc);
-} */
-
 
 static const struct dstar_frame dstar_header_template = {
     .magic = "DSVT",
