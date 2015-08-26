@@ -37,8 +37,8 @@ static const struct dv3k_packet bleepPacket = {
     .payload.ambe.cmode.field_id = DV3K_AMBE_FIELD_CMODE,
     .payload.ambe.cmode.value = htons(0x4000),
     .payload.ambe.tone.field_id = DV3K_AMBE_FIELD_TONE,
-    .payload.ambe.tone.tone = 0x40,
-    .payload.ambe.tone.amplitude = 0x00
+    .payload.ambe.tone.tone = 0x15,
+    .payload.ambe.tone.amplitude = (signed char) -12
 };
 
 static const struct dv3k_packet silencePacket = {
