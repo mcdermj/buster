@@ -1,5 +1,5 @@
 //
-//  BTRLinkDriver.h
+//  BTRSlowDataDelegate.h
 //
 //  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
 
@@ -17,33 +17,9 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#import "BTRVocoderDriver.h"
-#import "BTRLinkDriverDelegate.h"
+@protocol BTRSlowDataDelegate <NSObject>
 
-#pragma mark - Notification Constants
+-(void)slowDataReceived:(NSString *)slowData forStreamId:(NSNumber *)streamId;
 
-extern NSString * const BTRRepeaterInfoReceived;
-extern NSString * const BTRNetworkLinkFailed;
+@end
 
-enum linkState {
-    UNLINKED,
-    CONNECTED,
-    LINKING,
-    LINKED
-};
-
-@protocol BTRLinkDriverProtocol
-
-+(BOOL)canHandleLinkTo:(NSString *)reflector;
-
-@property (nonatomic, readonly, copy) NSString *linkTarget;
-@property (nonatomic) id <BTRVocoderDriver> vocoder;
-@property (nonatomic, copy)NSString *myCall;
-@property (nonatomic, copy)NSString *myCall2;
-@property (nonatomic, weak) NSObject <BTRLinkDriverDelegate> *delegate;
-
--(id)initWithLinkTo:(NSString *)linkTarget;
--(void)unlink;
-
--(void) sendAMBE:(void *)data lastPacket:(BOOL)last;
-@end 

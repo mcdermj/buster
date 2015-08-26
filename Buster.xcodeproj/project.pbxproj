@@ -144,6 +144,9 @@
 		09AB117A1B5A13970067B9FB /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		09DFDA971B8C331300D00030 /* BTRMessageFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRMessageFormatter.h; sourceTree = "<group>"; };
 		09DFDA981B8C331300D00030 /* BTRMessageFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRMessageFormatter.m; sourceTree = "<group>"; };
+		09DFDA9A1B8D191900D00030 /* BTRLinkDriverDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BTRLinkDriverDelegate.h; sourceTree = "<group>"; };
+		09DFDA9B1B8D300B00D00030 /* BTRDataEngineDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BTRDataEngineDelegate.h; sourceTree = "<group>"; };
+		09DFDA9C1B8D351B00D00030 /* BTRSlowDataDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BTRSlowDataDelegate.h; sourceTree = "<group>"; };
 		09E363EA1B66F46500F74DBB /* BTRSlowDataCoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRSlowDataCoder.h; sourceTree = "<group>"; };
 		09E363EB1B66F46500F74DBB /* BTRSlowDataCoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRSlowDataCoder.m; sourceTree = "<group>"; };
 		09E589C81B7EAC1800A962B5 /* BTRDPlusAuthenticator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRDPlusAuthenticator.h; sourceTree = "<group>"; };
@@ -197,6 +200,9 @@
 				09AB117A1B5A13970067B9FB /* Prefix.pch */,
 				0908EF881B87DAAD007B76F5 /* DStarUtils.h */,
 				093B9B1A1B5214C700C2ABD0 /* BTRVocoderDriver.h */,
+				09DFDA9A1B8D191900D00030 /* BTRLinkDriverDelegate.h */,
+				09DFDA9C1B8D351B00D00030 /* BTRSlowDataDelegate.h */,
+				09DFDA9B1B8D300B00D00030 /* BTRDataEngineDelegate.h */,
 				09E589CB1B82880B00A962B5 /* BTRLinkDriverProtocol.h */,
 				09318EE91B87B67800B1E1FE /* BTRLinkDriverProtocol.m */,
 				095491091B64A78100A57FD2 /* BTRApplication.h */,

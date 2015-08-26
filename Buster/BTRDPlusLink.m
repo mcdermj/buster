@@ -227,7 +227,7 @@ static const struct dplus_packet linkModuleTemplate = {
             break;
         default:
             NSLog(@"Received unknown packet type 0x%02X", packet->link.type);
-            NSLog(@"Dump: %@", [NSData dataWithBytes:packet length:sizeof(struct dplus_packet)]);
+            // NSLog(@"Dump: %@", [NSData dataWithBytes:packet length:sizeof(struct dplus_packet)]);
             break;
     }
 }

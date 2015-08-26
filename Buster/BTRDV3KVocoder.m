@@ -66,14 +66,10 @@ static const struct dv3k_packet dv3k_audio = {
 
 @interface BTRDV3KVocoder () {
     dispatch_queue_t dispatchQueue;
-    // dispatch_queue_t readDispatchQueue;
     dispatch_source_t dispatchSource;
     struct dv3k_packet dv3k_ambe;
     struct dv3k_packet *responsePacket;
 }
-
-/* @property (nonatomic, readwrite, copy) NSString *productId;
-@property (nonatomic, readwrite, copy) NSString *version; */
 
 - (BOOL) sendCtrlPacket:(struct dv3k_packet)packet expectResponse:(uint8)response;
 - (void) processPacket;
@@ -81,6 +77,7 @@ static const struct dv3k_packet dv3k_audio = {
 
 @implementation BTRDV3KVocoder
 
+@synthesize network = _network;
 @synthesize audio;
 
 #pragma mark - Lifecycle
@@ -362,7 +359,7 @@ static const struct dv3k_packet dv3k_audio = {
                 NSLog(@"Last Packet");
             }
             
-            [[BTRDataEngine sharedInstance].network sendAMBE:responsePacket->payload.ambe.data.data lastPacket:last];
+            [self.network sendAMBE:responsePacket->payload.ambe.data.data lastPacket:last];
             
             break;
         case DV3K_TYPE_AUDIO:

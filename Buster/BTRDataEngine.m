@@ -59,6 +59,7 @@ static NSMutableArray *linkDrivers = nil;
         _vocoder.audio = _audio;
         
         _slowData = [[BTRSlowDataCoder alloc] init];
+        _slowData.delegate = self;
         
         BTRDataEngine __weak *weakSelf = self;
         
@@ -87,6 +88,8 @@ static NSMutableArray *linkDrivers = nil;
     
     self.network.vocoder = vocoder;
     self.audio.vocoder = vocoder;
+    self.vocoder.audio = self.audio;
+    self.vocoder.network = self.network;
 }
 
 +(void)registerVocoderDriver:(Class)driver {
@@ -136,6 +139,9 @@ static NSMutableArray *linkDrivers = nil;
         if([driver canHandleLinkTo:reflector]) {
            self.network = [[driver alloc] initWithLinkTo:reflector];
             self.network.vocoder = self.vocoder;
+            self.vocoder.network = self.network;
+            self.network.delegate = self;
+            
             [self.network bind:@"myCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
             [self.network bind:@"myCall2" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall2" options:nil];
         }
@@ -158,6 +164,33 @@ static NSMutableArray *linkDrivers = nil;
             [self.network unbind:@"myCall2"];
             self.network = nil;
         }
+}
+
+-(void)streamDidStart:(NSDictionary *)header {
+    self.audio.receiving = YES;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate streamDidStart:header];
+    });
+}
+
+-(void)streamDidEnd:(NSNumber *)streamId atTime:(NSDate *)time {
+    self.audio.receiving = NO;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate streamDidEnd:streamId atTime:time];
+    });
+}
+-(void)slowDataReceived:(NSString *)slowData forStreamId:(NSNumber *)streamId {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate slowDataReceived:slowData forStreamId:streamId];
+    });
+}
+
+-(void)addData:(void *)data streamId:(NSUInteger)streamId {
+    [self.slowData addData:data streamId:streamId];
+}
+
+-(const void *)getDataForSequence:(NSUInteger)sequence {
+    return [self.slowData getDataForSequence:sequence];
 }
 
 @end

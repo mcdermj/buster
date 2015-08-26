@@ -41,4 +41,6 @@ extern NSString * const BTRAudioDeviceChanged;
 @property (nonatomic, readonly) AudioDeviceID defaultOutputDevice;
 @property (nonatomic) BOOL xmit;
 
+@property (nonatomic) BOOL receiving;
+
 @end

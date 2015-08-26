@@ -17,7 +17,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-extern NSString * const BTRSlowDataTextReceived;
+#import "BTRSlowDataDelegate.h"
 
 @interface BTRSlowDataCoder : NSObject
 
@@ -25,5 +25,6 @@ extern NSString * const BTRSlowDataTextReceived;
 -(const void *)getDataForSequence:(NSUInteger)sequence;
 
 @property (nonatomic, copy) NSString *message;
+@property (nonatomic, weak) NSObject <BTRSlowDataDelegate> *delegate;
 
 @end

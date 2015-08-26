@@ -24,11 +24,10 @@
 #import "BTRSlowDataCoder.h"
 #import "BTRAudioHandler.h"
 
-@interface BTRMainWindowViewController () {
-    NSInteger txButtonState;
-}
+@interface BTRMainWindowViewController ()
 
 @property (nonatomic) dispatch_source_t qsoTimer;
+@property (nonatomic) NSInteger txButtonState;
 
 @end
 
@@ -62,73 +61,77 @@
     return YES;
 }
 
+// XXX These probably shouldn't be called "headers" anymore.  They're really stream info dictionaries.
+-(void)streamDidStart:(NSDictionary *)inHeader {
+    NSMutableDictionary *header = [NSMutableDictionary dictionaryWithDictionary:inHeader];
+    
+    if([((NSString *)header[@"myCall2"]) isEqualToString:@"    "])
+        header[@"compositeMyCall"] = header[@"myCall"];
+    else
+        header[@"compositeMyCall"] = [NSString stringWithFormat:@"%@/%@", [header[@"myCall"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]], [header[@"myCall2"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+    
+    
+    self.myCall.stringValue = header[@"compositeMyCall"];
+    self.urCall.stringValue = header[@"urCall"];
+    self.rpt1Call.stringValue = header[@"rpt1Call"];
+    self.rpt2Call.stringValue = header[@"rpt2Call"];
+    
+    NSNumber *streamId = header[@"streamId"];
+    BTRMainWindowViewController __weak *weakSelf = self;
+    self.qsoTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
+    dispatch_source_set_timer(self.qsoTimer, dispatch_time(DISPATCH_TIME_NOW, 100ull * NSEC_PER_MSEC), 100ull * NSEC_PER_MSEC, 10ull * NSEC_PER_MSEC);
+    dispatch_source_set_event_handler(self.qsoTimer, ^{
+        [weakSelf updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
+            qso[@"duration"] = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSinceDate:qso[@"time"]]];
+        }];
+    });
+    dispatch_resume(self.qsoTimer);
+    
+    header[@"color"] = [NSColor colorWithCalibratedRed:0.088 green:0.373 blue:0.139 alpha:1.000];
+    
+    if(![self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {}])
+        [self.heardTableController addObject:header];
+    
+    self.statusLED.image = [NSImage imageNamed:@"Green LED"];
+}
+
+-(void)streamDidEnd:(NSNumber *)streamId atTime:(NSDate *)time {
+        self.myCall.stringValue = @"";
+        self.urCall.stringValue = @"";
+        self.rpt1Call.stringValue = @"";
+        self.rpt2Call.stringValue = @"";
+        self.shortTextMessageField.stringValue = @"";
+        
+        dispatch_source_cancel(self.qsoTimer);
+        
+        [self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
+            NSDate *headerTime = time;
+            qso[@"duration"] = [NSNumber numberWithDouble:[headerTime timeIntervalSinceDate:qso[@"time"]]];
+            qso[@"color"] = [NSColor blackColor];
+        }];
+        
+        self.statusLED.image = [NSImage imageNamed:@"Gray LED"];
+}
+
+-(void)slowDataReceived:(NSString *)slowData forStreamId:(NSNumber *)streamId {
+    //  XXX This should be removed.
+    self.shortTextMessageField.stringValue = slowData;
+    
+    [self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
+        qso[@"message"] = slowData;
+    }];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [BTRDataEngine sharedInstance].delegate = self;
     
     [self.reflectorTableView registerForDraggedTypes:@[ @"net.nh6z.Dummy.reflector" ]];
     self.reflectorTableView.dataSource = self;
     
     self.heardTableView.delegate = self;
     self.heardTableController.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"time" ascending:NO] ];
-    
-    __weak BTRMainWindowViewController *weakSelf = self;
-    [[NSNotificationCenter defaultCenter] addObserverForName: BTRNetworkStreamStart
-                                                      object: nil
-                                                       queue: [NSOperationQueue mainQueue]
-                                                  usingBlock:^(NSNotification *notification) {
-                                                      NSMutableDictionary *header = [NSMutableDictionary dictionaryWithDictionary:notification.userInfo];
-                                                      
-                                                      if([((NSString *)header[@"myCall2"]) isEqualToString:@"    "])
-                                                          header[@"compositeMyCall"] = header[@"myCall"];
-                                                      else
-                                                          header[@"compositeMyCall"] = [NSString stringWithFormat:@"%@/%@", [header[@"myCall"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]], [header[@"myCall2"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
-                                                      
-                                                      
-                                                      weakSelf.myCall.stringValue = header[@"compositeMyCall"];
-                                                      weakSelf.urCall.stringValue = header[@"urCall"];
-                                                      weakSelf.rpt1Call.stringValue = header[@"rpt1Call"];
-                                                      weakSelf.rpt2Call.stringValue = header[@"rpt2Call"];
-                                                      
-                                                      NSNumber *streamId = header[@"streamId"];
-                                                      weakSelf.qsoTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
-                                                      dispatch_source_set_timer(weakSelf.qsoTimer, dispatch_time(DISPATCH_TIME_NOW, 100ull * NSEC_PER_MSEC), 100ull * NSEC_PER_MSEC, 10ull * NSEC_PER_MSEC);
-                                                      dispatch_source_set_event_handler(weakSelf.qsoTimer, ^{
-                                                          [weakSelf updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
-                                                              qso[@"duration"] = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSinceDate:qso[@"time"]]];
-                                                           }];
-                                                      });
-                                                      dispatch_resume(weakSelf.qsoTimer);
-                                                      
-                                                      header[@"color"] = [NSColor colorWithCalibratedRed:0.088 green:0.373 blue:0.139 alpha:1.000];
-                                                      
-                                                      if(![weakSelf updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {}])
-                                                          [weakSelf.heardTableController addObject:header];
-                                                                                                           
-                                                      weakSelf.statusLED.image = [NSImage imageNamed:@"Green LED"];
-                                                  }
-     ];
-    
-    [[NSNotificationCenter defaultCenter] addObserverForName: BTRNetworkStreamEnd
-                                                      object: nil
-                                                       queue: [NSOperationQueue mainQueue]
-                                                  usingBlock: ^(NSNotification *notification) {                                                      
-                                                      weakSelf.myCall.stringValue = @"";
-                                                      weakSelf.urCall.stringValue = @"";
-                                                      weakSelf.rpt1Call.stringValue = @"";
-                                                      weakSelf.rpt2Call.stringValue = @"";
-                                                      weakSelf.shortTextMessageField.stringValue = @"";
-                                                      
-                                                      dispatch_source_cancel(weakSelf.qsoTimer);
-                                                      
-                                                      [weakSelf updateQsoId:notification.userInfo[@"streamId"] usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
-                                                          NSDate *headerTime = notification.userInfo[@"time"];
-                                                          qso[@"duration"] = [NSNumber numberWithDouble:[headerTime timeIntervalSinceDate:qso[@"time"]]];
-                                                          qso[@"color"] = [NSColor blackColor];
-                                                      }];
-                                                      
-                                                      weakSelf.statusLED.image = [NSImage imageNamed:@"Gray LED"];
-                                                  }
-     ];
     
     [[NSNotificationCenter defaultCenter] addObserverForName:BTRTxKeyDown object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
         [self startTx];
@@ -142,52 +145,14 @@
         self.repeaterInfo.stringValue = notification.userInfo[@"local"];
     }];
     
-    [[NSNotificationCenter defaultCenter] addObserverForName:BTRSlowDataTextReceived object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification){
-        self.shortTextMessageField.stringValue = notification.userInfo[@"text"];
-        
-        NSPredicate *currentFilterPredicate = self.heardTableController.filterPredicate;
-        self.heardTableController.filterPredicate = nil;
-        
-        NSPredicate *streamIdPredicate = [NSPredicate predicateWithFormat:@"streamId == %@", notification.userInfo[@"streamId"]];
-        NSArray *entries = [self.heardTableController.arrangedObjects filteredArrayUsingPredicate:streamIdPredicate];
-        
-        if(entries.count != 1) {
-            NSLog(@"Found a freaky number of entries for streamId %@: %lu\n", notification.userInfo[@"streamId"], (unsigned long)entries.count);
-            self.heardTableController.filterPredicate = currentFilterPredicate;
-            return;
-        }
-        
-        NSMutableDictionary *newHeader = [NSMutableDictionary dictionaryWithDictionary:entries[0]];
-        newHeader[@"message"] = notification.userInfo[@"text"];
-        
-        [self.heardTableController removeObject:entries[0]];
-        [self.heardTableController addObject:[NSDictionary dictionaryWithDictionary:newHeader]];
-        
-        self.heardTableController.filterPredicate = currentFilterPredicate;
-    }];
-    
     [[NSNotificationCenter defaultCenter] addObserverForName:BTRNetworkLinkFailed object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
         NSAlert *alert = [[NSAlert alloc] init];
         alert.messageText = notification.userInfo[@"error"];
         [alert beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse response){ }];
     }];
-
     
     [self.txButton setPeriodicDelay:.1f interval:.1f];
-    txButtonState = NSOffState;
-}
-
-- (void)viewWillDisappear {
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:BTRNetworkHeaderReceived
-                                                  object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:BTRNetworkStreamEnd
-                                                  object:nil];
-}
-
-- (void)setRepresentedObject:(id)representedObject {
-    [super setRepresentedObject:representedObject];
+    self.txButtonState = NSOffState;
 }
 
 - (IBAction)doLink:(id)sender {
@@ -247,12 +212,12 @@
 }
 
 - (IBAction)doTx:(id)sender {    
-    if(self.txButton.state == txButtonState)
+    if(self.txButton.state == self.txButtonState)
         [self startTx];
     else
         [self endTx];
     
-    txButtonState = self.txButton.state;
+    self.txButtonState = self.txButton.state;
 }
 
 #pragma mark - Text Editing Control
@@ -335,7 +300,6 @@
     
     NSDictionary *entry = self.heardTableController.arrangedObjects[row];
     
-    //cell.drawsBackground = YES;
     cell.textColor = entry[@"color"];
 }
 

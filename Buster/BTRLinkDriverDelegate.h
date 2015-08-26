@@ -1,5 +1,5 @@
 //
-//  BTRLinkDriver.h
+//  BTRLinkDriverDelegate.h
 //
 //  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
 
@@ -17,33 +17,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#import "BTRVocoderDriver.h"
-#import "BTRLinkDriverDelegate.h"
+@protocol BTRLinkDriverDelegate <NSObject>
 
-#pragma mark - Notification Constants
+-(void)streamDidStart:(NSDictionary *)header;
+-(void)streamDidEnd:(NSNumber *)streamId atTime:(NSDate *)date;
+-(void)addData:(void *)data streamId:(NSUInteger)streamId;
+-(const void *)getDataForSequence:(NSUInteger)sequence;
 
-extern NSString * const BTRRepeaterInfoReceived;
-extern NSString * const BTRNetworkLinkFailed;
-
-enum linkState {
-    UNLINKED,
-    CONNECTED,
-    LINKING,
-    LINKED
-};
-
-@protocol BTRLinkDriverProtocol
-
-+(BOOL)canHandleLinkTo:(NSString *)reflector;
-
-@property (nonatomic, readonly, copy) NSString *linkTarget;
-@property (nonatomic) id <BTRVocoderDriver> vocoder;
-@property (nonatomic, copy)NSString *myCall;
-@property (nonatomic, copy)NSString *myCall2;
-@property (nonatomic, weak) NSObject <BTRLinkDriverDelegate> *delegate;
-
--(id)initWithLinkTo:(NSString *)linkTarget;
--(void)unlink;
-
--(void) sendAMBE:(void *)data lastPacket:(BOOL)last;
-@end 
+@end

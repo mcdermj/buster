@@ -27,8 +27,6 @@ const char SLOW_DATA_TYPE_MASK = 0xF0;
 const char SLOW_DATA_SEQUENCE_MASK = 0x0F;
 const char SLOW_DATA_TYPE_TEXT = 0x40;
 
-NSString * const BTRSlowDataTextReceived = @"BTRSlowDataTextReceived";
-
 NS_INLINE void SCRAMBLE(unsigned char *data) {
     for(int i = 0; i < 6; ++i)
         data[i] ^= scrambler[i];
@@ -110,14 +108,8 @@ NS_INLINE void SCRAMBLE(unsigned char *data) {
     if(sequence == 3) {
         //  Send the notification and reset messageData
         NSString *rxMessage = [[NSString alloc] initWithData:self.messageData encoding:NSUTF8StringEncoding];
-        if(rxMessage) {
-            NSDictionary *notificationData = @{ @"text": rxMessage,
-                                                @"streamId": [NSNumber numberWithUnsignedInteger:streamId]};
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:BTRSlowDataTextReceived object:nil userInfo:notificationData];
-            });
-        }
+        if(rxMessage)
+            [self.delegate slowDataReceived:rxMessage forStreamId:[NSNumber numberWithUnsignedInteger:streamId]];
         
         memset(self.messageData.mutableBytes, ' ', 20);
     }

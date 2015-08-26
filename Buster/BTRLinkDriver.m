@@ -112,6 +112,7 @@
 @synthesize vocoder = _vocoder;
 @synthesize myCall = _myCall;
 @synthesize myCall2 = _myCall2;
+@synthesize delegate = _delegate;
 
 +(BOOL)canHandleLinkTo:(NSString *)reflector {
     return NO;
@@ -374,17 +375,12 @@
 }
 
 -(void) terminateCurrentStream {
-    BTRLinkDriver __weak *weakSelf = self;
-    NSDictionary *streamData = @{
+    /* NSDictionary *streamData = @{
                                  @"streamId": [NSNumber numberWithUnsignedInteger:self.rxStreamId],
                                  @"time": [NSDate date]
-                                 };
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName: BTRNetworkStreamEnd
-                                                            object: weakSelf
-                                                          userInfo: streamData
-         ];
-    });
+                                 }; */
+    
+    [self.delegate streamDidEnd:[NSNumber numberWithUnsignedInteger:self.rxStreamId] atTime:[NSDate date]];
     NSLog(@"Stream %d ends", self.rxStreamId);
     self.rxStreamId = 0;
     self.qsoTimer = nil;
@@ -463,12 +459,13 @@
             
             NSLog(@"New stream %@", header);
             self.rxStreamId = frame->id;
-            dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate streamDidStart:header];
+            /* dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName: BTRNetworkStreamStart
                                                                     object: weakSelf
                                                                   userInfo: header
                  ];
-            });
+            }); */
             
             self.qsoTimer = [[BTRNetworkTimer alloc] initWithTimeout:5.0 failureHandler: ^{
                 [weakSelf terminateCurrentStream];
@@ -483,7 +480,7 @@
             [self.qsoTimer ping];
             
             //  XXX This should be using a local variable set by the DataEngine.
-            [[BTRDataEngine sharedInstance].slowData addData:frame->ambe.data streamId:self.rxStreamId];
+            [self.delegate addData:frame->ambe.data streamId:self.rxStreamId];
             
             //  If the 0x40 bit of the sequence is set, this is the last packet of the stream.
             if(frame->sequence & 0x40) {
@@ -541,7 +538,7 @@
         memcpy(&ambe, &dstar_ambe_template, sizeof(struct dstar_frame));
         ambe.sequence = weakSelf.txSequence;
         ambe.id = weakSelf.txStreamId;
-        memcpy(&ambe.ambe.data, [[BTRDataEngine sharedInstance].slowData getDataForSequence:weakSelf.txSequence], sizeof(ambe.ambe.data));
+        memcpy(&ambe.ambe.data, [self.delegate getDataForSequence:weakSelf.txSequence], sizeof(ambe.ambe.data));
         
         if(last) {
             weakSelf.txSequence = 0;

@@ -8,8 +8,5 @@
 
 #import "BTRLinkDriverProtocol.h"
 
-NSString * const BTRNetworkHeaderReceived = @"BTRNetworkHeaderReceived";
-NSString * const BTRNetworkStreamEnd = @"BTRNetworkStreamEnd";
-NSString * const BTRNetworkStreamStart = @"BTRNetworkStreamStart";
 NSString * const BTRRepeaterInfoReceived = @"BTRRepeaterInfoReceived";
 NSString * const BTRNetworkLinkFailed = @"BTRNetworkLinkFailed";
