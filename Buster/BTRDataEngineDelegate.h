@@ -22,5 +22,10 @@
 -(void)streamDidStart:(NSDictionary *)header;
 -(void)streamDidEnd:(NSNumber *)streamId atTime:(NSDate *)date;
 -(void)slowDataReceived:(NSString *)slowData forStreamId:(NSNumber *)streamId;
+-(void)destinationDidLink:(NSString *)destination;
+-(void)destinationDidUnlink:(NSString *)destination;
+-(void)destinationDidError:(NSString *)destination error:(NSError *)error;
+-(void)destinationWillLink:(NSString *)destination;
+-(void)destinationDidConnect:(NSString *)destination;
 
 @end

@@ -20,11 +20,6 @@
 #import "BTRVocoderDriver.h"
 #import "BTRLinkDriverDelegate.h"
 
-#pragma mark - Notification Constants
-
-extern NSString * const BTRRepeaterInfoReceived;
-extern NSString * const BTRNetworkLinkFailed;
-
 enum linkState {
     UNLINKED,
     CONNECTED,

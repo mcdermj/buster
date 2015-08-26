@@ -148,13 +148,10 @@ static NSMutableArray *linkDrivers = nil;
         }
     }
     
-    BTRDataEngine __weak *weakSelf = self;
     if(self.network == nil) {
+        NSError *error = [NSError errorWithDomain:@"BTRErrorDomain" code:2 userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@ does not exist.", reflector]}];
+        [self.delegate destinationDidError:reflector error:error];
         NSLog(@"Sending link failed notification");
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:BTRNetworkLinkFailed object:weakSelf userInfo:@{ @"error": [NSString stringWithFormat:@"Destination %@ not found", reflector]}];
-        });
-
     }
 }
 
@@ -192,6 +189,36 @@ static NSMutableArray *linkDrivers = nil;
 
 -(const void *)getDataForSequence:(NSUInteger)sequence {
     return [self.slowData getDataForSequence:sequence];
+}
+
+-(void)destinationDidLink:(NSString *)destination {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate destinationDidLink:destination];
+    });
+}
+
+-(void)destinationDidUnlink:(NSString *)destination {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate destinationDidUnlink:destination];
+    });
+}
+
+-(void)destinationDidConnect:(NSString *)destination {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate destinationDidConnect:destination];
+    });
+}
+
+-(void)destinationWillLink:(NSString *)destination {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate destinationWillLink:destination];
+    });
+}
+
+-(void)destinationDidError:(NSString *)destination error:(NSError *)error {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate destinationDidError:destination error:error];
+    });
 }
 
 @end

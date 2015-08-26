@@ -198,24 +198,14 @@
     
     dispatch_resume(_dispatchSource);
     
-    NSDictionary *infoDict = @{ @"local": [NSString stringWithFormat:@"Linking to %@", self.linkTarget],
-                                @"reflector": self.linkTarget,
-                                @"status": @"" };
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:BTRRepeaterInfoReceived object:weakSelf userInfo:infoDict];
-    });
-    
+    [self.delegate destinationWillLink:self.linkTarget];
+        
     NSString *reflectorAddress = [self getAddressForReflector:(NSString *)[[self.linkTarget substringWithRange:NSMakeRange(0, 7)] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
     if(!reflectorAddress) {
-        infoDict = @{ @"local": [NSString stringWithFormat:@"Couldn't find %@", self.linkTarget],
-                      @"reflector": self.linkTarget,
-                      @"status": @"" };
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:BTRRepeaterInfoReceived object:weakSelf userInfo:infoDict];
-        });
-        
+        //  XXX This really should never happen.
+        NSError *error = [NSError errorWithDomain:@"BTRErrorDomain" code:1 userInfo:@{ NSLocalizedDescriptionKey: @"Couldn't find reflector" }];
+        [self.delegate destinationDidError:self.linkTarget error:error];
+                
         NSLog(@"Couldn't find reflector %@", self.linkTarget);
         return;
     }
@@ -318,32 +308,17 @@
 
     switch(linkState) {
         case UNLINKED: {
-            BTRLinkDriver __weak *weakSelf = self;
-            NSDictionary *infoDict = @{ @"local": @"Unlinked",
-                                        @"reflector": self.linkTarget,
-                                        @"status": @"" };
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:BTRRepeaterInfoReceived object:weakSelf userInfo:infoDict];
-            });
-            
+            [self.delegate destinationDidUnlink:self.linkTarget];
             [self stopPoll];
             self.linkTimer = nil;
             dispatch_source_cancel(self.dispatchSource);
             break;
         }
         case CONNECTED: {
-            BTRLinkDriver __weak *weakSelf = self;
-            NSDictionary *infoDict = @{ @"local": [NSString stringWithFormat:@"Connected to %@, waiting for link acknowledgment", self.linkTarget],
-                                        @"reflector": self.linkTarget,
-                                        @"status": @"" };
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:BTRRepeaterInfoReceived object:weakSelf userInfo:infoDict];
-            });
-            
+            [self.delegate destinationDidConnect:self.linkTarget];
             [self startPoll];
             
+            BTRLinkDriver __weak *weakSelf = self;
             self.linkTimer = [[BTRNetworkTimer alloc] initWithTimeout:30.0 failureHandler:^{
                 [weakSelf unlink];
             }];
@@ -353,17 +328,10 @@
             break;
         }
         case LINKED: {
-            BTRLinkDriver __weak *weakSelf = self;
-            
-            NSDictionary *infoDict = @{ @"local": [NSString stringWithFormat:@"Linked to %@", self.linkTarget],
-                                        @"reflector": self.linkTarget,
-                                        @"status": @"" };
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:BTRRepeaterInfoReceived object:weakSelf userInfo:infoDict];
-            });
+            [self.delegate destinationDidLink:self.linkTarget];
             if(_linkState == UNLINKED) {
                 [self startPoll];
+                BTRLinkDriver __weak *weakSelf = self;
                 self.linkTimer = [[BTRNetworkTimer alloc] initWithTimeout:30.0 failureHandler:^{
                     [weakSelf unlink];
                 }];
@@ -375,11 +343,6 @@
 }
 
 -(void) terminateCurrentStream {
-    /* NSDictionary *streamData = @{
-                                 @"streamId": [NSNumber numberWithUnsignedInteger:self.rxStreamId],
-                                 @"time": [NSDate date]
-                                 }; */
-    
     [self.delegate streamDidEnd:[NSNumber numberWithUnsignedInteger:self.rxStreamId] atTime:[NSDate date]];
     NSLog(@"Stream %d ends", self.rxStreamId);
     self.rxStreamId = 0;

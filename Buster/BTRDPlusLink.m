@@ -223,11 +223,8 @@ static const struct dplus_packet linkModuleTemplate = {
                 self.linkState = LINKED;
             } else if(!strncmp(packet->link.module.repeater, "BUSY", 4)) {
                 NSLog(@"Received NACK from repeater, link failed");
-                BTRDPlusLink __weak *weakSelf = self;
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[NSNotificationCenter defaultCenter] postNotificationName:BTRNetworkLinkFailed object:weakSelf userInfo:@{ @"error": [NSString stringWithFormat:@"Reflector %@ refused connection", weakSelf.linkTarget]}];
-                });
-
+                NSError *error = [NSError errorWithDomain:@"BTRErrorDomain" code:3 userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@ refused the link request", self.linkTarget]}];
+                [self.delegate destinationDidError:self.linkTarget error:error];
                 [self unlink];
             } else {
                 NSLog(@"Unknown link packet received");

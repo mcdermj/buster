@@ -148,20 +148,39 @@
     [[NSNotificationCenter defaultCenter] addObserverForName:BTRTxKeyUp object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
         [self endTx];
     }];
-    
-    [[NSNotificationCenter defaultCenter] addObserverForName:BTRRepeaterInfoReceived object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
-        self.repeaterInfo.stringValue = notification.userInfo[@"local"];
-    }];
-    
-    [[NSNotificationCenter defaultCenter] addObserverForName:BTRNetworkLinkFailed object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
-        NSAlert *alert = [[NSAlert alloc] init];
-        alert.messageText = notification.userInfo[@"error"];
-        [alert beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse response){ }];
-    }];
-    
+            
     [self.txButton setPeriodicDelay:.1f interval:.1f];
     self.txButtonState = NSOffState;
 }
+
+-(void)destinationDidLink:(NSString *)destination {
+    self.repeaterInfo.stringValue = [NSString stringWithFormat:@"Linked to %@", destination];
+    
+    NSDockTile *dockTile = [NSApplication sharedApplication].dockTile;
+    dockTile.badgeLabel = destination;
+    [dockTile display];
+}
+
+-(void)destinationDidUnlink:(NSString *)destination {
+    self.repeaterInfo.stringValue = @"Unlinked";
+    
+    NSDockTile *dockTile = [NSApplication sharedApplication].dockTile;
+    dockTile.badgeLabel = nil;
+    [dockTile display];
+}
+
+-(void)destinationDidError:(NSString *)destination error:(NSError *)error {
+    NSAlert *alert = [NSAlert alertWithError:error];
+    [alert beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse response){}];
+}
+
+-(void)destinationWillLink:(NSString *)destination {
+    self.repeaterInfo.stringValue = [NSString stringWithFormat:@"Linking to %@", destination];
+}
+-(void)destinationDidConnect:(NSString *)destination {
+    self.repeaterInfo.stringValue = [NSString stringWithFormat:@"Connected to %@. Attempting to establish link.", destination];
+}
+
 
 - (IBAction)doLink:(id)sender {
     if(self.reflectorTableController.selectedObjects.count != 1) {

@@ -116,11 +116,8 @@ static NSDictionary *_reflectorList;
                     NSLog(@"Got ACK, going linked");
                 } else if(!strncmp(packet->link.response, "NAK", 3)) {
                     NSLog(@"Got NAK, unlinking");
-                    BTRDExtraLink __weak *weakSelf = self;
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [[NSNotificationCenter defaultCenter] postNotificationName:BTRNetworkLinkFailed object:weakSelf userInfo:@{ @"error": [NSString stringWithFormat:@"Reflector %@ refused connection", weakSelf.linkTarget]}];
-                    });
-
+                    NSError *error = [NSError errorWithDomain:@"BTRErrorDomain" code:3 userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@ refused the link request", self.linkTarget]}];
+                    [self.delegate destinationDidError:self.linkTarget error:error];
                     [self unlink];
                 } else
                     NSLog(@"Unknown link acknowledgment");
