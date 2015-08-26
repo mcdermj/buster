@@ -460,13 +460,6 @@
             NSLog(@"New stream %@", header);
             self.rxStreamId = frame->id;
             [self.delegate streamDidStart:header];
-            /* dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName: BTRNetworkStreamStart
-                                                                    object: weakSelf
-                                                                  userInfo: header
-                 ];
-            }); */
-            
             self.qsoTimer = [[BTRNetworkTimer alloc] initWithTimeout:5.0 failureHandler: ^{
                 [weakSelf terminateCurrentStream];
             }];
@@ -532,6 +525,20 @@
             header.header.sum = dstar_calc_sum(&header.header);
             
             [weakSelf sendFrame:&header];
+            
+            NSDictionary *streamInfo = @{
+                                     @"rpt1Call" : weakSelf.myCall,
+                                     @"rpt2Call" : weakSelf.linkTarget,
+                                     @"myCall" : weakSelf.myCall,
+                                     @"myCall2" : weakSelf.myCall2,
+                                     @"urCall" : @"CQCQCQ",
+                                     @"streamId" : [NSNumber numberWithUnsignedShort:weakSelf.txStreamId],
+                                     @"time" : [NSDate date],
+                                     @"direction" : @"TX",
+                                     @"message" : @""
+                                     };
+            [weakSelf.delegate streamDidStart:streamInfo];
+
         }
         
         struct dstar_frame ambe;
@@ -541,6 +548,7 @@
         memcpy(&ambe.ambe.data, [self.delegate getDataForSequence:weakSelf.txSequence], sizeof(ambe.ambe.data));
         
         if(last) {
+            [self.delegate streamDidEnd:[NSNumber numberWithUnsignedShort:weakSelf.txStreamId] atTime:[NSDate date]];
             weakSelf.txSequence = 0;
             weakSelf.txStreamId = (short) random();
             ambe.sequence |= 0x40;

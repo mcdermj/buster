@@ -87,7 +87,12 @@
     });
     dispatch_resume(self.qsoTimer);
     
-    header[@"color"] = [NSColor colorWithCalibratedRed:0.088 green:0.373 blue:0.139 alpha:1.000];
+    if([header[@"direction"] isEqualToString:@"TX"]) {
+        header[@"color"] = [NSColor redColor];
+        header[@"message"] = [[NSUserDefaults standardUserDefaults] stringForKey:@"slowDataMessage"];
+    } else {
+        header[@"color"] = [NSColor colorWithCalibratedRed:0.088 green:0.373 blue:0.139 alpha:1.000];
+    }
     
     if(![self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {}])
         [self.heardTableController addObject:header];
@@ -107,7 +112,10 @@
         [self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
             NSDate *headerTime = time;
             qso[@"duration"] = [NSNumber numberWithDouble:[headerTime timeIntervalSinceDate:qso[@"time"]]];
-            qso[@"color"] = [NSColor blackColor];
+            if([qso[@"direction"] isEqualToString:@"TX"])
+                qso[@"color"] = [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.5];
+            else
+                qso[@"color"] = [NSColor blackColor];
         }];
         
         self.statusLED.image = [NSImage imageNamed:@"Gray LED"];
