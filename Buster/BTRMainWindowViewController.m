@@ -76,28 +76,30 @@
     self.rpt1Call.stringValue = header[@"rpt1Call"];
     self.rpt2Call.stringValue = header[@"rpt2Call"];
     
-    NSNumber *streamId = header[@"streamId"];
-    BTRMainWindowViewController __weak *weakSelf = self;
-    self.qsoTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
-    dispatch_source_set_timer(self.qsoTimer, dispatch_time(DISPATCH_TIME_NOW, 100ull * NSEC_PER_MSEC), 100ull * NSEC_PER_MSEC, 10ull * NSEC_PER_MSEC);
-    dispatch_source_set_event_handler(self.qsoTimer, ^{
-        [weakSelf updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
-            qso[@"duration"] = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSinceDate:qso[@"time"]]];
-        }];
-    });
-    dispatch_resume(self.qsoTimer);
-    
     if([header[@"direction"] isEqualToString:@"TX"]) {
         header[@"color"] = [NSColor redColor];
         header[@"message"] = [[NSUserDefaults standardUserDefaults] stringForKey:@"slowDataMessage"];
+        self.statusLED.image = [NSImage imageNamed:@"Red LED"];
     } else {
         header[@"color"] = [NSColor colorWithCalibratedRed:0.088 green:0.373 blue:0.139 alpha:1.000];
+        self.statusLED.image = [NSImage imageNamed:@"Green LED"];
     }
     
-    if(![self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {}])
-        [self.heardTableController addObject:header];
+    NSNumber *streamId = header[@"streamId"];
     
-    self.statusLED.image = [NSImage imageNamed:@"Green LED"];
+    if(![self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {}]) {
+        [self.heardTableController addObject:header];
+
+        BTRMainWindowViewController __weak *weakSelf = self;
+        self.qsoTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
+        dispatch_source_set_timer(self.qsoTimer, dispatch_time(DISPATCH_TIME_NOW, 100ull * NSEC_PER_MSEC), 100ull * NSEC_PER_MSEC, 10ull * NSEC_PER_MSEC);
+        dispatch_source_set_event_handler(self.qsoTimer, ^{
+            [weakSelf updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
+                qso[@"duration"] = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSinceDate:qso[@"time"]]];
+            }];
+        });
+        dispatch_resume(self.qsoTimer);
+    }
 }
 
 -(void)streamDidEnd:(NSNumber *)streamId atTime:(NSDate *)time {
@@ -221,7 +223,6 @@
     [self.view.window makeFirstResponder:nil];
     
     [BTRDataEngine sharedInstance].audio.xmit = YES;
-    self.statusLED.image = [NSImage imageNamed:@"Red LED"];
     
     NSMutableArray *destinationCalls = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"destinationCalls"]];
     if (![destinationCalls containsObject:self.xmitUrCall.objectValue]) {
