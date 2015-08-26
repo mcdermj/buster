@@ -28,6 +28,7 @@
 
 @property (nonatomic) dispatch_source_t qsoTimer;
 @property (nonatomic) NSInteger txButtonState;
+@property (nonatomic) NSSpeechSynthesizer *speechSynth;
 
 @end
 
@@ -69,7 +70,6 @@
         header[@"compositeMyCall"] = header[@"myCall"];
     else
         header[@"compositeMyCall"] = [NSString stringWithFormat:@"%@/%@", [header[@"myCall"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]], [header[@"myCall2"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
-    
     
     self.myCall.stringValue = header[@"compositeMyCall"];
     self.urCall.stringValue = header[@"urCall"];
@@ -153,18 +153,24 @@
             
     [self.txButton setPeriodicDelay:.1f interval:.1f];
     self.txButtonState = NSOffState;
+    
+    self.speechSynth = [[NSSpeechSynthesizer alloc] initWithVoice:@"com.apple.speech.synthesis.voice.Vicki"];
 }
 
 -(void)destinationDidLink:(NSString *)destination {
     self.repeaterInfo.stringValue = [NSString stringWithFormat:@"Linked to %@", destination];
+    [self.speechSynth startSpeakingString:self.repeaterInfo.stringValue];
     
     NSDockTile *dockTile = [NSApplication sharedApplication].dockTile;
     dockTile.badgeLabel = destination;
     [dockTile display];
+    
+    
 }
 
 -(void)destinationDidUnlink:(NSString *)destination {
     self.repeaterInfo.stringValue = @"Unlinked";
+    [self.speechSynth startSpeakingString:self.repeaterInfo.stringValue];
     
     NSDockTile *dockTile = [NSApplication sharedApplication].dockTile;
     dockTile.badgeLabel = nil;
