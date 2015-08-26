@@ -26,6 +26,7 @@
 #import "BTRDPlusAuthenticator.h"
 #import "BTRDataEngine.h"
 #import "BTRSlowDataCoder.h"
+#import "BTRIRCDDBGateways.h"
 
 #pragma pack(push, 1)
 struct dplus_packet {
@@ -79,12 +80,17 @@ static const struct dplus_packet linkModuleTemplate = {
     if([BTRDPlusAuthenticator sharedInstance].reflectorList[linkTarget.callWithoutModule])
         return YES;
     
+    //  The ircDDB enabled gateways should support DPlus.
+    if([BTRIRCDDBGateways sharedInstance].gateways[linkTarget.callWithoutModule])
+        return YES;
+    
     return NO;
 }
 
 +(void) load {
     [BTRDataEngine registerLinkDriver:self];
     [BTRDPlusAuthenticator sharedInstance];
+    [BTRIRCDDBGateways sharedInstance];
 }
 
 - (id) initWithLinkTo:(NSString *)linkTarget {
@@ -150,7 +156,12 @@ static const struct dplus_packet linkModuleTemplate = {
 }
 
 -(NSString *)getAddressForReflector:(NSString *)reflector {
-    return [BTRDPlusAuthenticator sharedInstance].reflectorList[reflector];
+    NSString *reflectorAddress = [BTRDPlusAuthenticator sharedInstance].reflectorList[reflector];
+    if(reflectorAddress)
+        return reflectorAddress;
+    
+    //  The ircDDB enabled gateways should support DPlus.
+    return [BTRIRCDDBGateways sharedInstance].gateways[reflector];
 }
 
 -(void)processPacket:(NSData *)data {

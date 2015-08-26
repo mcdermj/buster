@@ -74,7 +74,7 @@ static NSMutableArray *linkDrivers = nil;
             [weakSelf.audio start];
             [weakSelf.vocoder start];
             [weakSelf linkTo:self.sleepDestination];
-        }];
+        }];        
     }
     
     return self;
@@ -144,6 +144,7 @@ static NSMutableArray *linkDrivers = nil;
             
             [self.network bind:@"myCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
             [self.network bind:@"myCall2" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall2" options:nil];
+            break;
         }
     }
     

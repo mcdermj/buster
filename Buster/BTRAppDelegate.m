@@ -27,9 +27,7 @@
 
 #import "BTRDPlusLink.h"
 
-@interface BTRAppDelegate () {
-    // BTRDPlusLink *link;
-}
+@interface BTRAppDelegate () 
 @end
 
 @implementation BTRAppDelegate
@@ -45,6 +43,7 @@
 
     BTRDataEngine *engine = [BTRDataEngine sharedInstance];
     [engine.slowData bind:@"message" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.slowDataMessage" options:nil];
+    
         
     [self bind:@"txKeyCode" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.shortcutValue" options:@{NSValueTransformerNameBindingOption: MASDictionaryTransformerName}];
     
@@ -83,8 +82,6 @@
                                                       }
                                                   }];
 
-
-    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [engine.audio start];
         if(![engine.vocoder start])
