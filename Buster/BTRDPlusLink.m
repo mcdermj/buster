@@ -152,6 +152,7 @@ static const struct dplus_packet linkModuleTemplate = {
 }
 
 -(void)sendLink {
+    NSLog(@"Sending DPLus link packet");
     [self sendPacket:self.linkPacket];
 }
 

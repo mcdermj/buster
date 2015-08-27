@@ -118,7 +118,7 @@
     return NO;
 }
 
--(id)initWithLinkTo:(NSString *)linkTarget {
+-(id)init {
     self = [super init];
     if(self) {
         _linkTarget = @"";
@@ -129,6 +129,18 @@
         _rxSequence = 0;
         _txSequence = 0;
         
+        dispatch_queue_attr_t dispatchQueueAttr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, -1);
+        _writeQueue = dispatch_queue_create("net.nh6z.Buster.LinkWrite", dispatchQueueAttr);
+        
+        [self open];
+    }
+    
+    return self;
+}
+
+-(id)initWithLinkTo:(NSString *)linkTarget {
+    self = [self init];
+    if(self) {
         self.linkTarget = [linkTarget copy];
         BTRLinkDriver __weak *weakSelf = self;
         
@@ -140,27 +152,24 @@
     return self;
 }
 
--(void)connect {
-    dispatch_queue_attr_t dispatchQueueAttr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, -1);
-    _writeQueue = dispatch_queue_create("net.nh6z.Buster.LinkWrite", dispatchQueueAttr);
-    
-    _socket = socket(PF_INET, SOCK_DGRAM, 0);
-    if(_socket == -1) {
+-(void)open {
+    self.socket = socket(PF_INET, SOCK_DGRAM, 0);
+    if(self.socket == -1) {
         NSLog(@"Error opening socket: %s\n", strerror(errno));
         return;
     }
     
     int one = 1;
-    if(setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one))) {
+    if(setsockopt(self.socket, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one))) {
         NSLog(@"Couldn't set socket to SO_REUSEADDR: %s\n", strerror(errno));
         return;
     }
     
-    if(fcntl(_socket, F_SETFL, O_NONBLOCK) == -1) {
+    if(fcntl(self.socket, F_SETFL, O_NONBLOCK) == -1) {
         NSLog(@"Couldn't set socket to nonblocking: %s\n", strerror(errno));
         return;
     }
-    
+
     struct sockaddr_in clientAddr = {
         .sin_len = sizeof(struct sockaddr_in),
         .sin_family = AF_INET,
@@ -168,23 +177,28 @@
         .sin_addr.s_addr = INADDR_ANY
     };
     
-    if(bind(_socket, (const struct sockaddr *) &clientAddr, (socklen_t) sizeof(clientAddr))) {
+    if(bind(self.socket, (const struct sockaddr *) &clientAddr, (socklen_t) sizeof(clientAddr))) {
         NSLog(@"Couldn't bind gateway socket: %s\n", strerror(errno));
         return;
     }
     
-    _dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, (uintptr_t) _socket, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+    self.dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, (uintptr_t) _socket, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
     BTRLinkDriver __weak *weakSelf = self;
     dispatch_source_set_event_handler(_dispatchSource, ^{
         void *incomingPacket = malloc(weakSelf.packetSize);
         size_t bytesRead;
         
         do {
-            bytesRead = recv(weakSelf.socket, incomingPacket, self.packetSize, 0);
+            bytesRead = recv(weakSelf.socket, incomingPacket, weakSelf.packetSize, 0);
             if(bytesRead == -1) {
                 if(errno == EAGAIN)
                     break;
-                NSLog(@"Couldn't read DPlus packet: %s", strerror(errno));
+                NSLog(@"Couldn't read link packet: %s", strerror(errno));
+                free(incomingPacket);
+                return;
+            }
+            
+            if(weakSelf.linkState == UNLINKED) {
                 free(incomingPacket);
                 return;
             }
@@ -196,8 +210,10 @@
         free(incomingPacket);
     });
     
-    dispatch_resume(_dispatchSource);
-    
+    dispatch_resume(self.dispatchSource);
+}
+
+-(void)connect {
     [self.delegate destinationWillLink:self.linkTarget];
         
     NSString *reflectorAddress = [self getAddressForReflector:(NSString *)[[self.linkTarget substringWithRange:NSMakeRange(0, 7)] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
@@ -228,12 +244,19 @@
     
     self.linkState = CONNECTED;
     
+    BTRLinkDriver __weak *weakSelf = self;
     dispatch_source_t retrySource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
     dispatch_source_set_timer(retrySource, dispatch_time(DISPATCH_TIME_NOW, 0), 500ull * NSEC_PER_MSEC, 1ull * NSEC_PER_MSEC);
     dispatch_source_set_event_handler(retrySource, ^{
-        if(weakSelf.linkState != CONNECTED || CFAbsoluteTimeGetCurrent() > weakSelf.connectTime + 10.0) {
+        if(weakSelf.linkState != CONNECTED) {
             dispatch_source_cancel(retrySource);
-            return;
+        }
+        
+        if(CFAbsoluteTimeGetCurrent() > weakSelf.connectTime + 10.0) {
+            NSError *error = [NSError errorWithDomain:@"BTRErrorDomain" code:4 userInfo:@{ NSLocalizedDescriptionKey: @"Timeout connecting to reflector" }];
+            [weakSelf.delegate destinationDidError:weakSelf.linkTarget error:error];
+            dispatch_source_cancel(retrySource);
+            self.linkState = UNLINKED;
         }
         
         [weakSelf sendLink];
@@ -261,7 +284,9 @@
 }
 
 -(void)stopPoll {
-    dispatch_source_cancel(self.pollTimerSource);
+    if(self.pollTimerSource)
+        dispatch_source_cancel(self.pollTimerSource);
+    
     self.pollTimerSource = nil;
 }
 
@@ -316,15 +341,14 @@
         }
         case CONNECTED: {
             [self.delegate destinationDidConnect:self.linkTarget];
+            break;
+        }
+        case LINKING: {
             [self startPoll];
-            
             BTRLinkDriver __weak *weakSelf = self;
             self.linkTimer = [[BTRNetworkTimer alloc] initWithTimeout:30.0 failureHandler:^{
                 [weakSelf unlink];
             }];
-        }
-        case LINKING: {
-            
             break;
         }
         case LINKED: {
