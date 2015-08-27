@@ -183,6 +183,12 @@ static NSMutableArray *linkDrivers = nil;
     });
 }
 
+-(void)locationReceived:(CLLocation *)location forStreamId:(NSNumber *)streamId {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate locationReceived:location forStreamId:streamId];
+    });
+}
+
 -(void)addData:(void *)data streamId:(NSUInteger)streamId {
     [self.slowData addData:data streamId:streamId];
 }

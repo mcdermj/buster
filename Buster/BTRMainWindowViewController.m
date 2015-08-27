@@ -29,6 +29,7 @@
 @property (nonatomic) dispatch_source_t qsoTimer;
 @property (nonatomic) NSInteger txButtonState;
 @property (nonatomic) NSSpeechSynthesizer *speechSynth;
+@property (nonatomic) CLGeocoder *geocoder;
 
 @end
 
@@ -66,7 +67,7 @@
 -(void)streamDidStart:(NSDictionary *)inHeader {
     NSMutableDictionary *header = [NSMutableDictionary dictionaryWithDictionary:inHeader];
     
-    if([((NSString *)header[@"myCall2"]) isEqualToString:@"    "])
+    if([((NSString *)header[@"myCall2"]) isEqualToString:@""])
         header[@"compositeMyCall"] = header[@"myCall"];
     else
         header[@"compositeMyCall"] = [NSString stringWithFormat:@"%@/%@", [header[@"myCall"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]], [header[@"myCall2"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
@@ -118,6 +119,28 @@
     }];
 }
 
+-(void)locationReceived:(CLLocation *)location forStreamId:(NSNumber *)streamId {
+    [self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
+        qso[@"location"] = location;
+        [self.geocoder reverseGeocodeLocation:location completionHandler:^(NSArray <CLPlacemark *> *placemarks, NSError *error) {
+            if(!placemarks) {
+                NSLog(@"placemarks are nil");
+                return;
+            }
+            if(error) {
+                NSLog(@"Error returned from geocoder: %@", error);
+                return;
+            }
+            if(placemarks.count == 0) {
+                NSLog(@"No placemarks returned");
+                return;
+            }
+            
+            qso[@"city"] = [NSString stringWithFormat:@"%@, %@, %@", placemarks[0].locality, placemarks[0].administrativeArea, placemarks[0].country];
+        }];
+    }];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -141,6 +164,7 @@
     self.txButtonState = NSOffState;
     
     self.speechSynth = [[NSSpeechSynthesizer alloc] initWithVoice:@"com.apple.speech.synthesis.voice.Vicki"];
+    self.geocoder = [[CLGeocoder alloc] init];
 }
 
 -(void)destinationDidLink:(NSString *)destination {
