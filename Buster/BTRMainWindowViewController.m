@@ -71,11 +71,6 @@
     else
         header[@"compositeMyCall"] = [NSString stringWithFormat:@"%@/%@", [header[@"myCall"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]], [header[@"myCall2"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
     
-    self.myCall.stringValue = header[@"compositeMyCall"];
-    self.urCall.stringValue = header[@"urCall"];
-    self.rpt1Call.stringValue = header[@"rpt1Call"];
-    self.rpt2Call.stringValue = header[@"rpt2Call"];
-    
     if([header[@"direction"] isEqualToString:@"TX"]) {
         header[@"color"] = [NSColor redColor];
         header[@"message"] = [[NSUserDefaults standardUserDefaults] stringForKey:@"slowDataMessage"];
@@ -103,12 +98,6 @@
 }
 
 -(void)streamDidEnd:(NSNumber *)streamId atTime:(NSDate *)time {
-        self.myCall.stringValue = @"";
-        self.urCall.stringValue = @"";
-        self.rpt1Call.stringValue = @"";
-        self.rpt2Call.stringValue = @"";
-        self.shortTextMessageField.stringValue = @"";
-        
         dispatch_source_cancel(self.qsoTimer);
         
         [self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
@@ -124,9 +113,6 @@
 }
 
 -(void)slowDataReceived:(NSString *)slowData forStreamId:(NSNumber *)streamId {
-    //  XXX This should be removed.
-    self.shortTextMessageField.stringValue = slowData;
-    
     [self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
         qso[@"message"] = slowData;
     }];
@@ -223,21 +209,9 @@
 }
 
 -(void)startTx {
-    if(self.xmitUrCall.objectValue == nil)
-        return;
-    
     [self.view.window makeFirstResponder:nil];
     
-    [BTRDataEngine sharedInstance].audio.xmit = YES;
-    
-    NSMutableArray *destinationCalls = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"destinationCalls"]];
-    if (![destinationCalls containsObject:self.xmitUrCall.objectValue]) {
-        if(destinationCalls.count > 11) {
-            [destinationCalls removeObjectAtIndex:11];
-        }
-        [destinationCalls insertObject:self.xmitUrCall.objectValue atIndex:1];
-        [[NSUserDefaults standardUserDefaults] setObject:destinationCalls forKey:@"destinationCalls"];
-    }
+    [BTRDataEngine sharedInstance].audio.xmit = YES;    
 }
 
 -(void)endTx {
