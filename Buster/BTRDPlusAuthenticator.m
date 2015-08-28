@@ -98,6 +98,8 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
             NSLog(@"Waking from sleep, reauthenticating");
             [weakSelf authenticate];
         }];
+        [self bind:@"authCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
+        [self startAuthTimer];
     }
     return self;
 }
