@@ -253,58 +253,6 @@
     dispatch_resume(self.dispatchSource);
 }
 
-/* -(void)connect {
-    [self.delegate destinationWillLink:self.linkTarget];
-        
-    NSString *reflectorAddress = [self getAddressForReflector:(NSString *)[[self.linkTarget substringWithRange:NSMakeRange(0, 7)] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
-    if(!reflectorAddress) {
-        //  XXX This really should never happen.
-        NSError *error = [NSError errorWithDomain:@"BTRErrorDomain" code:1 userInfo:@{ NSLocalizedDescriptionKey: @"Couldn't find reflector" }];
-        [self.delegate destinationDidError:self.linkTarget error:error];
-                
-        NSLog(@"Couldn't find reflector %@", self.linkTarget);
-        return;
-    }
-    
-    struct sockaddr_in serverAddr = {
-        .sin_len = sizeof(struct sockaddr_in),
-        .sin_family = AF_INET,
-        .sin_port = htons(self.serverPort),
-        .sin_addr.s_addr = inet_addr([reflectorAddress cStringUsingEncoding:NSUTF8StringEncoding])
-    };
-    
-    NSLog(@"Linking to %@ at %@", self.linkTarget, reflectorAddress);
-    
-    if(connect(self.socket, (const struct sockaddr *) &serverAddr, (socklen_t) sizeof(serverAddr))) {
-        NSLog(@"Couldn't connect socket: %s\n", strerror(errno));
-        return;
-    }
-    
-    NSLog(@"Link Connection Complete");
-    
-    self.linkState = CONNECTED;
-    
-    BTRLinkDriver __weak *weakSelf = self;
-    dispatch_source_t retrySource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
-    dispatch_source_set_timer(retrySource, dispatch_time(DISPATCH_TIME_NOW, 0), 500ull * NSEC_PER_MSEC, 1ull * NSEC_PER_MSEC);
-    dispatch_source_set_event_handler(retrySource, ^{
-        if(weakSelf.linkState != CONNECTED) {
-            dispatch_source_cancel(retrySource);
-        }
-        
-        if(CFAbsoluteTimeGetCurrent() > weakSelf.connectTime + 10.0) {
-            NSError *error = [NSError errorWithDomain:@"BTRErrorDomain" code:4 userInfo:@{ NSLocalizedDescriptionKey: @"Timeout connecting to reflector" }];
-            [weakSelf.delegate destinationDidError:weakSelf.linkTarget error:error];
-            dispatch_source_cancel(retrySource);
-            self.linkState = UNLINKED;
-        }
-        
-        [weakSelf sendLink];
-    });
-    self.connectTime = CFAbsoluteTimeGetCurrent();
-    dispatch_resume(retrySource);
-} */
-
 - (void) dealloc  {
     NSLog(@"Calling dealloc");
     //[self unlink];
