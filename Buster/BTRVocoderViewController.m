@@ -83,7 +83,7 @@
 
 -(void)selectVocoder:(id)sender {
     Class driver = self.vocoderType.selectedItem.representedObject;
-    id <BTRVocoderProtocol> newVocoder = [[driver alloc] init];
+    id <BTRVocoderDriver> newVocoder = [[driver alloc] init];
     
     NSLog(@"doing select vocoder");
     
@@ -92,8 +92,8 @@
     [[NSUserDefaults standardUserDefaults] setObject:NSStringFromClass(driver) forKey:@"VocoderDriver"];
  }
 
--(void) replaceCurrentVocoderWith:(id <BTRVocoderProtocol>)vocoder {
-    NSObject <BTRVocoderProtocol> *oldVocoder = [BTRDataEngine sharedInstance].vocoder;
+-(void) replaceCurrentVocoderWith:(id <BTRVocoderDriver>)vocoder {
+    NSObject <BTRVocoderDriver> *oldVocoder = [BTRDataEngine sharedInstance].vocoder;
     
     [oldVocoder stop];
     [BTRDataEngine sharedInstance].vocoder = vocoder;

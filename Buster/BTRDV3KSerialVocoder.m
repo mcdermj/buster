@@ -221,6 +221,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         matchingDict = CFBridgingRelease(IOServiceMatching(kIOSerialBSDServiceValue));
         if(matchingDict == NULL) {
             NSLog(@"IOServiceMatching returned a NULL dictionary.\n");
+            return nil;
         } else {
             [matchingDict setValue:[NSString stringWithCString:kIOSerialBSDRS232Type encoding:NSUTF8StringEncoding]
                             forKey:[NSString stringWithCString:kIOSerialBSDTypeKey encoding:NSUTF8StringEncoding]];
@@ -248,7 +249,6 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
                                                           object:nil
                                                            queue:[NSOperationQueue mainQueue]
                                                       usingBlock: ^(NSNotification *notification) {
-                                                          NSLog(@"User defaults changing");
                                                           weakSelf.speed = [[NSUserDefaults standardUserDefaults] integerForKey:@"DV3KSerialVocoderSpeed"];
                                                           NSString *serialPort =[[NSUserDefaults standardUserDefaults] stringForKey:@"DV3KSerialVocoderPort"];
                                                           if(serialPort)

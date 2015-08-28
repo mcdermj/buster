@@ -22,15 +22,12 @@
 #import "BTRDataEngine.h"
 #import "BTRDV3KSerialVocoder.h"
 #import "MASDictionaryTransformer.h"
-#import "BTRGatewayHandler.h"
-#import "BTRSlowDataHandler.h"
+#import "BTRSlowDataCoder.h"
 #import "BTRAudioHandler.h"
 
-#import "BTRDPlusAuthenticator.h"
+#import "BTRDPlusLink.h"
 
-@interface BTRAppDelegate () {
-    BTRDPlusAuthenticator *authenticator;
-}
+@interface BTRAppDelegate () 
 @end
 
 @implementation BTRAppDelegate
@@ -45,17 +42,9 @@
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultPrefs];
 
     BTRDataEngine *engine = [BTRDataEngine sharedInstance];
+    [engine.slowData bind:@"message" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.slowDataMessage" options:nil];
     
-    [engine.network bind:@"xmitMyCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
-    [engine.network bind:@"xmitMyCall2" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall2" options:nil];
-    [engine.network bind:@"xmitRpt1Call" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.rpt1Call" options:nil];
-    [engine.network bind:@"xmitRpt2Call" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.rpt2Call" options:nil];
-    [engine.network.slowData bind:@"message" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.slowDataMessage" options:nil];
-    
-    [engine.network bind:@"gatewayAddr" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.gatewayAddr" options:nil];
-    [engine.network bind:@"gatewayPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.gatewayPort" options:nil];
-    [engine.network bind:@"repeaterPort" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.repeaterPort" options:nil];
-    
+        
     [self bind:@"txKeyCode" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.shortcutValue" options:@{NSValueTransformerNameBindingOption: MASDictionaryTransformerName}];
     
     NSString *inputUid = [[NSUserDefaults standardUserDefaults] stringForKey:@"inputAudioDevice"];
@@ -93,8 +82,6 @@
                                                       }
                                                   }];
 
-
-    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [engine.audio start];
         if(![engine.vocoder start])
@@ -105,12 +92,7 @@
                 alert.informativeText = @"Please check your serial port and speed settings in the Perferences menu";
                 [alert runModal];
             });
-        [engine.network start];
-    });
-    
-    while(![BTRDPlusAuthenticator sharedInstance].isAuthenticated);
-    NSLog(@"Reflectors: %@", [BTRDPlusAuthenticator sharedInstance].reflectorList);
-    //authenticator = [[BTRDPlusAuthenticator alloc] initWithAuthCall:@"NH6Z"];
+    });    
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

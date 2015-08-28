@@ -105,6 +105,7 @@
 -(NSViewController *)configurationViewController {
     if(!_configurationViewController) {
         _configurationViewController = [[BTRNetworkVocoderViewController alloc] init];
+        _configurationViewController.driver = self;
     }
     return _configurationViewController;
 }

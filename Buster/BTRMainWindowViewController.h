@@ -17,24 +17,17 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-@class BTRGatewayHandler;
+#import "BTRDataEngineDelegate.h"
 
-@interface BTRMainWindowViewController : NSViewController <NSTableViewDelegate, NSTableViewDataSource>
+@interface BTRMainWindowViewController : NSViewController <NSTableViewDelegate, NSTableViewDataSource, NSControlTextEditingDelegate, BTRDataEngineDelegate>
 
-@property (nonatomic, weak) IBOutlet NSTextField *urCall;
-@property (nonatomic, weak) IBOutlet NSTextField *myCall;
-@property (nonatomic, weak) IBOutlet NSTextField *rpt1Call;
-@property (nonatomic, weak) IBOutlet NSTextField *rpt2Call;
-@property (nonatomic, weak) IBOutlet NSTextField *linkTarget;
 @property (nonatomic, strong) IBOutlet NSArrayController *heardTableController;
 @property (nonatomic, weak) IBOutlet NSTableView *heardTableView;
 @property (nonatomic, weak) IBOutlet NSTableView *reflectorTableView;
 @property (nonatomic, strong) IBOutlet NSArrayController *reflectorTableController;
-@property (nonatomic, weak) IBOutlet NSComboBox *xmitUrCall;
 @property (nonatomic, weak) IBOutlet NSImageView *statusLED;
 @property (nonatomic, weak) IBOutlet NSButton *txButton;
 @property (nonatomic, weak) IBOutlet NSTextField *repeaterInfo;
-@property (nonatomic, weak) IBOutlet NSTextField *shortTextMessageField;
 
 - (IBAction)doLink:(id)sender;
 - (IBAction)addReflector:(id)sender;

@@ -22,7 +22,6 @@
 
 #import "BTRDataEngine.h"
 #import "BTRDV3KPacket.h"
-#import "BTRGatewayHandler.h"
 #import "BTRAudioHandler.h"
 
 // XXX
@@ -38,8 +37,8 @@ static const struct dv3k_packet bleepPacket = {
     .payload.ambe.cmode.field_id = DV3K_AMBE_FIELD_CMODE,
     .payload.ambe.cmode.value = htons(0x4000),
     .payload.ambe.tone.field_id = DV3K_AMBE_FIELD_TONE,
-    .payload.ambe.tone.tone = 0x40,
-    .payload.ambe.tone.amplitude = 0x00
+    .payload.ambe.tone.tone = 0x15,
+    .payload.ambe.tone.amplitude = (signed char) -12
 };
 
 static const struct dv3k_packet silencePacket = {
@@ -67,14 +66,10 @@ static const struct dv3k_packet dv3k_audio = {
 
 @interface BTRDV3KVocoder () {
     dispatch_queue_t dispatchQueue;
-    // dispatch_queue_t readDispatchQueue;
     dispatch_source_t dispatchSource;
     struct dv3k_packet dv3k_ambe;
     struct dv3k_packet *responsePacket;
 }
-
-/* @property (nonatomic, readwrite, copy) NSString *productId;
-@property (nonatomic, readwrite, copy) NSString *version; */
 
 - (BOOL) sendCtrlPacket:(struct dv3k_packet)packet expectResponse:(uint8)response;
 - (void) processPacket;
@@ -82,6 +77,7 @@ static const struct dv3k_packet dv3k_audio = {
 
 @implementation BTRDV3KVocoder
 
+@synthesize network = _network;
 @synthesize audio;
 
 #pragma mark - Lifecycle
@@ -186,7 +182,8 @@ static const struct dv3k_packet dv3k_audio = {
     self.version = @"";
     self.productId = @"";
     
-    [self openPort];
+    if(![self openPort])
+        return NO;
     
     NSLog(@"Port opened, initializing");
     
@@ -362,7 +359,7 @@ static const struct dv3k_packet dv3k_audio = {
                 NSLog(@"Last Packet");
             }
             
-            [[BTRDataEngine sharedInstance].network sendAMBE:responsePacket->payload.ambe.data.data lastPacket:last];
+            [self.network sendAMBE:responsePacket->payload.ambe.data.data lastPacket:last];
             
             break;
         case DV3K_TYPE_AUDIO:

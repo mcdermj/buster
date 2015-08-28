@@ -22,15 +22,19 @@
 
 #import "BTRDV3KSerialVocoder.h"
 #import "BTRDV3KNetworkVocoder.h"
-#import "BTRGatewayHandler.h"
 #import "BTRAudioHandler.h"
+#import "BTRSlowDataCoder.h"
+#import "BTRDPlusLink.h"
+#import "BTRDExtraLink.h"
 
 static NSMutableArray *vocoderDrivers = nil;
+static NSMutableArray *linkDrivers = nil;
 
-@interface BTRDataEngine () {
-    NSMutableArray *_vocoderDrivers;
-}
+@interface BTRDataEngine ()
 
+@property (nonatomic, readwrite) NSObject <BTRLinkDriverProtocol> *network;
+@property (nonatomic, readwrite) BTRAudioHandler *audio;
+@property (nonatomic, copy) NSString *sleepDestination;
 @end
 
 @implementation BTRDataEngine
@@ -48,22 +52,44 @@ static NSMutableArray *vocoderDrivers = nil;
     self = [super init];
     if(self) {
         _audio = [[BTRAudioHandler alloc] init];
-        _network = [[BTRGatewayHandler alloc] init];
+        _network = nil;
         Class driver = NSClassFromString([[NSUserDefaults standardUserDefaults] stringForKey:@"VocoderDriver"]);
         self.vocoder = [[driver alloc] init];
         
         _vocoder.audio = _audio;
-        _vocoderDrivers = [[NSMutableArray alloc] init];
+        
+        _slowData = [[BTRSlowDataCoder alloc] init];
+        _slowData.delegate = self;
+        
+        BTRDataEngine __weak *weakSelf = self;
+        
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserverForName:NSWorkspaceWillSleepNotification object:NULL queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+            [weakSelf.audio stop];
+            [weakSelf.vocoder stop];
+            weakSelf.sleepDestination = weakSelf.network.linkTarget;
+            [weakSelf.network unlink];
+        }];
+        
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserverForName:NSWorkspaceDidWakeNotification object:NULL queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+            [weakSelf.audio start];
+            [weakSelf.vocoder start];
+            [weakSelf linkTo:self.sleepDestination];
+        }];        
     }
     
     return self;
 }
 
-- (void) setVocoder:(id<BTRVocoderProtocol>)vocoder {
+-(void) dealloc {
+}
+
+- (void) setVocoder:(id<BTRVocoderDriver>)vocoder {
     _vocoder = vocoder;
     
-    _network.vocoder = vocoder;
-    _audio.vocoder = vocoder;
+    self.network.vocoder = vocoder;
+    self.audio.vocoder = vocoder;
+    self.vocoder.audio = self.audio;
+    self.vocoder.network = self.network;
 }
 
 +(void)registerVocoderDriver:(Class)driver {
@@ -73,8 +99,132 @@ static NSMutableArray *vocoderDrivers = nil;
     [vocoderDrivers addObject:driver];
 }
 
++(void)registerLinkDriver:(Class)driver {
+    if(!linkDrivers)
+        linkDrivers = [[NSMutableArray alloc] init];
+    
+    [linkDrivers addObject:driver];
+}
+
 +(NSArray *)vocoderDrivers {
     return [NSArray arrayWithArray:vocoderDrivers];
+}
+
++(NSArray *)linkDrivers {
+    return [NSArray arrayWithArray:linkDrivers];
+}
+
++(BOOL)isDestinationValid:(NSString *)destination {
+    NSUInteger linkIndex = [[BTRDataEngine linkDrivers] indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+        BOOL test = [obj canHandleLinkTo:destination];
+        if(test)
+            *stop = YES;
+        
+        return test;
+    }];
+    
+    return(linkIndex != NSNotFound);
+}
+
+-(void)linkTo:(NSString *)reflector {
+    if(!reflector)
+        return;
+    
+    if([self.network.linkTarget isEqualToString:reflector])
+        return;
+    
+    [self unlink];
+    
+    for(Class driver in [BTRDataEngine linkDrivers]) {
+        if([driver canHandleLinkTo:reflector]) {
+           self.network = [[driver alloc] initWithLinkTo:reflector];
+            self.network.vocoder = self.vocoder;
+            self.vocoder.network = self.network;
+            self.network.delegate = self;
+            
+            [self.network bind:@"myCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
+            [self.network bind:@"myCall2" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall2" options:nil];
+            break;
+        }
+    }
+    
+    if(self.network == nil) {
+        NSError *error = [NSError errorWithDomain:@"BTRErrorDomain" code:2 userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@ does not exist.", reflector]}];
+        [self.delegate destinationDidError:reflector error:error];
+        NSLog(@"Sending link failed notification");
+    }
+}
+
+-(void)unlink {
+        if(self.network) {
+            [self.network unlink];
+            [self.network unbind:@"myCall"];
+            [self.network unbind:@"myCall2"];
+            self.network = nil;
+        }
+}
+
+-(void)streamDidStart:(NSDictionary *)header {
+    self.audio.receiving = YES;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate streamDidStart:header];
+    });
+}
+
+-(void)streamDidEnd:(NSNumber *)streamId atTime:(NSDate *)time {
+    self.audio.receiving = NO;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate streamDidEnd:streamId atTime:time];
+    });
+}
+-(void)slowDataReceived:(NSString *)slowData forStreamId:(NSNumber *)streamId {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate slowDataReceived:slowData forStreamId:streamId];
+    });
+}
+
+-(void)locationReceived:(CLLocation *)location forStreamId:(NSNumber *)streamId {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate locationReceived:location forStreamId:streamId];
+    });
+}
+
+-(void)addData:(void *)data streamId:(NSUInteger)streamId {
+    [self.slowData addData:data streamId:streamId];
+}
+
+-(const void *)getDataForSequence:(NSUInteger)sequence {
+    return [self.slowData getDataForSequence:sequence];
+}
+
+-(void)destinationDidLink:(NSString *)destination {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate destinationDidLink:destination];
+    });
+}
+
+-(void)destinationDidUnlink:(NSString *)destination {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate destinationDidUnlink:destination];
+    });
+}
+
+-(void)destinationDidConnect:(NSString *)destination {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate destinationDidConnect:destination];
+    });
+}
+
+-(void)destinationWillLink:(NSString *)destination {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate destinationWillLink:destination];
+    });
+}
+
+-(void)destinationDidError:(NSString *)destination error:(NSError *)error {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate destinationDidError:destination error:error];
+    });
 }
 
 @end

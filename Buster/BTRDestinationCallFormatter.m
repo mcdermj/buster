@@ -1,5 +1,5 @@
 //
-//  BTRIPFormatter.h
+//  BTRDestinationCallFormatter.m
 //
 //  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
 
@@ -17,6 +17,26 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-@interface BTRIPFormatter : NSFormatter
+
+#import "BTRDestinationCallFormatter.h"
+#import "BTRDataEngine.h"
+
+@interface BTRDestinationCallFormatter ()
+
+@end
+
+@implementation BTRDestinationCallFormatter
+
+- (BOOL) getObjectValue:(out __autoreleasing id *)obj forString:(NSString *)string errorDescription:(out NSString *__autoreleasing *)error {
+    *obj = [string stringByReplacingOccurrencesOfString:@"•" withString:@" "];
+
+    if(![BTRDataEngine isDestinationValid:*obj]) {
+        if(error)
+            *error = @"Link destination not found";
+        return NO;
+    }
+        
+    return YES;
+}
 
 @end

@@ -17,19 +17,30 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#import "BTRVocoderProtocol.h"
+#import "BTRVocoderDriver.h"
+#import "BTRLinkDriverProtocol.h"
+#import "BTRDataEngineDelegate.h"
+#import "BTRSlowDataDelegate.h"
 
-@class BTRGatewayHandler, BTRAudioHandler, BTRVocoderProtocol;
+@class BTRAudioHandler, BTRVocoderProtocol, BTRSlowDataCoder;
 
-@interface BTRDataEngine : NSObject
+@interface BTRDataEngine : NSObject <BTRLinkDriverDelegate, BTRSlowDataDelegate>
 
-@property (nonatomic, readonly) BTRGatewayHandler *network;
-@property (nonatomic) id <BTRVocoderProtocol> vocoder;
+@property (nonatomic, readonly) NSObject <BTRLinkDriverProtocol> *network;
+@property (nonatomic) id <BTRVocoderDriver> vocoder;
 @property (nonatomic, readonly) BTRAudioHandler *audio;
+@property (nonatomic, readonly) BTRSlowDataCoder *slowData;
+@property (nonatomic) NSObject <BTRDataEngineDelegate> *delegate;
 
 +(BTRDataEngine *)sharedInstance;
 
 +(void)registerVocoderDriver:(Class)driver;
++(void)registerLinkDriver:(Class)driver;
 +(NSArray *)vocoderDrivers;
++(NSArray *)linkDrivers;
++(BOOL)isDestinationValid:(NSString *)destination;
+
+-(void)linkTo:(NSString *)reflector;
+-(void)unlink;
 
 @end

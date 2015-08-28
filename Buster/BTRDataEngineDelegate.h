@@ -1,5 +1,5 @@
 //
-//  BTRVocoderProtocol.h
+//  BTRDataEngineDelegate.h
 //
 //  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
 
@@ -17,18 +17,18 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-@class BTRAudioHandler;
+@import CoreLocation;
 
-@protocol BTRVocoderProtocol <NSObject>
-- (void) decodeData:(void *) data lastPacket:(BOOL)last;
-- (void) encodeData:(void *) data lastPacket:(BOOL)last;
+@protocol BTRDataEngineDelegate <NSObject>
 
-- (BOOL) start;
-- (void) stop;
-
-+(NSString *)driverName;
-
-@property (nonatomic) BTRAudioHandler *audio;
-@property (nonatomic, readonly) NSViewController *configurationViewController;
+-(void)streamDidStart:(NSDictionary *)header;
+-(void)streamDidEnd:(NSNumber *)streamId atTime:(NSDate *)date;
+-(void)slowDataReceived:(NSString *)slowData forStreamId:(NSNumber *)streamId;
+-(void)locationReceived:(CLLocation *)location forStreamId:(NSNumber *)streamId;
+-(void)destinationDidLink:(NSString *)destination;
+-(void)destinationDidUnlink:(NSString *)destination;
+-(void)destinationDidError:(NSString *)destination error:(NSError *)error;
+-(void)destinationWillLink:(NSString *)destination;
+-(void)destinationDidConnect:(NSString *)destination;
 
 @end

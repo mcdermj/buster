@@ -23,6 +23,11 @@
     return self;
 }
 
+- (void) viewDidAppear {
+    self.version.stringValue = self.driver.version;
+    self.productId.stringValue = self.driver.productId;
+}
+
 -(void)dealloc {
     NSLog(@"Deallocing");
 }

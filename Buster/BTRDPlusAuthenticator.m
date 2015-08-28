@@ -73,7 +73,7 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
 }
 
 @property (nonatomic) NSHost *authenticationHost;
-@property (nonatomic, readwrite) NSArray *reflectorList;
+@property (nonatomic, readwrite) NSDictionary *reflectorList;
 @property (nonatomic, getter=isAuthenticated, readwrite) BOOL authenticated;
 @property (nonatomic, readonly) char suffix;
 
@@ -88,22 +88,27 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
     static BTRDPlusAuthenticator *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[self alloc] initWithAuthCall:@"NH6Z"];
+        sharedInstance = [[self alloc] init];
+        [sharedInstance bind:@"authCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
+        [sharedInstance startAuthTimer];
     });
     return sharedInstance;
 }
 
-
-- (id) initWithAuthCall:(NSString *)authCall {
+- (id) init {
     self = [super init];
     if(self) {
         _authenticationHost = [NSHost hostWithName:@"opendstar.org"];
-        _reflectorList = @[ ];
-        _authCall = [authCall copy];
+        _reflectorList = nil;
+        _authCall = @"";
         _suffix = '2';
         _authenticated = NO;
         
-        [self startAuthTimer];
+        BTRDPlusAuthenticator __weak *weakSelf = self;
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserverForName:NSWorkspaceDidWakeNotification object:NULL queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+            NSLog(@"Waking from sleep, reauthenticating");
+            [weakSelf authenticate];
+        }];
     }
     return self;
 }
@@ -118,16 +123,18 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
     
     _authCall = [authCall copy];
     
-    dispatch_source_cancel(authTimerSource);
+    if(authTimerSource)
+        dispatch_source_cancel(authTimerSource);
+    
     [self startAuthTimer];
 }
 
 - (void) startAuthTimer {
+    [self authenticate];
     BTRDPlusAuthenticator __weak *weakSelf = self;
     authTimerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
-    dispatch_source_set_timer(authTimerSource, dispatch_walltime(NULL, 0), 6ull * NSEC_PER_HOUR, 60ull * NSEC_PER_SEC);
+    dispatch_source_set_timer(authTimerSource, dispatch_walltime(NULL, 6ull * NSEC_PER_HOUR), 6ull * NSEC_PER_HOUR, 60ull * NSEC_PER_SEC);
     dispatch_source_set_event_handler(authTimerSource, ^{
-        NSLog(@"Performing DPlus Authentication");
         // XXX Do something with authentication failure here.  NSNotification?
         [weakSelf authenticate];
     });
@@ -136,6 +143,8 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
 
 -(void) authenticate {
     self.authenticated = NO;
+    
+    NSLog(@"Performing DPlus authentication");
     
     int authSocket = socket(PF_INET, SOCK_STREAM, 0);
     if(authSocket == -1) {
@@ -175,7 +184,7 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
     
     unsigned short length = 0;
     ssize_t bytesRead = 0;
-    NSMutableArray *newReflectorList = [NSMutableArray arrayWithCapacity:10];
+    NSMutableDictionary *newReflectorList = [NSMutableDictionary dictionaryWithCapacity:10];
     
     while((bytesRead = recv(authSocket, &length, sizeof(length), 0)) != 0) {
         if(bytesRead == -1) {
@@ -200,6 +209,7 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
             bytesRead = recv(authSocket, buffer + (length - bytesLeft), bytesLeft, 0);
             if(bytesRead == -1) {
                 NSLog(@"Couldn't read rest of packet: %s", strerror(errno));
+                free(buffer);
                 close(authSocket);
                 return;
             }
@@ -210,16 +220,12 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
         unsigned long numRecords = (length - sizeof(response->header)) / sizeof(struct reflector_record);
         for(int i = 0; i < numRecords; ++i)
             if((strnlen(response->records[i].address, sizeof(response->records[i].address)) > 0) && (response->records[i].flags & 0x8000))
-                [newReflectorList addObject:@{ @"address": [NSString stringWithCString:response->records[i].address encoding:NSUTF8StringEncoding],
-                                            @"name": [NSString stringWithCString:response->records[i].name encoding:NSUTF8StringEncoding],
-                                            @"flags": [NSNumber numberWithUnsignedShort:response->records[i].flags]
-                                            }
-                 ];
-        
+                newReflectorList[[[NSString stringWithCString:response->records[i].name encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]] = [NSString stringWithCString:response->records[i].address encoding:NSUTF8StringEncoding];
+       
         free(buffer);
     }
     
-    self.reflectorList = [NSArray arrayWithArray:newReflectorList];
+    self.reflectorList = [NSDictionary dictionaryWithDictionary:newReflectorList];
     
     NSLog(@"Received %ld responses from authentication server", self.reflectorList.count);
     

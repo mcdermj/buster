@@ -1,7 +1,7 @@
 //
-//  BTRIPFormatter.h
+//  BTRSlowDataHandler.h
 //
-//  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
+// Copyright (c) 2010-2015 - Jeremy C. McDermond (NH6Z)
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -17,6 +17,14 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-@interface BTRIPFormatter : NSFormatter
+#import "BTRSlowDataDelegate.h"
+
+@interface BTRSlowDataCoder : NSObject
+
+-(void)addData:(void *)data streamId:(NSUInteger)streamId;
+-(const void *)getDataForSequence:(NSUInteger)sequence;
+
+@property (nonatomic, copy) NSString *message;
+@property (nonatomic, weak) NSObject <BTRSlowDataDelegate> *delegate;
 
 @end

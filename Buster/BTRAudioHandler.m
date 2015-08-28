@@ -24,8 +24,8 @@
 
 #import "TPCircularBuffer.h"
 #import "TPCircularBuffer+AudioBufferList.h"
-#import "BTRGatewayHandler.h"
-#import "BTRVocoderProtocol.h"
+#import "BTRVocoderDriver.h"
+#import "BTRLinkDriverProtocol.h"
 
 static const AudioComponentDescription componentDescription = {
     .componentType = kAudioUnitType_Output,
@@ -46,14 +46,11 @@ static const AudioStreamBasicDescription outputFormat  = {
     .mBitsPerChannel = sizeof(int16_t) * 8
 };
 
-static BOOL receiving = NO;
-
 NSString * const BTRAudioDeviceChanged = @"BTRAudioDeviceChanged";
 
 static inline BOOL CheckStatus(OSStatus error, const char *operation);
 
 @interface BTRAudioHandler () {
-    TPCircularBuffer playbackBuffer;
     AudioUnit outputUnit;
     dispatch_source_t inputAudioSource;
     AudioConverterRef inputConverter;
@@ -68,8 +65,12 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation);
 @property (nonatomic, readwrite) AudioDeviceID defaultOutputDevice;
 
 @property (nonatomic, readonly) TPCircularBuffer *recordBuffer;
+@property (nonatomic, readonly) TPCircularBuffer *playbackBuffer;
+
 @property (nonatomic, readonly) AudioStreamBasicDescription *inputFormat;
 @property (nonatomic, readonly) AudioUnit inputUnit;
+
+@property (nonatomic) double hardwareSampleRate;
 
 +(NSArray *)enumerateDevices:(AudioObjectPropertyScope)scope;
 @end
@@ -77,19 +78,19 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation);
 static OSStatus playbackThreadCallback (void *userData, AudioUnitRenderActionFlags *actionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData) {
     int32_t availableBytes;
     void *bufferTail;
-    TPCircularBuffer *buffer = (TPCircularBuffer *) userData;
+    BTRAudioHandler *self = (__bridge BTRAudioHandler *) userData;
     
     for(unsigned int i = 0; i < ioData->mNumberBuffers; ++i) {
-        bufferTail = TPCircularBufferTail(buffer, &availableBytes);
+        bufferTail = TPCircularBufferTail(self.playbackBuffer, &availableBytes);
         if((UInt32) availableBytes < ioData->mBuffers[i].mDataByteSize) {
             memset(ioData->mBuffers[i].mData, 0, ioData->mBuffers[i].mDataByteSize);
-            if(!receiving && availableBytes > 0) {
+            if(!self.receiving && availableBytes > 0) {
                 memcpy(ioData->mBuffers[i].mData, bufferTail, availableBytes);
-                TPCircularBufferConsume(buffer, availableBytes);
+                TPCircularBufferConsume(self.playbackBuffer, availableBytes);
             }
         } else {
             memcpy(ioData->mBuffers[i].mData, bufferTail, ioData->mBuffers[i].mDataByteSize);
-            TPCircularBufferConsume(buffer, ioData->mBuffers[i].mDataByteSize);
+            TPCircularBufferConsume(self.playbackBuffer, ioData->mBuffers[i].mDataByteSize);
         }
     }
     
@@ -161,7 +162,9 @@ static OSStatus AudioDevicesChanged(AudioObjectID inObjectID, UInt32 inNumberAdd
     self = [super init];
     
     if(self) {
-        TPCircularBufferInit(&playbackBuffer, 16384);
+        _playbackBuffer = malloc(sizeof(TPCircularBuffer));
+        TPCircularBufferInit(_playbackBuffer, 16384);
+        
         _recordBuffer = malloc(sizeof(TPCircularBuffer));
         TPCircularBufferInit(_recordBuffer, 16384);
         
@@ -177,6 +180,10 @@ static OSStatus AudioDevicesChanged(AudioObjectID inObjectID, UInt32 inNumberAdd
         _inputDevice = 0;
         _outputDevice = 0;
         
+        _hardwareSampleRate = 0.0;
+        
+        _receiving = NO;
+        
         AudioObjectPropertyAddress propertyAddress = {
             kAudioHardwarePropertyDevices,
             kAudioObjectPropertyScopeGlobal,
@@ -190,18 +197,10 @@ static OSStatus AudioDevicesChanged(AudioObjectID inObjectID, UInt32 inNumberAdd
 }
 
 - (void) dealloc {
+    free(_playbackBuffer);
     free(_recordBuffer);
     free(_inputFormat);
 }
-
-/* - (TPCircularBuffer *) recordBuffer {
-    return &recordBuffer;
-}
-
-- (AudioStreamBasicDescription *) inputFormat {
-    return &inputFormat;
-} */
-
 
 - (void) setInputDevice:(AudioDeviceID)inputDevice {
     if(_inputDevice == inputDevice)
@@ -245,19 +244,58 @@ static OSStatus AudioDevicesChanged(AudioObjectID inObjectID, UInt32 inNumberAdd
     if(_xmit == xmit)
         return;
     
-    if(xmit && inputConverter)
-        AudioConverterReset(inputConverter);
-    
-    if(xmit)
+    if(xmit) {
+        if(inputConverter)
+            AudioConverterReset(inputConverter);
+        
         TPCircularBufferClear(self.recordBuffer);
-    
-    _xmit = xmit;
-    
-    //  Give it 100ms for the queue to fill a bit.
-    if(_xmit)
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 100ul * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
-            dispatch_resume(inputAudioSource);
+        
+        inputAudioSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+        dispatch_source_set_timer(inputAudioSource, dispatch_time(DISPATCH_TIME_NOW, 100ul * NSEC_PER_MSEC), 20ull * NSEC_PER_MSEC, 1ull * NSEC_PER_MSEC);
+
+        BTRAudioHandler __weak *weakSelf = self;
+        dispatch_source_set_event_handler(inputAudioSource, ^{
+            AudioBufferList bufferList;
+            AudioTimeStamp timestamp;
+            UInt32 numSamples = 160;
+            BOOL last = NO;
+            
+            bufferList.mNumberBuffers = 1;
+            bufferList.mBuffers[0].mNumberChannels = 1;
+            bufferList.mBuffers[0].mDataByteSize = numSamples * sizeof(short);
+            bufferList.mBuffers[0].mData = calloc(1, bufferList.mBuffers[0].mDataByteSize);
+            
+            if(weakSelf.hardwareSampleRate == 8000.0) {
+                TPCircularBufferDequeueBufferListFrames(_recordBuffer, &numSamples, &bufferList, &timestamp, self.inputFormat);
+            } else {
+                OSStatus error = AudioConverterFillComplexBuffer(inputConverter, audioConverterCallback, (__bridge void *)(weakSelf), &numSamples, &bufferList, NULL);
+                
+                if(error != noErr && error != kAudioConverterErr_UnspecifiedError) {
+                    NSLog(@"Error in audio converter: %d", error);
+                    return;
+                }
+            }
+            
+            if(!weakSelf.xmit && numSamples == 0) {
+                last = YES;
+                dispatch_source_cancel(inputAudioSource);
+            }
+            
+            [weakSelf.vocoder encodeData:bufferList.mBuffers[0].mData lastPacket:last];
+            
+            free(bufferList.mBuffers[0].mData);
         });
+        
+        dispatch_resume(inputAudioSource);
+    }
+    _xmit = xmit;
+}
+
+-(void)setReceiving:(BOOL)receiving {
+    _receiving = receiving;
+    
+    if(receiving)
+        TPCircularBufferClear(self.playbackBuffer);
 }
 
 - (AudioDeviceID) defaultOutputDevice {
@@ -284,7 +322,7 @@ static OSStatus AudioDevicesChanged(AudioObjectID inObjectID, UInt32 inNumberAdd
 
 
 -(void) queueAudioData:(void *)audioData withLength:(uint32)length {
-    if(TPCircularBufferProduceBytes(&playbackBuffer, audioData, length) == false) {
+    if(TPCircularBufferProduceBytes(self.playbackBuffer, audioData, length) == false) {
        // NSLog(@"No space left in buffer\n");
     }
     
@@ -294,7 +332,7 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
     if(error == noErr)
         return YES;
     
-    char str[20];
+    char str[20] = "";
     // see if it appears to be a 4-char-code
     *(UInt32 *)(str + 1) = CFSwapInt32HostToBig(error);
     if (isprint(str[1]) && isprint(str[2]) && isprint(str[3]) && isprint(str[4])) {
@@ -411,7 +449,7 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
     
     AURenderCallbackStruct renderCallback;
     renderCallback.inputProc = playbackThreadCallback;
-    renderCallback.inputProcRefCon = &playbackBuffer;
+    renderCallback.inputProcRefCon = (__bridge void *)(self);
     
     if(!CheckStatus(AudioUnitSetProperty(outputUnit, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Global, 0, &renderCallback, sizeof(renderCallback)), "AudioUnitSetProperty(kAudioUnitProperty_SetRenderCallback)"))
         return NO;
@@ -421,22 +459,6 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
     
     if(!CheckStatus(AudioOutputUnitStart(outputUnit), "AudioOutputUnitStart"))
         return NO;
-    
-    [[NSNotificationCenter defaultCenter] addObserverForName: BTRNetworkStreamStart
-                                                      object: nil
-                                                       queue: [NSOperationQueue mainQueue]
-                                                  usingBlock:^(NSNotification *notification) {
-                                                      receiving = YES;
-                                                      TPCircularBufferClear(&playbackBuffer);
-                                                  }
-     ];
-    [[NSNotificationCenter defaultCenter] addObserverForName: BTRNetworkStreamEnd
-                                                      object: nil
-                                                       queue: [NSOperationQueue mainQueue]
-                                                  usingBlock:^(NSNotification *notification) {
-                                                      receiving = NO;
-                                                  }
-     ];
     
     //  Set up microphone input audio
     if(!CheckStatus(AudioComponentInstanceNew(outputComponent, &_inputUnit), "AudioComponentInstanceNew"))
@@ -486,23 +508,22 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
         return NO;
     }
     
-    double hardwareSampleRate = 0.0;
     for(int i = 0; i < sampleRatesSize / sizeof(AudioValueRange); ++i) {
         NSLog(@"Range %d: Max = %f, Min = %f", i, sampleRateRanges[i].mMaximum, sampleRateRanges[i].mMinimum);
         if(sampleRateRanges[i].mMaximum >= 8000.0 && sampleRateRanges[i].mMinimum <= 8000.0)
-            hardwareSampleRate = 8000.0;
-        if(sampleRateRanges[i].mMinimum >= 48000.0 && sampleRateRanges[i].mMinimum <= 48000.0 && hardwareSampleRate != 8000.0)
-            hardwareSampleRate = 48000.0;
+            self.hardwareSampleRate = 8000.0;
+        if(sampleRateRanges[i].mMinimum >= 48000.0 && sampleRateRanges[i].mMinimum <= 48000.0 && self.hardwareSampleRate != 8000.0)
+            self.hardwareSampleRate = 48000.0;
     }
     
     free(sampleRateRanges);
     
-    NSLog(@"We want hardware sample rate to be %f\n", hardwareSampleRate);
-    if(hardwareSampleRate != 0.0) {
+    NSLog(@"We want hardware sample rate to be %f\n", self.hardwareSampleRate);
+    if(self.hardwareSampleRate != 0.0) {
         propertyAddress.mSelector = kAudioDevicePropertyNominalSampleRate;
         AudioValueRange hardwareSampleRateRange = {
-            .mMinimum = hardwareSampleRate,
-            .mMaximum = hardwareSampleRate
+            .mMinimum = self.hardwareSampleRate,
+            .mMaximum = self.hardwareSampleRate
         };
         if(!CheckStatus(AudioObjectSetPropertyData(self.inputDevice, &propertyAddress, 0, NULL, sizeof(hardwareSampleRateRange), &hardwareSampleRateRange), "AudioObjectSetPropertyData(kAudioDevicePropertyNominalSampleRate)"))
             return NO;
@@ -513,15 +534,15 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
         if(!CheckStatus(AudioObjectGetPropertyData(self.inputDevice, &propertyAddress, 0, NULL, &rangeSize, &hardwareSampleRateRange), "AudioObjectGetPropertyData(kAudioDevicePropertyNominalSampleRate"))
             return NO;
         
-        hardwareSampleRate = hardwareSampleRateRange.mMinimum;
+        self.hardwareSampleRate = hardwareSampleRateRange.mMinimum;
     }
-    NSLog(@"We got hardware sample rate to be %f\n", hardwareSampleRate);
+    NSLog(@"We got hardware sample rate to be %f\n", self.hardwareSampleRate);
     
     UInt32 inputFormatSize = sizeof(AudioStreamBasicDescription);
     if(!CheckStatus(AudioUnitGetProperty(self.inputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 1, self.inputFormat, &inputFormatSize), "AudioUnitGetProperty(kAudioUnitProperty_StreamFormat)"))
         return NO;
     
-    self.inputFormat->mSampleRate = hardwareSampleRate;
+    self.inputFormat->mSampleRate = self.hardwareSampleRate;
     self.inputFormat->mFormatFlags = kAudioFormatFlagIsPacked | kAudioFormatFlagIsSignedInteger| kAudioFormatFlagIsBigEndian;
     self.inputFormat->mBytesPerPacket = sizeof(int16_t);
     self.inputFormat->mBytesPerFrame = sizeof(int16_t);
@@ -532,45 +553,8 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
     if(!CheckStatus(AudioUnitSetProperty(self.inputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 1, self.inputFormat, sizeof(AudioStreamBasicDescription)), "AudioUnitSetProperty(kAudioUnitProperty_StreamFormat)"))
         return NO;
     
-    //  Set up a timer source to pull audio through the system and submit it to the vocoder.
-    //  XXX this probably wants its own high priority serial queue to make sure we don't run more than one at once.
-    inputAudioSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
-    dispatch_source_set_timer(inputAudioSource, dispatch_time(DISPATCH_TIME_NOW, 0), 20ull * NSEC_PER_MSEC, 1ull * NSEC_PER_MSEC);
-    
-    if(hardwareSampleRate != 8000.0)
+    if(self.hardwareSampleRate != 8000.0)
         AudioConverterNew(self.inputFormat, &outputFormat, &inputConverter);
-    
-    dispatch_source_set_event_handler(inputAudioSource, ^{
-        AudioBufferList bufferList;
-        AudioTimeStamp timestamp;
-        UInt32 numSamples = 160;
-        BOOL last = NO;
-        
-        bufferList.mNumberBuffers = 1;
-        bufferList.mBuffers[0].mNumberChannels = 1;
-        bufferList.mBuffers[0].mDataByteSize = numSamples * sizeof(short);
-        bufferList.mBuffers[0].mData = calloc(1, bufferList.mBuffers[0].mDataByteSize);
-        
-        if(hardwareSampleRate == 8000.0) {
-            TPCircularBufferDequeueBufferListFrames(_recordBuffer, &numSamples, &bufferList, &timestamp, self.inputFormat);
-        } else {
-            OSStatus error = AudioConverterFillComplexBuffer(inputConverter, audioConverterCallback, (__bridge void *)(self), &numSamples, &bufferList, NULL);
-            
-            if(error != noErr && error != kAudioConverterErr_UnspecifiedError) {
-                NSLog(@"Error in audio converter: %d", error);
-                return;
-            }
-        }
-        
-        if(!self.xmit && numSamples == 0) {
-            last = YES;
-            dispatch_suspend(inputAudioSource);
-        }
-        
-        [self.vocoder encodeData:bufferList.mBuffers[0].mData lastPacket:last];
-        
-        free(bufferList.mBuffers[0].mData);
-    });
     
     //  Start everything up.
     
@@ -593,9 +577,6 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
     
     NSLog(@"Stopping audio");
     
-    dispatch_suspend(inputAudioSource);
-    dispatch_source_cancel(inputAudioSource);
-    
     if(inputConverter) {
         AudioConverterDispose(inputConverter);
         inputConverter = NULL;
@@ -609,13 +590,6 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
     AudioComponentInstanceDispose(outputUnit);
     _inputUnit = NULL;
     outputUnit = NULL;
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:BTRNetworkStreamStart
-                                                  object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:BTRNetworkStreamEnd
-                                                          object:nil];
     
     status = AUDIO_STATUS_STOPPED;
 }
@@ -731,9 +705,6 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
     }];
 
     return [NSArray arrayWithArray:devices];
-}
-
-+ (void) initialize {
 }
 
 @end
