@@ -29,15 +29,16 @@ enum linkState {
 
 @protocol BTRLinkDriverProtocol
 
-+(BOOL)canHandleLinkTo:(NSString *)reflector;
+-(BOOL)canHandleLinkTo:(NSString *)reflector;
 
 @property (nonatomic, readonly, copy) NSString *linkTarget;
 @property (nonatomic) id <BTRVocoderDriver> vocoder;
 @property (nonatomic, copy)NSString *myCall;
 @property (nonatomic, copy)NSString *myCall2;
 @property (nonatomic, weak) NSObject <BTRLinkDriverDelegate> *delegate;
+@property (nonatomic) dispatch_queue_t linkQueue;
 
--(id)initWithLinkTo:(NSString *)linkTarget;
+-(void)linkTo:(NSString *)linkTarget;
 -(void)unlink;
 
 -(void) sendAMBE:(void *)data lastPacket:(BOOL)last;

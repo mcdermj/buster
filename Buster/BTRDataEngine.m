@@ -28,13 +28,15 @@
 #import "BTRDExtraLink.h"
 
 static NSMutableArray *vocoderDrivers = nil;
-static NSMutableArray *linkDrivers = nil;
+static NSMutableArray <Class> *linkDriverClasses = nil;
 
 @interface BTRDataEngine ()
 
 @property (nonatomic, readwrite) NSObject <BTRLinkDriverProtocol> *network;
 @property (nonatomic, readwrite) BTRAudioHandler *audio;
 @property (nonatomic, copy) NSString *sleepDestination;
+@property (nonatomic, readonly) NSArray <id <BTRLinkDriverProtocol>> *linkDrivers;
+@property (nonatomic, readonly) dispatch_queue_t linkQueue;
 @end
 
 @implementation BTRDataEngine
@@ -53,16 +55,28 @@ static NSMutableArray *linkDrivers = nil;
     if(self) {
         _audio = [[BTRAudioHandler alloc] init];
         _network = nil;
-        Class driver = NSClassFromString([[NSUserDefaults standardUserDefaults] stringForKey:@"VocoderDriver"]);
-        self.vocoder = [[driver alloc] init];
+        Class vocoderDriver = NSClassFromString([[NSUserDefaults standardUserDefaults] stringForKey:@"VocoderDriver"]);
+        self.vocoder = [[vocoderDriver alloc] init];
         
         _vocoder.audio = _audio;
         
         _slowData = [[BTRSlowDataCoder alloc] init];
         _slowData.delegate = self;
         
-        BTRDataEngine __weak *weakSelf = self;
+        //  Instantiate all the link drivers
+        _linkQueue = dispatch_queue_create("net.nh6z.Buster.LinkOperations", DISPATCH_QUEUE_SERIAL);
+        NSMutableArray <id <BTRLinkDriverProtocol>> *newLinkDrivers = [[NSMutableArray alloc] init];
+        for(Class driver in linkDriverClasses) {
+            NSObject <BTRLinkDriverProtocol> *newDriver = [[driver alloc] init];
+            [newLinkDrivers addObject:newDriver];
+            newDriver.linkQueue = self.linkQueue;
+            newDriver.delegate = self;
+            [newDriver bind:@"myCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
+            [newDriver bind:@"myCall2" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall2" options:nil];
+        }
+        _linkDrivers = [NSArray arrayWithArray:newLinkDrivers];
         
+        BTRDataEngine __weak *weakSelf = self;
         [[[NSWorkspace sharedWorkspace] notificationCenter] addObserverForName:NSWorkspaceWillSleepNotification object:NULL queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
             [weakSelf.audio stop];
             [weakSelf.vocoder stop];
@@ -100,22 +114,18 @@ static NSMutableArray *linkDrivers = nil;
 }
 
 +(void)registerLinkDriver:(Class)driver {
-    if(!linkDrivers)
-        linkDrivers = [[NSMutableArray alloc] init];
+    if(!linkDriverClasses)
+        linkDriverClasses = [[NSMutableArray alloc] init];
     
-    [linkDrivers addObject:driver];
+    [linkDriverClasses addObject:driver];
 }
 
 +(NSArray *)vocoderDrivers {
     return [NSArray arrayWithArray:vocoderDrivers];
 }
 
-+(NSArray *)linkDrivers {
-    return [NSArray arrayWithArray:linkDrivers];
-}
-
-+(BOOL)isDestinationValid:(NSString *)destination {
-    NSUInteger linkIndex = [[BTRDataEngine linkDrivers] indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+-(BOOL)isDestinationValid:(NSString *)destination {
+    NSUInteger linkIndex = [self.linkDrivers indexOfObjectPassingTest:^BOOL(id <BTRLinkDriverProtocol> obj, NSUInteger idx, BOOL *stop) {
         BOOL test = [obj canHandleLinkTo:destination];
         if(test)
             *stop = YES;
@@ -135,15 +145,12 @@ static NSMutableArray *linkDrivers = nil;
     
     [self unlink];
     
-    for(Class driver in [BTRDataEngine linkDrivers]) {
+    for(NSObject <BTRLinkDriverProtocol> *driver in self.linkDrivers) {
         if([driver canHandleLinkTo:reflector]) {
-           self.network = [[driver alloc] initWithLinkTo:reflector];
+            self.network = driver;
+            [driver linkTo:reflector];
             self.network.vocoder = self.vocoder;
             self.vocoder.network = self.network;
-            self.network.delegate = self;
-            
-            [self.network bind:@"myCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
-            [self.network bind:@"myCall2" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall2" options:nil];
             break;
         }
     }
@@ -158,9 +165,8 @@ static NSMutableArray *linkDrivers = nil;
 -(void)unlink {
         if(self.network) {
             [self.network unlink];
-            [self.network unbind:@"myCall"];
-            [self.network unbind:@"myCall2"];
             self.network = nil;
+            self.vocoder.network = nil;
         }
 }
 

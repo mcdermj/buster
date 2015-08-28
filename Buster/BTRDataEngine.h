@@ -37,8 +37,7 @@
 +(void)registerVocoderDriver:(Class)driver;
 +(void)registerLinkDriver:(Class)driver;
 +(NSArray *)vocoderDrivers;
-+(NSArray *)linkDrivers;
-+(BOOL)isDestinationValid:(NSString *)destination;
+-(BOOL)isDestinationValid:(NSString *)destination;
 
 -(void)linkTo:(NSString *)reflector;
 -(void)unlink;

@@ -30,7 +30,7 @@
 - (BOOL) getObjectValue:(out __autoreleasing id *)obj forString:(NSString *)string errorDescription:(out NSString *__autoreleasing *)error {
     *obj = [string stringByReplacingOccurrencesOfString:@"•" withString:@" "];
 
-    if(![BTRDataEngine isDestinationValid:*obj]) {
+    if(![[BTRDataEngine sharedInstance] isDestinationValid:*obj]) {
         if(error)
             *error = @"Link destination not found";
         return NO;

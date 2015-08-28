@@ -73,19 +73,6 @@ static const struct dplus_packet linkModuleTemplate = {
 
 @implementation BTRDPlusLink
 
-+(BOOL)canHandleLinkTo:(NSString*)linkTarget {
-    if(linkTarget.length != 8)
-        return NO;
-    
-    if([BTRDPlusAuthenticator sharedInstance].reflectorList[linkTarget.callWithoutModule])
-        return YES;
-    
-    //  The ircDDB enabled gateways should support DPlus.
-    if([BTRIRCDDBGateways sharedInstance].gateways[linkTarget.callWithoutModule])
-        return YES;
-    
-    return NO;
-}
 
 +(void) load {
     [BTRDataEngine registerLinkDriver:self];
@@ -93,8 +80,8 @@ static const struct dplus_packet linkModuleTemplate = {
     [BTRIRCDDBGateways sharedInstance];
 }
 
-- (id) initWithLinkTo:(NSString *)linkTarget {
-    self = [super initWithLinkTo:linkTarget];
+- (id) init {
+    self = [super init];
     if(self) {
         struct dplus_packet unlinkPacket = {
             .length = 0x05,
@@ -121,6 +108,20 @@ static const struct dplus_packet linkModuleTemplate = {
     }
     
     return self;
+}
+
+-(BOOL)canHandleLinkTo:(NSString*)linkTarget {
+    if(linkTarget.length != 8)
+        return NO;
+    
+    if([BTRDPlusAuthenticator sharedInstance].reflectorList[linkTarget.callWithoutModule])
+        return YES;
+    
+    //  The ircDDB enabled gateways should support DPlus.
+    if([BTRIRCDDBGateways sharedInstance].gateways[linkTarget.callWithoutModule])
+        return YES;
+    
+    return NO;
 }
 
 -(CFAbsoluteTime)pollInterval {
