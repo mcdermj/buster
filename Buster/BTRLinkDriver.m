@@ -95,7 +95,7 @@
 @property (nonatomic) int socket;
 @property (nonatomic) dispatch_source_t dispatchSource;
 @property (nonatomic) dispatch_source_t pollTimerSource;
-@property (nonatomic) dispatch_queue_t writeQueue;
+@property (nonatomic, readonly) dispatch_queue_t writeQueue;
 @property (nonatomic) unsigned short rxStreamId;
 @property (nonatomic) char rxSequence;
 @property (nonatomic) unsigned short txStreamId;
@@ -113,10 +113,7 @@
 @synthesize myCall = _myCall;
 @synthesize myCall2 = _myCall2;
 @synthesize delegate = _delegate;
-
-+(BOOL)canHandleLinkTo:(NSString *)reflector {
-    return NO;
-}
+@synthesize linkQueue = _linkQueue;
 
 -(id)init {
     self = [super init];
@@ -138,18 +135,61 @@
     return self;
 }
 
--(id)initWithLinkTo:(NSString *)linkTarget {
-    self = [self init];
-    if(self) {
-        self.linkTarget = [linkTarget copy];
-        BTRLinkDriver __weak *weakSelf = self;
+-(void)linkTo:(NSString *)linkTarget {
+    // self.linkTarget = linkTarget;
+    BTRLinkDriver __weak *weakSelf = self;
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-            [weakSelf connect];
+    dispatch_async(self.linkQueue, ^{
+        [weakSelf.delegate destinationWillLink:linkTarget];
+        
+        NSString *reflectorAddress = [weakSelf getAddressForReflector:(NSString *)[[linkTarget substringWithRange:NSMakeRange(0, 7)] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+        if(!reflectorAddress) {
+            //  XXX This really should never happen.
+            NSError *error = [NSError errorWithDomain:@"BTRErrorDomain" code:1 userInfo:@{ NSLocalizedDescriptionKey: @"Couldn't find reflector" }];
+            [weakSelf.delegate destinationDidError:linkTarget error:error];
+            
+            NSLog(@"Couldn't find reflector %@", linkTarget);
+            return;
+        }
+        
+        struct sockaddr_in serverAddr = {
+            .sin_len = sizeof(struct sockaddr_in),
+            .sin_family = AF_INET,
+            .sin_port = htons(weakSelf.serverPort),
+            .sin_addr.s_addr = inet_addr([reflectorAddress cStringUsingEncoding:NSUTF8StringEncoding])
+        };
+        
+        NSLog(@"Linking to %@ at %@", linkTarget, reflectorAddress);
+        
+        if(connect(weakSelf.socket, (const struct sockaddr *) &serverAddr, (socklen_t) sizeof(serverAddr))) {
+            NSLog(@"Couldn't connect socket: %s\n", strerror(errno));
+            return;
+        }
+        
+        NSLog(@"Link Connection Complete");
+        
+        weakSelf.linkState = CONNECTED;
+        
+        dispatch_source_t retrySource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+        dispatch_source_set_timer(retrySource, dispatch_time(DISPATCH_TIME_NOW, 0), 500ull * NSEC_PER_MSEC, 1ull * NSEC_PER_MSEC);
+        dispatch_source_set_event_handler(retrySource, ^{
+            if(weakSelf.linkState != CONNECTED) {
+                dispatch_source_cancel(retrySource);
+            }
+            
+            if(CFAbsoluteTimeGetCurrent() > weakSelf.connectTime + 10.0) {
+                NSError *error = [NSError errorWithDomain:@"BTRErrorDomain" code:4 userInfo:@{ NSLocalizedDescriptionKey: @"Timeout connecting to reflector" }];
+                [weakSelf.delegate destinationDidError:linkTarget error:error];
+                dispatch_source_cancel(retrySource);
+                weakSelf.linkState = UNLINKED;
+            }
+            
+            [weakSelf sendLink];
         });
-    }
-    
-    return self;
+        weakSelf.connectTime = CFAbsoluteTimeGetCurrent();
+        dispatch_resume(retrySource);
+        self.linkTarget = linkTarget;
+    });
 }
 
 -(void)open {
@@ -213,58 +253,6 @@
     dispatch_resume(self.dispatchSource);
 }
 
--(void)connect {
-    [self.delegate destinationWillLink:self.linkTarget];
-        
-    NSString *reflectorAddress = [self getAddressForReflector:(NSString *)[[self.linkTarget substringWithRange:NSMakeRange(0, 7)] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
-    if(!reflectorAddress) {
-        //  XXX This really should never happen.
-        NSError *error = [NSError errorWithDomain:@"BTRErrorDomain" code:1 userInfo:@{ NSLocalizedDescriptionKey: @"Couldn't find reflector" }];
-        [self.delegate destinationDidError:self.linkTarget error:error];
-                
-        NSLog(@"Couldn't find reflector %@", self.linkTarget);
-        return;
-    }
-    
-    struct sockaddr_in serverAddr = {
-        .sin_len = sizeof(struct sockaddr_in),
-        .sin_family = AF_INET,
-        .sin_port = htons(self.serverPort),
-        .sin_addr.s_addr = inet_addr([reflectorAddress cStringUsingEncoding:NSUTF8StringEncoding])
-    };
-    
-    NSLog(@"Linking to %@ at %@", self.linkTarget, reflectorAddress);
-    
-    if(connect(self.socket, (const struct sockaddr *) &serverAddr, (socklen_t) sizeof(serverAddr))) {
-        NSLog(@"Couldn't connect socket: %s\n", strerror(errno));
-        return;
-    }
-    
-    NSLog(@"Link Connection Complete");
-    
-    self.linkState = CONNECTED;
-    
-    BTRLinkDriver __weak *weakSelf = self;
-    dispatch_source_t retrySource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
-    dispatch_source_set_timer(retrySource, dispatch_time(DISPATCH_TIME_NOW, 0), 500ull * NSEC_PER_MSEC, 1ull * NSEC_PER_MSEC);
-    dispatch_source_set_event_handler(retrySource, ^{
-        if(weakSelf.linkState != CONNECTED) {
-            dispatch_source_cancel(retrySource);
-        }
-        
-        if(CFAbsoluteTimeGetCurrent() > weakSelf.connectTime + 10.0) {
-            NSError *error = [NSError errorWithDomain:@"BTRErrorDomain" code:4 userInfo:@{ NSLocalizedDescriptionKey: @"Timeout connecting to reflector" }];
-            [weakSelf.delegate destinationDidError:weakSelf.linkTarget error:error];
-            dispatch_source_cancel(retrySource);
-            self.linkState = UNLINKED;
-        }
-        
-        [weakSelf sendLink];
-    });
-    self.connectTime = CFAbsoluteTimeGetCurrent();
-    dispatch_resume(retrySource);
-}
-
 - (void) dealloc  {
     NSLog(@"Calling dealloc");
     //[self unlink];
@@ -325,6 +313,9 @@
 -(BOOL)hasReliableChecksum {
     [self doesNotRecognizeSelector:_cmd];
 }
+-(BOOL)canHandleLinkTo:(NSString *)reflector {
+    [self doesNotRecognizeSelector:_cmd];
+}
 #pragma clang diagnostic pop
 
 -(void)setLinkState:(enum linkState)linkState {
@@ -336,7 +327,6 @@
             [self.delegate destinationDidUnlink:self.linkTarget];
             [self stopPoll];
             self.linkTimer = nil;
-            dispatch_source_cancel(self.dispatchSource);
             break;
         }
         case CONNECTED: {
@@ -374,28 +364,31 @@
 }
 
 -(void)unlink {
-    if(self.linkState == UNLINKED)
-        return;
-    
     BTRLinkDriver __weak *weakSelf = self;
-    int tries = 0;
     
-    if(self.rxStreamId != 0)
-        [self terminateCurrentStream];
-    
-    do {
-        dispatch_sync(self.writeQueue, ^{
-            [weakSelf sendUnlink];
-        });
-        usleep(USEC_PER_SEC / 10);  // XXX Don't like sleeping blindly here.
-        if(tries++ > 10)
-            break;
-    } while(self.linkState != UNLINKED);
-    
-    self.linkTimer = nil;
-    
-    NSLog(@"Unlinked from %@", self.linkTarget);
-    self.linkTarget = @"";
+    dispatch_async(self.linkQueue, ^{
+        if(weakSelf.linkState == UNLINKED)
+            return;
+        
+        int tries = 0;
+        
+        if(weakSelf.rxStreamId != 0)
+            [weakSelf terminateCurrentStream];
+        
+        do {
+            dispatch_sync(weakSelf.writeQueue, ^{
+                [weakSelf sendUnlink];
+            });
+            usleep(USEC_PER_SEC / 10);  // XXX Don't like sleeping blindly here.
+            if(tries++ > 10)
+                break;
+        } while(weakSelf.linkState != UNLINKED);
+        
+        weakSelf.linkTimer = nil;
+        
+        NSLog(@"Unlinked from %@", weakSelf.linkTarget);
+        weakSelf.linkTarget = @"";
+    });
 }
 
 - (void) sendPacket:(NSData *)packet {

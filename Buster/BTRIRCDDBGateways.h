@@ -19,8 +19,6 @@
 
 @interface BTRIRCDDBGateways : NSObject
 
-+(BTRIRCDDBGateways *) sharedInstance;
-
 @property (nonatomic) NSDictionary *gateways;
 
 @end

@@ -50,7 +50,12 @@ static NSDictionary *_reflectorList;
     return _reflectorList;
 }
 
-+(BOOL)canHandleLinkTo:(NSString*)linkTarget {
+
++(void) load {
+    [BTRDataEngine registerLinkDriver:self];
+}
+
+-(BOOL)canHandleLinkTo:(NSString*)linkTarget {
     if(linkTarget.length != 8)
         return NO;
     
@@ -58,17 +63,6 @@ static NSDictionary *_reflectorList;
         return YES;
     
     return NO;
-}
-
-+(void) load {
-    [BTRDataEngine registerLinkDriver:self];
-}
-
--(id) initWithLinkTo:(NSString *)linkTarget {
-    self = [super initWithLinkTo:linkTarget];
-    if (self) {
-    }
-    return self;
 }
 
 -(CFAbsoluteTime)pollInterval {

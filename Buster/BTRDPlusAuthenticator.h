@@ -23,6 +23,4 @@
 @property (nonatomic, readonly) NSDictionary *reflectorList;
 @property (nonatomic, getter=isAuthenticated, readonly) BOOL authenticated;
 
-+ (BTRDPlusAuthenticator *) sharedInstance;
-
 @end
