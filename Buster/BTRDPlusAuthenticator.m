@@ -84,17 +84,6 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
 
 @implementation BTRDPlusAuthenticator
 
-+ (BTRDPlusAuthenticator *) sharedInstance {
-    static BTRDPlusAuthenticator *sharedInstance = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [[self alloc] init];
-        [sharedInstance bind:@"authCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
-        [sharedInstance startAuthTimer];
-    });
-    return sharedInstance;
-}
-
 - (id) init {
     self = [super init];
     if(self) {

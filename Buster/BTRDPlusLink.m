@@ -69,6 +69,8 @@ static const struct dplus_packet linkModuleTemplate = {
 @property (readonly, nonatomic) NSData *unlinkPacket;
 @property (readonly, nonatomic) NSData *pollPacket;
 @property (readonly, nonatomic) NSData *linkPacket;
+@property (readonly, nonatomic) BTRDPlusAuthenticator *authenticator;
+@property (readonly, nonatomic) BTRIRCDDBGateways *ircDDBGateways;
 @end
 
 @implementation BTRDPlusLink
@@ -76,8 +78,6 @@ static const struct dplus_packet linkModuleTemplate = {
 
 +(void) load {
     [BTRDataEngine registerLinkDriver:self];
-    [BTRDPlusAuthenticator sharedInstance];
-    [BTRIRCDDBGateways sharedInstance];
 }
 
 - (id) init {
@@ -104,6 +104,9 @@ static const struct dplus_packet linkModuleTemplate = {
             .link.state = 0x01
         };
         _linkPacket = [NSData dataWithBytes:&linkPacket length:dplus_packet_size(linkPacket)];
+        
+        _authenticator = [[BTRDPlusAuthenticator alloc] init];
+        _ircDDBGateways = [[BTRIRCDDBGateways alloc] init];
 
     }
     
@@ -114,11 +117,11 @@ static const struct dplus_packet linkModuleTemplate = {
     if(linkTarget.length != 8)
         return NO;
     
-    if([BTRDPlusAuthenticator sharedInstance].reflectorList[linkTarget.callWithoutModule])
+    if(self.authenticator.reflectorList[linkTarget.callWithoutModule])
         return YES;
     
     //  The ircDDB enabled gateways should support DPlus.
-    if([BTRIRCDDBGateways sharedInstance].gateways[linkTarget.callWithoutModule])
+    if(self.ircDDBGateways.gateways[linkTarget.callWithoutModule])
         return YES;
     
     return NO;
@@ -158,12 +161,12 @@ static const struct dplus_packet linkModuleTemplate = {
 }
 
 -(NSString *)getAddressForReflector:(NSString *)reflector {
-    NSString *reflectorAddress = [BTRDPlusAuthenticator sharedInstance].reflectorList[reflector];
+    NSString *reflectorAddress = self.authenticator.reflectorList[reflector];
     if(reflectorAddress)
         return reflectorAddress;
     
     //  The ircDDB enabled gateways should support DPlus.
-    return [BTRIRCDDBGateways sharedInstance].gateways[reflector];
+    return self.ircDDBGateways.gateways[reflector];
 }
 
 -(void)processPacket:(NSData *)data {
@@ -207,7 +210,7 @@ static const struct dplus_packet linkModuleTemplate = {
                     self.linkState = LINKING;
                     NSMutableData *linkPacket = [NSMutableData dataWithBytes:&linkModuleTemplate length:dplus_packet_size(linkModuleTemplate)];
                 
-                    memcpy(((struct dplus_packet *) linkPacket.mutableBytes)->link.module.repeater, [BTRDPlusAuthenticator sharedInstance].authCall.UTF8String, [BTRDPlusAuthenticator sharedInstance].authCall.length);
+                    memcpy(((struct dplus_packet *) linkPacket.mutableBytes)->link.module.repeater, self.authenticator.authCall.UTF8String, self.authenticator.authCall.length);
                     [self sendPacket:linkPacket];
                     break;
                 }
