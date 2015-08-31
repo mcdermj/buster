@@ -428,32 +428,245 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
     }
 }
 
--(NSDictionary *)parseGPSString:(NSString *)gpsString {
-    CLLocation *location = [CLLocation locationWithAPRSString:gpsString];
-    if(!location)
+-(NSDate *)dateFromARPSTimestamp:(NSString *)timestamp {
+    NSError *error = nil;
+    
+    NSRegularExpression *parser = [NSRegularExpression regularExpressionWithPattern:@"^(\\d{2})(\\d{2})(\\d{2})(z|h|\\/)$" options:0 error:&error];
+    if([parser numberOfMatchesInString:timestamp options:0 range:NSMakeRange(0, timestamp.length)] != 1) {
+        return [NSDate distantPast];
+    }
+    
+    NSTextCheckingResult *match = [parser firstMatchInString:timestamp options:0 range:NSMakeRange(0, timestamp.length)];
+    
+    NSString *stampType = [timestamp substringWithRange:[match rangeAtIndex:4]];
+    
+    NSCalendar *utcCalendar = [NSCalendar currentCalendar];
+    utcCalendar.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    
+    if([stampType isEqualToString:@"h"]) {
+        NSUInteger hour = [timestamp substringWithRange:[match rangeAtIndex:1]].integerValue;
+        NSUInteger minute = [timestamp substringWithRange:[match rangeAtIndex:2]].integerValue;
+        NSUInteger second = [timestamp substringWithRange:[match rangeAtIndex:3]].integerValue;
+        
+        if(hour > 23 || minute > 59 || second > 59)
+            return [NSDate distantPast];
+        
+        NSDateComponents *timestampComponents = [utcCalendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay) fromDate:[NSDate date]];
+        timestampComponents.hour = hour;
+        timestampComponents.minute = minute;
+        timestampComponents.second = second;
+        NSDate *timestampDate = [utcCalendar dateFromComponents:timestampComponents];
+        
+        if([[NSDate dateWithTimeIntervalSinceNow: 3900.0] compare:timestampDate] == NSOrderedAscending) {
+            timestampComponents.day -= 1;
+        } else if([[NSDate dateWithTimeIntervalSinceNow: -82500.0] compare:timestampDate] == NSOrderedDescending) {
+            timestampComponents.day += 1;
+        }
+        
+        return [utcCalendar dateFromComponents:timestampComponents];
+    } else {
+        NSAssert([stampType isEqualToString:@"z"] || [stampType isEqualToString:@"/"], @"Stamp Type not equal to either z, h, or /");
+        NSUInteger day = [timestamp substringWithRange:[match rangeAtIndex:1]].integerValue;
+        NSUInteger hour = [timestamp substringWithRange:[match rangeAtIndex:2]].integerValue;
+        NSUInteger minute = [timestamp substringWithRange:[match rangeAtIndex:3]].integerValue;
+        
+        if(day < 1 || day > 31 || hour > 23 || minute > 59)
+            return [NSDate distantPast];
+        
+        NSCalendar *timestampCalendar;
+        if([stampType isEqualToString:@"z"])
+            timestampCalendar = utcCalendar;
+        else
+            timestampCalendar = [NSCalendar currentCalendar];
+        
+        NSDateComponents *timestampComponents = [timestampCalendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay) fromDate:[NSDate date]];
+        timestampComponents.day = day;
+        timestampComponents.hour = hour;
+        timestampComponents.minute = minute;
+        
+        NSDate *currentTimestamp = [timestampCalendar dateFromComponents:timestampComponents];
+        
+        NSDateComponents *diffComponents = [[NSDateComponents alloc] init];
+        diffComponents.month = 1;
+        NSDate *futureTimestamp = [timestampCalendar dateByAddingComponents:diffComponents toDate:currentTimestamp options:0];
+        diffComponents.month = -1;
+        NSDate *pastTimestamp = [timestampCalendar dateByAddingComponents:diffComponents toDate:currentTimestamp options:0];
+        
+        if(futureTimestamp && futureTimestamp.timeIntervalSinceNow < 43400.0)
+            return futureTimestamp;
+        else if(currentTimestamp && currentTimestamp.timeIntervalSinceNow < 43400.0)
+            return currentTimestamp;
+        else if (pastTimestamp)
+            return pastTimestamp;
+    }
+
+    return [NSDate distantPast];
+}
+
+-(CLLocationDegrees) coordinatesFromNmeaString:(NSString *)nmeaString withSign:(NSString *)sign {
+    NSError *error;
+    
+    NSRegularExpression *parser = [NSRegularExpression regularExpressionWithPattern:@"^\\s*(\\d{1,3})([0-5][0-9])\\.(\\d+)\\s*$" options:0 error:&error];
+    if([parser numberOfMatchesInString:nmeaString options:0 range:NSMakeRange(0, nmeaString.length)] != 1)
+        return 0.0;
+    
+    NSTextCheckingResult *match = [parser firstMatchInString:nmeaString options:0 range:NSMakeRange(0, nmeaString.length)];
+    CLLocationDegrees degrees = [nmeaString substringWithRange:[match rangeAtIndex:1]].doubleValue + [nmeaString substringWithRange:NSUnionRange([match rangeAtIndex:2], [match rangeAtIndex:3])].doubleValue / 60.0;
+    
+    sign = [sign.uppercaseString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    
+    if([sign isEqualToString:@"E"] || [sign isEqualToString:@"W"]) {
+        if(degrees > 179.9999999)
+            return 0.0;
+    } else if([sign isEqualToString:@"N"] || [sign isEqualToString:@"S"]) {
+        if(degrees > 89.9999999)
+            return 0.0;
+    } else {
+        return 0.0;
+    }
+    
+    if([sign isEqualToString:@"S"] || [sign isEqualToString:@"W"])
+        degrees = -degrees;
+    
+    return degrees;
+}
+
+-(CLLocation *) locationFromNmeaSentence:(NSString *)nmeaSentence {
+    NSError *error = nil;
+    
+    nmeaSentence = [nmeaSentence stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    
+    NSRegularExpression *parser = [NSRegularExpression regularExpressionWithPattern:@"^\\$([\\x20-\\x7e]+)\\*([0-9A-F]{2})$" options:NSRegularExpressionCaseInsensitive error:&error];
+    if([parser numberOfMatchesInString:nmeaSentence options:0 range:NSMakeRange(0, nmeaSentence.length)] != 1)
         return nil;
     
-    NSDictionary *gpsInfo = @{
-                              @"location" : [CLLocation locationWithAPRSString:gpsString],
-//                              @"comment" : [gpsString substringWithRange:[match rangeAtIndex:match.numberOfRanges - 1]]
-                              };
+    NSTextCheckingResult *match = [parser firstMatchInString:nmeaSentence options:0 range:NSMakeRange(0, nmeaSentence.length)];
+
+    unsigned int checksum;
+    NSScanner *sumScanner = [NSScanner scannerWithString:[nmeaSentence substringWithRange:[match rangeAtIndex:2]]];
+    if(![sumScanner scanHexInt:&checksum]) {
+        NSLog(@"Couldn't parse checksum");
+        return nil;
+    }
     
-    NSLog(@"GPS Info = %@", gpsInfo);
+    NSString *checksumString = [nmeaSentence substringWithRange:[match rangeAtIndex:1]];
+    size_t maxLength = [checksumString lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+    unsigned char *bytes = malloc(maxLength);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
+    [checksumString getBytes:bytes maxLength:maxLength usedLength:NULL encoding:NSASCIIStringEncoding options:0 range:NSMakeRange(0, checksumString.length) remainingRange:NULL];
+#pragma clang diagnostic pop
+    unsigned char calcSum = nmea_calc_sum(bytes, maxLength);
+    free(bytes);
     
-    [self.geocoder reverseGeocodeLocation:gpsInfo[@"location"] completionHandler:^(NSArray *placemarks, NSError *error) {
-        if(!placemarks)
-            NSLog(@"placemarks are nil");
-        if(error)
-            NSLog(@"Error returned from geocoder: %@", error);
-        if(placemarks.count == 0)
-            NSLog(@"No placemarks returned");
+    if((unsigned char) checksum != calcSum)
+        return nil;
+
+    NSArray <NSString *> *nmeaFields = [nmeaSentence componentsSeparatedByString:@","];
+    if([nmeaFields[0] isEqualToString:@"GPRMC"]) {
+        if(nmeaFields.count < 10)
+            return nil;
         
-        for(CLPlacemark *placemark in placemarks) {
-            NSLog(@"Location is in %@, %@, %@", placemark.locality, placemark.administrativeArea, placemark.country);
+        //  No fix
+        if(![nmeaFields[2] isEqualToString:@"A"])
+            return nil;
+        
+        NSDateComponents *timestampComponents = [[NSDateComponents alloc] init];
+        
+        NSRegularExpression *timeParser = [NSRegularExpression regularExpressionWithPattern:@"^\\s*(\\d{2})(\\d{2})(\\d{2})(|\\.\\d+)\\s*$" options:0 error:&error];
+        NSArray <NSTextCheckingResult *> *matches = [timeParser matchesInString:nmeaFields[1] options:0 range:NSMakeRange(0, nmeaFields[1].length)];
+        if(matches.count != 1)
+            return nil;
+        
+        timestampComponents.hour = [nmeaFields[1] substringWithRange:[matches[0] rangeAtIndex:1]].integerValue;
+        timestampComponents.minute = [nmeaFields[1] substringWithRange:[matches[0] rangeAtIndex:2]].integerValue;
+        timestampComponents.second = [nmeaFields[1] substringWithRange:[matches[0] rangeAtIndex:3]].integerValue;
+        
+        NSRegularExpression *dateParser = [NSRegularExpression regularExpressionWithPattern:@"^\\s*(\\d{2})(\\d{2})(\\d{2})\\s*$" options:0 error:&error];
+        matches = [dateParser matchesInString:nmeaFields[9] options:0 range:NSMakeRange(0, nmeaFields[9].length)];
+        if(matches.count != 1)
+            return nil;
+        timestampComponents.year = [nmeaFields[9] substringWithRange:[matches[0] rangeAtIndex:1]].integerValue;
+        timestampComponents.month = [nmeaFields[9] substringWithRange:[matches[0] rangeAtIndex:2]].integerValue;
+        timestampComponents.day = [nmeaFields[9] substringWithRange:[matches[0] rangeAtIndex:3]].integerValue;
+        if(timestampComponents.year >= 70)
+            timestampComponents.year += 2000;
+        else
+            timestampComponents.year += 1900;
+
+        NSCalendar *utcCalendar = [NSCalendar currentCalendar];
+        utcCalendar.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+        NSDate *timestamp = [utcCalendar dateFromComponents:timestampComponents];
+        
+        if(!timestamp)
+            return nil;
+        
+        double speed = 0.0;
+        NSRegularExpression *speedParser = [NSRegularExpression regularExpressionWithPattern:@"^\\s*(\\d+(|\\.\\d+))\\s*$" options:0 error:&error];
+        matches = [speedParser matchesInString:nmeaFields[7] options:0 range:NSMakeRange(0, nmeaFields[7].length)];
+        if(matches.count == 1)
+            speed = [nmeaFields[7] substringWithRange:[matches[0] rangeAtIndex:1]].doubleValue * 0.514444;
+        
+        double course = 0.0;
+        NSRegularExpression *courseParser = [NSRegularExpression regularExpressionWithPattern:@"^\\s*(\\d+(|\\.\\d+))\\s*$" options:0 error:&error];
+        matches = [courseParser matchesInString:nmeaFields[8] options:0 range:NSMakeRange(0, nmeaFields[8].length)];
+        if(matches.count == 1)
+            course = [nmeaFields[7] substringWithRange:[matches[0] rangeAtIndex:1]].doubleValue;
+        
+        CLLocationCoordinate2D coordinate = {
+            .latitude = [self coordinatesFromNmeaString:nmeaFields[3] withSign:nmeaFields[4]],
+            .longitude = [self coordinatesFromNmeaString:nmeaFields[5] withSign:nmeaFields[6]]
+        };
+        
+        return [[CLLocation alloc] initWithCoordinate: coordinate
+                                             altitude: 0.0
+                                   horizontalAccuracy: 100.0
+                                     verticalAccuracy: -1.0
+                                               course: course
+                                                speed: speed
+                                            timestamp: timestamp];
+    } else if([nmeaFields[0] isEqualToString:@"GPGGA"]) {
+        if(nmeaFields.count < 11)
+            return nil;
+        
+        NSRegularExpression *validityParser = [NSRegularExpression regularExpressionWithPattern:@"^\\s*(\\d+)\\s*$" options:0 error:&error];
+        NSArray <NSTextCheckingResult *> *matches = [validityParser matchesInString:nmeaFields[6] options:0 range:NSMakeRange(0, nmeaFields[6].length)];
+        if(matches.count != 1)
+            return nil;
+        
+        if([nmeaFields[6] substringWithRange:[matches[0] rangeAtIndex:1]].integerValue < 1)
+            return nil;
+        
+        NSRegularExpression *timeParser = [NSRegularExpression regularExpressionWithPattern:@"\\.\\d+$" options:0 error:&error];
+        NSString *timeString = [timeParser stringByReplacingMatchesInString:nmeaFields[1] options:0 range:NSMakeRange(0, nmeaFields[1].length) withTemplate:@""];
+        
+        NSDate *timestamp = [self dateFromARPSTimestamp:[timeString stringByAppendingString:@"h"]];
+                                
+        CLLocationCoordinate2D coordinate = {
+            .latitude = [self coordinatesFromNmeaString:nmeaFields[2] withSign:nmeaFields[3]],
+            .longitude = [self coordinatesFromNmeaString:nmeaFields[4] withSign:nmeaFields[5]]
+        };
+
+        double altitude = 0.0;
+        if([nmeaFields[10] isEqualToString:@"M"]) {
+            NSRegularExpression *altitudeParser = [NSRegularExpression regularExpressionWithPattern:@"^(-?\\d+(|\\.\\d+))$" options:0 error:&error];
+            matches = [altitudeParser matchesInString:nmeaFields[9] options:0 range:NSMakeRange(0, nmeaFields[9].length)];
+            if(matches.count != 1)
+                return nil;
+            
+            altitude = [nmeaFields[9] substringWithRange:[matches[0] rangeAtIndex:1]].doubleValue;
         }
-    }];
+        
+        return [[CLLocation alloc] initWithCoordinate: coordinate
+                                             altitude: altitude
+                                   horizontalAccuracy: 100.0
+                                     verticalAccuracy: 10.0
+                                               course: 0.0
+                                                speed: 0.0
+                                            timestamp: timestamp];
+    }
     
-    return gpsInfo;
+    return nil;
 }
 
 -(const void *)getDataForSequence:(NSUInteger)sequence {
