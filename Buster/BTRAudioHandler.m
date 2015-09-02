@@ -29,11 +29,20 @@
 
 static const AudioComponentDescription componentDescription = {
     .componentType = kAudioUnitType_Output,
-    .componentSubType = kAudioUnitSubType_HALOutput,
+    //.componentSubType = kAudioUnitSubType_HALOutput,
+    .componentSubType = kAudioUnitSubType_VoiceProcessingIO,
     .componentManufacturer = kAudioUnitManufacturer_Apple,
     .componentFlags = 0,
     .componentFlagsMask = 0
 };
+
+/* static const AudioComponentDescription inputComponentDescription = {
+    .componentType = kAudioUnitType_Output,
+    .componentSubType = kAudioUnitSubType_VoiceProcessingIO,
+    .componentManufacturer = kAudioUnitManufacturer_Apple,
+    .componentFlags = 0,
+    .componentFlagsMask = 0
+}; */
 
 static const AudioStreamBasicDescription outputFormat  = {
     .mSampleRate = 8000.0,
@@ -444,8 +453,8 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
         return NO;
 
     
-    if(!CheckStatus(AudioUnitSetProperty(outputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &outputFormat, sizeof(outputFormat)), "AudioUnitSetProperty(kAudioUnitPropertyStreamFormat)"))
-        return NO;
+    //if(!CheckStatus(AudioUnitSetProperty(outputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &outputFormat, sizeof(outputFormat)), "AudioUnitSetProperty(kAudioUnitPropertyStreamFormat)"))
+    //    return NO;
     
     AURenderCallbackStruct renderCallback;
     renderCallback.inputProc = playbackThreadCallback;
@@ -460,17 +469,21 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
     if(!CheckStatus(AudioOutputUnitStart(outputUnit), "AudioOutputUnitStart"))
         return NO;
     
+    NSLog(@"Output Initialization Done");
+    
     //  Set up microphone input audio
+    //AudioComponent inputComponent;
+    //inputComponent = AudioComponentFindNext(NULL, &inputComponentDescription);
     if(!CheckStatus(AudioComponentInstanceNew(outputComponent, &_inputUnit), "AudioComponentInstanceNew"))
         return NO;
     
-    UInt32 enable = 1;
+    /* UInt32 enable = 1;
     if(!CheckStatus(AudioUnitSetProperty(self.inputUnit, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Input, 1, &enable, sizeof(enable)), "AudioUnitSetProperty(kAudioOutputUnitProperty_EnableIO"))
         return NO;
     
     enable = 0;
     if(!CheckStatus(AudioUnitSetProperty(self.inputUnit, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Output, 0, &enable, sizeof(enable)), "AudioUnitSetProperty(kAudioOutputUnitProperty_EnableIO"))
-        return NO;
+        return NO; */
     
     propertyAddress.mSelector = kAudioHardwarePropertyDefaultInputDevice;
     
@@ -543,12 +556,12 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
         return NO;
     
     self.inputFormat->mSampleRate = self.hardwareSampleRate;
-    self.inputFormat->mFormatFlags = kAudioFormatFlagIsPacked | kAudioFormatFlagIsSignedInteger| kAudioFormatFlagIsBigEndian;
-    self.inputFormat->mBytesPerPacket = sizeof(int16_t);
-    self.inputFormat->mBytesPerFrame = sizeof(int16_t);
+    self.inputFormat->mFormatFlags = kAudioFormatFlagsNativeFloatPacked;
+    self.inputFormat->mBytesPerPacket = sizeof(float);
+    self.inputFormat->mBytesPerFrame = sizeof(float);
     self.inputFormat->mFramesPerPacket = 1;
     self.inputFormat->mChannelsPerFrame = 1;
-    self.inputFormat->mBitsPerChannel = sizeof(int16_t) * 8;
+    self.inputFormat->mBitsPerChannel = sizeof(float) * 8;
     
     if(!CheckStatus(AudioUnitSetProperty(self.inputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 1, self.inputFormat, sizeof(AudioStreamBasicDescription)), "AudioUnitSetProperty(kAudioUnitProperty_StreamFormat)"))
         return NO;
