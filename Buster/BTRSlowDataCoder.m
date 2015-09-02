@@ -276,24 +276,6 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
 #pragma clang diagnostic ignored "-Wassign-enum"
         _gpsExpression = [NSRegularExpression regularExpressionWithPattern:@"^\\$CRC([0-9A-F]{4}),[0-9A-Z]{4,8}>[0-9A-Z]{4,8},DSTAR\\*:[!\\/]{1}(?:[0-9]{6}[hz\\/]{1})?(\\d{4}\\.\\d{2}[NS]{1})(.{1})(\\d{5}\\.\\d{2}[EW]{1})(.{1})(\\d{3}\\/\\d{3})?(.*)$" options:0 error:&error];
         
-        NSArray <NSString *> *testStrings = @[
-                                              //@"$CRC2587,WA8CLT>API510,DSTAR*:!4000.94N/08304.82W>/\r",
-                                              //@"$CRCBA51,KC8YQL>API282,DSTAR*:/204914h4107.74N/08416.01WO320/000/2820 @ HOME QTH\r",
-                                              @"$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47\r",
-                                              @"$GPRMC,123519,A,4807.038,N,01131.000,E,022.4,084.4,230394,003.1,W*6A\r\n",
-                                              @"$GPGGA,085433.092,,,,,0,3,,,M,,M,,*49\r\n",
-                                              @"$GPGGA,165113.000,5601.0318,N,01211.3503,E,1,07,1.2,22.4,M,41.6,M,,0000*60",
-                                              @"$GPGGA,173845.878,5109.4000,N,00641.6735,E,1,04,14.5,123.1,M,47.6,M,0.0,0000*44"
-                                              ];
-        for(NSString *testString in testStrings) {
-            CLLocation *testLocation = [CLLocation locationWithNMEASentence:testString];
-            if(testLocation)
-                NSLog(@"Location = %@", testLocation);
-            //testLocation = [CLLocation locationWithAPRSString:testString];
-            //if(testLocation)
-            //    NSLog(@"Location = %@", testLocation);
-        }
-
 #pragma clang diagnostic pop
     }
     return self;
@@ -531,6 +513,251 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
     return degrees;
 }
 
+-(CLLocation *) locationFromAprsPacket:(NSString *)aprsPacket {
+    //NSError *error = nil;
+    
+    aprsPacket = [aprsPacket stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    
+    //  XXX Need to work out the test packets with proper checksums
+    /* NSRegularExpression *parser = [NSRegularExpression regularExpressionWithPattern:@"^\\${1,2}CRC([0-9A-Z]{4}),(.*)$" options:NSRegularExpressionCaseInsensitive error:&error];
+    NSArray <NSTextCheckingResult *> *matches = [parser matchesInString:aprsPacket options:0 range:NSMakeRange(0, aprsPacket.length)];
+    if(matches.count != 1)
+        return nil;
+    
+    unsigned int crc;
+    NSScanner *crcScanner = [NSScanner scannerWithString:[aprsPacket substringWithRange:[matches[0] rangeAtIndex:1]]];
+    if(![crcScanner scanHexInt:&crc]) {
+        NSLog(@"Couldn't parse checksum");
+        return nil;
+    }
+    
+    NSString *bareAprsPacket = [aprsPacket substringWithRange:[matches[0] rangeAtIndex:2]];
+    size_t maxLength = [bareAprsPacket lengthOfBytesUsingEncoding:NSASCIIStringEncoding];
+    unsigned char *bytes = malloc(maxLength);
+    [bareAprsPacket getBytes:bytes maxLength:maxLength usedLength:NULL encoding:NSASCIIStringEncoding options:0 range:NSMakeRange(0, bareAprsPacket.length) remainingRange:NULL];
+    unsigned int calcCrc = gps_calc_sum(bytes, maxLength);
+    free(bytes);
+    
+    if(crc != calcCrc) {
+        NSLog(@"CRC mismatch on GPS packet.  Received 0x%04X, calculated 0x%04X", crc, calcCrc);
+        return nil;
+    } */
+
+    if(aprsPacket.length < 1)
+        return nil;
+    
+    NSArray <NSString *> *components = [aprsPacket componentsSeparatedByString:@":"];
+    if(components.count < 2)
+        return nil;
+    
+    // NSString *header = components[0];
+    NSString *body = [[components subarrayWithRange:NSMakeRange(1, components.count -1)] componentsJoinedByString:@""];
+    //  XXX We should probably do something with the header and get source and destination callsigns here to be put in a dictionary.
+    
+    NSString *packetType = [body substringWithRange:NSMakeRange(0, 1)];
+    if([packetType isEqualToString:@"!"] ||
+       [packetType isEqualToString:@"="] ||
+       [packetType isEqualToString:@"/"] ||
+       [packetType isEqualToString:@"@"]) {
+        //  Position Packet
+        NSDate *timestamp = nil;
+        //  If packetTyep == ! or /, messaging == yes, these shouldn't be received on DSTAR.
+        
+        if(body.length < 14)
+            return nil;
+        
+        if([packetType isEqualToString:@"/"] ||
+           [packetType isEqualToString:@"@"]) {
+            timestamp = [self dateFromARPSTimestamp:[body substringWithRange:NSMakeRange(1, 7)]];
+            if([timestamp isEqualToDate:[NSDate distantPast]])
+                return nil;  // XXX Shouldn't error here, just give current date.
+            body = [body substringFromIndex:7];
+        }
+        
+        body = [body substringFromIndex:1];
+        if([[NSCharacterSet decimalDigitCharacterSet] characterIsMember:[body characterAtIndex:1]]) {
+            if(body.length < 19)
+                return nil;
+            
+            //  Parse the APRS position meat
+            CLLocation *position = [self locationFromAprsPositionPacket:body];
+            if(timestamp)
+                position = [[CLLocation alloc] initWithCoordinate:position.coordinate
+                                                         altitude:position.altitude
+                                               horizontalAccuracy:position.horizontalAccuracy
+                                                 verticalAccuracy:position.verticalAccuracy
+                                                           course:position.course
+                                                            speed:position.speed
+                                                        timestamp:timestamp];
+            
+            return position;
+        }
+        
+        //  XXX We could have compressed packets here
+        return nil;
+    } else if([packetType isEqualToString:@";"]) {
+        //  Object
+        if(body.length < 31)
+            return nil;
+
+        return [[CLLocation alloc] initWithLatitude:0.0 longitude:0.0];
+    } else if([packetType isEqualToString:@">"]) {
+        //  Status Report
+        
+        return [[CLLocation alloc] initWithLatitude:0.0 longitude:0.0];
+    }
+    
+    return nil;
+}
+
+-(CLLocation *)locationFromAprsPositionPacket:(NSString *)positionPacket {
+    NSError *error;
+    
+    double lonDeg = 0;
+    double latDeg = 0;
+    
+    NSRegularExpression *parser = [NSRegularExpression regularExpressionWithPattern:@"^(\\d{2})([0-7 ][0-9 ]\\.[0-9 ]{2})([NnSs])(.)(\\d{3})([0-7 ][0-9 ]\\.[0-9 ]{2})([EeWw])([\\x21-\\x7b\\x7d])" options:0 error:&error];
+    NSArray <NSTextCheckingResult *> *matches = [parser matchesInString:positionPacket options:0 range:NSMakeRange(0, positionPacket.length)];
+    if(matches.count != 1)
+        return nil;
+    
+    NSString *sInd = [[positionPacket substringWithRange:[matches[0] rangeAtIndex:3]] uppercaseString];
+    NSString *wInd = [[positionPacket substringWithRange:[matches[0] rangeAtIndex:7]] uppercaseString];
+    latDeg = [positionPacket substringWithRange:[matches[0] rangeAtIndex:1]].doubleValue;
+    NSString *latMin = [positionPacket substringWithRange:[matches[0] rangeAtIndex:2]];
+    lonDeg = [positionPacket substringWithRange:[matches[0] rangeAtIndex:5]].doubleValue;
+    NSString *lonMin = [positionPacket substringWithRange:[matches[0] rangeAtIndex:6]];
+    
+    NSString *symbolTable = [positionPacket substringWithRange:[matches[0] rangeAtIndex:4]];
+    NSString *symbolCode = [positionPacket substringWithRange:[matches[0] rangeAtIndex:8]];
+    
+    if(![[NSCharacterSet characterSetWithCharactersInString:@"\\/ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"] characterIsMember:[symbolTable characterAtIndex:0]]) {
+        //  Invalid symbol table
+        return nil;
+    }
+    
+    if(latDeg > 89.0 || lonDeg > 179.0)
+        return nil;
+    
+    NSString *tmpLat = [latMin stringByReplacingOccurrencesOfString:@"." withString:@""];  //  I don't know why we're doing this
+    NSInteger posAmbiguity = tmpLat.length - [tmpLat stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length;
+    // NSLog(@"Ambiguity = %ld", posAmbiguity);
+    
+    CLLocationCoordinate2D coordinate = {
+        .latitude = 0.0,
+        .longitude = 0.0
+    };
+    
+    switch(posAmbiguity) {
+        case 0:
+            if([lonMin componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].count > 1)
+                return nil;
+            coordinate.latitude = latDeg + (latMin.doubleValue / 60.0);
+            coordinate.longitude = lonDeg + (lonMin.doubleValue / 60.0);
+            break;
+        case 1:
+            latMin = [latMin substringWithRange:NSMakeRange(0, 4)];
+            lonMin = [lonMin substringWithRange:NSMakeRange(0, 4)];
+            if([lonMin componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].count > 1 ||
+               [latMin componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].count > 1)
+                return nil;
+            
+            coordinate.latitude = latDeg + ((latMin.doubleValue + 0.05) / 60.0);
+            coordinate.longitude = lonDeg + ((lonMin.doubleValue + 0.05) / 60.0);
+            break;
+        case 2:
+            latMin = [latMin substringWithRange:NSMakeRange(0, 2)];
+            lonMin = [lonMin substringWithRange:NSMakeRange(0, 2)];
+            if([lonMin componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].count > 1 ||
+               [latMin componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].count > 1)
+                return nil;
+            
+            coordinate.latitude = latDeg + ((latMin.doubleValue + 0.5) / 60.0);
+            coordinate.longitude = lonDeg + ((lonMin.doubleValue + 0.5) / 60.0);
+            break;
+        case 3:
+            latMin = [[latMin substringWithRange:NSMakeRange(0, 1)] stringByAppendingString:@"5"];
+            lonMin = [[lonMin substringWithRange:NSMakeRange(0, 1)] stringByAppendingString:@"5"];
+            if([lonMin componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].count > 1 ||
+               [latMin componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].count > 1)
+                return nil;
+            
+            coordinate.latitude = latDeg + (latMin.doubleValue / 60.0);
+            coordinate.longitude = lonDeg + (lonMin.doubleValue / 60.0);
+            break;
+        case 4:
+            coordinate.latitude = latDeg + 0.5;
+            coordinate.longitude = lonDeg + 0.5;
+            break;
+        default:
+            return nil;
+    }
+    
+    if([sInd isEqualToString:@"S"])
+        coordinate.latitude = -coordinate.latitude;
+    if([wInd isEqualToString:@"W"])
+        coordinate.longitude = -coordinate.longitude;
+    
+    posAmbiguity = 2 - posAmbiguity;
+    CLLocationAccuracy resolution = 1.852 * (posAmbiguity <= -2 ? 600.0 : 1000.0) * pow(10, -posAmbiguity);
+    
+    //  Advance to process comment
+    positionPacket = [positionPacket substringFromIndex:19];
+    CLLocationDirection course = 0.0;
+    CLLocationSpeed speed = 0.0;
+    CLLocationDistance altitude = 0.0;
+    CLLocationAccuracy verticalAccuracy = -1.0;
+    NSRegularExpression *commentParser;
+    if(positionPacket.length >= 7) {
+        commentParser = [NSRegularExpression regularExpressionWithPattern:@"^([0-9. ]{3})/([0-9. ]{3})" options:0 error:&error];
+        matches = [commentParser matchesInString:positionPacket options:0 range:NSMakeRange(0, positionPacket.length)];
+        if(matches.count == 1) {
+            course = [positionPacket substringWithRange:[matches[0] rangeAtIndex:1]].doubleValue;
+            speed = [positionPacket substringWithRange:[matches[0] rangeAtIndex:2]].doubleValue * 0.514444;
+            positionPacket = [positionPacket substringFromIndex:7];
+        }
+        
+        //  PHGR
+        commentParser = [NSRegularExpression regularExpressionWithPattern:@"^PHG(\\d[\\x30-\\x7e]\\d\\d[0-9A-Z])/" options:0 error:&error];
+        matches = [commentParser matchesInString:positionPacket options:0 range:NSMakeRange(0, positionPacket.length)];
+        if(matches.count == 1) {
+            positionPacket = [positionPacket substringFromIndex:8];
+        }
+        
+        // PHG
+        commentParser = [NSRegularExpression regularExpressionWithPattern:@"^PHG(\\d[\\x30-\\x7e]\\d\\d)" options:0 error:&error];
+        matches = [commentParser matchesInString:positionPacket options:0 range:NSMakeRange(0, positionPacket.length)];
+        if(matches.count == 1) {
+            positionPacket = [positionPacket substringFromIndex:7];
+        }
+        
+        // RNG
+        commentParser = [NSRegularExpression regularExpressionWithPattern:@"^RNG(\\d{4})" options:0 error:&error];
+        matches = [commentParser matchesInString:positionPacket options:0 range:NSMakeRange(0, positionPacket.length)];
+        if(matches.count == 1) {
+            positionPacket = [positionPacket substringFromIndex:7];
+        }
+    }
+    
+    commentParser = [NSRegularExpression regularExpressionWithPattern:@"^(.*?)/A=(-\\d{5}|\\d{6})(.*)$" options:0 error:&error];
+    matches = [commentParser matchesInString:positionPacket options:0 range:NSMakeRange(0, positionPacket.length)];
+    if(matches.count == 1) {
+        altitude = [positionPacket substringWithRange:[matches[0] rangeAtIndex:2]].doubleValue * 0.3048;
+        verticalAccuracy = resolution * 1.5;
+        positionPacket = [[positionPacket substringWithRange:[matches[0] rangeAtIndex:1]] stringByAppendingString:[positionPacket substringWithRange:[matches[0] rangeAtIndex:3]]];
+    }
+
+    CLLocation *location = [[CLLocation alloc] initWithCoordinate: coordinate
+                                                         altitude: altitude
+                                               horizontalAccuracy: resolution
+                                                 verticalAccuracy: verticalAccuracy
+                                                           course: course
+                                                            speed: speed
+                                                        timestamp: [NSDate date]];
+    NSAssert(location != nil, @"Location is nil");
+    return location;
+}
+
 -(CLLocation *) locationFromNmeaSentence:(NSString *)nmeaSentence {
     NSError *error = nil;
     
@@ -562,7 +789,7 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
     if((unsigned char) checksum != calcSum)
         return nil;
 
-    NSArray <NSString *> *nmeaFields = [nmeaSentence componentsSeparatedByString:@","];
+    NSArray <NSString *> *nmeaFields = [checksumString componentsSeparatedByString:@","];
     if([nmeaFields[0] isEqualToString:@"GPRMC"]) {
         if(nmeaFields.count < 10)
             return nil;
@@ -611,7 +838,7 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
         NSRegularExpression *courseParser = [NSRegularExpression regularExpressionWithPattern:@"^\\s*(\\d+(|\\.\\d+))\\s*$" options:0 error:&error];
         matches = [courseParser matchesInString:nmeaFields[8] options:0 range:NSMakeRange(0, nmeaFields[8].length)];
         if(matches.count == 1)
-            course = [nmeaFields[7] substringWithRange:[matches[0] rangeAtIndex:1]].doubleValue;
+            course = [nmeaFields[8] substringWithRange:[matches[0] rangeAtIndex:1]].doubleValue;
         
         CLLocationCoordinate2D coordinate = {
             .latitude = [self coordinatesFromNmeaString:nmeaFields[3] withSign:nmeaFields[4]],

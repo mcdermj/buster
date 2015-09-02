@@ -9,6 +9,13 @@
 #import <Cocoa/Cocoa.h>
 #import <XCTest/XCTest.h>
 
+#import "BTRSlowDataCoder.h"
+
+@interface BTRSlowDataCoder (XCTests)
+-(CLLocation *) locationFromNmeaSentence:(NSString *)nmeaSentence;
+-(CLLocation *) locationFromAprsPacket:(NSString *)aprsPacket;
+@end
+
 @interface BusterTests : XCTestCase
 
 @end
@@ -25,16 +32,41 @@
     [super tearDown];
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    XCTAssert(YES, @"Pass");
+-(void)testNMEAParser {
+    NSError *error;
+    BTRSlowDataCoder *testCoder = [[BTRSlowDataCoder alloc] init];
+    
+    //  Test for good NMEA sentences
+    NSString *nmeaCorpus = [NSString stringWithContentsOfURL:[[NSBundle bundleForClass:[self class]] URLForResource:@"nmeacorpus" withExtension:@"txt"] encoding:NSASCIIStringEncoding error:&error];
+    
+    NSArray <NSString *> *corpusLines = [nmeaCorpus componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
+    for(NSString *line in corpusLines) {
+        CLLocation *location = [testCoder locationFromNmeaSentence:line];
+        XCTAssertNotNil(location, @"Good NMEA sentence not parsed: %@", line);
+    }
+    
+    //  Test for bad NMEA sentences
+    NSArray <NSString *> *badCorpusLines = [[NSString stringWithContentsOfURL:[[NSBundle bundleForClass:[self class]] URLForResource:@"nmeabadcorpus" withExtension:@"txt"] encoding:NSASCIIStringEncoding error:&error] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
+    for(NSString *line in badCorpusLines) {
+        CLLocation *location = [testCoder locationFromNmeaSentence:line];
+        XCTAssertNil(location, @"Bad NMEA sentence succeeded: %@", line);
+    }
 }
 
-- (void)testPerformanceExample {
-    // This is an example of a performance test case.
-    [self measureBlock:^{
-        // Put the code you want to measure the time of here.
-    }];
-}
+-(void)testAPRSParser {
+    NSError *error;
+    BTRSlowDataCoder *testCoder = [[BTRSlowDataCoder alloc] init];
+    
+    NSArray <NSString *> *corpusLines = [[NSString stringWithContentsOfURL:[[NSBundle bundleForClass:[self class]] URLForResource:@"aprscorpus" withExtension:@"txt"] encoding:NSASCIIStringEncoding error:&error] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
 
+    for(NSString *line in corpusLines) {
+        if([line isEqualToString:@""])
+            continue;
+        
+        CLLocation *location = [testCoder locationFromAprsPacket:line];
+        XCTAssertNotNil(location, @"Good APRS Sentence not parsed: %@", line);
+    }
+}
 @end

@@ -27,6 +27,9 @@
 		096BFCDD1B7DEC4000C94260 /* BTRIPFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 096BFCDC1B7DEC4000C94260 /* BTRIPFormatter.m */; };
 		096F2B5A1B58C06E00766A95 /* BTRCallFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 096F2B591B58C06E00766A95 /* BTRCallFormatter.m */; };
 		096F2B5C1B58ED1B00766A95 /* DefaultPreferences.plist in Resources */ = {isa = PBXBuildFile; fileRef = 096F2B5B1B58ED1B00766A95 /* DefaultPreferences.plist */; };
+		096FDB771B96B480006B4105 /* nmeacorpus.txt in Resources */ = {isa = PBXBuildFile; fileRef = 096FDB761B96B480006B4105 /* nmeacorpus.txt */; settings = {ASSET_TAGS = (); }; };
+		096FDB791B96C8D4006B4105 /* nmeabadcorpus.txt in Resources */ = {isa = PBXBuildFile; fileRef = 096FDB781B96C8D4006B4105 /* nmeabadcorpus.txt */; settings = {ASSET_TAGS = (); }; };
+		096FDB7B1B96CD90006B4105 /* aprscorpus.txt in Resources */ = {isa = PBXBuildFile; fileRef = 096FDB7A1B96CD90006B4105 /* aprscorpus.txt */; settings = {ASSET_TAGS = (); }; };
 		09796FF21B800B5A0043089D /* BTRDPlusLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 09796FF11B800B5A0043089D /* BTRDPlusLink.m */; };
 		098B10F01B65FB22002C7A3B /* BTRDataEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 098B10EF1B65FB22002C7A3B /* BTRDataEngine.m */; };
 		09A5FDEE1B5794FA00AE9E1C /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */; };
@@ -111,6 +114,9 @@
 		096F2B581B58C06E00766A95 /* BTRCallFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRCallFormatter.h; sourceTree = "<group>"; };
 		096F2B591B58C06E00766A95 /* BTRCallFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRCallFormatter.m; sourceTree = "<group>"; };
 		096F2B5B1B58ED1B00766A95 /* DefaultPreferences.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DefaultPreferences.plist; sourceTree = "<group>"; };
+		096FDB761B96B480006B4105 /* nmeacorpus.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = nmeacorpus.txt; sourceTree = "<group>"; };
+		096FDB781B96C8D4006B4105 /* nmeabadcorpus.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = nmeabadcorpus.txt; sourceTree = "<group>"; };
+		096FDB7A1B96CD90006B4105 /* aprscorpus.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = aprscorpus.txt; sourceTree = "<group>"; };
 		09796FF01B800B5A0043089D /* BTRDPlusLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRDPlusLink.h; sourceTree = "<group>"; };
 		09796FF11B800B5A0043089D /* BTRDPlusLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRDPlusLink.m; sourceTree = "<group>"; };
 		098B10EE1B65FB22002C7A3B /* BTRDataEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRDataEngine.h; sourceTree = "<group>"; };
@@ -263,6 +269,9 @@
 		093B9B0B1B50E2D500C2ABD0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				096FDB761B96B480006B4105 /* nmeacorpus.txt */,
+				096FDB7A1B96CD90006B4105 /* aprscorpus.txt */,
+				096FDB781B96C8D4006B4105 /* nmeabadcorpus.txt */,
 				093B9B0C1B50E2D500C2ABD0 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -437,6 +446,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				096FDB7B1B96CD90006B4105 /* aprscorpus.txt in Resources */,
+				096FDB771B96B480006B4105 /* nmeacorpus.txt in Resources */,
+				096FDB791B96C8D4006B4105 /* nmeabadcorpus.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -626,6 +638,7 @@
 				GCC_WARN_SIGN_COMPARE = NO;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = Buster/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = Buster;
@@ -653,6 +666,7 @@
 				GCC_WARN_SIGN_COMPARE = NO;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = Buster/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = Buster;
