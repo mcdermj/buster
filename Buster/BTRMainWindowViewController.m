@@ -122,6 +122,7 @@
 -(void)locationReceived:(CLLocation *)location forStreamId:(NSNumber *)streamId {
     [self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
         qso[@"location"] = location;
+        qso[@"city"] = @"Searching city database…";
         [self.geocoder reverseGeocodeLocation:location completionHandler:^(NSArray <CLPlacemark *> *placemarks, NSError *error) {
             if(!placemarks) {
                 NSLog(@"placemarks are nil");
@@ -136,7 +137,12 @@
                 return;
             }
             
-            qso[@"city"] = [NSString stringWithFormat:@"%@, %@, %@", placemarks[0].locality, placemarks[0].administrativeArea, placemarks[0].country];
+            //NSLog(@"Got %ld placemarks", placemarks.count);
+            //NSLog(@"Got placemarks: %@", [NSString stringWithFormat:@"%@, %@, %@", placemarks[0].locality, placemarks[0].administrativeArea, placemarks[0].country]);
+            [self updateQsoId:streamId usingBlock:^(NSMutableDictionary *innerQso, NSUInteger innerQsoIndex) {
+                    innerQso[@"city"] = [NSString stringWithFormat:@"%@, %@, %@", placemarks[0].locality, placemarks[0].administrativeArea, placemarks[0].country];
+            }];
+            // qso[@"city"] = [NSString stringWithFormat:@"%@, %@, %@", placemarks[0].locality, placemarks[0].administrativeArea, placemarks[0].country];
         }];
     }];
 }
