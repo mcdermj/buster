@@ -34,12 +34,15 @@
 
 @synthesize txKeyCode;
 
-- (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
+-(void) awakeFromNib {
     NSURL *defaultPrefsFile = [[NSBundle mainBundle]
                                URLForResource:@"DefaultPreferences" withExtension:@"plist"];
     NSDictionary *defaultPrefs =
     [NSDictionary dictionaryWithContentsOfURL:defaultPrefsFile];
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultPrefs];
+}
+
+- (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
 
     BTRDataEngine *engine = [BTRDataEngine sharedInstance];
     [engine.slowData bind:@"message" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.slowDataMessage" options:nil];
