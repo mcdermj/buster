@@ -61,194 +61,6 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
     return sum;
 }
 
-@interface CLLocation (BTRDstarUtils)
-
-+(CLLocation *)locationWithAPRSString:(NSString *)aprsString;
-+(CLLocation *)locationWithNMEASentence:(NSString *)nmeaSentence;
-+(CLLocationDegrees)decimalCoordinateFromString:(NSString *)coordinate;
-@end
-
-@implementation CLLocation (BTRDstarUtils)
-
-+(CLLocationDegrees)decimalCoordinateFromString:(NSString *)coordinate {
-    if(coordinate.length < 7)
-        return 0.0;
-    
-    NSString *direction = [coordinate substringFromIndex:coordinate.length - 1];
-    double result = 0.0;
-    
-    if([direction isEqualToString:@"N"] || [direction isEqualToString:@"S"]) {
-        result = [coordinate substringWithRange:NSMakeRange(0, 2)].floatValue + ([coordinate substringWithRange:NSMakeRange(2, coordinate.length - 2)].floatValue / 60.0);
-        if([direction isEqualToString:@"S"])
-            result = -result;
-    } else if([direction isEqualToString:@"E"] || [direction isEqualToString:@"W"]) {
-        result = [coordinate substringWithRange:NSMakeRange(0, 3)].floatValue + ([coordinate substringWithRange:NSMakeRange(3, coordinate.length - 3)].floatValue / 60.0);
-        if([direction isEqualToString:@"W"])
-            result = -result;
-    }
-
-    return result;
-}
-
-+(BOOL)verifyNMEAChecksumString:(NSString *)checksumString forSentence:(NSString *)sentence {
-    unsigned int checksum;
-    NSScanner *sumScanner = [NSScanner scannerWithString:checksumString];
-    if(![sumScanner scanHexInt:&checksum]) {
-        NSLog(@"Couldn't parse checksum");
-        return NO;
-    }
-    
-    size_t maxLength = [sentence lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
-    unsigned char *bytes = malloc(maxLength);
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wassign-enum"
-    [sentence getBytes:bytes maxLength:maxLength usedLength:NULL encoding:NSUTF8StringEncoding options:0 range:NSMakeRange(0, sentence.length) remainingRange:NULL];
-#pragma clang diagnostic pop
-    unsigned char calcSum = nmea_calc_sum(bytes, maxLength);
-    free(bytes);
-    
-    return((unsigned char) checksum == calcSum);
-}
-
-+(CLLocation *)locationWithNMEASentence:(NSString *)nmeaSentence {
-    NSError *error;
-    CLLocation *location = nil;
-    
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wassign-enum"
-    NSRegularExpression *ggaParser = [NSRegularExpression regularExpressionWithPattern:@"^\\$(GPGGA,((\\d{1,2})(\\d{2})(\\d{2})(?:\\.\\d{1,3})?)?,(\\d{4}(?:\\.\\d{1,4})?),([NS]),(\\d{5}(?:\\.\\d{1,4})?),([EW]),(\\d),\\d*,([0-9.]*),([0-9.]*),.?,[0-9.-]*,.?,[0-9.]*,[0-9]*)\\*([0-9A-F]{2})" options:0 error:&error];
-    NSRegularExpression *rmcParser = [NSRegularExpression regularExpressionWithPattern:@"^\\$(GPRMC,((\\d{2})(\\d{2})(\\d{2})(?:\\.\\d{1,3})?)?,([A-Z]),(\\d{4}(?:\\.\\d{1,4})?),([NS]),(\\d{5}(?:\\.\\d{1,4})?),([EW]),([0-9.]*),([0-9.]*),(([0-9]{2})([0-9]{2})([0-9]{2}))?,[0-9.]*(?:,.*)?,[A-Z])\\*([0-9A-F]{2})" options:0 error:&error];
-
-    if([ggaParser numberOfMatchesInString:nmeaSentence options:0 range:NSMakeRange(0, nmeaSentence.length)] == 1) {
-        //  It's a GGA sentence with a position.
-        NSTextCheckingResult *match = [ggaParser firstMatchInString:nmeaSentence options:0 range:NSMakeRange(0, nmeaSentence.length)];
-        if(![CLLocation verifyNMEAChecksumString:[nmeaSentence substringWithRange:[match rangeAtIndex:13]] forSentence:[nmeaSentence substringWithRange:[match rangeAtIndex:1]]]) {
-            NSLog(@"Invalid checksum");
-            return nil;
-        }
-        
-        if([[nmeaSentence substringWithRange:[match rangeAtIndex:10]] isEqualToString:@"0"]) {
-            NSLog(@"Invalid GPS Fix");
-            return nil;
-        }
-        
-        NSString *latitude = [[nmeaSentence substringWithRange:[match rangeAtIndex:6]] stringByAppendingString:[nmeaSentence substringWithRange:[match rangeAtIndex:7]]];
-        NSString *longitude = [[nmeaSentence substringWithRange:[match rangeAtIndex:8]] stringByAppendingString:[nmeaSentence substringWithRange:[match rangeAtIndex:9]]];
-
-        CLLocationCoordinate2D coordinate = {
-            .latitude = [CLLocation decimalCoordinateFromString:latitude],
-            .longitude = [CLLocation decimalCoordinateFromString:longitude]
-        };
-        NSLog(@"Latitude %f, Longitude %f", coordinate.latitude, coordinate.longitude);
-        
-        NSString *horizontalAccuracy = [nmeaSentence substringWithRange:[match rangeAtIndex:11]];
-        NSString *altitude = [nmeaSentence substringWithRange:[match rangeAtIndex:12]];
-        
-        NSDateComponents *timestampComponents = [[NSCalendar currentCalendar] components:(NSCalendarUnitYear | NSCalendarUnitMonth |  NSCalendarUnitDay) fromDate:[NSDate date]];
-        timestampComponents.hour = [nmeaSentence substringWithRange:[match rangeAtIndex:3]].integerValue;
-        timestampComponents.minute = [nmeaSentence substringWithRange:[match rangeAtIndex:4]].integerValue;
-        timestampComponents.second = [nmeaSentence substringWithRange:[match rangeAtIndex:5]].integerValue;
-        
-        location = [[CLLocation alloc] initWithCoordinate:coordinate
-                                                 altitude:altitude.doubleValue
-                                       horizontalAccuracy:horizontalAccuracy.doubleValue // XXX This probably needs conversion
-                                         verticalAccuracy:100.0
-                                                   course:0.0
-                                                    speed:0.0
-                                                timestamp:[[NSCalendar currentCalendar] dateFromComponents:timestampComponents]];
-    } else if ([rmcParser numberOfMatchesInString:nmeaSentence options:0 range:NSMakeRange(0, nmeaSentence.length)] == 1) {
-        //  RMC parser
-        NSTextCheckingResult *match = [rmcParser firstMatchInString:nmeaSentence options:0 range:NSMakeRange(0, nmeaSentence.length)];
-        if(![CLLocation verifyNMEAChecksumString:[nmeaSentence substringWithRange:[match rangeAtIndex:17]] forSentence:[nmeaSentence substringWithRange:[match rangeAtIndex:1]]]) {
-            NSLog(@"Invalid checksum");
-            return nil;
-        }
-        
-        if(![[nmeaSentence substringWithRange:[match rangeAtIndex:6]] isEqualToString:@"A"]) {
-            NSLog(@"Invalid GPS Fix");
-            return nil;
-        }
-        
-        NSString *latitude = [[nmeaSentence substringWithRange:[match rangeAtIndex:7]] stringByAppendingString:[nmeaSentence substringWithRange:[match rangeAtIndex:8]]];
-        NSString *longitude = [[nmeaSentence substringWithRange:[match rangeAtIndex:9]] stringByAppendingString:[nmeaSentence substringWithRange:[match rangeAtIndex:10]]];
-        
-        CLLocationCoordinate2D coordinate = {
-            .latitude = [CLLocation decimalCoordinateFromString:latitude],
-            .longitude = [CLLocation decimalCoordinateFromString:longitude]
-        };
-        NSLog(@"Latitude %f, Longitude %f", coordinate.latitude, coordinate.longitude);
-        
-        NSDateComponents *timestampComponents = [[NSDateComponents alloc] init];
-        timestampComponents.day = [nmeaSentence substringWithRange:[match rangeAtIndex:14]].integerValue;
-        timestampComponents.month = [nmeaSentence substringWithRange:[match rangeAtIndex:15]].integerValue;
-        timestampComponents.year = [nmeaSentence substringWithRange:[match rangeAtIndex:16]].integerValue;
-        
-        timestampComponents.hour = [nmeaSentence substringWithRange:[match rangeAtIndex:3]].integerValue;
-        timestampComponents.minute = [nmeaSentence substringWithRange:[match rangeAtIndex:4]].integerValue;
-        timestampComponents.second = [nmeaSentence substringWithRange:[match rangeAtIndex:5]].integerValue;
-        
-        NSString *speed = [nmeaSentence substringWithRange:[match rangeAtIndex:11]];
-        NSString *course = [nmeaSentence substringWithRange:[match rangeAtIndex:12]];
-
-
-        location = [[CLLocation alloc] initWithCoordinate:coordinate
-                                                 altitude:0.0
-                                       horizontalAccuracy:100.0
-                                         verticalAccuracy:100.0
-                                                   course:course.doubleValue
-                                                    speed:speed.doubleValue * 0.514444
-                                                timestamp:[[NSCalendar currentCalendar] dateFromComponents:timestampComponents]];
-
-    } else {
-        NSLog(@"Invalid NMEA sentence: %@", nmeaSentence);
-    }
-    
-    return location;
-}
-
-+(CLLocation *)locationWithAPRSString:(NSString *)aprsString {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wassign-enum"
-    NSError *error;
-    
-    NSRegularExpression *parser = [NSRegularExpression regularExpressionWithPattern:@"^\\$?\\$CRC([0-9A-F]{4}),[0-9A-Z-]{3,8}>[0-9A-Za-z]{4,8},DSTAR\\*:[!\\/]{1}(?:[0-9]{6}[hz\\/]{1})?(\\d{4}\\.\\d{2}[NS]{1})(.{1})(\\d{5}\\.\\d{2}[EW]{1})(.{1})(\\d{3}\\/\\d{3})?(.*)$" options:0 error:&error];
-    
-    NSUInteger numberOfMatches = [parser numberOfMatchesInString:aprsString options:0 range:NSMakeRange(0, [aprsString length])];
-    if(numberOfMatches != 1) {
-        NSLog(@"Invalid GPS string: %@", aprsString);
-        return nil;
-    }
-    
-    NSTextCheckingResult *match = [parser firstMatchInString:aprsString options:0 range:NSMakeRange(0, [aprsString length])];
-    
-    unsigned int crc;
-    NSScanner *crcScanner = [NSScanner scannerWithString:[aprsString substringWithRange:[match rangeAtIndex:1]]];
-    if(![crcScanner scanHexInt:&crc]) {
-        NSLog(@"Couldn't parse checksum");
-        return nil;
-    }
-    
-    size_t maxLength = [aprsString lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
-    unsigned char *bytes = malloc(maxLength);
-    [aprsString getBytes:bytes maxLength:maxLength usedLength:NULL encoding:NSUTF8StringEncoding options:0 range:NSMakeRange(0, [aprsString length]) remainingRange:NULL];
-    unsigned int calcCrc = gps_calc_sum(bytes + 9, maxLength - 9);
-    free(bytes);
-    if(crc != calcCrc) {
-        NSLog(@"CRC mismatch on GPS packet.  Received 0x%04X, calculated 0x%04X", crc, calcCrc);
-        return nil;
-    }
-    
-    //  XXX We can pack this with more data.
-    //  XXX CLLocation can take course/speed information as well.  This can be optionally parsed from the string.
-    //  XXX CLLocation can also take a time.  This can be parsed optionally from the time stuff.
-
-    return [[CLLocation alloc] initWithLatitude:[CLLocation decimalCoordinateFromString:[aprsString substringWithRange:[match rangeAtIndex:2]]]
-                                      longitude:[CLLocation decimalCoordinateFromString:[aprsString substringWithRange:[match rangeAtIndex:4]]]];
-#pragma clang diagnostic pop
-}
-
-@end
-
 @interface BTRSlowDataCoder () {
     unsigned char dataFrame[6];
     unsigned char messageFrames[8][3];
@@ -257,8 +69,6 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
 @property (nonatomic) NSMutableData *messageData;
 @property (nonatomic) NSMutableData *gpsData;
 @property (nonatomic, getter=isTop) BOOL top;
-@property (nonatomic, readonly) NSRegularExpression *gpsExpression;
-@property (nonatomic, readonly) CLGeocoder *geocoder;
 @end
 
 @implementation BTRSlowDataCoder
@@ -269,32 +79,6 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
         _top = YES;
         _messageData = [NSMutableData dataWithLength:20];
         memset(_messageData.mutableBytes, ' ', 20);
-        _geocoder = [[CLGeocoder alloc] init];
-        
-        NSError *error = NULL;
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wassign-enum"
-        _gpsExpression = [NSRegularExpression regularExpressionWithPattern:@"^\\$CRC([0-9A-F]{4}),[0-9A-Z]{4,8}>[0-9A-Z]{4,8},DSTAR\\*:[!\\/]{1}(?:[0-9]{6}[hz\\/]{1})?(\\d{4}\\.\\d{2}[NS]{1})(.{1})(\\d{5}\\.\\d{2}[EW]{1})(.{1})(\\d{3}\\/\\d{3})?(.*)$" options:0 error:&error];
-        
-        NSArray <NSString *> *testStrings = @[
-                                              //@"$CRC2587,WA8CLT>API510,DSTAR*:!4000.94N/08304.82W>/\r",
-                                              //@"$CRCBA51,KC8YQL>API282,DSTAR*:/204914h4107.74N/08416.01WO320/000/2820 @ HOME QTH\r",
-                                              @"$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47\r",
-                                              @"$GPRMC,123519,A,4807.038,N,01131.000,E,022.4,084.4,230394,003.1,W*6A\r\n",
-                                              @"$GPGGA,085433.092,,,,,0,3,,,M,,M,,*49\r\n",
-                                              @"$GPGGA,165113.000,5601.0318,N,01211.3503,E,1,07,1.2,22.4,M,41.6,M,,0000*60",
-                                              @"$GPGGA,173845.878,5109.4000,N,00641.6735,E,1,04,14.5,123.1,M,47.6,M,0.0,0000*44"
-                                              ];
-        for(NSString *testString in testStrings) {
-            CLLocation *testLocation = [CLLocation locationWithNMEASentence:testString];
-            if(testLocation)
-                NSLog(@"Location = %@", testLocation);
-            //testLocation = [CLLocation locationWithAPRSString:testString];
-            //if(testLocation)
-            //    NSLog(@"Location = %@", testLocation);
-        }
-
-#pragma clang diagnostic pop
     }
     return self;
 }
@@ -387,9 +171,9 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
     [self.gpsData appendBytes:data + 1 length:length];
     if(length < 5) {
         //  This is the last frame for this transmission
-        NSString *gpsString = [[NSString alloc] initWithData:self.gpsData encoding:NSUTF8StringEncoding];
+        NSString *gpsString = [[NSString alloc] initWithData:self.gpsData encoding:NSASCIIStringEncoding];
         if(gpsString == nil) {
-            NSLog(@"GPS data cannot be parsed as UTF-8");
+            NSLog(@"GPS data cannot be parsed as ASCII");
             self.gpsData = nil;
             return;
         }
@@ -404,15 +188,15 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
         
         NSString *gpsType = [gpsString substringToIndex:4];
         if([gpsType isEqualToString:@"$CRC"] || [gpsType isEqualToString:@"$$CR"]){
-            location = [CLLocation locationWithAPRSString:gpsString];
+            location = [self locationFromAprsPacket:gpsString];
         } else if([gpsType isEqualToString:@"$GPG"]) {
             //  Handle GPGGA
             NSLog(@"GPGGA");
-            location = [CLLocation locationWithNMEASentence:gpsString];
+            location = [self locationFromNmeaSentence:gpsString];
         } else if([gpsType isEqualToString:@"$GPR"]) {
             //  Handle GPRMC
             NSLog(@"GPRMC");
-            location = [CLLocation locationWithNMEASentence:gpsString];
+            location = [self locationFromNmeaSentence:gpsString];
         } else if(gpsString.length == 31 && [[gpsString substringWithRange:NSMakeRange(8, 1)] isEqualToString:@","]){
             //  This is probably an ID line
             NSLog(@"ID Line");
@@ -430,14 +214,16 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
 
 -(NSDate *)dateFromARPSTimestamp:(NSString *)timestamp {
     NSError *error = nil;
-    
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
     NSRegularExpression *parser = [NSRegularExpression regularExpressionWithPattern:@"^(\\d{2})(\\d{2})(\\d{2})(z|h|\\/)$" options:0 error:&error];
     if([parser numberOfMatchesInString:timestamp options:0 range:NSMakeRange(0, timestamp.length)] != 1) {
         return [NSDate distantPast];
     }
     
     NSTextCheckingResult *match = [parser firstMatchInString:timestamp options:0 range:NSMakeRange(0, timestamp.length)];
-    
+#pragma clang diagnostic pop
     NSString *stampType = [timestamp substringWithRange:[match rangeAtIndex:4]];
     
     NSCalendar *utcCalendar = [NSCalendar currentCalendar];
@@ -450,8 +236,11 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
         
         if(hour > 23 || minute > 59 || second > 59)
             return [NSDate distantPast];
-        
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
         NSDateComponents *timestampComponents = [utcCalendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay) fromDate:[NSDate date]];
+#pragma clang diagnostic pop
         timestampComponents.hour = hour;
         timestampComponents.minute = minute;
         timestampComponents.second = second;
@@ -478,8 +267,11 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
             timestampCalendar = utcCalendar;
         else
             timestampCalendar = [NSCalendar currentCalendar];
-        
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
         NSDateComponents *timestampComponents = [timestampCalendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay) fromDate:[NSDate date]];
+#pragma clang diagnostic pop
         timestampComponents.day = day;
         timestampComponents.hour = hour;
         timestampComponents.minute = minute;
@@ -488,9 +280,12 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
         
         NSDateComponents *diffComponents = [[NSDateComponents alloc] init];
         diffComponents.month = 1;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
         NSDate *futureTimestamp = [timestampCalendar dateByAddingComponents:diffComponents toDate:currentTimestamp options:0];
         diffComponents.month = -1;
         NSDate *pastTimestamp = [timestampCalendar dateByAddingComponents:diffComponents toDate:currentTimestamp options:0];
+#pragma clang diagnostic pop
         
         if(futureTimestamp && futureTimestamp.timeIntervalSinceNow < 43400.0)
             return futureTimestamp;
@@ -506,11 +301,14 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
 -(CLLocationDegrees) coordinatesFromNmeaString:(NSString *)nmeaString withSign:(NSString *)sign {
     NSError *error;
     
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
     NSRegularExpression *parser = [NSRegularExpression regularExpressionWithPattern:@"^\\s*(\\d{1,3})([0-5][0-9])\\.(\\d+)\\s*$" options:0 error:&error];
     if([parser numberOfMatchesInString:nmeaString options:0 range:NSMakeRange(0, nmeaString.length)] != 1)
         return 0.0;
     
     NSTextCheckingResult *match = [parser firstMatchInString:nmeaString options:0 range:NSMakeRange(0, nmeaString.length)];
+#pragma clang diagnostic pop
     CLLocationDegrees degrees = [nmeaString substringWithRange:[match rangeAtIndex:1]].doubleValue + [nmeaString substringWithRange:NSUnionRange([match rangeAtIndex:2], [match rangeAtIndex:3])].doubleValue / 60.0;
     
     sign = [sign.uppercaseString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
@@ -531,17 +329,289 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
     return degrees;
 }
 
+-(CLLocation *) locationFromAprsPacket:(NSString *)aprsPacket {
+    NSError *error = nil;
+    
+    // aprsPacket = [aprsPacket stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
+    //  XXX Need to work out the test packets with proper checksums
+    NSRegularExpression *parser = [NSRegularExpression regularExpressionWithPattern:@"^\\${1,2}CRC([0-9A-Z]{4}),(.*\r)$" options:NSRegularExpressionCaseInsensitive error:&error];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
+    NSArray <NSTextCheckingResult *> *matches = [parser matchesInString:aprsPacket options:0 range:NSMakeRange(0, aprsPacket.length)];
+#pragma clang diagnostic pop
+    if(matches.count != 1)
+        return nil;
+    
+    unsigned int crc;
+    NSScanner *crcScanner = [NSScanner scannerWithString:[aprsPacket substringWithRange:[matches[0] rangeAtIndex:1]]];
+    if(![crcScanner scanHexInt:&crc]) {
+        NSLog(@"Couldn't parse checksum");
+        return nil;
+    }
+    
+    NSString *bareAprsPacket = [aprsPacket substringWithRange:[matches[0] rangeAtIndex:2]];
+    size_t maxLength = [bareAprsPacket lengthOfBytesUsingEncoding:NSASCIIStringEncoding];
+    unsigned char *bytes = malloc(maxLength);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
+    [bareAprsPacket getBytes:bytes maxLength:maxLength usedLength:NULL encoding:NSASCIIStringEncoding options:0 range:NSMakeRange(0, bareAprsPacket.length) remainingRange:NULL];
+#pragma clang diagnostic pop
+    unsigned int calcCrc = gps_calc_sum(bytes, maxLength);
+    
+    if(crc != calcCrc) {
+        NSLog(@"CRC mismatch on GPS packet \"%@\".  Received 0x%04X, calculated 0x%04X", bareAprsPacket, crc, calcCrc);
+        return nil;
+    }
+    free(bytes);
+
+    if(aprsPacket.length < 1)
+        return nil;
+    
+    NSArray <NSString *> *components = [bareAprsPacket componentsSeparatedByString:@":"];
+    if(components.count < 2)
+        return nil;
+    
+    // NSString *header = components[0];
+    NSString *body = [[components subarrayWithRange:NSMakeRange(1, components.count -1)] componentsJoinedByString:@""];
+    //  XXX We should probably do something with the header and get source and destination callsigns here to be put in a dictionary.
+    
+    NSString *packetType = [body substringWithRange:NSMakeRange(0, 1)];
+    if([packetType isEqualToString:@"!"] ||
+       [packetType isEqualToString:@"="] ||
+       [packetType isEqualToString:@"/"] ||
+       [packetType isEqualToString:@"@"]) {
+        //  Position Packet
+        NSDate *timestamp = nil;
+        //  If packetTyep == ! or /, messaging == yes, these shouldn't be received on DSTAR.
+        
+        if(body.length < 14)
+            return nil;
+        
+        if([packetType isEqualToString:@"/"] ||
+           [packetType isEqualToString:@"@"]) {
+            timestamp = [self dateFromARPSTimestamp:[body substringWithRange:NSMakeRange(1, 7)]];
+            if([timestamp isEqualToDate:[NSDate distantPast]])
+                return nil;  // XXX Shouldn't error here, just give current date.
+            body = [body substringFromIndex:7];
+        }
+        
+        body = [body substringFromIndex:1];
+        if([[NSCharacterSet decimalDigitCharacterSet] characterIsMember:[body characterAtIndex:1]]) {
+            if(body.length < 19)
+                return nil;
+            
+            //  Parse the APRS position meat
+            CLLocation *position = [self locationFromAprsPositionPacket:body];
+            if(timestamp)
+                position = [[CLLocation alloc] initWithCoordinate:position.coordinate
+                                                         altitude:position.altitude
+                                               horizontalAccuracy:position.horizontalAccuracy
+                                                 verticalAccuracy:position.verticalAccuracy
+                                                           course:position.course
+                                                            speed:position.speed
+                                                        timestamp:timestamp];
+            
+            return position;
+        }
+        
+        //  XXX We could have compressed packets here
+        return nil;
+    } else if([packetType isEqualToString:@";"]) {
+        //  Object
+        if(body.length < 31)
+            return nil;
+
+        return [[CLLocation alloc] initWithLatitude:0.0 longitude:0.0];
+    } else if([packetType isEqualToString:@">"]) {
+        //  Status Report
+        
+        return [[CLLocation alloc] initWithLatitude:0.0 longitude:0.0];
+    }
+    
+    return nil;
+}
+
+-(CLLocation *)locationFromAprsPositionPacket:(NSString *)positionPacket {
+    NSError *error;
+    
+    double lonDeg = 0;
+    double latDeg = 0;
+    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
+NSRegularExpression *parser = [NSRegularExpression regularExpressionWithPattern:@"^(\\d{2})([0-7 ][0-9 ]\\.[0-9 ]{2})([NnSs])(.)(\\d{3})([0-7 ][0-9 ]\\.[0-9 ]{2})([EeWw])([\\x21-\\x7b\\x7d])" options:0 error:&error];
+    NSArray <NSTextCheckingResult *> *matches = [parser matchesInString:positionPacket options:0 range:NSMakeRange(0, positionPacket.length)];
+#pragma clang diagnostic pop
+    if(matches.count != 1)
+        return nil;
+    
+    NSString *sInd = [[positionPacket substringWithRange:[matches[0] rangeAtIndex:3]] uppercaseString];
+    NSString *wInd = [[positionPacket substringWithRange:[matches[0] rangeAtIndex:7]] uppercaseString];
+    latDeg = [positionPacket substringWithRange:[matches[0] rangeAtIndex:1]].doubleValue;
+    NSString *latMin = [positionPacket substringWithRange:[matches[0] rangeAtIndex:2]];
+    lonDeg = [positionPacket substringWithRange:[matches[0] rangeAtIndex:5]].doubleValue;
+    NSString *lonMin = [positionPacket substringWithRange:[matches[0] rangeAtIndex:6]];
+    
+    NSString *symbolTable = [positionPacket substringWithRange:[matches[0] rangeAtIndex:4]];
+    NSString *symbolCode = [positionPacket substringWithRange:[matches[0] rangeAtIndex:8]];
+    
+    if(![[NSCharacterSet characterSetWithCharactersInString:@"\\/ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"] characterIsMember:[symbolTable characterAtIndex:0]]) {
+        //  Invalid symbol table
+        return nil;
+    }
+    
+    if(latDeg > 89.0 || lonDeg > 179.0)
+        return nil;
+    
+    NSString *tmpLat = [latMin stringByReplacingOccurrencesOfString:@"." withString:@""];  //  I don't know why we're doing this
+    NSInteger posAmbiguity = tmpLat.length - [tmpLat stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length;
+    // NSLog(@"Ambiguity = %ld", posAmbiguity);
+    
+    CLLocationCoordinate2D coordinate = {
+        .latitude = 0.0,
+        .longitude = 0.0
+    };
+    
+    switch(posAmbiguity) {
+        case 0:
+            if([lonMin componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].count > 1)
+                return nil;
+            coordinate.latitude = latDeg + (latMin.doubleValue / 60.0);
+            coordinate.longitude = lonDeg + (lonMin.doubleValue / 60.0);
+            break;
+        case 1:
+            latMin = [latMin substringWithRange:NSMakeRange(0, 4)];
+            lonMin = [lonMin substringWithRange:NSMakeRange(0, 4)];
+            if([lonMin componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].count > 1 ||
+               [latMin componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].count > 1)
+                return nil;
+            
+            coordinate.latitude = latDeg + ((latMin.doubleValue + 0.05) / 60.0);
+            coordinate.longitude = lonDeg + ((lonMin.doubleValue + 0.05) / 60.0);
+            break;
+        case 2:
+            latMin = [latMin substringWithRange:NSMakeRange(0, 2)];
+            lonMin = [lonMin substringWithRange:NSMakeRange(0, 2)];
+            if([lonMin componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].count > 1 ||
+               [latMin componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].count > 1)
+                return nil;
+            
+            coordinate.latitude = latDeg + ((latMin.doubleValue + 0.5) / 60.0);
+            coordinate.longitude = lonDeg + ((lonMin.doubleValue + 0.5) / 60.0);
+            break;
+        case 3:
+            latMin = [[latMin substringWithRange:NSMakeRange(0, 1)] stringByAppendingString:@"5"];
+            lonMin = [[lonMin substringWithRange:NSMakeRange(0, 1)] stringByAppendingString:@"5"];
+            if([lonMin componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].count > 1 ||
+               [latMin componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].count > 1)
+                return nil;
+            
+            coordinate.latitude = latDeg + (latMin.doubleValue / 60.0);
+            coordinate.longitude = lonDeg + (lonMin.doubleValue / 60.0);
+            break;
+        case 4:
+            coordinate.latitude = latDeg + 0.5;
+            coordinate.longitude = lonDeg + 0.5;
+            break;
+        default:
+            return nil;
+    }
+    
+    if([sInd isEqualToString:@"S"])
+        coordinate.latitude = -coordinate.latitude;
+    if([wInd isEqualToString:@"W"])
+        coordinate.longitude = -coordinate.longitude;
+    
+    posAmbiguity = 2 - posAmbiguity;
+    CLLocationAccuracy resolution = 1.852 * (posAmbiguity <= -2 ? 600.0 : 1000.0) * pow(10, -posAmbiguity);
+    
+    //  Advance to process comment
+    positionPacket = [positionPacket substringFromIndex:19];
+    CLLocationDirection course = 0.0;
+    CLLocationSpeed speed = 0.0;
+    CLLocationDistance altitude = 0.0;
+    CLLocationAccuracy verticalAccuracy = -1.0;
+    NSRegularExpression *commentParser;
+    if(positionPacket.length >= 7) {
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
+        commentParser = [NSRegularExpression regularExpressionWithPattern:@"^([0-9. ]{3})/([0-9. ]{3})" options:0 error:&error];
+        matches = [commentParser matchesInString:positionPacket options:0 range:NSMakeRange(0, positionPacket.length)];
+#pragma clang diagnostic pop
+        if(matches.count == 1) {
+            course = [positionPacket substringWithRange:[matches[0] rangeAtIndex:1]].doubleValue;
+            speed = [positionPacket substringWithRange:[matches[0] rangeAtIndex:2]].doubleValue * 0.514444;
+            positionPacket = [positionPacket substringFromIndex:7];
+        }
+        
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
+        //  PHGR
+        commentParser = [NSRegularExpression regularExpressionWithPattern:@"^PHG(\\d[\\x30-\\x7e]\\d\\d[0-9A-Z])/" options:0 error:&error];
+        matches = [commentParser matchesInString:positionPacket options:0 range:NSMakeRange(0, positionPacket.length)];
+#pragma clang diagnostic pop
+        if(matches.count == 1) {
+            positionPacket = [positionPacket substringFromIndex:8];
+        }
+        
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
+        // PHG
+        commentParser = [NSRegularExpression regularExpressionWithPattern:@"^PHG(\\d[\\x30-\\x7e]\\d\\d)" options:0 error:&error];
+        matches = [commentParser matchesInString:positionPacket options:0 range:NSMakeRange(0, positionPacket.length)];
+#pragma clang diagnostic pop
+        if(matches.count == 1) {
+            positionPacket = [positionPacket substringFromIndex:7];
+        }
+        
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
+        // RNG
+        commentParser = [NSRegularExpression regularExpressionWithPattern:@"^RNG(\\d{4})" options:0 error:&error];
+        matches = [commentParser matchesInString:positionPacket options:0 range:NSMakeRange(0, positionPacket.length)];
+#pragma clang diagnostic pop
+        if(matches.count == 1) {
+            positionPacket = [positionPacket substringFromIndex:7];
+        }
+    }
+    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
+    commentParser = [NSRegularExpression regularExpressionWithPattern:@"^(.*?)/A=(-\\d{5}|\\d{6})(.*)$" options:0 error:&error];
+    matches = [commentParser matchesInString:positionPacket options:0 range:NSMakeRange(0, positionPacket.length)];
+#pragma clang diagnostic pop
+    if(matches.count == 1) {
+        altitude = [positionPacket substringWithRange:[matches[0] rangeAtIndex:2]].doubleValue * 0.3048;
+        verticalAccuracy = resolution * 1.5;
+        positionPacket = [[positionPacket substringWithRange:[matches[0] rangeAtIndex:1]] stringByAppendingString:[positionPacket substringWithRange:[matches[0] rangeAtIndex:3]]];
+    }
+
+    CLLocation *location = [[CLLocation alloc] initWithCoordinate: coordinate
+                                                         altitude: altitude
+                                               horizontalAccuracy: resolution
+                                                 verticalAccuracy: verticalAccuracy
+                                                           course: course
+                                                            speed: speed
+                                                        timestamp: [NSDate date]];
+    NSAssert(location != nil, @"Location is nil");
+    return location;
+}
+
 -(CLLocation *) locationFromNmeaSentence:(NSString *)nmeaSentence {
     NSError *error = nil;
     
     nmeaSentence = [nmeaSentence stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     
     NSRegularExpression *parser = [NSRegularExpression regularExpressionWithPattern:@"^\\$([\\x20-\\x7e]+)\\*([0-9A-F]{2})$" options:NSRegularExpressionCaseInsensitive error:&error];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
     if([parser numberOfMatchesInString:nmeaSentence options:0 range:NSMakeRange(0, nmeaSentence.length)] != 1)
         return nil;
     
     NSTextCheckingResult *match = [parser firstMatchInString:nmeaSentence options:0 range:NSMakeRange(0, nmeaSentence.length)];
-
+#pragma clang diagnostic pop
     unsigned int checksum;
     NSScanner *sumScanner = [NSScanner scannerWithString:[nmeaSentence substringWithRange:[match rangeAtIndex:2]]];
     if(![sumScanner scanHexInt:&checksum]) {
@@ -562,7 +632,7 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
     if((unsigned char) checksum != calcSum)
         return nil;
 
-    NSArray <NSString *> *nmeaFields = [nmeaSentence componentsSeparatedByString:@","];
+    NSArray <NSString *> *nmeaFields = [checksumString componentsSeparatedByString:@","];
     if([nmeaFields[0] isEqualToString:@"GPRMC"]) {
         if(nmeaFields.count < 10)
             return nil;
@@ -573,8 +643,11 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
         
         NSDateComponents *timestampComponents = [[NSDateComponents alloc] init];
         
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
         NSRegularExpression *timeParser = [NSRegularExpression regularExpressionWithPattern:@"^\\s*(\\d{2})(\\d{2})(\\d{2})(|\\.\\d+)\\s*$" options:0 error:&error];
         NSArray <NSTextCheckingResult *> *matches = [timeParser matchesInString:nmeaFields[1] options:0 range:NSMakeRange(0, nmeaFields[1].length)];
+#pragma clang diagnostic pop
         if(matches.count != 1)
             return nil;
         
@@ -582,8 +655,11 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
         timestampComponents.minute = [nmeaFields[1] substringWithRange:[matches[0] rangeAtIndex:2]].integerValue;
         timestampComponents.second = [nmeaFields[1] substringWithRange:[matches[0] rangeAtIndex:3]].integerValue;
         
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
         NSRegularExpression *dateParser = [NSRegularExpression regularExpressionWithPattern:@"^\\s*(\\d{2})(\\d{2})(\\d{2})\\s*$" options:0 error:&error];
         matches = [dateParser matchesInString:nmeaFields[9] options:0 range:NSMakeRange(0, nmeaFields[9].length)];
+#pragma clang diagnostic pop
         if(matches.count != 1)
             return nil;
         timestampComponents.year = [nmeaFields[9] substringWithRange:[matches[0] rangeAtIndex:1]].integerValue;
@@ -602,16 +678,22 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
             return nil;
         
         double speed = 0.0;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
         NSRegularExpression *speedParser = [NSRegularExpression regularExpressionWithPattern:@"^\\s*(\\d+(|\\.\\d+))\\s*$" options:0 error:&error];
         matches = [speedParser matchesInString:nmeaFields[7] options:0 range:NSMakeRange(0, nmeaFields[7].length)];
+#pragma clang diagnostic pop
         if(matches.count == 1)
             speed = [nmeaFields[7] substringWithRange:[matches[0] rangeAtIndex:1]].doubleValue * 0.514444;
         
         double course = 0.0;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
         NSRegularExpression *courseParser = [NSRegularExpression regularExpressionWithPattern:@"^\\s*(\\d+(|\\.\\d+))\\s*$" options:0 error:&error];
         matches = [courseParser matchesInString:nmeaFields[8] options:0 range:NSMakeRange(0, nmeaFields[8].length)];
+#pragma clang diagnostic pop
         if(matches.count == 1)
-            course = [nmeaFields[7] substringWithRange:[matches[0] rangeAtIndex:1]].doubleValue;
+            course = [nmeaFields[8] substringWithRange:[matches[0] rangeAtIndex:1]].doubleValue;
         
         CLLocationCoordinate2D coordinate = {
             .latitude = [self coordinatesFromNmeaString:nmeaFields[3] withSign:nmeaFields[4]],
@@ -629,16 +711,22 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
         if(nmeaFields.count < 11)
             return nil;
         
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
         NSRegularExpression *validityParser = [NSRegularExpression regularExpressionWithPattern:@"^\\s*(\\d+)\\s*$" options:0 error:&error];
         NSArray <NSTextCheckingResult *> *matches = [validityParser matchesInString:nmeaFields[6] options:0 range:NSMakeRange(0, nmeaFields[6].length)];
+#pragma clang diagnostic pop
         if(matches.count != 1)
             return nil;
         
         if([nmeaFields[6] substringWithRange:[matches[0] rangeAtIndex:1]].integerValue < 1)
             return nil;
         
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
         NSRegularExpression *timeParser = [NSRegularExpression regularExpressionWithPattern:@"\\.\\d+$" options:0 error:&error];
         NSString *timeString = [timeParser stringByReplacingMatchesInString:nmeaFields[1] options:0 range:NSMakeRange(0, nmeaFields[1].length) withTemplate:@""];
+#pragma clang diagnostic pop
         
         NSDate *timestamp = [self dateFromARPSTimestamp:[timeString stringByAppendingString:@"h"]];
                                 
@@ -649,8 +737,11 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
 
         double altitude = 0.0;
         if([nmeaFields[10] isEqualToString:@"M"]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
             NSRegularExpression *altitudeParser = [NSRegularExpression regularExpressionWithPattern:@"^(-?\\d+(|\\.\\d+))$" options:0 error:&error];
             matches = [altitudeParser matchesInString:nmeaFields[9] options:0 range:NSMakeRange(0, nmeaFields[9].length)];
+#pragma clang diagnostic pop
             if(matches.count != 1)
                 return nil;
             

@@ -86,7 +86,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wassign-enum"
         NSDictionary *JSONResult = [NSJSONSerialization JSONObjectWithData:data options:0 error:&JSONError];
-        // NSLog(@"Fetched: %@", newGateways);
 #pragma clang diagnostic pop
         
         if(JSONResult) {

@@ -11,6 +11,7 @@
 		0908EF851B84FDBE007B76F5 /* BTRDExtraLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 0908EF841B84FDBE007B76F5 /* BTRDExtraLink.m */; };
 		0908EF871B852541007B76F5 /* DExtraReflectors.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0908EF861B852541007B76F5 /* DExtraReflectors.plist */; };
 		0924272E1B62F46600D568DE /* BTRAudioViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0924272D1B62F46600D568DE /* BTRAudioViewController.m */; };
+		092D9FF51B978AAC00525DE5 /* aprschecksumcorpus.txt in Resources */ = {isa = PBXBuildFile; fileRef = 092D9FF41B978AAC00525DE5 /* aprschecksumcorpus.txt */; settings = {ASSET_TAGS = (); }; };
 		09318EEE1B88AAC500B1E1FE /* BTRDestinationCallFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 09318EED1B88AAC500B1E1FE /* BTRDestinationCallFormatter.m */; };
 		093B9AF81B50E2D500C2ABD0 /* BTRAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9AF71B50E2D500C2ABD0 /* BTRAppDelegate.m */; };
 		093B9AFA1B50E2D500C2ABD0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9AF91B50E2D500C2ABD0 /* main.m */; };
@@ -27,6 +28,9 @@
 		096BFCDD1B7DEC4000C94260 /* BTRIPFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 096BFCDC1B7DEC4000C94260 /* BTRIPFormatter.m */; };
 		096F2B5A1B58C06E00766A95 /* BTRCallFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 096F2B591B58C06E00766A95 /* BTRCallFormatter.m */; };
 		096F2B5C1B58ED1B00766A95 /* DefaultPreferences.plist in Resources */ = {isa = PBXBuildFile; fileRef = 096F2B5B1B58ED1B00766A95 /* DefaultPreferences.plist */; };
+		096FDB771B96B480006B4105 /* nmeacorpus.txt in Resources */ = {isa = PBXBuildFile; fileRef = 096FDB761B96B480006B4105 /* nmeacorpus.txt */; settings = {ASSET_TAGS = (); }; };
+		096FDB791B96C8D4006B4105 /* nmeabadcorpus.txt in Resources */ = {isa = PBXBuildFile; fileRef = 096FDB781B96C8D4006B4105 /* nmeabadcorpus.txt */; settings = {ASSET_TAGS = (); }; };
+		096FDB7B1B96CD90006B4105 /* aprscorpus.txt in Resources */ = {isa = PBXBuildFile; fileRef = 096FDB7A1B96CD90006B4105 /* aprscorpus.txt */; settings = {ASSET_TAGS = (); }; };
 		09796FF21B800B5A0043089D /* BTRDPlusLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 09796FF11B800B5A0043089D /* BTRDPlusLink.m */; };
 		098B10F01B65FB22002C7A3B /* BTRDataEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 098B10EF1B65FB22002C7A3B /* BTRDataEngine.m */; };
 		09A5FDEE1B5794FA00AE9E1C /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */; };
@@ -79,6 +83,7 @@
 		0908EF881B87DAAD007B76F5 /* DStarUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DStarUtils.h; sourceTree = "<group>"; };
 		0924272C1B62F46600D568DE /* BTRAudioViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRAudioViewController.h; sourceTree = "<group>"; };
 		0924272D1B62F46600D568DE /* BTRAudioViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRAudioViewController.m; sourceTree = "<group>"; };
+		092D9FF41B978AAC00525DE5 /* aprschecksumcorpus.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = aprschecksumcorpus.txt; sourceTree = "<group>"; };
 		09318EEB1B87C5FD00B1E1FE /* Buster.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Buster.entitlements; sourceTree = "<group>"; };
 		09318EEC1B88AAC500B1E1FE /* BTRDestinationCallFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRDestinationCallFormatter.h; sourceTree = "<group>"; };
 		09318EED1B88AAC500B1E1FE /* BTRDestinationCallFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRDestinationCallFormatter.m; sourceTree = "<group>"; };
@@ -111,6 +116,9 @@
 		096F2B581B58C06E00766A95 /* BTRCallFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRCallFormatter.h; sourceTree = "<group>"; };
 		096F2B591B58C06E00766A95 /* BTRCallFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRCallFormatter.m; sourceTree = "<group>"; };
 		096F2B5B1B58ED1B00766A95 /* DefaultPreferences.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DefaultPreferences.plist; sourceTree = "<group>"; };
+		096FDB761B96B480006B4105 /* nmeacorpus.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = nmeacorpus.txt; sourceTree = "<group>"; };
+		096FDB781B96C8D4006B4105 /* nmeabadcorpus.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = nmeabadcorpus.txt; sourceTree = "<group>"; };
+		096FDB7A1B96CD90006B4105 /* aprscorpus.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = aprscorpus.txt; sourceTree = "<group>"; };
 		09796FF01B800B5A0043089D /* BTRDPlusLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRDPlusLink.h; sourceTree = "<group>"; };
 		09796FF11B800B5A0043089D /* BTRDPlusLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRDPlusLink.m; sourceTree = "<group>"; };
 		098B10EE1B65FB22002C7A3B /* BTRDataEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRDataEngine.h; sourceTree = "<group>"; };
@@ -263,6 +271,10 @@
 		093B9B0B1B50E2D500C2ABD0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				092D9FF41B978AAC00525DE5 /* aprschecksumcorpus.txt */,
+				096FDB761B96B480006B4105 /* nmeacorpus.txt */,
+				096FDB7A1B96CD90006B4105 /* aprscorpus.txt */,
+				096FDB781B96C8D4006B4105 /* nmeabadcorpus.txt */,
 				093B9B0C1B50E2D500C2ABD0 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -437,6 +449,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				096FDB7B1B96CD90006B4105 /* aprscorpus.txt in Resources */,
+				092D9FF51B978AAC00525DE5 /* aprschecksumcorpus.txt in Resources */,
+				096FDB771B96B480006B4105 /* nmeacorpus.txt in Resources */,
+				096FDB791B96C8D4006B4105 /* nmeabadcorpus.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -626,6 +642,7 @@
 				GCC_WARN_SIGN_COMPARE = NO;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = Buster/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = Buster;
@@ -653,6 +670,7 @@
 				GCC_WARN_SIGN_COMPARE = NO;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = Buster/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = Buster;
