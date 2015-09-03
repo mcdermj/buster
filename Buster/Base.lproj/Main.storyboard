@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="8187.4" systemVersion="14E46" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="8187.4" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8187.4"/>
+        <plugIn identifier="com.apple.MapKitIBPlugin" version="8187.4"/>
         <capability name="box content view" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
@@ -620,6 +621,7 @@
                                                             </tableColumn>
                                                         </tableColumns>
                                                         <connections>
+                                                            <action trigger="doubleAction" selector="doHeardDoubleClick:" target="XfG-lQ-9wD" id="fIi-KX-bPT"/>
                                                             <outlet property="delegate" destination="XfG-lQ-9wD" id="CKi-KD-3nf"/>
                                                         </connections>
                                                     </tableView>
@@ -790,6 +792,7 @@
                         <outlet property="repeaterInfo" destination="EE0-G5-muf" id="PRd-tb-Jh1"/>
                         <outlet property="statusLED" destination="mVD-lY-7a6" id="XRs-v4-hzd"/>
                         <outlet property="txButton" destination="mNc-zd-r4D" id="6Be-fT-qOp"/>
+                        <segue destination="JAY-AZ-HFp" kind="popover" identifier="mapSegue" popoverBehavior="t" preferredEdge="maxY" id="975-6h-lKm"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -806,6 +809,27 @@
                 </arrayController>
             </objects>
             <point key="canvasLocation" x="71" y="1053.5"/>
+        </scene>
+        <!--Map Popup Controller-->
+        <scene sceneID="80k-iB-Bnx">
+            <objects>
+                <viewController id="JAY-AZ-HFp" customClass="BTRMapPopupController" sceneMemberID="viewController">
+                    <view key="view" id="UIk-UB-EZt">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="308"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <mapView fixedFrame="YES" mapType="standard" pitchEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oC1-Bj-orG">
+                                <rect key="frame" x="0.0" y="0.0" width="450" height="308"/>
+                            </mapView>
+                        </subviews>
+                    </view>
+                    <connections>
+                        <outlet property="mapView" destination="oC1-Bj-orG" id="ctk-Ld-BJH"/>
+                    </connections>
+                </viewController>
+                <customObject id="YPP-ed-l3I" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="71" y="1477"/>
         </scene>
         <!--Audio-->
         <scene sceneID="elY-lg-nZP">

@@ -23,6 +23,9 @@
 #import "BTRDataEngine.h"
 #import "BTRSlowDataCoder.h"
 #import "BTRAudioHandler.h"
+#import "BTRMapPopupController.h"
+
+@import MapKit;
 
 @interface BTRMainWindowViewController ()
 
@@ -205,6 +208,38 @@
     self.repeaterInfo.stringValue = [NSString stringWithFormat:@"Connected to %@. Attempting to establish link.", destination];
 }
 
+
+- (IBAction)doHeardDoubleClick:(id)sender {
+    
+    NSLog(@"Got double click, row %ld column %ld", self.heardTableView.clickedRow, self.heardTableView.clickedColumn);
+    if(self.heardTableView.clickedRow < 0)
+        return;
+    
+    NSDictionary *qso = self.heardTableController.arrangedObjects[self.heardTableView.clickedRow];
+    if(qso[@"location"]) {
+        // [self performSegueWithIdentifier:@"mapSegue" sender:self];
+        BTRMapPopupController *popupController = [[BTRMapPopupController alloc] initWithNibName:nil bundle:nil];
+        MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
+        annotation.coordinate = ((CLLocation *)qso[@"location"]).coordinate;
+        popupController.annotation = annotation;
+        [self presentViewController:popupController asPopoverRelativeToRect:NSMakeRect(0, 0, 300, 300) ofView:self.view preferredEdge:NSRectEdgeMinX behavior:NSPopoverBehaviorTransient];
+    }
+}
+
+-(void)prepareForSegue:(NSStoryboardSegue *)segue sender:(id)sender {
+    if(![segue.identifier isEqualToString:@"mapSegue"])
+        return;
+    
+    NSLog(@"Segue for row %ld", self.heardTableView.clickedRow);
+    NSDictionary *qso = self.heardTableController.arrangedObjects[self.heardTableView.clickedRow];
+    if(qso[@"location"]) {
+        NSLog(@"location is %@", qso[@"location"]);
+        MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
+        annotation.coordinate = ((CLLocation *)qso[@"location"]).coordinate;
+        BTRMapPopupController *popup = segue.destinationController;
+        popup.annotation = annotation;
+    }
+}
 
 - (IBAction)doLink:(id)sender {
     if(self.reflectorTableController.selectedObjects.count != 1) {

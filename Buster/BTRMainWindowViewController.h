@@ -29,6 +29,7 @@
 @property (nonatomic, weak) IBOutlet NSButton *txButton;
 @property (nonatomic, weak) IBOutlet NSTextField *repeaterInfo;
 
+- (IBAction)doHeardDoubleClick:(id)sender;
 - (IBAction)doLink:(id)sender;
 - (IBAction)addReflector:(id)sender;
 - (IBAction)doTx:(id)sender;
