@@ -117,7 +117,9 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
     if(authTimerSource)
         dispatch_source_cancel(authTimerSource);
     
-    [self startAuthTimer];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self startAuthTimer];
+    });
 }
 
 - (void) startAuthTimer {
@@ -136,6 +138,9 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
     self.authenticated = NO;
     
     NSLog(@"Performing DPlus authentication");
+    
+    if(!self.authCall)
+        return;
     
     int authSocket = socket(PF_INET, SOCK_STREAM, 0);
     if(authSocket == -1) {
