@@ -629,7 +629,7 @@
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CODE_SIGN_ENTITLEMENTS = Buster/Buster.entitlements;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "Mac Developer: Jeremy McDermond (3R68W65G4N)";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Buster/Prefix.pch;
@@ -646,7 +646,7 @@
 				INFOPLIST_FILE = Buster/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = Buster;
-				PROVISIONING_PROFILE = "2e2ffbcf-318a-4124-ad9a-24d79a87dfe0";
+				PROVISIONING_PROFILE = "2b7c9479-ed65-4eb8-b5d2-a626b95c4140";
 			};
 			name = Debug;
 		};
@@ -658,7 +658,7 @@
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CODE_SIGN_ENTITLEMENTS = Buster/Buster.entitlements;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "Mac Developer: Jeremy McDermond (3R68W65G4N)";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Buster/Prefix.pch;
@@ -675,7 +675,7 @@
 				INFOPLIST_FILE = Buster/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = Buster;
-				PROVISIONING_PROFILE = "2e2ffbcf-318a-4124-ad9a-24d79a87dfe0";
+				PROVISIONING_PROFILE = "2b7c9479-ed65-4eb8-b5d2-a626b95c4140";
 			};
 			name = Release;
 		};
