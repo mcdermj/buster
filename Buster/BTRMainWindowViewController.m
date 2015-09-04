@@ -125,6 +125,9 @@
 -(void)locationReceived:(CLLocation *)location forStreamId:(NSNumber *)streamId {
     [self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
         qso[@"location"] = location;
+        if([location distanceFromLocation:qso[@"location"]] < 100.0)
+            return;
+
         qso[@"city"] = @"Searching city database…";
         [self.geocoder reverseGeocodeLocation:location completionHandler:^(NSArray <CLPlacemark *> *placemarks, NSError *error) {
             if(!placemarks) {
