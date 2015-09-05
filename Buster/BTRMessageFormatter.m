@@ -30,6 +30,9 @@
     
     if(strlen((*partialStringPtr).UTF8String) > 20) {
         proposedSelRangePtr = &origSelRange;
+        
+        // XXX Make the static analyzer not complain
+        (void)proposedSelRangePtr;
         return NO;
     }
     

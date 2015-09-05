@@ -52,6 +52,9 @@
     NSString *proposedString = *partialStringPtr;
     if(proposedString.length > _maxLength) {
         proposedSelRangePtr = &origSelRange;
+        
+        // XXX Make the static analyzer not complain
+        (void)proposedSelRangePtr;
         return NO;
     }
 
