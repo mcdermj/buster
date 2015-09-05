@@ -306,18 +306,13 @@
     return YES;
 }
 
-#pragma mark - Selection Control
-
-- (NSIndexSet *) tableView:(NSTableView *)tableView selectionIndexesForProposedSelection:(NSIndexSet *)proposedSelectionIndexes {
-    if(tableView == self.heardTableView)
-        return nil;
-    
-    return proposedSelectionIndexes;
-}
 
 #pragma mark - Drag and Drop support
 
 - (id <NSPasteboardWriting>) tableView:(NSTableView *)tableView pasteboardWriterForRow:(NSInteger)row {
+    if(tableView != self.reflectorTableView)
+        return nil;
+
     NSDictionary *reflector = self.reflectorTableController.arrangedObjects[row];
     
     NSPasteboardItem *item = [[NSPasteboardItem alloc] init];
@@ -327,6 +322,9 @@
 }
 
 -(NSDragOperation) tableView:(NSTableView *)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)dropOperation {
+    if(tableView != self.reflectorTableView)
+        return NO;
+
     [tableView setDropRow:row dropOperation:NSTableViewDropAbove];
     return NSDragOperationMove;
 }
@@ -368,15 +366,24 @@
 
 #pragma mark - Heard List QSO Coloring
 
--(void)tableView:(NSTableView *)tableView willDisplayCell:(id)cellObj forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+-(void)tableView:(NSTableView *)tableView didAddRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
     if(tableView != self.heardTableView)
         return;
-    
-    NSTextFieldCell *cell = cellObj;
-    
+
     NSDictionary *entry = self.heardTableController.arrangedObjects[row];
+    for(int i = 0; i < rowView.numberOfColumns; ++i) {
+        NSTableCellView *columnView = [rowView viewAtColumn:i];
+        columnView.textField.textColor = entry[@"color"];
+    }
+}
+
+#pragma mark - Heard List Selection Control
+
+- (NSIndexSet *) tableView:(NSTableView *)tableView selectionIndexesForProposedSelection:(NSIndexSet *)proposedSelectionIndexes {
+    if(tableView == self.heardTableView)
+        return nil;
     
-    cell.textColor = entry[@"color"];
+    return proposedSelectionIndexes;
 }
 
 @end
