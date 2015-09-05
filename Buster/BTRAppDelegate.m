@@ -19,6 +19,8 @@
 
 #import "BTRAppDelegate.h"
 
+#import <HockeySDK/HockeySDK.h>
+
 #import "BTRDataEngine.h"
 #import "BTRDV3KSerialVocoder.h"
 #import "MASDictionaryTransformer.h"
@@ -43,6 +45,9 @@
 }
 
 - (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
+    [[BITHockeyManager sharedHockeyManager] configureWithIdentifier:@"cc76112de7b80cf017acd344d6072ec9"];
+    // Do some additional configuration if needed here
+    [[BITHockeyManager sharedHockeyManager] startManager];
 
     BTRDataEngine *engine = [BTRDataEngine sharedInstance];
     [engine.slowData bind:@"message" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.slowDataMessage" options:nil];
