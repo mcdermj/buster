@@ -169,7 +169,7 @@
 }
 
 - (BOOL) readPacket:(struct dv3k_packet *)packet {
-    size_t bytesRead;
+    ssize_t bytesRead;
     
     bytesRead = recv(self.descriptor, packet, sizeof(struct dv3k_packet), 0);
     if(bytesRead == -1) {
@@ -186,7 +186,7 @@
 }
 
 - (BOOL) writePacket:(const struct dv3k_packet *)packet {
-    size_t bytesWritten;
+    ssize_t bytesWritten;
     
     bytesWritten = send(self.descriptor, packet, dv3k_packet_size(*packet), 0);
     if(bytesWritten == -1) {

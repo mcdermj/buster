@@ -454,7 +454,7 @@ NSRegularExpression *parser = [NSRegularExpression regularExpressionWithPattern:
     NSString *lonMin = [positionPacket substringWithRange:[matches[0] rangeAtIndex:6]];
     
     NSString *symbolTable = [positionPacket substringWithRange:[matches[0] rangeAtIndex:4]];
-    NSString *symbolCode = [positionPacket substringWithRange:[matches[0] rangeAtIndex:8]];
+    //NSString *symbolCode = [positionPacket substringWithRange:[matches[0] rangeAtIndex:8]];
     
     if(![[NSCharacterSet characterSetWithCharactersInString:@"\\/ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"] characterIsMember:[symbolTable characterAtIndex:0]]) {
         //  Invalid symbol table
@@ -585,7 +585,7 @@ NSRegularExpression *parser = [NSRegularExpression regularExpressionWithPattern:
     if(matches.count == 1) {
         altitude = [positionPacket substringWithRange:[matches[0] rangeAtIndex:2]].doubleValue * 0.3048;
         verticalAccuracy = resolution * 1.5;
-        positionPacket = [[positionPacket substringWithRange:[matches[0] rangeAtIndex:1]] stringByAppendingString:[positionPacket substringWithRange:[matches[0] rangeAtIndex:3]]];
+        // positionPacket = [[positionPacket substringWithRange:[matches[0] rangeAtIndex:1]] stringByAppendingString:[positionPacket substringWithRange:[matches[0] rangeAtIndex:3]]];
     }
 
     CLLocation *location = [[CLLocation alloc] initWithCoordinate: coordinate
