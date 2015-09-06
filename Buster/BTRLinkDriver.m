@@ -182,9 +182,10 @@
                 [weakSelf.delegate destinationDidError:linkTarget error:error];
                 dispatch_source_cancel(retrySource);
                 weakSelf.linkState = UNLINKED;
+                weakSelf.linkTarget = @"";
+            } else {
+                [weakSelf sendLink];
             }
-            
-            [weakSelf sendLink];
         });
         weakSelf.connectTime = CFAbsoluteTimeGetCurrent();
         dispatch_resume(retrySource);
