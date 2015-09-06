@@ -181,7 +181,7 @@
 
 -(void)destinationDidLink:(NSString *)destination {
     self.repeaterInfo.stringValue = [NSString stringWithFormat:@"Linked to %@", destination];
-    [self.speechSynth startSpeakingString:self.repeaterInfo.stringValue];
+    [self.speechSynth startSpeakingString:[NSString stringWithFormat:@"Linked to [[rate -60.0]][[char LTRL]] %@ [[char NORM]][[rate +60.0]]", destination]];
     
     NSDockTile *dockTile = [NSApplication sharedApplication].dockTile;
     dockTile.badgeLabel = destination;
