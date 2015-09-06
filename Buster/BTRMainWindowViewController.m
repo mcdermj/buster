@@ -123,9 +123,13 @@
 }
 
 -(void)locationReceived:(CLLocation *)location forStreamId:(NSNumber *)streamId {
+    NSParameterAssert(location != nil);
+    
     [self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
+        CLLocation *oldLocation = qso[@"location"];
         qso[@"location"] = location;
-        if([location distanceFromLocation:qso[@"location"]] < 100.0)
+
+        if(oldLocation && [oldLocation distanceFromLocation:qso[@"location"]] < 100.0)
             return;
 
         qso[@"city"] = @"Searching city database…";
