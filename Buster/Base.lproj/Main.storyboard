@@ -706,7 +706,7 @@
                                                                     </binding>
                                                                 </connections>
                                                             </tableColumn>
-                                                            <tableColumn identifier="" width="100" minWidth="10" maxWidth="3.4028234663852886e+38" id="wHk-Yj-K9f" userLabel="Location">
+                                                            <tableColumn identifier="" width="100" minWidth="10" maxWidth="500" id="wHk-Yj-K9f" userLabel="Location">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Location">
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -723,8 +723,8 @@
                                                                         <rect key="frame" x="599" y="1" width="100" height="17"/>
                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         <subviews>
-                                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7ch-Xr-hmH">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="100" height="17"/>
+                                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="7ch-Xr-hmH">
+                                                                                <rect key="frame" x="-2" y="0.0" width="104" height="17"/>
                                                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="P0Z-vK-a86">
                                                                                     <font key="font" metaFont="fixedUser" size="11"/>
                                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -735,6 +735,12 @@
                                                                                 </connections>
                                                                             </textField>
                                                                         </subviews>
+                                                                        <constraints>
+                                                                            <constraint firstItem="7ch-Xr-hmH" firstAttribute="centerX" secondItem="nhp-fC-9Pq" secondAttribute="centerX" id="14L-xS-gF7"/>
+                                                                            <constraint firstItem="7ch-Xr-hmH" firstAttribute="width" secondItem="nhp-fC-9Pq" secondAttribute="width" id="UL4-Xh-BZf"/>
+                                                                            <constraint firstItem="7ch-Xr-hmH" firstAttribute="centerY" secondItem="nhp-fC-9Pq" secondAttribute="centerY" id="XBp-1V-acR"/>
+                                                                            <constraint firstItem="7ch-Xr-hmH" firstAttribute="height" secondItem="nhp-fC-9Pq" secondAttribute="height" id="uJa-gE-OVO"/>
+                                                                        </constraints>
                                                                         <connections>
                                                                             <outlet property="textField" destination="7ch-Xr-hmH" id="7dA-lc-aYY"/>
                                                                         </connections>
