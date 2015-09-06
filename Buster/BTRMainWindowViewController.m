@@ -98,18 +98,22 @@
 }
 
 -(void)streamDidEnd:(NSNumber *)streamId atTime:(NSDate *)time {
-        dispatch_source_cancel(self.qsoTimer);
-        
-        [self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
-            NSDate *headerTime = time;
-            qso[@"duration"] = [NSNumber numberWithDouble:[headerTime timeIntervalSinceDate:qso[@"time"]]];
-            if([qso[@"direction"] isEqualToString:@"TX"])
-                qso[@"color"] = [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.5];
-            else
-                qso[@"color"] = [NSColor blackColor];
-        }];
-        
-        self.statusLED.image = [NSImage imageNamed:@"Gray LED"];
+    dispatch_source_cancel(self.qsoTimer);
+    
+    [self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
+        NSDate *headerTime = time;
+        qso[@"duration"] = [NSNumber numberWithDouble:[headerTime timeIntervalSinceDate:qso[@"time"]]];
+        if([qso[@"direction"] isEqualToString:@"TX"])
+            qso[@"color"] = [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.5];
+        else
+            qso[@"color"] = [NSColor blackColor];
+    }];
+    
+    NSUInteger qsoIndex = [BTRMainWindowViewController findQsoId:streamId inArray:self.heardTableController.arrangedObjects];
+    NSAssert(qsoIndex != NSNotFound, @"QSO not found in table at end of stream");
+    [self resetColorForRowView:[self.heardTableView rowViewAtRow:qsoIndex makeIfNecessary:NO] atRow:qsoIndex];
+
+    self.statusLED.image = [NSImage imageNamed:@"Gray LED"];
 }
 
 -(void)slowDataReceived:(NSString *)slowData forStreamId:(NSNumber *)streamId {
@@ -368,14 +372,17 @@
 
 #pragma mark - Heard List QSO Coloring
 
+-(void)resetColorForRowView:(NSTableRowView *)rowView atRow:(NSUInteger)row {
+    for(int i = 0; i < rowView.numberOfColumns; ++i)
+        ((NSTableCellView *)[rowView viewAtColumn:i]).textField.textColor = self.heardTableController.arrangedObjects[row][@"color"];
+}
+
 -(void)tableView:(NSTableView *)tableView didAddRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
     if(tableView != self.heardTableView)
         return;
 
-    NSDictionary *entry = self.heardTableController.arrangedObjects[row];
-    for(int i = 0; i < rowView.numberOfColumns; ++i) {
-        NSTableCellView *columnView = [rowView viewAtColumn:i];
-        columnView.textField.textColor = entry[@"color"];
+    [self resetColorForRowView:rowView atRow:row];
+    
     }
 }
 
