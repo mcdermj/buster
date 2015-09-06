@@ -472,7 +472,7 @@
                                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                                 </textFieldCell>
                                                                                 <connections>
-                                                                                    <binding destination="65T-eM-PPu" name="value" keyPath="objectValue.myCall" id="VaN-dE-IZu"/>
+                                                                                    <binding destination="65T-eM-PPu" name="value" keyPath="objectValue.compositeMyCall" id="oAo-34-ENY"/>
                                                                                 </connections>
                                                                             </textField>
                                                                         </subviews>
