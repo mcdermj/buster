@@ -88,7 +88,7 @@
            ((BTRMapPopupController *)self.mapPopover.contentViewController).suppressClose = YES;
 
         [self.heardTableController addObject:header];
-
+        
         BTRMainWindowViewController __weak *weakSelf = self;
         self.qsoTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
         dispatch_source_set_timer(self.qsoTimer, dispatch_time(DISPATCH_TIME_NOW, 100ull * NSEC_PER_MSEC), 100ull * NSEC_PER_MSEC, 10ull * NSEC_PER_MSEC);
@@ -239,7 +239,8 @@
         MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
         annotation.coordinate = ((CLLocation *)qso[@"location"]).coordinate;
         ((BTRMapPopupController *)self.mapPopover.contentViewController).annotation = annotation;
-        NSView *clickedView = [self.heardTableView viewAtColumn:self.heardTableView.clickedColumn row:self.heardTableView.clickedRow makeIfNecessary:NO];
+        ((BTRMapPopupController *)self.mapPopover.contentViewController).qsoId = qso[@"streamId"];
+        NSView *clickedView = [self.heardTableView viewAtColumn:[self.heardTableView columnWithIdentifier:@"Location"] row:self.heardTableView.clickedRow makeIfNecessary:NO];
         [self.mapPopover showRelativeToRect:NSMakeRect(0, 0, 300, 300) ofView:clickedView preferredEdge:NSRectEdgeMaxY];
     }
 }
@@ -380,7 +381,10 @@
     
     if(self.mapPopover.isShown) {
         NSUInteger popoverRow = [BTRMainWindowViewController findQsoId:((BTRMapPopupController *)self.mapPopover.contentViewController).qsoId inArray:self.heardTableController.arrangedObjects];
-        NSView *popoverAnchorView = [self.heardTableView viewAtColumn:((BTRMapPopupController *)self.mapPopover.contentViewController).column row:popoverRow makeIfNecessary:NO];
+        
+        NSAssert(popoverRow != NSNotFound, @"QSO ID %ld not found in popover relocation", popoverRow);
+        
+        NSView *popoverAnchorView = [self.heardTableView viewAtColumn:[self.heardTableView columnWithIdentifier:@"Location"] row:popoverRow makeIfNecessary:NO];
         if(popoverAnchorView && popoverRow == row) {
             [self.mapPopover showRelativeToRect:NSMakeRect(0, 0, 300, 300) ofView:popoverAnchorView preferredEdge:NSRectEdgeMaxY];
             ((BTRMapPopupController *)self.mapPopover.contentViewController).suppressClose = NO;

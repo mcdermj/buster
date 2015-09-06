@@ -13,7 +13,6 @@
 @property (nonatomic) MKPointAnnotation *annotation;
 @property (weak) IBOutlet MKMapView *mapView;
 @property (nonatomic) NSNumber *qsoId;
-@property (nonatomic) NSUInteger column;
 @property (nonatomic) BOOL suppressClose;
 
 @end
