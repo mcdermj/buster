@@ -34,6 +34,7 @@
 @property (nonatomic) NSSpeechSynthesizer *speechSynth;
 @property (nonatomic) CLGeocoder *geocoder;
 @property (nonatomic, readwrite) NSMutableArray <NSMutableDictionary *> *qsoList;
+@property (nonatomic) NSPopover *mapPopover;
 
 @end
 
@@ -83,6 +84,9 @@
     NSNumber *streamId = header[@"streamId"];
     
     if(![self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {}]) {
+        if(self.mapPopover.isShown)
+           ((BTRMapPopupController *)self.mapPopover.contentViewController).suppressClose = YES;
+
         [self.heardTableController addObject:header];
 
         BTRMainWindowViewController __weak *weakSelf = self;
@@ -162,6 +166,11 @@
     
     self.qsoList = [[NSMutableArray alloc] init];
     
+    self.mapPopover = [[NSPopover alloc] init];
+    self.mapPopover.contentViewController = [[BTRMapPopupController alloc] initWithNibName:nil bundle:nil];
+    self.mapPopover.behavior = NSPopoverBehaviorTransient;
+    self.mapPopover.delegate = (BTRMapPopupController *) self.mapPopover.contentViewController;
+    
     [BTRDataEngine sharedInstance].delegate = self;
     
     [self.reflectorTableView registerForDraggedTypes:@[ @"net.nh6z.Dummy.reflector" ]];
@@ -219,36 +228,21 @@
 
 
 - (IBAction)doHeardDoubleClick:(id)sender {
-    
     NSLog(@"Got double click, row %ld column %ld", self.heardTableView.clickedRow, self.heardTableView.clickedColumn);
     if(self.heardTableView.clickedRow < 0)
         return;
     
     NSDictionary *qso = self.heardTableController.arrangedObjects[self.heardTableView.clickedRow];
+    
     if(qso[@"location"]) {
-        // [self performSegueWithIdentifier:@"mapSegue" sender:self];
-        BTRMapPopupController *popupController = [[BTRMapPopupController alloc] initWithNibName:nil bundle:nil];
         MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
         annotation.coordinate = ((CLLocation *)qso[@"location"]).coordinate;
-        popupController.annotation = annotation;
-        [self presentViewController:popupController asPopoverRelativeToRect:NSMakeRect(0, 0, 300, 300) ofView:self.view preferredEdge:NSRectEdgeMinX behavior:NSPopoverBehaviorTransient];
+        ((BTRMapPopupController *)self.mapPopover.contentViewController).annotation = annotation;
+        NSView *clickedView = [self.heardTableView viewAtColumn:self.heardTableView.clickedColumn row:self.heardTableView.clickedRow makeIfNecessary:NO];
+        [self.mapPopover showRelativeToRect:NSMakeRect(0, 0, 300, 300) ofView:clickedView preferredEdge:NSRectEdgeMaxY];
     }
 }
 
--(void)prepareForSegue:(NSStoryboardSegue *)segue sender:(id)sender {
-    if(![segue.identifier isEqualToString:@"mapSegue"])
-        return;
-    
-    NSLog(@"Segue for row %ld", self.heardTableView.clickedRow);
-    NSDictionary *qso = self.heardTableController.arrangedObjects[self.heardTableView.clickedRow];
-    if(qso[@"location"]) {
-        NSLog(@"location is %@", qso[@"location"]);
-        MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
-        annotation.coordinate = ((CLLocation *)qso[@"location"]).coordinate;
-        BTRMapPopupController *popup = segue.destinationController;
-        popup.annotation = annotation;
-    }
-}
 
 - (IBAction)doLink:(id)sender {
     if(self.reflectorTableController.selectedObjects.count != 1) {
@@ -313,7 +307,7 @@
 }
 
 
-#pragma mark - Drag and Drop support
+#pragma mark - Reflector Drag and Drop support
 
 - (id <NSPasteboardWriting>) tableView:(NSTableView *)tableView pasteboardWriterForRow:(NSInteger)row {
     if(tableView != self.reflectorTableView)
@@ -383,6 +377,14 @@
 
     [self resetColorForRowView:rowView atRow:row];
     
+    if(self.mapPopover.isShown) {
+        NSUInteger popoverRow = [BTRMainWindowViewController findQsoId:((BTRMapPopupController *)self.mapPopover.contentViewController).qsoId inArray:self.heardTableController.arrangedObjects];
+        NSView *popoverAnchorView = [self.heardTableView viewAtColumn:((BTRMapPopupController *)self.mapPopover.contentViewController).column row:popoverRow makeIfNecessary:NO];
+        if(popoverAnchorView && popoverRow == row) {
+            [self.mapPopover showRelativeToRect:NSMakeRect(0, 0, 300, 300) ofView:popoverAnchorView preferredEdge:NSRectEdgeMaxY];
+            ((BTRMapPopupController *)self.mapPopover.contentViewController).suppressClose = NO;
+        }
+
     }
 }
 

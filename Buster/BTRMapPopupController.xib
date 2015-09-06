@@ -21,7 +21,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="300" height="300"/>
                 </mapView>
             </subviews>
-            <point key="canvasLocation" x="286" y="371"/>
+            <point key="canvasLocation" x="286" y="376"/>
         </customView>
     </objects>
 </document>
