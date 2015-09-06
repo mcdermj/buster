@@ -155,6 +155,8 @@ static NSDictionary *_reflectorList;
 
 -(void)sendLink {
     NSLog(@"Sending link packet");
+    NSAssert(self.linkTarget.length == 8, @"Link Target %@ is not 8 characters. Was %ld.", self.linkTarget, self.linkTarget.length);
+
     [self sendLinkPacketWithModule:(char) [self.linkTarget characterAtIndex:7]];
 }
 
