@@ -40,11 +40,11 @@
 }
 
 +(NSString *)stringWithCallsign:(void *)callsign {
-    return [[[NSString alloc] initWithBytes:callsign length:8 encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    return [[[NSString alloc] initWithBytes:callsign length:8 encoding:NSASCIIStringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 }
 
 +(NSString *)stringWithShortCallsign:(void *)callsign {
-    return [[[NSString alloc] initWithBytes:callsign length:4 encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    return [[[NSString alloc] initWithBytes:callsign length:4 encoding:NSASCIIStringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 }
 
 @end
@@ -426,6 +426,7 @@
             if(self.rxStreamId)
                 return;
             
+            //  XXX There can be null values here!
             NSDictionary *header = @{
                                      @"rpt1Call" : [NSString stringWithCallsign:frame->header.rpt1Call],
                                      @"rpt2Call" : [NSString stringWithCallsign:frame->header.rpt2Call],
