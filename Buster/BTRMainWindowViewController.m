@@ -192,6 +192,7 @@
     
     self.speechSynth = [[NSSpeechSynthesizer alloc] initWithVoice:@"com.apple.speech.synthesis.voice.Vicki"];
     self.geocoder = [[CLGeocoder alloc] init];
+    NSAssert(self.geocoder != nil, @"Geocoder did not initialize");
 }
 
 -(void)destinationDidLink:(NSString *)destination {
