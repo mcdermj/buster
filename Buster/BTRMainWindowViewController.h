@@ -28,6 +28,7 @@
 @property (nonatomic, weak) IBOutlet NSImageView *statusLED;
 @property (nonatomic, weak) IBOutlet NSButton *txButton;
 @property (nonatomic, weak) IBOutlet NSTextField *repeaterInfo;
+@property (nonatomic, readonly) NSMutableArray <NSMutableDictionary *> *qsoList;
 
 - (IBAction)doHeardDoubleClick:(id)sender;
 - (IBAction)doLink:(id)sender;

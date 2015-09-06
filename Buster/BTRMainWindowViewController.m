@@ -33,36 +33,32 @@
 @property (nonatomic) NSInteger txButtonState;
 @property (nonatomic) NSSpeechSynthesizer *speechSynth;
 @property (nonatomic) CLGeocoder *geocoder;
+@property (nonatomic, readwrite) NSMutableArray <NSMutableDictionary *> *qsoList;
 
 @end
 
 @implementation BTRMainWindowViewController
 
--(BOOL)updateQsoId:(NSNumber *)streamId usingBlock:(void(^)(NSMutableDictionary *, NSUInteger))block {
-    NSPredicate *currentFilterPredicate = self.heardTableController.filterPredicate;
-    self.heardTableController.filterPredicate = nil;
-    
-    NSUInteger qsoIndex = [self.heardTableController.arrangedObjects indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
++(NSUInteger)findQsoId:(NSNumber *)streamId inArray:(NSArray *)array {
+    return [array indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
         NSDictionary *entry = (NSDictionary *) obj;
-        if([((NSNumber *)entry[@"streamId"]) isEqualToNumber:streamId]) {
+        if(streamId && [((NSNumber *)entry[@"streamId"]) isEqualToNumber:streamId]) {
             *stop = YES;
             return YES;
         }
         
         return NO;
     }];
-    
+}
+
+-(BOOL)updateQsoId:(NSNumber *)streamId usingBlock:(void(^)(NSMutableDictionary *, NSUInteger))block {
+    NSUInteger qsoIndex = [BTRMainWindowViewController findQsoId:streamId inArray:self.qsoList];
     if(qsoIndex == NSNotFound)
         return NO;
+
+    NSMutableDictionary *qso = self.qsoList[qsoIndex];
+    block(qso, qsoIndex);
     
-    NSDictionary *qso = self.heardTableController.arrangedObjects[qsoIndex];
-    NSMutableDictionary *newQso = [NSMutableDictionary dictionaryWithDictionary:qso];
-    block(newQso, qsoIndex);
-    
-    [self.heardTableController removeObject:qso];
-    [self.heardTableController addObject:newQso];
-    
-    self.heardTableController.filterPredicate = currentFilterPredicate;
     return YES;
 }
 
@@ -159,6 +155,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.qsoList = [[NSMutableArray alloc] init];
     
     [BTRDataEngine sharedInstance].delegate = self;
     

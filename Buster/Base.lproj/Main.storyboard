@@ -979,7 +979,11 @@
                 <customFormatter id="1ph-Tp-iFt"/>
                 <dateFormatter formatterBehavior="custom10_4" dateStyle="short" dateFormat="MMM dd HH:mm:ss z" id="yzf-bC-WP6"/>
                 <userDefaultsController representsSharedInstance="YES" id="9Wg-oH-sfS"/>
-                <arrayController editable="NO" automaticallyPreparesContent="YES" preservesSelection="NO" selectsInsertedObjects="NO" avoidsEmptySelection="NO" clearsFilterPredicateOnInsertion="NO" automaticallyRearrangesObjects="YES" id="Zyq-aq-WHS" userLabel="Heard Array Controller"/>
+                <arrayController editable="NO" automaticallyPreparesContent="YES" preservesSelection="NO" selectsInsertedObjects="NO" avoidsEmptySelection="NO" clearsFilterPredicateOnInsertion="NO" automaticallyRearrangesObjects="YES" id="Zyq-aq-WHS" userLabel="Heard Array Controller">
+                    <connections>
+                        <binding destination="XfG-lQ-9wD" name="contentArray" keyPath="self.qsoList" id="7bo-t4-u0P"/>
+                    </connections>
+                </arrayController>
                 <arrayController preservesSelection="NO" selectsInsertedObjects="NO" avoidsEmptySelection="NO" clearsFilterPredicateOnInsertion="NO" id="3qO-F1-Tqi" userLabel="Reflector Array Controller">
                     <connections>
                         <binding destination="9Wg-oH-sfS" name="contentArray" keyPath="values.reflectorFavorites" id="WRa-Ui-KlH">
