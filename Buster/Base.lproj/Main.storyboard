@@ -652,7 +652,7 @@
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="35" id="mmW-uN-dtj"/>
                                             </constraints>
-                                            <buttonCell key="cell" type="push" title="TX" bezelStyle="rounded" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Vkf-rb-mdp">
+                                            <buttonCell key="cell" type="push" title="TX" bezelStyle="rounded" alignment="center" continuous="YES" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Vkf-rb-mdp">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>

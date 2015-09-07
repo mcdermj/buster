@@ -181,7 +181,7 @@
     dockTile.badgeLabel = destination;
     [dockTile display];
     
-    
+    self.txButton.enabled = YES;
 }
 
 -(void)destinationDidUnlink:(NSString *)destination {
@@ -191,6 +191,8 @@
     NSDockTile *dockTile = [NSApplication sharedApplication].dockTile;
     dockTile.badgeLabel = nil;
     [dockTile display];
+    
+    self.txButton.enabled = NO;
 }
 
 -(void)destinationDidError:(NSString *)destination error:(NSError *)error {
@@ -239,7 +241,11 @@
 }
 
 -(void)startTx {
-    [self.view.window makeFirstResponder:nil];
+    if(![BTRDataEngine sharedInstance].network) {
+        NSBeep();
+        return;
+    }
+    [self.view.window makeFirstResponder:self.view];
     
     [BTRDataEngine sharedInstance].audio.xmit = YES;    
 }
