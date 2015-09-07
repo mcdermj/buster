@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="8187.4" systemVersion="14E46" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="8187.4" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8187.4"/>
         <capability name="box content view" minToolsVersion="7.0"/>
@@ -370,7 +370,7 @@
                                     <rect key="frame" x="1" y="17" width="75" height="182"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" headerView="8E1-QA-SES" id="sF2-ua-GZt">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="8E1-QA-SES" viewBased="YES" id="sF2-ua-GZt">
                                             <rect key="frame" x="0.0" y="0.0" width="75" height="182"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -384,17 +384,45 @@
                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                     </tableHeaderCell>
                                                     <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="center" placeholderString="" id="rwF-dd-F7W">
-                                                        <customFormatter key="formatter" id="PvT-2M-SY3" customClass="BTRDestinationCallFormatter"/>
                                                         <font key="font" metaFont="fixedUser" size="11"/>
                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
-                                                    <connections>
-                                                        <binding destination="3qO-F1-Tqi" name="value" keyPath="arrangedObjects.reflector" id="OGS-pd-TY3"/>
-                                                    </connections>
+                                                    <prototypeCellViews>
+                                                        <tableCellView id="Dq1-o7-qrH">
+                                                            <rect key="frame" x="1" y="1" width="72" height="17"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="mfa-SF-tPo">
+                                                                    <rect key="frame" x="-2" y="0.0" width="76" height="17"/>
+                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" id="3w7-wp-A8A">
+                                                                        <customFormatter key="formatter" id="PvT-2M-SY3" customClass="BTRDestinationCallFormatter"/>
+                                                                        <font key="font" metaFont="fixedUser" size="11"/>
+                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                    <connections>
+                                                                        <binding destination="Dq1-o7-qrH" name="value" keyPath="objectValue.reflector" id="fb8-9k-qIE"/>
+                                                                    </connections>
+                                                                </textField>
+                                                            </subviews>
+                                                            <constraints>
+                                                                <constraint firstItem="mfa-SF-tPo" firstAttribute="centerX" secondItem="Dq1-o7-qrH" secondAttribute="centerX" id="JuB-0R-qui"/>
+                                                                <constraint firstItem="mfa-SF-tPo" firstAttribute="width" secondItem="Dq1-o7-qrH" secondAttribute="width" id="WKt-t9-f4W"/>
+                                                                <constraint firstItem="mfa-SF-tPo" firstAttribute="centerY" secondItem="Dq1-o7-qrH" secondAttribute="centerY" id="a1d-mh-cDt"/>
+                                                                <constraint firstItem="mfa-SF-tPo" firstAttribute="height" secondItem="Dq1-o7-qrH" secondAttribute="height" id="df0-hS-azg"/>
+                                                            </constraints>
+                                                            <connections>
+                                                                <outlet property="textField" destination="mfa-SF-tPo" id="NXl-AH-5f5"/>
+                                                            </connections>
+                                                        </tableCellView>
+                                                    </prototypeCellViews>
                                                 </tableColumn>
                                             </tableColumns>
                                             <connections>
+                                                <binding destination="3qO-F1-Tqi" name="content" keyPath="arrangedObjects" id="5md-w1-YER"/>
+                                                <binding destination="3qO-F1-Tqi" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="5md-w1-YER" id="tWp-Cc-FEN"/>
+                                                <binding destination="3qO-F1-Tqi" name="sortDescriptors" keyPath="sortDescriptors" previousBinding="tWp-Cc-FEN" id="iQm-fE-79q"/>
                                                 <outlet property="delegate" destination="XfG-lQ-9wD" id="9lc-LH-asI"/>
                                             </connections>
                                         </tableView>
