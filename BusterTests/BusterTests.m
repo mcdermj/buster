@@ -59,7 +59,7 @@
     NSError *error;
     BTRSlowDataCoder *testCoder = [[BTRSlowDataCoder alloc] init];
     
-    NSArray <NSString *> *corpusLines = [[NSString stringWithContentsOfURL:[[NSBundle bundleForClass:[self class]] URLForResource:@"aprschecksumcorpus" withExtension:@"txt"] encoding:NSASCIIStringEncoding error:&error] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    NSArray <NSString *> *corpusLines = [[NSString stringWithContentsOfURL:[[NSBundle bundleForClass:[self class]] URLForResource:@"aprschecksumcorpus" withExtension:@"txt"] encoding:NSASCIIStringEncoding error:&error] componentsSeparatedByString:@"\n"];
 
     for(NSString *line in corpusLines) {
         if([line isEqualToString:@""])

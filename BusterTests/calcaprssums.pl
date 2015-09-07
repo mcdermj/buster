@@ -4,7 +4,6 @@ while(<STDIN>) {
 	my $crc = 0xFFFF;
 
 	chomp;
-	chop;
 
 	for(my $j = 0; $j < length $_; ++$j) {
 		my $ch = ord(substr($_, $j, 1)) & 0xFF;
