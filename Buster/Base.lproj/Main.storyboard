@@ -469,6 +469,7 @@
                                                         <string key="NSPredicateFormat">myCall contains[cd] $value</string>
                                                     </dictionary>
                                                 </binding>
+                                                <outlet property="delegate" destination="XfG-lQ-9wD" id="PWJ-wH-Cni"/>
                                             </connections>
                                         </searchField>
                                         <scrollView focusRingType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ofW-7P-voU" userLabel="Heard List Table">

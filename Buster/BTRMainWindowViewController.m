@@ -19,7 +19,8 @@
 
 #import "BTRMainWindowViewController.h"
 
-#import "BTRApplication.h"
+#import "BTRAppDelegate.h"
+#import "MASShortcut.h"
 #import "BTRDataEngine.h"
 #import "BTRSlowDataCoder.h"
 #import "BTRAudioHandler.h"
@@ -150,6 +151,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self.view.window makeFirstResponder:self.view];
+    self.view.window.initialFirstResponder = self.view;
+    
     [BTRDataEngine sharedInstance].delegate = self;
     
     [self.reflectorTableView registerForDraggedTypes:@[ @"net.nh6z.Dummy.reflector" ]];
@@ -158,14 +162,6 @@
     self.heardTableView.delegate = self;
     self.heardTableController.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"time" ascending:NO] ];
     
-    [[NSNotificationCenter defaultCenter] addObserverForName:BTRTxKeyDown object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
-        [self startTx];
-    }];
-    
-    [[NSNotificationCenter defaultCenter] addObserverForName:BTRTxKeyUp object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
-        [self endTx];
-    }];
-            
     [self.txButton setPeriodicDelay:.1f interval:.1f];
     self.txButtonState = NSOffState;
     
@@ -267,9 +263,10 @@
 #pragma mark - Text Editing Control
 
 -(BOOL)control:(NSControl *)control textShouldEndEditing:(NSText *)fieldEditor {
-    
     dispatch_async(dispatch_get_main_queue(), ^{
-        [control.window makeFirstResponder:nil];
+        BOOL result = [control.window makeFirstResponder:self.view];
+        if(result == NO)
+            NSLog(@"Would not resign first responder");
     });
     return YES;
 }
@@ -347,4 +344,21 @@
     cell.textColor = entry[@"color"];
 }
 
+-(void)keyDown:(NSEvent *)theEvent {
+    BTRAppDelegate *delegate = [NSApp delegate];
+    
+    if(theEvent.keyCode == delegate.txKeyCode.keyCode &&
+       ![self.view.window.firstResponder isKindOfClass:[NSTextView class]])
+        if(!theEvent.isARepeat)
+            [self startTx];
+}
+
+-(void)keyUp:(NSEvent *)theEvent {
+    BTRAppDelegate *delegate = [NSApp delegate];
+
+    if(theEvent.keyCode == delegate.txKeyCode.keyCode &&
+       ![self.view.window.firstResponder isKindOfClass:[NSTextView class]])
+        if(!theEvent.isARepeat)
+            [self endTx];
+}
 @end
