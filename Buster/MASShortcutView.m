@@ -59,7 +59,7 @@ static const CGFloat MASButtonFontSize = 11;
     _shortcutValidator = [MASShortcutValidator sharedValidator];
     _enabled = YES;
     _showsDeleteButton = YES;
-	_acceptsFirstResponder = NO;
+	_acceptsFirstResponder = YES;
     [self resetShortcutCellStyle];
 }
 

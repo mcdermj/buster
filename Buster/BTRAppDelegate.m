@@ -27,8 +27,6 @@
 #import "BTRSlowDataCoder.h"
 #import "BTRAudioHandler.h"
 
-#import "BTRDPlusLink.h"
-
 @interface BTRAppDelegate () 
 @end
 
