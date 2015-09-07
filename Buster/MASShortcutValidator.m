@@ -14,39 +14,12 @@
 
 - (BOOL) isShortcutValid: (MASShortcut*) shortcut
 {
-    NSUInteger keyCode = [shortcut keyCode];
     NSUInteger modifiers = [shortcut modifierFlags];
-
-    // Allow any function key with any combination of modifiers
-    BOOL includesFunctionKey = ((keyCode == kVK_F1) || (keyCode == kVK_F2) || (keyCode == kVK_F3) || (keyCode == kVK_F4) ||
-                                (keyCode == kVK_F5) || (keyCode == kVK_F6) || (keyCode == kVK_F7) || (keyCode == kVK_F8) ||
-                                (keyCode == kVK_F9) || (keyCode == kVK_F10) || (keyCode == kVK_F11) || (keyCode == kVK_F12) ||
-                                (keyCode == kVK_F13) || (keyCode == kVK_F14) || (keyCode == kVK_F15) || (keyCode == kVK_F16) ||
-                                (keyCode == kVK_F17) || (keyCode == kVK_F18) || (keyCode == kVK_F19) || (keyCode == kVK_F20));
-    if (includesFunctionKey) return YES;
-
-    // Do not allow any other key without modifiers
-    BOOL hasModifierFlags = (modifiers > 0);
-    if (!hasModifierFlags) return NO;
-
-    // Allow any hotkey containing Control or Command modifier
-    BOOL includesCommand = ((modifiers & NSCommandKeyMask) > 0);
-    BOOL includesControl = ((modifiers & NSControlKeyMask) > 0);
-    if (includesCommand || includesControl) return YES;
-
-    // Allow Option key only in selected cases
-    BOOL includesOption = ((modifiers & NSAlternateKeyMask) > 0);
-    if (includesOption) {
-
-        // Always allow Option-Space and Option-Escape because they do not have any bind system commands
-        if ((keyCode == kVK_Space) || (keyCode == kVK_Escape)) return YES;
-
-        // Allow Option modifier with any key even if it will break the system binding
-        if (_allowAnyShortcutWithOptionModifier) return YES;
-    }
-
-    // The hotkey does not have any modifiers or violates system bindings
-    return NO;
+    
+    if(modifiers != 0)
+        return NO;
+    
+    return YES;
 }
 
 - (BOOL) isShortcut: (MASShortcut*) shortcut alreadyTakenInMenu: (NSMenu*) menu explanation: (NSString**) explanation

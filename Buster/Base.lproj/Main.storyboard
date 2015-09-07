@@ -318,7 +318,7 @@
                                     <rect key="frame" x="1" y="1" width="388" height="43"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <customView translatesAutoresizingMaskIntoConstraints="NO" id="xt6-wQ-qOz" customClass="MASShortcutView">
+                                        <customView focusRingType="none" translatesAutoresizingMaskIntoConstraints="NO" id="xt6-wQ-qOz" customClass="MASShortcutView">
                                             <rect key="frame" x="111" y="14" width="163" height="19"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="163" id="fYB-Lt-DaP"/>
