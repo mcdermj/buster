@@ -23,6 +23,9 @@
 		095249021B6DC79B0062F1A5 /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = 095249011B6DC79B0062F1A5 /* Credits.html */; };
 		0954911B1B64B5B600A57FD2 /* BTRGeneralPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0954911A1B64B5B600A57FD2 /* BTRGeneralPreferencesController.m */; };
 		095544A71B71756F00090DB7 /* BTRVocoderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095544A61B71756F00090DB7 /* BTRVocoderViewController.m */; };
+		095963311B980C12003CC8A1 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 095963301B980C12003CC8A1 /* MapKit.framework */; };
+		095963341B9819AD003CC8A1 /* BTRMapPopupController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095963331B9819AD003CC8A1 /* BTRMapPopupController.m */; settings = {ASSET_TAGS = (); }; };
+		095963361B982FF8003CC8A1 /* BTRMapPopupController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 095963351B982FF8003CC8A1 /* BTRMapPopupController.xib */; settings = {ASSET_TAGS = (); }; };
 		095C3FAF1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c in Sources */ = {isa = PBXBuildFile; fileRef = 095C3FAD1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c */; };
 		096BFCDD1B7DEC4000C94260 /* BTRIPFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 096BFCDC1B7DEC4000C94260 /* BTRIPFormatter.m */; };
 		096F2B5A1B58C06E00766A95 /* BTRCallFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 096F2B591B58C06E00766A95 /* BTRCallFormatter.m */; };
@@ -109,6 +112,10 @@
 		0954911A1B64B5B600A57FD2 /* BTRGeneralPreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRGeneralPreferencesController.m; sourceTree = "<group>"; };
 		095544A51B71756F00090DB7 /* BTRVocoderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRVocoderViewController.h; sourceTree = "<group>"; };
 		095544A61B71756F00090DB7 /* BTRVocoderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRVocoderViewController.m; sourceTree = "<group>"; };
+		095963301B980C12003CC8A1 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		095963321B9819AD003CC8A1 /* BTRMapPopupController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRMapPopupController.h; sourceTree = "<group>"; };
+		095963331B9819AD003CC8A1 /* BTRMapPopupController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRMapPopupController.m; sourceTree = "<group>"; };
+		095963351B982FF8003CC8A1 /* BTRMapPopupController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BTRMapPopupController.xib; sourceTree = "<group>"; };
 		095C3FAD1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "TPCircularBuffer+AudioBufferList.c"; sourceTree = "<group>"; };
 		095C3FAE1B5DA04200307A7C /* TPCircularBuffer+AudioBufferList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TPCircularBuffer+AudioBufferList.h"; sourceTree = "<group>"; };
 		096BFCDB1B7DEC4000C94260 /* BTRIPFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRIPFormatter.h; sourceTree = "<group>"; };
@@ -170,6 +177,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				095963311B980C12003CC8A1 /* MapKit.framework in Frameworks */,
 				09E36AC71B9B94570055BF46 /* HockeySDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -187,6 +195,7 @@
 		093B9AE81B50E2D400C2ABD0 = {
 			isa = PBXGroup;
 			children = (
+				095963301B980C12003CC8A1 /* MapKit.framework */,
 				09E36AC81B9B94770055BF46 /* HockeySDK.framework */,
 				09E36AC61B9B94570055BF46 /* HockeySDK.framework */,
 				093B9AF31B50E2D500C2ABD0 /* Buster */,
@@ -236,6 +245,9 @@
 				0954911A1B64B5B600A57FD2 /* BTRGeneralPreferencesController.m */,
 				093B9AFB1B50E2D500C2ABD0 /* BTRMainWindowViewController.h */,
 				093B9AFC1B50E2D500C2ABD0 /* BTRMainWindowViewController.m */,
+				095963321B9819AD003CC8A1 /* BTRMapPopupController.h */,
+				095963331B9819AD003CC8A1 /* BTRMapPopupController.m */,
+				095963351B982FF8003CC8A1 /* BTRMapPopupController.xib */,
 				098B10EE1B65FB22002C7A3B /* BTRDataEngine.h */,
 				098B10EF1B65FB22002C7A3B /* BTRDataEngine.m */,
 				09E363EA1B66F46500F74DBB /* BTRSlowDataCoder.h */,
@@ -438,6 +450,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				095963361B982FF8003CC8A1 /* BTRMapPopupController.xib in Resources */,
 				093B9AFF1B50E2D500C2ABD0 /* Images.xcassets in Resources */,
 				095249021B6DC79B0062F1A5 /* Credits.html in Resources */,
 				09A994DE1B71EAD50061A929 /* BTRSerialVocoderView.xib in Resources */,
@@ -484,6 +497,7 @@
 			files = (
 				0908EF811B8388B5007B76F5 /* BTRLinkDriver.m in Sources */,
 				09A5FDEE1B5794FA00AE9E1C /* TPCircularBuffer.c in Sources */,
+				095963341B9819AD003CC8A1 /* BTRMapPopupController.m in Sources */,
 				09A994D71B71D03B0061A929 /* BTRNetworkVocoderViewController.m in Sources */,
 				09A994CF1B712E370061A929 /* MASShortcut.m in Sources */,
 				09A994C61B707C8D0061A929 /* BTRDV3KNetworkVocoder.m in Sources */,
@@ -720,7 +734,9 @@
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CODE_SIGN_ENTITLEMENTS = Buster/Buster.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer: Jeremy McDermond (3R68W65G4N)";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/HockeySDK-Mac",
@@ -754,7 +770,9 @@
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CODE_SIGN_ENTITLEMENTS = Buster/Buster.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer: Jeremy McDermond (3R68W65G4N)";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_TESTABILITY = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

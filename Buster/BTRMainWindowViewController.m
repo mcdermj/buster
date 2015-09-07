@@ -25,6 +25,9 @@
 #import "BTRDataEngine.h"
 #import "BTRSlowDataCoder.h"
 #import "BTRAudioHandler.h"
+#import "BTRMapPopupController.h"
+
+@import MapKit;
 
 @interface BTRMainWindowViewController ()
 
@@ -32,36 +35,33 @@
 @property (nonatomic) NSInteger txButtonState;
 @property (nonatomic) NSSpeechSynthesizer *speechSynth;
 @property (nonatomic) CLGeocoder *geocoder;
+@property (nonatomic, readwrite) NSMutableArray <NSMutableDictionary *> *qsoList;
+@property (nonatomic) NSPopover *mapPopover;
 
 @end
 
 @implementation BTRMainWindowViewController
 
--(BOOL)updateQsoId:(NSNumber *)streamId usingBlock:(void(^)(NSMutableDictionary *, NSUInteger))block {
-    NSPredicate *currentFilterPredicate = self.heardTableController.filterPredicate;
-    self.heardTableController.filterPredicate = nil;
-    
-    NSUInteger qsoIndex = [self.heardTableController.arrangedObjects indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
++(NSUInteger)findQsoId:(NSNumber *)streamId inArray:(NSArray *)array {
+    return [array indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
         NSDictionary *entry = (NSDictionary *) obj;
-        if([((NSNumber *)entry[@"streamId"]) isEqualToNumber:streamId]) {
+        if(streamId && [((NSNumber *)entry[@"streamId"]) isEqualToNumber:streamId]) {
             *stop = YES;
             return YES;
         }
         
         return NO;
     }];
-    
+}
+
+-(BOOL)updateQsoId:(NSNumber *)streamId usingBlock:(void(^)(NSMutableDictionary *, NSUInteger))block {
+    NSUInteger qsoIndex = [BTRMainWindowViewController findQsoId:streamId inArray:self.qsoList];
     if(qsoIndex == NSNotFound)
         return NO;
+
+    NSMutableDictionary *qso = self.qsoList[qsoIndex];
+    block(qso, qsoIndex);
     
-    NSDictionary *qso = self.heardTableController.arrangedObjects[qsoIndex];
-    NSMutableDictionary *newQso = [NSMutableDictionary dictionaryWithDictionary:qso];
-    block(newQso, qsoIndex);
-    
-    [self.heardTableController removeObject:qso];
-    [self.heardTableController addObject:newQso];
-    
-    self.heardTableController.filterPredicate = currentFilterPredicate;
     return YES;
 }
 
@@ -86,8 +86,11 @@
     NSNumber *streamId = header[@"streamId"];
     
     if(![self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {}]) {
-        [self.heardTableController addObject:header];
+        if(self.mapPopover.isShown)
+           ((BTRMapPopupController *)self.mapPopover.contentViewController).suppressClose = YES;
 
+        [self.heardTableController addObject:header];
+        
         BTRMainWindowViewController __weak *weakSelf = self;
         self.qsoTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
         dispatch_source_set_timer(self.qsoTimer, dispatch_time(DISPATCH_TIME_NOW, 100ull * NSEC_PER_MSEC), 100ull * NSEC_PER_MSEC, 10ull * NSEC_PER_MSEC);
@@ -101,18 +104,22 @@
 }
 
 -(void)streamDidEnd:(NSNumber *)streamId atTime:(NSDate *)time {
-        dispatch_source_cancel(self.qsoTimer);
-        
-        [self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
-            NSDate *headerTime = time;
-            qso[@"duration"] = [NSNumber numberWithDouble:[headerTime timeIntervalSinceDate:qso[@"time"]]];
-            if([qso[@"direction"] isEqualToString:@"TX"])
-                qso[@"color"] = [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.5];
-            else
-                qso[@"color"] = [NSColor blackColor];
-        }];
-        
-        self.statusLED.image = [NSImage imageNamed:@"Gray LED"];
+    dispatch_source_cancel(self.qsoTimer);
+    
+    [self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
+        NSDate *headerTime = time;
+        qso[@"duration"] = [NSNumber numberWithDouble:[headerTime timeIntervalSinceDate:qso[@"time"]]];
+        if([qso[@"direction"] isEqualToString:@"TX"])
+            qso[@"color"] = [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.5];
+        else
+            qso[@"color"] = [NSColor blackColor];
+    }];
+    
+    NSUInteger qsoIndex = [BTRMainWindowViewController findQsoId:streamId inArray:self.heardTableController.arrangedObjects];
+    NSAssert(qsoIndex != NSNotFound, @"QSO not found in table at end of stream");
+    [self resetColorForRowView:[self.heardTableView rowViewAtRow:qsoIndex makeIfNecessary:NO] atRow:qsoIndex];
+
+    self.statusLED.image = [NSImage imageNamed:@"Gray LED"];
 }
 
 -(void)slowDataReceived:(NSString *)slowData forStreamId:(NSNumber *)streamId {
@@ -122,8 +129,15 @@
 }
 
 -(void)locationReceived:(CLLocation *)location forStreamId:(NSNumber *)streamId {
+    NSParameterAssert(location != nil);
+    
     [self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
+        CLLocation *oldLocation = qso[@"location"];
         qso[@"location"] = location;
+
+        if(oldLocation && [oldLocation distanceFromLocation:qso[@"location"]] < 100.0)
+            return;
+
         qso[@"city"] = @"Searching city database…";
         [self.geocoder reverseGeocodeLocation:location completionHandler:^(NSArray <CLPlacemark *> *placemarks, NSError *error) {
             if(!placemarks) {
@@ -152,6 +166,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.qsoList = [[NSMutableArray alloc] init];
+    
+    self.mapPopover = [[NSPopover alloc] init];
+    self.mapPopover.contentViewController = [[BTRMapPopupController alloc] initWithNibName:nil bundle:nil];
+    self.mapPopover.behavior = NSPopoverBehaviorTransient;
+    self.mapPopover.delegate = (BTRMapPopupController *) self.mapPopover.contentViewController;
     [self bind:@"txKeyCode" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.shortcutValue" options:@{NSValueTransformerNameBindingOption: MASDictionaryTransformerName}];
     
     [self.view.window makeFirstResponder:self.view];
@@ -170,11 +190,12 @@
     
     self.speechSynth = [[NSSpeechSynthesizer alloc] initWithVoice:@"com.apple.speech.synthesis.voice.Vicki"];
     self.geocoder = [[CLGeocoder alloc] init];
+    NSAssert(self.geocoder != nil, @"Geocoder did not initialize");
 }
 
 -(void)destinationDidLink:(NSString *)destination {
     self.repeaterInfo.stringValue = [NSString stringWithFormat:@"Linked to %@", destination];
-    [self.speechSynth startSpeakingString:self.repeaterInfo.stringValue];
+    [self.speechSynth startSpeakingString:[NSString stringWithFormat:@"Linked to [[rate -60.0]][[char LTRL]] %@ [[char NORM]][[rate +60.0]]", destination]];
     
     NSDockTile *dockTile = [NSApplication sharedApplication].dockTile;
     dockTile.badgeLabel = destination;
@@ -204,6 +225,24 @@
 }
 -(void)destinationDidConnect:(NSString *)destination {
     self.repeaterInfo.stringValue = [NSString stringWithFormat:@"Connected to %@. Attempting to establish link.", destination];
+}
+
+
+- (IBAction)doHeardDoubleClick:(id)sender {
+    NSLog(@"Got double click, row %ld column %ld", self.heardTableView.clickedRow, self.heardTableView.clickedColumn);
+    if(self.heardTableView.clickedRow < 0)
+        return;
+    
+    NSDictionary *qso = self.heardTableController.arrangedObjects[self.heardTableView.clickedRow];
+    
+    if(qso[@"location"]) {
+        MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
+        annotation.coordinate = ((CLLocation *)qso[@"location"]).coordinate;
+        ((BTRMapPopupController *)self.mapPopover.contentViewController).annotation = annotation;
+        ((BTRMapPopupController *)self.mapPopover.contentViewController).qsoId = qso[@"streamId"];
+        NSView *clickedView = [self.heardTableView viewAtColumn:[self.heardTableView columnWithIdentifier:@"Location"] row:self.heardTableView.clickedRow makeIfNecessary:NO];
+        [self.mapPopover showRelativeToRect:NSMakeRect(0, 0, 300, 300) ofView:clickedView preferredEdge:NSRectEdgeMaxY];
+    }
 }
 
 
@@ -274,18 +313,13 @@
     return YES;
 }
 
-#pragma mark - Selection Control
 
-- (NSIndexSet *) tableView:(NSTableView *)tableView selectionIndexesForProposedSelection:(NSIndexSet *)proposedSelectionIndexes {
-    if(tableView == self.heardTableView)
-        return nil;
-    
-    return proposedSelectionIndexes;
-}
-
-#pragma mark - Drag and Drop support
+#pragma mark - Reflector Drag and Drop support
 
 - (id <NSPasteboardWriting>) tableView:(NSTableView *)tableView pasteboardWriterForRow:(NSInteger)row {
+    if(tableView != self.reflectorTableView)
+        return nil;
+
     NSDictionary *reflector = self.reflectorTableController.arrangedObjects[row];
     
     NSPasteboardItem *item = [[NSPasteboardItem alloc] init];
@@ -295,6 +329,9 @@
 }
 
 -(NSDragOperation) tableView:(NSTableView *)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)dropOperation {
+    if(tableView != self.reflectorTableView)
+        return NO;
+
     [tableView setDropRow:row dropOperation:NSTableViewDropAbove];
     return NSDragOperationMove;
 }
@@ -336,15 +373,38 @@
 
 #pragma mark - Heard List QSO Coloring
 
--(void)tableView:(NSTableView *)tableView willDisplayCell:(id)cellObj forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+-(void)resetColorForRowView:(NSTableRowView *)rowView atRow:(NSUInteger)row {
+    for(int i = 0; i < rowView.numberOfColumns; ++i)
+        ((NSTableCellView *)[rowView viewAtColumn:i]).textField.textColor = self.heardTableController.arrangedObjects[row][@"color"];
+}
+
+-(void)tableView:(NSTableView *)tableView didAddRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
     if(tableView != self.heardTableView)
         return;
+
+    [self resetColorForRowView:rowView atRow:row];
     
-    NSTextFieldCell *cell = cellObj;
+    if(self.mapPopover.isShown) {
+        NSUInteger popoverRow = [BTRMainWindowViewController findQsoId:((BTRMapPopupController *)self.mapPopover.contentViewController).qsoId inArray:self.heardTableController.arrangedObjects];
+        
+        NSAssert(popoverRow != NSNotFound, @"QSO ID %ld not found in popover relocation", popoverRow);
+        
+        NSView *popoverAnchorView = [self.heardTableView viewAtColumn:[self.heardTableView columnWithIdentifier:@"Location"] row:popoverRow makeIfNecessary:NO];
+        if(popoverAnchorView && popoverRow == row) {
+            [self.mapPopover showRelativeToRect:NSMakeRect(0, 0, 300, 300) ofView:popoverAnchorView preferredEdge:NSRectEdgeMaxY];
+            ((BTRMapPopupController *)self.mapPopover.contentViewController).suppressClose = NO;
+        }
+
+    }
+}
+
+#pragma mark - Heard List Selection Control
+
+- (NSIndexSet *) tableView:(NSTableView *)tableView selectionIndexesForProposedSelection:(NSIndexSet *)proposedSelectionIndexes {
+    if(tableView == self.heardTableView)
+        return nil;
     
-    NSDictionary *entry = self.heardTableController.arrangedObjects[row];
-    
-    cell.textColor = entry[@"color"];
+    return proposedSelectionIndexes;
 }
 
 -(void)keyDown:(NSEvent *)theEvent {
