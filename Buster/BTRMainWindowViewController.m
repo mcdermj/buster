@@ -19,7 +19,9 @@
 
 #import "BTRMainWindowViewController.h"
 
-#import "BTRApplication.h"
+#import "BTRAppDelegate.h"
+#import "MASShortcut.h"
+#import "MASDictionaryTransformer.h"
 #import "BTRDataEngine.h"
 #import "BTRSlowDataCoder.h"
 #import "BTRAudioHandler.h"
@@ -170,6 +172,10 @@
     self.mapPopover.contentViewController = [[BTRMapPopupController alloc] initWithNibName:nil bundle:nil];
     self.mapPopover.behavior = NSPopoverBehaviorTransient;
     self.mapPopover.delegate = (BTRMapPopupController *) self.mapPopover.contentViewController;
+    [self bind:@"txKeyCode" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.shortcutValue" options:@{NSValueTransformerNameBindingOption: MASDictionaryTransformerName}];
+    
+    [self.view.window makeFirstResponder:self.view];
+    self.view.window.initialFirstResponder = self.view;
     
     [BTRDataEngine sharedInstance].delegate = self;
     
@@ -179,14 +185,6 @@
     self.heardTableView.delegate = self;
     self.heardTableController.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"time" ascending:NO] ];
     
-    [[NSNotificationCenter defaultCenter] addObserverForName:BTRTxKeyDown object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
-        [self startTx];
-    }];
-    
-    [[NSNotificationCenter defaultCenter] addObserverForName:BTRTxKeyUp object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
-        [self endTx];
-    }];
-            
     [self.txButton setPeriodicDelay:.1f interval:.1f];
     self.txButtonState = NSOffState;
     
@@ -203,7 +201,7 @@
     dockTile.badgeLabel = destination;
     [dockTile display];
     
-    
+    self.txButton.enabled = YES;
 }
 
 -(void)destinationDidUnlink:(NSString *)destination {
@@ -213,6 +211,8 @@
     NSDockTile *dockTile = [NSApplication sharedApplication].dockTile;
     dockTile.badgeLabel = nil;
     [dockTile display];
+    
+    self.txButton.enabled = NO;
 }
 
 -(void)destinationDidError:(NSString *)destination error:(NSError *)error {
@@ -279,7 +279,11 @@
 }
 
 -(void)startTx {
-    [self.view.window makeFirstResponder:nil];
+    if(![BTRDataEngine sharedInstance].network) {
+        NSBeep();
+        return;
+    }
+    [self.view.window makeFirstResponder:self.view];
     
     [BTRDataEngine sharedInstance].audio.xmit = YES;    
 }
@@ -301,9 +305,10 @@
 #pragma mark - Text Editing Control
 
 -(BOOL)control:(NSControl *)control textShouldEndEditing:(NSText *)fieldEditor {
-    
     dispatch_async(dispatch_get_main_queue(), ^{
-        [control.window makeFirstResponder:nil];
+        BOOL result = [control.window makeFirstResponder:self.view];
+        if(result == NO)
+            NSLog(@"Would not resign first responder");
     });
     return YES;
 }
@@ -402,4 +407,17 @@
     return proposedSelectionIndexes;
 }
 
+-(void)keyDown:(NSEvent *)theEvent {
+    if(theEvent.keyCode == self.txKeyCode.keyCode &&
+       ![self.view.window.firstResponder isKindOfClass:[NSTextView class]])
+        if(!theEvent.isARepeat)
+            [self startTx];
+}
+
+-(void)keyUp:(NSEvent *)theEvent {
+    if(theEvent.keyCode == self.txKeyCode.keyCode &&
+       ![self.view.window.firstResponder isKindOfClass:[NSTextView class]])
+        if(!theEvent.isARepeat)
+            [self endTx];
+}
 @end

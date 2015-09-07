@@ -23,18 +23,13 @@
 
 #import "BTRDataEngine.h"
 #import "BTRDV3KSerialVocoder.h"
-#import "MASDictionaryTransformer.h"
 #import "BTRSlowDataCoder.h"
 #import "BTRAudioHandler.h"
-
-#import "BTRDPlusLink.h"
 
 @interface BTRAppDelegate () 
 @end
 
 @implementation BTRAppDelegate
-
-@synthesize txKeyCode;
 
 -(void) awakeFromNib {
     NSURL *defaultPrefsFile = [[NSBundle mainBundle]
@@ -51,9 +46,6 @@
 
     BTRDataEngine *engine = [BTRDataEngine sharedInstance];
     [engine.slowData bind:@"message" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.slowDataMessage" options:nil];
-    
-        
-    [self bind:@"txKeyCode" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.shortcutValue" options:@{NSValueTransformerNameBindingOption: MASDictionaryTransformerName}];
     
     NSString *inputUid = [[NSUserDefaults standardUserDefaults] stringForKey:@"inputAudioDevice"];
     if(!inputUid) {

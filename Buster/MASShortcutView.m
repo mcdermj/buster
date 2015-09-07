@@ -117,7 +117,7 @@ static const CGFloat MASButtonFontSize = 11;
 - (void)setRecording:(BOOL)flag
 {
     // Only one recorder can be active at the moment
-    static MASShortcutView *currentRecorder = nil;
+    static MASShortcutView __weak *currentRecorder = nil;
     if (flag && (currentRecorder != self)) {
         currentRecorder.recording = NO;
         currentRecorder = flag ? self : nil;
@@ -397,7 +397,7 @@ void *kUserDataHint = &kUserDataHint;
     
     static id eventMonitor = nil;
     if (shouldActivate) {
-        __unsafe_unretained MASShortcutView *weakSelf = self;
+        __weak MASShortcutView *weakSelf = self;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wassign-enum"
         NSEventMask eventMask = (NSKeyDownMask | NSFlagsChangedMask);
@@ -428,10 +428,10 @@ void *kUserDataHint = &kUserDataHint;
             else {
                 // Verify possible shortcut
                 if (shortcut.keyCodeString.length > 0) {
-                    if ([_shortcutValidator isShortcutValid:shortcut]) {
+                    if ([weakSelf.shortcutValidator isShortcutValid:shortcut]) {
                         // Verify that shortcut is not used
                         NSString *explanation = nil;
-                        if ([_shortcutValidator isShortcutAlreadyTakenBySystem:shortcut explanation:&explanation]) {
+                        if ([weakSelf.shortcutValidator isShortcutAlreadyTakenBySystem:shortcut explanation:&explanation]) {
                             // Prevent cancel of recording when Alert window is key
                             [weakSelf activateResignObserver:NO];
                             [weakSelf activateEventMonitoring:NO];

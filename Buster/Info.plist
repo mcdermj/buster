@@ -30,6 +30,6 @@ Released under the terms of the GNU General Public License.</string>
 	<key>NSMainStoryboardFile</key>
 	<string>Main</string>
 	<key>NSPrincipalClass</key>
-	<string>BTRApplication</string>
+	<string>NSApplication</string>
 </dict>
 </plist>

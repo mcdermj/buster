@@ -21,7 +21,6 @@
 		093B9B0E1B50E2D500C2ABD0 /* BusterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B0D1B50E2D500C2ABD0 /* BusterTests.m */; };
 		093B9B1D1B52DBA000C2ABD0 /* BTRDV3KVocoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 093B9B1C1B52DBA000C2ABD0 /* BTRDV3KVocoder.m */; };
 		095249021B6DC79B0062F1A5 /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = 095249011B6DC79B0062F1A5 /* Credits.html */; };
-		0954910B1B64A78100A57FD2 /* BTRApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 0954910A1B64A78100A57FD2 /* BTRApplication.m */; };
 		0954911B1B64B5B600A57FD2 /* BTRGeneralPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0954911A1B64B5B600A57FD2 /* BTRGeneralPreferencesController.m */; };
 		095544A71B71756F00090DB7 /* BTRVocoderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095544A61B71756F00090DB7 /* BTRVocoderViewController.m */; };
 		095963311B980C12003CC8A1 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 095963301B980C12003CC8A1 /* MapKit.framework */; };
@@ -109,8 +108,6 @@
 		093B9B1B1B52DBA000C2ABD0 /* BTRDV3KVocoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRDV3KVocoder.h; sourceTree = "<group>"; };
 		093B9B1C1B52DBA000C2ABD0 /* BTRDV3KVocoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRDV3KVocoder.m; sourceTree = "<group>"; };
 		095249011B6DC79B0062F1A5 /* Credits.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Credits.html; sourceTree = "<group>"; };
-		095491091B64A78100A57FD2 /* BTRApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = BTRApplication.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		0954910A1B64A78100A57FD2 /* BTRApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = BTRApplication.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		095491191B64B5B600A57FD2 /* BTRGeneralPreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRGeneralPreferencesController.h; sourceTree = "<group>"; };
 		0954911A1B64B5B600A57FD2 /* BTRGeneralPreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRGeneralPreferencesController.m; sourceTree = "<group>"; };
 		095544A51B71756F00090DB7 /* BTRVocoderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRVocoderViewController.h; sourceTree = "<group>"; };
@@ -230,8 +227,6 @@
 				09DFDA9B1B8D300B00D00030 /* BTRDataEngineDelegate.h */,
 				09DFDA9A1B8D191900D00030 /* BTRLinkDriverDelegate.h */,
 				09E589CB1B82880B00A962B5 /* BTRLinkDriverProtocol.h */,
-				095491091B64A78100A57FD2 /* BTRApplication.h */,
-				0954910A1B64A78100A57FD2 /* BTRApplication.m */,
 				093B9AF61B50E2D500C2ABD0 /* BTRAppDelegate.h */,
 				093B9AF71B50E2D500C2ABD0 /* BTRAppDelegate.m */,
 				096F2B581B58C06E00766A95 /* BTRCallFormatter.h */,
@@ -520,7 +515,6 @@
 				09A5FDF11B57956A00AE9E1C /* BTRAudioHandler.m in Sources */,
 				093B9AF81B50E2D500C2ABD0 /* BTRAppDelegate.m in Sources */,
 				09796FF21B800B5A0043089D /* BTRDPlusLink.m in Sources */,
-				0954910B1B64A78100A57FD2 /* BTRApplication.m in Sources */,
 				0908EF851B84FDBE007B76F5 /* BTRDExtraLink.m in Sources */,
 				09A994CC1B712E0E0061A929 /* MASShortcutValidator.m in Sources */,
 				09A994C91B712DF40061A929 /* MASShortcutView.m in Sources */,

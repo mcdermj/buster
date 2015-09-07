@@ -17,10 +17,6 @@
 
 @implementation BTRGeneralPreferencesController
 
--(void) setShortcutValue:(MASShortcut *)value {
-    _shortcutValue = value;    
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.shortcutView bind:@"shortcutValue" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.shortcutValue" options:@{NSValueTransformerNameBindingOption: MASDictionaryTransformerName}];
