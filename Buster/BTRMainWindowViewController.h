@@ -19,6 +19,8 @@
 
 #import "BTRDataEngineDelegate.h"
 
+@class MASShortcut;
+
 @interface BTRMainWindowViewController : NSViewController <NSTableViewDelegate, NSTableViewDataSource, NSControlTextEditingDelegate, BTRDataEngineDelegate>
 
 @property (nonatomic, strong) IBOutlet NSArrayController *heardTableController;
@@ -28,6 +30,7 @@
 @property (nonatomic, weak) IBOutlet NSImageView *statusLED;
 @property (nonatomic, weak) IBOutlet NSButton *txButton;
 @property (nonatomic, weak) IBOutlet NSTextField *repeaterInfo;
+@property MASShortcut *txKeyCode;
 
 - (IBAction)doLink:(id)sender;
 - (IBAction)addReflector:(id)sender;

@@ -21,6 +21,7 @@
 
 #import "BTRAppDelegate.h"
 #import "MASShortcut.h"
+#import "MASDictionaryTransformer.h"
 #import "BTRDataEngine.h"
 #import "BTRSlowDataCoder.h"
 #import "BTRAudioHandler.h"
@@ -150,6 +151,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self bind:@"txKeyCode" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.shortcutValue" options:@{NSValueTransformerNameBindingOption: MASDictionaryTransformerName}];
     
     [self.view.window makeFirstResponder:self.view];
     self.view.window.initialFirstResponder = self.view;
@@ -345,18 +348,14 @@
 }
 
 -(void)keyDown:(NSEvent *)theEvent {
-    BTRAppDelegate *delegate = [NSApp delegate];
-    
-    if(theEvent.keyCode == delegate.txKeyCode.keyCode &&
+    if(theEvent.keyCode == self.txKeyCode.keyCode &&
        ![self.view.window.firstResponder isKindOfClass:[NSTextView class]])
         if(!theEvent.isARepeat)
             [self startTx];
 }
 
 -(void)keyUp:(NSEvent *)theEvent {
-    BTRAppDelegate *delegate = [NSApp delegate];
-
-    if(theEvent.keyCode == delegate.txKeyCode.keyCode &&
+    if(theEvent.keyCode == self.txKeyCode.keyCode &&
        ![self.view.window.firstResponder isKindOfClass:[NSTextView class]])
         if(!theEvent.isARepeat)
             [self endTx];
