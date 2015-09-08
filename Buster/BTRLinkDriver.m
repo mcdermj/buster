@@ -412,8 +412,6 @@
 
     switch(frame->type) {
         case 0x10: {
-            [self.qsoTimer ping];
-            
             uint16 calculatedSum = dstar_calc_sum(&frame->header);
             if(self.hasReliableChecksum && frame->header.sum != 0xFFFF && frame->header.sum != calculatedSum) {
                 NSLog(@"Header checksum mismatch: expected 0x%04hX calculated 0x%04hX", frame->header.sum, calculatedSum);
@@ -424,8 +422,11 @@
                ![self.linkTarget isEqualToString:[NSString stringWithCallsign:frame->header.rpt2Call]])
                 return;
             
-            if(self.rxStreamId)
+            if(self.rxStreamId) {
+                if(self.rxStreamId == frame->id)
+                    [self.qsoTimer ping];
                 return;
+            }
             
             //  XXX There can be null values here!
             NSDictionary *header = @{
