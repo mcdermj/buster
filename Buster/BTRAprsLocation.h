@@ -1,5 +1,5 @@
 //
-//  BTRSlowDataDelegate.h
+//  BTRAprsLocation.h
 //
 //  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
 
@@ -17,11 +17,14 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-@class BTRAprsLocation;
+@import CoreLocation;
+@import MapKit;
 
-@protocol BTRSlowDataDelegate <NSObject>
+@interface BTRAprsLocation : NSObject <MKAnnotation>
 
--(void)slowDataReceived:(NSString *)slowData forStreamId:(NSNumber *)streamId;
--(void)locationReceived:(BTRAprsLocation *)location forStreamId:(NSNumber *)streamId;
+@property (nonatomic) CLLocation *location;
+
+-(id)initWithNmeaSentence:(NSString *)nmeaSentence;
+-(id)initWithAprsPacket:(NSString *)aprsString;
 
 @end

@@ -19,7 +19,7 @@
 
 #import "BTRSlowDataDelegate.h"
 
-@interface BTRSlowDataCoder : NSObject
+@interface BTRSlowDataCoder : NSObject <CLLocationManagerDelegate>
 
 -(void)addData:(void *)data streamId:(NSUInteger)streamId;
 -(const void *)getDataForSequence:(NSUInteger)sequence;

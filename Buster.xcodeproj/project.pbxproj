@@ -53,6 +53,7 @@
 		09E36AC71B9B94570055BF46 /* HockeySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09E36AC61B9B94570055BF46 /* HockeySDK.framework */; };
 		09E36AC91B9B94770055BF46 /* HockeySDK.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 09E36AC81B9B94770055BF46 /* HockeySDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		09E589CA1B7EAC1800A962B5 /* BTRDPlusAuthenticator.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E589C91B7EAC1800A962B5 /* BTRDPlusAuthenticator.m */; };
+		09F042B21B9E365D00E9F5D2 /* BTRAprsLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 09F042B11B9E365D00E9F5D2 /* BTRAprsLocation.m */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -170,6 +171,8 @@
 		09E589C81B7EAC1800A962B5 /* BTRDPlusAuthenticator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRDPlusAuthenticator.h; sourceTree = "<group>"; };
 		09E589C91B7EAC1800A962B5 /* BTRDPlusAuthenticator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRDPlusAuthenticator.m; sourceTree = "<group>"; };
 		09E589CB1B82880B00A962B5 /* BTRLinkDriverProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BTRLinkDriverProtocol.h; sourceTree = "<group>"; };
+		09F042B01B9E365D00E9F5D2 /* BTRAprsLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRAprsLocation.h; sourceTree = "<group>"; };
+		09F042B11B9E365D00E9F5D2 /* BTRAprsLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRAprsLocation.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -252,6 +255,8 @@
 				098B10EF1B65FB22002C7A3B /* BTRDataEngine.m */,
 				09E363EA1B66F46500F74DBB /* BTRSlowDataCoder.h */,
 				09E363EB1B66F46500F74DBB /* BTRSlowDataCoder.m */,
+				09F042B01B9E365D00E9F5D2 /* BTRAprsLocation.h */,
+				09F042B11B9E365D00E9F5D2 /* BTRAprsLocation.m */,
 				09A5FDEF1B57956A00AE9E1C /* BTRAudioHandler.h */,
 				09A5FDF01B57956A00AE9E1C /* BTRAudioHandler.m */,
 				093B9AFE1B50E2D500C2ABD0 /* Images.xcassets */,
@@ -503,6 +508,7 @@
 				09A994C61B707C8D0061A929 /* BTRDV3KNetworkVocoder.m in Sources */,
 				0954911B1B64B5B600A57FD2 /* BTRGeneralPreferencesController.m in Sources */,
 				09A994BA1B6DD2E40061A929 /* BTRDV3KSerialVocoder.m in Sources */,
+				09F042B21B9E365D00E9F5D2 /* BTRAprsLocation.m in Sources */,
 				09AB117B1B5A13970067B9FB /* BTRSerialVocoderViewController.m in Sources */,
 				096BFCDD1B7DEC4000C94260 /* BTRIPFormatter.m in Sources */,
 				098B10F01B65FB22002C7A3B /* BTRDataEngine.m in Sources */,
@@ -772,8 +778,8 @@
 				CODE_SIGN_IDENTITY = "Mac Developer: Jeremy McDermond (3R68W65G4N)";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
-				ENABLE_TESTABILITY = YES;
 				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/HockeySDK-Mac",
