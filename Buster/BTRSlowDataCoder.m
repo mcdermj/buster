@@ -159,13 +159,25 @@ NS_INLINE void SCRAMBLE(unsigned char *data) {
         return;
     }
     
-    // NSLog(@"Parsing GPS frame");
+    //  Discard a frame with only a newline
+    if(length == 1 && data[1] == '\n')
+        return;
     
     if(!self.gpsData)
         self.gpsData = [[NSMutableData alloc] init];
     
     [self.gpsData appendBytes:data + 1 length:length];
-    if(length < 5) {
+    
+    // No valid sentence can be over 115 bytes long and
+    // NMEA data can't be over 80 bytes long without the \r\n
+    if(self.gpsData.length > 115 ||
+       (memcmp(self.gpsData.bytes, "$GP", 3) && self.gpsData.length > 82)) {
+        NSLog(@"Run on GPS data");
+        self.gpsData = nil;
+        return;
+    }
+    
+    if(length < 5 || data[5] == '\r') {
         //  This is the last frame for this transmission
         NSString *gpsString = [[NSString alloc] initWithData:self.gpsData encoding:NSASCIIStringEncoding];
         if(gpsString == nil) {
@@ -174,7 +186,7 @@ NS_INLINE void SCRAMBLE(unsigned char *data) {
             return;
         }
         
-        if(gpsString.length < 4) {
+        if(gpsString.length < 9) {
             NSLog(@"GPS String too short: %@", gpsString);
             self.gpsData = nil;
             return;
@@ -184,7 +196,7 @@ NS_INLINE void SCRAMBLE(unsigned char *data) {
         
         NSString *gpsType = [gpsString substringToIndex:4];
         if([gpsType isEqualToString:@"$CRC"] || [gpsType isEqualToString:@"$$CR"]){
-            location = [[BTRAprsLocation alloc] initWithAprsPacket:gpsString];
+                location = [[BTRAprsLocation alloc] initWithAprsPacket:gpsString];
         } else if([gpsType isEqualToString:@"$GPG"]) {
             //  Handle GPGGA
             NSLog(@"GPGGA");
