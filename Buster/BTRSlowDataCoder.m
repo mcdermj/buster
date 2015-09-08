@@ -46,6 +46,7 @@ NS_INLINE void SCRAMBLE(unsigned char *data) {
 @property (nonatomic, getter=isTop) BOOL top;
 @property (nonatomic, readonly) CLLocationManager *locationManager;
 @property (nonatomic) CLLocation *currentLocation;
+@property (nonatomic) NSUInteger rxStreamId;
 @end
 
 @implementation BTRSlowDataCoder
@@ -54,6 +55,7 @@ NS_INLINE void SCRAMBLE(unsigned char *data) {
     self = [super init];
     if(self) {
         _top = YES;
+        _rxStreamId = 0;
         _messageData = [NSMutableData dataWithLength:20];
         memset(_messageData.mutableBytes, ' ', 20);
         if([CLLocationManager locationServicesEnabled]) {
@@ -102,6 +104,12 @@ NS_INLINE void SCRAMBLE(unsigned char *data) {
     
     NSParameterAssert(data != NULL);
     NSParameterAssert(streamId > 0);
+    
+    if(self.rxStreamId != streamId) {
+        self.rxStreamId = streamId;
+        memset(self.messageData.mutableBytes, ' ', 20);
+        self.gpsData = nil;
+    }
     
     if(!memcmp(data, syncBytes, 3)) {
         self.top = YES;
