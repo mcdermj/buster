@@ -22,6 +22,7 @@
 #import "BTRLinkDriverProtocol.h"
 #import "BTRDataEngine.h"
 #import "BTRSlowDataCoder.h"
+#import "PortMapper.h"
 
 #import <arpa/inet.h>
 #import <sys/ioctl.h>
@@ -102,6 +103,7 @@
 @property (nonatomic) char txSequence;
 @property (nonatomic, readwrite, copy) NSString * linkTarget;
 @property (nonatomic) CFAbsoluteTime connectTime;
+@property (nonatomic) PortMapper *portMapper;
 
 -(void)terminateCurrentStream;
 
@@ -128,6 +130,23 @@
         
         dispatch_queue_attr_t dispatchQueueAttr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, -1);
         _writeQueue = dispatch_queue_create("net.nh6z.Buster.LinkWrite", dispatchQueueAttr);
+        
+        _portMapper = [[PortMapper alloc] initWithPort:self.clientPort];
+        self.portMapper.mapTCP = NO;
+        self.portMapper.mapUDP = YES;
+        self.portMapper.desiredPublicPort = self.clientPort;
+        
+        [[NSNotificationCenter defaultCenter] addObserverForName: PortMapperChangedNotification
+                                                          object: nil
+                                                           queue: [NSOperationQueue mainQueue]
+                                                      usingBlock: ^(NSNotification *notification) {
+                                                          PortMapper *mapper = (PortMapper *) notification.object;
+                                                          if(mapper.error != noErr) {
+                                                              NSLog(@"Error mapping port: %d", mapper.error);
+                                                              return;
+                                                          }
+                                                          NSLog(@"Got the port mapping for %@:%d", mapper.publicAddress, mapper.publicPort);
+                                                      }];
         
         [self open];
     }
@@ -222,6 +241,8 @@
         NSLog(@"Couldn't bind gateway socket: %s\n", strerror(errno));
         return;
     }
+    
+    [self.portMapper open];
     
     self.dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, (uintptr_t) _socket, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
     BTRLinkDriver __weak *weakSelf = self;

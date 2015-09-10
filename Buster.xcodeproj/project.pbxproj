@@ -53,6 +53,7 @@
 		09E36AC71B9B94570055BF46 /* HockeySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09E36AC61B9B94570055BF46 /* HockeySDK.framework */; };
 		09E36AC91B9B94770055BF46 /* HockeySDK.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 09E36AC81B9B94770055BF46 /* HockeySDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		09E589CA1B7EAC1800A962B5 /* BTRDPlusAuthenticator.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E589C91B7EAC1800A962B5 /* BTRDPlusAuthenticator.m */; };
+		09F042B61BA1F82600E9F5D2 /* PortMapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 09F042B51BA1F82600E9F5D2 /* PortMapper.m */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -170,6 +171,8 @@
 		09E589C81B7EAC1800A962B5 /* BTRDPlusAuthenticator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRDPlusAuthenticator.h; sourceTree = "<group>"; };
 		09E589C91B7EAC1800A962B5 /* BTRDPlusAuthenticator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRDPlusAuthenticator.m; sourceTree = "<group>"; };
 		09E589CB1B82880B00A962B5 /* BTRLinkDriverProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BTRLinkDriverProtocol.h; sourceTree = "<group>"; };
+		09F042B41BA1F82600E9F5D2 /* PortMapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PortMapper.h; sourceTree = "<group>"; };
+		09F042B51BA1F82600E9F5D2 /* PortMapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PortMapper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -220,6 +223,7 @@
 				09A994D81B71E1B00061A929 /* TPCircularBuffer */,
 				09A994D91B71E21A0061A929 /* Vocoder Drivers */,
 				09E589CC1B828FBA00A962B5 /* Link Drivers */,
+				09F042B31BA1F7FB00E9F5D2 /* Portmapper */,
 				09AB117A1B5A13970067B9FB /* Prefix.pch */,
 				0908EF881B87DAAD007B76F5 /* DStarUtils.h */,
 				093B9B1A1B5214C700C2ABD0 /* BTRVocoderDriver.h */,
@@ -359,6 +363,15 @@
 				0908EF841B84FDBE007B76F5 /* BTRDExtraLink.m */,
 			);
 			name = "Link Drivers";
+			sourceTree = "<group>";
+		};
+		09F042B31BA1F7FB00E9F5D2 /* Portmapper */ = {
+			isa = PBXGroup;
+			children = (
+				09F042B41BA1F82600E9F5D2 /* PortMapper.h */,
+				09F042B51BA1F82600E9F5D2 /* PortMapper.m */,
+			);
+			name = Portmapper;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -519,6 +532,7 @@
 				09A994CC1B712E0E0061A929 /* MASShortcutValidator.m in Sources */,
 				09A994C91B712DF40061A929 /* MASShortcutView.m in Sources */,
 				096F2B5A1B58C06E00766A95 /* BTRCallFormatter.m in Sources */,
+				09F042B61BA1F82600E9F5D2 /* PortMapper.m in Sources */,
 				095544A71B71756F00090DB7 /* BTRVocoderViewController.m in Sources */,
 				09E363EC1B66F46500F74DBB /* BTRSlowDataCoder.m in Sources */,
 				0924272E1B62F46600D568DE /* BTRAudioViewController.m in Sources */,
@@ -772,8 +786,8 @@
 				CODE_SIGN_IDENTITY = "Mac Developer: Jeremy McDermond (3R68W65G4N)";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
-				ENABLE_TESTABILITY = YES;
 				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/HockeySDK-Mac",
