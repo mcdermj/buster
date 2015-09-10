@@ -28,7 +28,7 @@ struct dextra_packet {
 
 static const struct dextra_packet linkTemplate = {
     .link.callsign = "        ",
-    .link.module = ' ',
+    .link.module = 'A',
     .link.reflectorModule = ' ',
     .link.response[0] = 0x00
 };
@@ -141,7 +141,10 @@ static NSDictionary *_reflectorList;
     //  XXX do some sort of real UTF8 conversion rather than just casting it down.
     //  XXX Maybe it doesn't make much of a difference since the module should only be
     //  XXX in the range of A-Z.
-    packet->link.module = (char) [self.myCall.paddedCall characterAtIndex:7];
+    char myModule = (char) [self.myCall.paddedCall characterAtIndex:7];
+    if(myModule != ' ') {
+        packet->link.module = myModule;
+    }
     packet->link.reflectorModule = module;
     memcpy(packet->link.callsign, callOnly.UTF8String, callOnly.length);
     
@@ -155,6 +158,10 @@ static NSDictionary *_reflectorList;
 
 -(void)sendLink {
     NSLog(@"Sending link packet");
+    
+    if([self.linkTarget isEqualToString:@""])
+        return;
+    
     NSAssert(self.linkTarget.length == 8, @"Link Target %@ is not 8 characters. Was %ld.", self.linkTarget, self.linkTarget.length);
 
     [self sendLinkPacketWithModule:(char) [self.linkTarget characterAtIndex:7]];
