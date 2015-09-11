@@ -131,11 +131,6 @@
         dispatch_queue_attr_t dispatchQueueAttr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, -1);
         _writeQueue = dispatch_queue_create("net.nh6z.Buster.LinkWrite", dispatchQueueAttr);
         
-        _portMapper = [[PortMapper alloc] initWithPort:self.clientPort];
-        self.portMapper.mapTCP = NO;
-        self.portMapper.mapUDP = YES;
-        self.portMapper.desiredPublicPort = self.clientPort;
-        
         [[NSNotificationCenter defaultCenter] addObserverForName: PortMapperChangedNotification
                                                           object: nil
                                                            queue: [NSOperationQueue mainQueue]
@@ -241,6 +236,16 @@
         NSLog(@"Couldn't bind gateway socket: %s\n", strerror(errno));
         return;
     }
+    
+    struct sockaddr_in boundAddress;
+    socklen_t boundAddressLen;
+    getsockname(self.socket, (struct sockaddr *) &boundAddress, &boundAddressLen);
+    NSLog(@"Bound port %d for %@", ntohs(boundAddress.sin_port), NSStringFromClass([self class]));
+    
+    self.portMapper = [[PortMapper alloc] initWithPort:ntohs(boundAddress.sin_port)];
+    self.portMapper.mapTCP = NO;
+    self.portMapper.mapUDP = YES;
+    self.portMapper.desiredPublicPort = self.clientPort;
     
     [self.portMapper open];
     

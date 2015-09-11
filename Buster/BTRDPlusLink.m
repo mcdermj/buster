@@ -132,7 +132,7 @@ static const struct dplus_packet linkModuleTemplate = {
 }
 
 -(unsigned short)clientPort {
-    return 20001;
+    return 0;
 }
 
 -(unsigned short)serverPort {
