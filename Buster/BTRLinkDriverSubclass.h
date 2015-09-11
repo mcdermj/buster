@@ -48,6 +48,7 @@
 //  Properties subclasses might need.  You should take care of making sure linkState is correct.
 //
 @property (nonatomic, readwrite) enum linkState linkState;
+@property (nonatomic, readonly, copy) NSString *rpt1Call;
 @end
 
 //

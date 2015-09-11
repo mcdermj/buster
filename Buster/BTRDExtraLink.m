@@ -132,21 +132,19 @@ static NSDictionary *_reflectorList;
 }
 
 -(void)sendLinkPacketWithModule:(char)module {
+    if([self.linkTarget isEqualToString:@""])
+        return;
+
     NSMutableData *linkPacket = [NSMutableData dataWithBytes:&linkTemplate length:11];
     struct dextra_packet *packet = (struct dextra_packet *)linkPacket.mutableBytes;
-    
-    NSString *callOnly = [self.myCall.paddedCall substringWithRange:NSMakeRange(0, 7)];
     
     //  XXX This works but is ugly.  characterAtIndex returns an unichar, and we should really
     //  XXX do some sort of real UTF8 conversion rather than just casting it down.
     //  XXX Maybe it doesn't make much of a difference since the module should only be
     //  XXX in the range of A-Z.
-    char myModule = (char) [self.myCall.paddedCall characterAtIndex:7];
-    if(myModule != ' ') {
-        packet->link.module = myModule;
-    }
-    packet->link.reflectorModule = module;
-    memcpy(packet->link.callsign, callOnly.UTF8String, callOnly.length);
+    NSAssert(self.rpt1Call.length == 8, @"rpt1Call is not 8 characters");
+    packet->link.reflectorModule = (char) [self.rpt1Call characterAtIndex:7];
+    [self.rpt1Call getBytes:packet->link.callsign maxLength:sizeof(packet->link.callsign) usedLength:NULL encoding:NSASCIIStringEncoding options:0 range:NSMakeRange(0, 8) remainingRange:NULL];
     
     [self sendPacket:linkPacket];
 }
@@ -158,13 +156,8 @@ static NSDictionary *_reflectorList;
 
 -(void)sendLink {
     NSLog(@"Sending link packet");
-    
-    if([self.linkTarget isEqualToString:@""])
-        return;
-    
-    NSAssert(self.linkTarget.length == 8, @"Link Target %@ is not 8 characters. Was %ld.", self.linkTarget, self.linkTarget.length);
 
-    [self sendLinkPacketWithModule:(char) [self.linkTarget characterAtIndex:7]];
+    [self sendLinkPacketWithModule:(char) [self.linkTarget.paddedCall characterAtIndex:7]];
 }
 
 -(void)sendFrame:(struct dstar_frame *)frame {

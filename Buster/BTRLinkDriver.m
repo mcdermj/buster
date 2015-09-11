@@ -117,6 +117,8 @@
 @synthesize delegate = _delegate;
 @synthesize linkQueue = _linkQueue;
 
+@dynamic rpt1Call;
+
 -(id)init {
     self = [super init];
     if(self) {
@@ -147,6 +149,19 @@
     }
     
     return self;
+}
+
+-(NSString *)rpt1Call {
+    NSString *rpt1Call = self.myCall;
+    NSString *module = [self.myCall.paddedCall substringWithRange:NSMakeRange(7, 1)];
+    if([module isEqualToString:@" "])
+        rpt1Call = [rpt1Call.paddedCall stringByReplacingCharactersInRange:NSMakeRange(7, 1) withString:@"A"];
+    
+    return rpt1Call;
+}
+
++(NSSet *)keyPathsForValuesAffectingRpt1Call {
+    return [NSSet setWithObjects:@"myCall", nil];
 }
 
 -(void)linkTo:(NSString *)linkTarget {
@@ -528,7 +543,7 @@
             
             strncpy(header.header.myCall, weakSelf.myCall.paddedCall.UTF8String, sizeof(header.header.myCall));
             strncpy(header.header.myCall2, weakSelf.myCall2.paddedShortCall.UTF8String, sizeof(header.header.myCall2));
-            strncpy(header.header.rpt1Call, weakSelf.myCall.paddedCall.UTF8String, sizeof(header.header.rpt1Call));
+            strncpy(header.header.rpt1Call, weakSelf.rpt1Call.paddedCall.UTF8String, sizeof(header.header.rpt1Call));
             strncpy(header.header.rpt2Call, weakSelf.linkTarget.paddedCall.UTF8String, sizeof(header.header.rpt2Call));
             
             header.header.sum = dstar_calc_sum(&header.header);
@@ -536,7 +551,7 @@
             [weakSelf sendFrame:&header];
             
             NSDictionary *streamInfo = @{
-                                     @"rpt1Call" : weakSelf.myCall,
+                                     @"rpt1Call" : weakSelf.rpt1Call,
                                      @"rpt2Call" : weakSelf.linkTarget,
                                      @"myCall" : weakSelf.myCall,
                                      @"myCall2" : weakSelf.myCall2,
