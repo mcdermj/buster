@@ -220,10 +220,10 @@
 			isa = PBXGroup;
 			children = (
 				09A994D41B713A3B0061A929 /* MASShortcut */,
+				09F042B31BA1F7FB00E9F5D2 /* Portmapper */,
 				09A994D81B71E1B00061A929 /* TPCircularBuffer */,
 				09A994D91B71E21A0061A929 /* Vocoder Drivers */,
 				09E589CC1B828FBA00A962B5 /* Link Drivers */,
-				09F042B31BA1F7FB00E9F5D2 /* Portmapper */,
 				09AB117A1B5A13970067B9FB /* Prefix.pch */,
 				0908EF881B87DAAD007B76F5 /* DStarUtils.h */,
 				093B9B1A1B5214C700C2ABD0 /* BTRVocoderDriver.h */,
