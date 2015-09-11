@@ -51,6 +51,61 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
 
 @implementation BTRAprsLocation
 
+@dynamic tnc2Packet;
+
+-(id) init {
+    self = [super init];
+    if(self) {
+        _callsign = nil;
+        _symbol = '/';
+        _symbolTable = '[';
+    }
+    
+    return self;
+}
+
+#pragma mark - Accessors
+
+-(NSString *)tnc2Packet {
+    if(!self.callsign || !self.location)
+        return nil;
+    
+    NSString *tnc2Header = [NSString stringWithFormat:@"%@>APBSTR,DSTAR*:", self.callsign];
+ 
+    NSString *dateString = [self aprsTimestampFromDate:self.location.timestamp];
+    NSAssert(dateString != nil, @"Datestring returned nil");
+    
+    int latDegrees = (int) fabs(self.location.coordinate.latitude);
+    double latMinutes = (fabs(self.location.coordinate.latitude) - (double) latDegrees) * 60.0;
+    char latDirection = self.location.coordinate.latitude < 0 ? 'S' : 'N';
+    int lonDegrees = (int) fabs(self.location.coordinate.longitude);
+    double lonMinutes = (fabs(self.location.coordinate.longitude) - (double) lonDegrees) * 60.0;
+    char lonDirection = self.location.coordinate.latitude < 0 ? 'W' : 'E';
+    NSString *position = [NSString stringWithFormat:@"%@z%02d%05.2f%c%c%03d%05.2f%c%c", dateString, latDegrees, latMinutes, latDirection, self.symbolTable, lonDegrees, lonMinutes, lonDirection, self.symbol];
+    
+    int commentChars = 43;
+    if(self.location.course != 0.0 || self.location.speed != 0.0) {
+        NSString *cseSpd = [NSString stringWithFormat:@"%03.0f/%03.0f", self.location.course, self.location.speed * 1.94384];
+        position = [position stringByAppendingString:cseSpd];
+        commentChars -= cseSpd.length;
+    }
+    
+    if(self.location.verticalAccuracy > 0) {
+        NSString *alt = [NSString stringWithFormat:@"/A=%06.0f", self.location.altitude * 3.28084];
+        position = [position stringByAppendingString:alt];
+        commentChars -= alt.length;
+    }
+    
+    if(self.comment) {
+        if(self.comment.length > commentChars)
+            position = [position stringByAppendingString:[self.comment substringToIndex:commentChars]];
+        else
+            position = [position stringByAppendingString:self.comment];
+    }
+    
+    return [NSString stringWithFormat:@"%@%@\r", tnc2Header, position];
+}
+
 #pragma mark - MKPlacemark protocol implementation
 
 +(NSSet *)keyPathsForValuesAffectingCoordinate {
@@ -63,7 +118,21 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
 
 #pragma mark - APRS Parsing
 
--(NSDate *)dateFromARPSTimestamp:(NSString *)timestamp {
+-(NSString *)aprsTimestampFromDate:(NSDate *)date {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
+    dateFormatter.dateFormat = @"ddHHmm";
+    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    
+    return [dateFormatter stringFromDate:self.location.timestamp];
+}
+
+-(NSString *)aprsCoordinateFromLocation:(NSDate *)date {
+    
+    return nil;
+}
+
+-(NSDate *)dateFromAprsTimestamp:(NSString *)timestamp {
     NSError *error = nil;
     
 #pragma clang diagnostic push
@@ -191,9 +260,17 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
         if(components.count < 2)
             return nil;
         
-        // NSString *header = components[0];
+        NSString *header = components[0];
+        NSRegularExpression *headerParser = [NSRegularExpression regularExpressionWithPattern:@"([A-Z0-9-]{1,9 })>(AP[A-Z0-9-]{1,4}),DSTAR\\*" options:NSRegularExpressionCaseInsensitive error:&error];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
+        matches = [headerParser matchesInString:header options:0 range:NSMakeRange(0, header.length)];
+#pragma clang diagnostic pop
+        if(matches.count != 1)
+            return nil;
+        self.callsign = [header substringWithRange:[matches[0] rangeAtIndex:1]];
+        
         NSString *body = [[components subarrayWithRange:NSMakeRange(1, components.count -1)] componentsJoinedByString:@""];
-        //  XXX We should probably do something with the header and get source and destination callsigns here to be put in a dictionary.
         
         NSString *packetType = [body substringWithRange:NSMakeRange(0, 1)];
         if([packetType isEqualToString:@"!"] ||
@@ -209,7 +286,7 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
             
             if([packetType isEqualToString:@"/"] ||
                [packetType isEqualToString:@"@"]) {
-                timestamp = [self dateFromARPSTimestamp:[body substringWithRange:NSMakeRange(1, 7)]];
+                timestamp = [self dateFromAprsTimestamp:[body substringWithRange:NSMakeRange(1, 7)]];
                 if([timestamp isEqualToDate:[NSDate distantPast]])
                     timestamp = [NSDate date];
                 body = [body substringFromIndex:7];
@@ -272,19 +349,21 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
     NSString *lonMin = [positionPacket substringWithRange:[matches[0] rangeAtIndex:6]];
     
     NSString *symbolTable = [positionPacket substringWithRange:[matches[0] rangeAtIndex:4]];
-    //NSString *symbolCode = [positionPacket substringWithRange:[matches[0] rangeAtIndex:8]];
+    NSString *symbolCode = [positionPacket substringWithRange:[matches[0] rangeAtIndex:8]];
     
     if(![[NSCharacterSet characterSetWithCharactersInString:@"\\/ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"] characterIsMember:[symbolTable characterAtIndex:0]]) {
         //  Invalid symbol table
         return nil;
     }
     
+    self.symbolTable = (char) [symbolTable characterAtIndex:0];
+    self.symbol = (char) [symbolCode characterAtIndex:0];
+    
     if(latDeg > 89.0 || lonDeg > 179.0)
         return nil;
     
     NSString *tmpLat = [latMin stringByReplacingOccurrencesOfString:@"." withString:@""];  //  I don't know why we're doing this
     NSInteger posAmbiguity = tmpLat.length - [tmpLat stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length;
-    // NSLog(@"Ambiguity = %ld", posAmbiguity);
     
     CLLocationCoordinate2D coordinate = {
         .latitude = 0.0,
@@ -581,7 +660,7 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
             NSString *timeString = [timeParser stringByReplacingMatchesInString:nmeaFields[1] options:0 range:NSMakeRange(0, nmeaFields[1].length) withTemplate:@""];
 #pragma clang diagnostic pop
             
-            NSDate *timestamp = [self dateFromARPSTimestamp:[timeString stringByAppendingString:@"h"]];
+            NSDate *timestamp = [self dateFromAprsTimestamp:[timeString stringByAppendingString:@"h"]];
             
             CLLocationCoordinate2D coordinate = {
                 .latitude = [self coordinatesFromNmeaString:nmeaFields[2] withSign:nmeaFields[3]],
