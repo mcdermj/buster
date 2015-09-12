@@ -365,7 +365,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="avZ-AZ-WVn" userLabel="Reflector Table">
-                                <rect key="frame" x="578" y="18" width="77" height="200"/>
+                                <rect key="frame" x="620" y="18" width="77" height="200"/>
                                 <clipView key="contentView" id="BYJ-Mb-T1W">
                                     <rect key="frame" x="1" y="17" width="75" height="182"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
