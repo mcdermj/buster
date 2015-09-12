@@ -261,7 +261,7 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
             return nil;
         
         NSString *header = components[0];
-        NSRegularExpression *headerParser = [NSRegularExpression regularExpressionWithPattern:@"([A-Z0-9-]{1,9 })>(AP[A-Z0-9-]{1,4}),DSTAR\\*" options:NSRegularExpressionCaseInsensitive error:&error];
+        NSRegularExpression *headerParser = [NSRegularExpression regularExpressionWithPattern:@"([A-Z0-9-]{1,9})>(AP[A-Z0-9-]{1,4}),DSTAR\\*" options:NSRegularExpressionCaseInsensitive error:&error];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wassign-enum"
         matches = [headerParser matchesInString:header options:0 range:NSMakeRange(0, header.length)];
