@@ -344,7 +344,7 @@
         }
         case LINKED: {
             [self.delegate destinationDidLink:self.linkTarget];
-            if(_linkState == UNLINKED) {
+            if(_linkState == CONNECTED) {
                 [self startPoll];
                 BTRLinkDriver __weak *weakSelf = self;
                 self.linkTimer = [[BTRNetworkTimer alloc] initWithTimeout:30.0 failureHandler:^{
