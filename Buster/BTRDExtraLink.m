@@ -143,7 +143,8 @@ static NSDictionary *_reflectorList;
     //  XXX Maybe it doesn't make much of a difference since the module should only be
     //  XXX in the range of A-Z.
     NSAssert(self.rpt1Call.length == 8, @"rpt1Call is not 8 characters");
-    packet->link.reflectorModule = (char) [self.rpt1Call characterAtIndex:7];
+    packet->link.module = (char) [self.rpt1Call characterAtIndex:7];
+    packet->link.reflectorModule = module;
     [self.rpt1Call getBytes:packet->link.callsign maxLength:sizeof(packet->link.callsign) usedLength:NULL encoding:NSASCIIStringEncoding options:0 range:NSMakeRange(0, 8) remainingRange:NULL];
     
     [self sendPacket:linkPacket];
