@@ -22,6 +22,7 @@
 #import "BTRLinkDriverProtocol.h"
 #import "BTRDataEngine.h"
 #import "BTRSlowDataCoder.h"
+#import "PortMapper.h"
 
 #import <arpa/inet.h>
 #import <sys/ioctl.h>
@@ -102,6 +103,7 @@
 @property (nonatomic) char txSequence;
 @property (nonatomic, readwrite, copy) NSString * linkTarget;
 @property (nonatomic) CFAbsoluteTime connectTime;
+@property (nonatomic) PortMapper *portMapper;
 
 -(void)terminateCurrentStream;
 
@@ -114,6 +116,8 @@
 @synthesize myCall2 = _myCall2;
 @synthesize delegate = _delegate;
 @synthesize linkQueue = _linkQueue;
+
+@dynamic rpt1Call;
 
 -(id)init {
     self = [super init];
@@ -129,10 +133,35 @@
         dispatch_queue_attr_t dispatchQueueAttr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, -1);
         _writeQueue = dispatch_queue_create("net.nh6z.Buster.LinkWrite", dispatchQueueAttr);
         
+        [[NSNotificationCenter defaultCenter] addObserverForName: PortMapperChangedNotification
+                                                          object: nil
+                                                           queue: [NSOperationQueue mainQueue]
+                                                      usingBlock: ^(NSNotification *notification) {
+                                                          PortMapper *mapper = (PortMapper *) notification.object;
+                                                          if(mapper.error != noErr) {
+                                                              NSLog(@"Error mapping port: %d", mapper.error);
+                                                              return;
+                                                          }
+                                                          NSLog(@"Got the port mapping for %@:%d", mapper.publicAddress, mapper.publicPort);
+                                                      }];
+        
         [self open];
     }
     
     return self;
+}
+
+-(NSString *)rpt1Call {
+    NSString *rpt1Call = self.myCall;
+    NSString *module = [self.myCall.paddedCall substringWithRange:NSMakeRange(7, 1)];
+    if([module isEqualToString:@" "])
+        rpt1Call = [rpt1Call.paddedCall stringByReplacingCharactersInRange:NSMakeRange(7, 1) withString:@"A"];
+    
+    return rpt1Call;
+}
+
++(NSSet *)keyPathsForValuesAffectingRpt1Call {
+    return [NSSet setWithObjects:@"myCall", nil];
 }
 
 -(void)linkTo:(NSString *)linkTarget {
@@ -222,6 +251,18 @@
         NSLog(@"Couldn't bind gateway socket: %s\n", strerror(errno));
         return;
     }
+    
+    struct sockaddr_in boundAddress;
+    socklen_t boundAddressLen;
+    getsockname(self.socket, (struct sockaddr *) &boundAddress, &boundAddressLen);
+    NSLog(@"Bound port %d for %@", ntohs(boundAddress.sin_port), NSStringFromClass([self class]));
+    
+    self.portMapper = [[PortMapper alloc] initWithPort:ntohs(boundAddress.sin_port)];
+    self.portMapper.mapTCP = NO;
+    self.portMapper.mapUDP = YES;
+    self.portMapper.desiredPublicPort = self.clientPort;
+    
+    [self.portMapper open];
     
     self.dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, (uintptr_t) _socket, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
     BTRLinkDriver __weak *weakSelf = self;
@@ -412,8 +453,6 @@
 
     switch(frame->type) {
         case 0x10: {
-            [self.qsoTimer ping];
-            
             uint16 calculatedSum = dstar_calc_sum(&frame->header);
             if(self.hasReliableChecksum && frame->header.sum != 0xFFFF && frame->header.sum != calculatedSum) {
                 NSLog(@"Header checksum mismatch: expected 0x%04hX calculated 0x%04hX", frame->header.sum, calculatedSum);
@@ -424,8 +463,11 @@
                ![self.linkTarget isEqualToString:[NSString stringWithCallsign:frame->header.rpt2Call]])
                 return;
             
-            if(self.rxStreamId)
+            if(self.rxStreamId) {
+                if(self.rxStreamId == frame->id)
+                    [self.qsoTimer ping];
                 return;
+            }
             
             //  XXX There can be null values here!
             NSDictionary *header = @{
@@ -501,7 +543,7 @@
             
             strncpy(header.header.myCall, weakSelf.myCall.paddedCall.UTF8String, sizeof(header.header.myCall));
             strncpy(header.header.myCall2, weakSelf.myCall2.paddedShortCall.UTF8String, sizeof(header.header.myCall2));
-            strncpy(header.header.rpt1Call, weakSelf.myCall.paddedCall.UTF8String, sizeof(header.header.rpt1Call));
+            strncpy(header.header.rpt1Call, weakSelf.rpt1Call.paddedCall.UTF8String, sizeof(header.header.rpt1Call));
             strncpy(header.header.rpt2Call, weakSelf.linkTarget.paddedCall.UTF8String, sizeof(header.header.rpt2Call));
             
             header.header.sum = dstar_calc_sum(&header.header);
@@ -509,7 +551,7 @@
             [weakSelf sendFrame:&header];
             
             NSDictionary *streamInfo = @{
-                                     @"rpt1Call" : weakSelf.myCall,
+                                     @"rpt1Call" : weakSelf.rpt1Call,
                                      @"rpt2Call" : weakSelf.linkTarget,
                                      @"myCall" : weakSelf.myCall,
                                      @"myCall2" : weakSelf.myCall2,
