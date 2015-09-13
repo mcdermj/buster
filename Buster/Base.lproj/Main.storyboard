@@ -864,11 +864,11 @@
                                             <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyUpOrDown" image="Gray LED" id="cwz-h8-cCz"/>
                                         </imageView>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="mNc-zd-r4D">
-                                            <rect key="frame" x="42" y="179" width="47" height="32"/>
+                                            <rect key="frame" x="42" y="179" width="52" height="32"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="35" id="mmW-uN-dtj"/>
+                                                <constraint firstAttribute="width" constant="40" id="mmW-uN-dtj"/>
                                             </constraints>
-                                            <buttonCell key="cell" type="push" title="TX" bezelStyle="rounded" alignment="center" continuous="YES" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Vkf-rb-mdp">
+                                            <buttonCell key="cell" type="push" title="PTT" bezelStyle="rounded" alignment="center" continuous="YES" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Vkf-rb-mdp">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -876,22 +876,22 @@
                                                 <action selector="doTx:" target="XfG-lQ-9wD" id="gBm-u6-RDQ"/>
                                             </connections>
                                         </button>
-                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BhH-kX-eNe">
-                                            <rect key="frame" x="89" y="188" width="48" height="17"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Status:" id="tbe-gl-Eea">
-                                                <font key="font" metaFont="system"/>
-                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                            </textFieldCell>
-                                        </textField>
                                         <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="EE0-G5-muf">
-                                            <rect key="frame" x="141" y="188" width="364" height="17"/>
+                                            <rect key="frame" x="146" y="188" width="359" height="17"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="17" id="JCq-wI-XFs"/>
                                             </constraints>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="Lax-gL-w9c">
                                                 <font key="font" metaFont="fixedUser" size="11"/>
                                                 <color key="textColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BhH-kX-eNe">
+                                            <rect key="frame" x="94" y="188" width="48" height="17"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Status:" id="tbe-gl-Eea">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
