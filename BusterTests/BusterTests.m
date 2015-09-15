@@ -150,5 +150,7 @@
     XCTAssert(location.tnc2Packet.length - 46 == 43, @"Comment too long: %ld", location.tnc2Packet.length - 46);
     location.comment = [@"" stringByPaddingToLength:36 withString:@"X" startingAtIndex:0];
     XCTAssert(location.tnc2Packet.length - 46 == 43, @"Comment too long: %ld", location.tnc2Packet.length - 46);
+    
+    NSLog(@"DPlus Packet = %@", location.dprsPacket);
 }
 @end

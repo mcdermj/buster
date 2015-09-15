@@ -66,6 +66,10 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
 
 #pragma mark - Accessors
 
++(NSSet *)keyPathsForValuesTnc2Packet {
+    return [NSSet setWithObjects:@"location", nil];
+}
+
 -(NSString *)tnc2Packet {
     if(!self.callsign || !self.location)
         return nil;
@@ -104,6 +108,24 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
     }
     
     return [NSString stringWithFormat:@"%@%@\r", tnc2Header, position];
+}
+
++(NSSet *)keyPathsForValuesDprsPacket {
+    return [BTRAprsLocation keyPathsForValuesTnc2Packet];
+}
+
+-(NSString *)dprsPacket {
+    NSString *dprsPacket = self.tnc2Packet;
+    
+    size_t maxLength = [dprsPacket lengthOfBytesUsingEncoding:NSASCIIStringEncoding];
+    unsigned char *bytes = malloc(maxLength);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
+    [dprsPacket getBytes:bytes maxLength:maxLength usedLength:NULL encoding:NSASCIIStringEncoding options:0 range:NSMakeRange(0, dprsPacket.length) remainingRange:NULL];
+#pragma clang diagnostic pop
+    unsigned int crc = gps_calc_sum(bytes, maxLength);
+    
+    return [NSString stringWithFormat:@"$CRC%04X,%@", crc, dprsPacket];
 }
 
 #pragma mark - MKPlacemark protocol implementation

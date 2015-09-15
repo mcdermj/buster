@@ -45,7 +45,7 @@ NS_INLINE void SCRAMBLE(unsigned char *data) {
 @property (nonatomic) NSMutableData *gpsData;
 @property (nonatomic, getter=isTop) BOOL top;
 @property (nonatomic, readonly) CLLocationManager *locationManager;
-@property (nonatomic) CLLocation *currentLocation;
+@property (nonatomic) BTRAprsLocation *currentLocation;
 @property (nonatomic) NSUInteger rxStreamId;
 @end
 
@@ -73,8 +73,35 @@ NS_INLINE void SCRAMBLE(unsigned char *data) {
 }
 
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
-    self.currentLocation = locations.lastObject;
+    if(!self.currentLocation) {
+        self.currentLocation = [[BTRAprsLocation alloc] init];
+        
+        //  XXX This should come from elsewhere
+        self.currentLocation.callsign = [[NSUserDefaults standardUserDefaults] stringForKey:@"myCall"];
+    }
+    
+    self.currentLocation.location = locations.lastObject;
     NSLog(@"New Location = %@", locations.lastObject);
+    
+    NSString *dprsPacket = self.currentLocation.dprsPacket;
+    unsigned long numChunks = dprsPacket.length / 5;
+    if(dprsPacket.length % 5)
+        numChunks++;
+    char *chunks = malloc(6 * numChunks);
+    char *chunkPtr = chunks;
+    
+    for(int i = 0; i < numChunks; ++i, chunkPtr += 6) {
+        unsigned long length = 0;
+        if((i + 1) * 5 > dprsPacket.length)
+            length = dprsPacket.length - (i * 5);
+        else
+            length = 5;
+        
+        *chunkPtr = (char) (SLOW_DATA_TYPE_GPS | (length & 0x0F));
+        
+        [dprsPacket getBytes:chunkPtr + 1 maxLength:5 usedLength:NULL encoding:NSASCIIStringEncoding options:0 range:NSMakeRange(i * 5, length) remainingRange:NULL];
+    }
+    
 }
 
 -(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
