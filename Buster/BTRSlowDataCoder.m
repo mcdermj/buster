@@ -256,13 +256,17 @@ NS_INLINE void SCRAMBLE(unsigned char *data) {
 }
 
 -(const void *)getDataForSequence:(NSUInteger)sequence {
-    if(sequence == 0) {
+    if(sequence == 0)
         return syncBytes;
-    } else if(sequence < 9) {
-        return messageFrames[sequence - 1];
+    
+    if(self.currentLocation == nil) {
+        if(sequence < 9)
+            return messageFrames[sequence - 1];
     } else {
-        return filler;
+        
     }
+    
+    return filler;
 }
 
 @end
