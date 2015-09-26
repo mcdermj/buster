@@ -22,7 +22,7 @@
 @interface BTRSlowDataCoder : NSObject <CLLocationManagerDelegate>
 
 -(void)addData:(void *)data streamId:(NSUInteger)streamId;
--(const void *)getDataForSequence:(NSUInteger)sequence;
+-(void)getBytes:(void *)bytes forSequence:(NSUInteger)sequence;
 
 @property (nonatomic, copy) NSString *message;
 @property (nonatomic, weak) NSObject <BTRSlowDataDelegate> *delegate;

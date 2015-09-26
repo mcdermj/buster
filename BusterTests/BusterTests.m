@@ -10,6 +10,7 @@
 #import <XCTest/XCTest.h>
 
 #import "BTRAprsLocation.h"
+#import "BTRSlowDataCoder.h"
 
 @interface BusterTests : XCTestCase
 
@@ -152,5 +153,12 @@
     XCTAssert(location.tnc2Packet.length - 46 == 43, @"Comment too long: %ld", location.tnc2Packet.length - 46);
     
     NSLog(@"DPlus Packet = %@", location.dprsPacket);
+}
+
+-(void)testPositionEncoder {
+    BTRSlowDataCoder *testCoder = [[BTRSlowDataCoder alloc] init];
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:50.0 longitude:50.0];
+    
+    [testCoder locationManager:nil didUpdateLocations:@[ location ]];
 }
 @end

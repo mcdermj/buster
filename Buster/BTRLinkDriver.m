@@ -569,7 +569,10 @@
         memcpy(&ambe, &dstar_ambe_template, sizeof(struct dstar_frame));
         ambe.sequence = weakSelf.txSequence;
         ambe.id = weakSelf.txStreamId;
-        memcpy(&ambe.ambe.data, [self.delegate getDataForSequence:weakSelf.txSequence], sizeof(ambe.ambe.data));
+        
+        [self.delegate getBytes:&ambe.ambe.data forSequence:weakSelf.txSequence];
+        
+        //memcpy(&ambe.ambe.data, [self.delegate getDataForSequence:weakSelf.txSequence], sizeof(ambe.ambe.data));
         
         if(last) {
             [self.delegate streamDidEnd:[NSNumber numberWithUnsignedShort:weakSelf.txStreamId] atTime:[NSDate date]];

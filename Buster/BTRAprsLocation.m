@@ -57,8 +57,8 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
     self = [super init];
     if(self) {
         _callsign = nil;
-        _symbol = '/';
-        _symbolTable = '[';
+        _symbol = '[';
+        _symbolTable = '/';
     }
     
     return self;
@@ -84,11 +84,11 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
     char latDirection = self.location.coordinate.latitude < 0 ? 'S' : 'N';
     int lonDegrees = (int) fabs(self.location.coordinate.longitude);
     double lonMinutes = (fabs(self.location.coordinate.longitude) - (double) lonDegrees) * 60.0;
-    char lonDirection = self.location.coordinate.latitude < 0 ? 'W' : 'E';
-    NSString *position = [NSString stringWithFormat:@"%@z%02d%05.2f%c%c%03d%05.2f%c%c", dateString, latDegrees, latMinutes, latDirection, self.symbolTable, lonDegrees, lonMinutes, lonDirection, self.symbol];
+    char lonDirection = self.location.coordinate.longitude < 0 ? 'W' : 'E';
+    NSString *position = [NSString stringWithFormat:@"@%@z%02d%05.2f%c%c%03d%05.2f%c%c", dateString, latDegrees, latMinutes, latDirection, self.symbolTable, lonDegrees, lonMinutes, lonDirection, self.symbol];
     
     int commentChars = 43;
-    if(self.location.course != 0.0 || self.location.speed != 0.0) {
+    if((self.location.course >= 0.0 && self.location.course < 360.0) || self.location.speed >= 0.0) {
         NSString *cseSpd = [NSString stringWithFormat:@"%03.0f/%03.0f", self.location.course, self.location.speed * 1.94384];
         position = [position stringByAppendingString:cseSpd];
         commentChars -= cseSpd.length;
@@ -323,6 +323,8 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
             
             //  Parse the APRS position meat
             CLLocation *position = [self locationFromAprsPositionPacket:[body stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]]];
+            if(!position)
+                return nil;
             _location = [[CLLocation alloc] initWithCoordinate:position.coordinate
                                                       altitude:position.altitude
                                             horizontalAccuracy:position.horizontalAccuracy

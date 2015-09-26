@@ -39,14 +39,18 @@ NS_INLINE void SCRAMBLE(unsigned char *data) {
 @interface BTRSlowDataCoder () {
     unsigned char dataFrame[6];
     unsigned char messageFrames[8][3];
+    NSRange txDprsRange;
 }
 
 @property (nonatomic) NSMutableData *messageData;
 @property (nonatomic) NSMutableData *gpsData;
+@property (nonatomic) NSData *txDprsData;
 @property (nonatomic, getter=isTop) BOOL top;
 @property (nonatomic, readonly) CLLocationManager *locationManager;
 @property (nonatomic) BTRAprsLocation *currentLocation;
 @property (nonatomic) NSUInteger rxStreamId;
+// @property (nonatomic) NSRange txDprsRange;
+@property (nonatomic) char txMessageSequence;
 @end
 
 @implementation BTRSlowDataCoder
@@ -65,6 +69,9 @@ NS_INLINE void SCRAMBLE(unsigned char *data) {
             self.locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers;
             self.locationManager.distanceFilter = 100;
             [self.locationManager startUpdatingLocation];
+            
+            txDprsRange = NSMakeRange(0, 3);
+            _txMessageSequence = 0;
         } else {
             NSLog(@"Location services not enabled");
         }
@@ -83,25 +90,27 @@ NS_INLINE void SCRAMBLE(unsigned char *data) {
     self.currentLocation.location = locations.lastObject;
     NSLog(@"New Location = %@", locations.lastObject);
     
-    NSString *dprsPacket = self.currentLocation.dprsPacket;
-    unsigned long numChunks = dprsPacket.length / 5;
-    if(dprsPacket.length % 5)
-        numChunks++;
-    char *chunks = malloc(6 * numChunks);
-    char *chunkPtr = chunks;
-    
-    for(int i = 0; i < numChunks; ++i, chunkPtr += 6) {
-        unsigned long length = 0;
-        if((i + 1) * 5 > dprsPacket.length)
-            length = dprsPacket.length - (i * 5);
-        else
-            length = 5;
+    NSMutableData *dprsData = [NSMutableData dataWithData:[self.currentLocation.dprsPacket dataUsingEncoding:NSASCIIStringEncoding]];
+    for(NSRange currentRange = NSMakeRange(0, 0); currentRange.location < dprsData.length; currentRange.location += 6) {
+        char replacement = SLOW_DATA_TYPE_GPS;
         
-        *chunkPtr = (char) (SLOW_DATA_TYPE_GPS | (length & 0x0F));
+        if(currentRange.location + 5 > dprsData.length) {
+            NSRange nullRange = NSMakeRange(dprsData.length, 5 - (dprsData.length - currentRange.location));
+            
+            replacement |= dprsData.length - currentRange.location;
+            [dprsData resetBytesInRange:nullRange];
+            
+        } else
+            replacement |= 0x05;
         
-        [dprsPacket getBytes:chunkPtr + 1 maxLength:5 usedLength:NULL encoding:NSASCIIStringEncoding options:0 range:NSMakeRange(i * 5, length) remainingRange:NULL];
+        [dprsData replaceBytesInRange:currentRange withBytes:&replacement length:1];
+        SCRAMBLE((unsigned char *) dprsData.mutableBytes + currentRange.location);
     }
     
+    //for(unsigned char *scramblePtr = dprsData.mutableBytes; scramblePtr < (unsigned char *)dprsData.mutableBytes + dprsData.length; scramblePtr += 6)
+    //    SCRAMBLE(scramblePtr);
+    
+    self.txDprsData = [NSData dataWithData:dprsData];
 }
 
 -(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
@@ -255,18 +264,42 @@ NS_INLINE void SCRAMBLE(unsigned char *data) {
     }
 }
 
--(const void *)getDataForSequence:(NSUInteger)sequence {
-    if(sequence == 0)
-        return syncBytes;
+-(void)getBytes:(void *)bytes forSequence:(NSUInteger)sequence {
+    NSParameterAssert(sequence < 21);
     
-    if(self.currentLocation == nil) {
-        if(sequence < 9)
-            return messageFrames[sequence - 1];
-    } else {
-        
+    if(sequence == 0) {
+        memcpy(bytes, syncBytes, sizeof(syncBytes));
+        if(self.txMessageSequence > 7 && txDprsRange.location >= self.txDprsData.length) {
+            self.txMessageSequence = 0;
+            txDprsRange.location = 0;
+        }
+        return;
     }
     
-    return filler;
+    switch(sequence) {
+        case 1 ... 2:
+        case 5 ... 6:
+        case 9 ... 10:
+        case 13 ... 14:
+            if(self.txMessageSequence < 8) {
+                memcpy(bytes, messageFrames[self.txMessageSequence], 3);
+                ++self.txMessageSequence;
+            } else if(self.currentLocation != nil && txDprsRange.location < self.txDprsData.length) {
+                [self.txDprsData getBytes:bytes range:txDprsRange];
+                txDprsRange.location += 3;
+            } else {
+                memcpy(bytes, filler, 3);
+            }
+            break;
+        default:
+            if(self.currentLocation != nil && txDprsRange.location < self.txDprsData.length) {
+                [self.txDprsData getBytes:bytes range:txDprsRange];
+                txDprsRange.location += 3;
+            } else {
+                memcpy(bytes, filler, 3);
+            }
+            break;
+    }
 }
 
 @end
