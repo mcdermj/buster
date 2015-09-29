@@ -286,8 +286,20 @@ static const struct dv3k_packet dv3k_audio = {
     self.started = NO;
 }
 
+- (void)courtesyTone {
+    if(self.beep) {
+        for(int i = 0; i < 5; ++i)
+            [self writePacket:&bleepPacket];
+        
+        //  Write a silence packet to clean out the chain
+        [self writePacket:&silencePacket];
+    }
+}
+
 #pragma mark - Data handling
 
+
+// XXX encodeData and decodeData are largely the same.  Maybe do this with a single block function.
 - (void) decodeData:(void *) data lastPacket:(BOOL)last {
     struct dv3k_packet *packet;
     
@@ -302,19 +314,23 @@ static const struct dv3k_packet dv3k_audio = {
     dispatch_async(dispatchQueue, ^{
         [self writePacket:packet];
         
-        if(last && self.beep) {
+        /* if(last && self.beep) {
             for(int i = 0; i < 5; ++i)
                 [self writePacket:&bleepPacket];
             
             //  Write a silence packet to clean out the chain
             [self writePacket:&silencePacket];
-        }
+        } */
+        if(last)
+            [self courtesyTone];
         
         free(packet);
     });
 }
 
-- (void) encodeData:(void *)  data lastPacket:(BOOL)last {
+
+
+- (void) encodeData:(void *) data lastPacket:(BOOL)last {
     struct dv3k_packet *packet;
     
     if(self.started == NO)
@@ -331,6 +347,9 @@ static const struct dv3k_packet dv3k_audio = {
     
     dispatch_async(dispatchQueue, ^{
         [self writePacket:packet];
+        
+        if(last)
+            [self courtesyTone];
         
         free(packet);
     });
