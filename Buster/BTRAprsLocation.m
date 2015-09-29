@@ -117,6 +117,9 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
 -(NSString *)dprsPacket {
     NSString *dprsPacket = self.tnc2Packet;
     
+    if(!dprsPacket)
+        return nil;
+    
     size_t maxLength = [dprsPacket lengthOfBytesUsingEncoding:NSASCIIStringEncoding];
     unsigned char *bytes = malloc(maxLength);
 #pragma clang diagnostic push
