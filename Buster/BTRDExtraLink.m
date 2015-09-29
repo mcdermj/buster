@@ -55,6 +55,10 @@ static NSDictionary *_reflectorList;
     [BTRDataEngine registerLinkDriver:self];
 }
 
+-(NSArray<NSString *> *)destinations {
+    return [[BTRDExtraLink reflectorList].allKeys copy];
+}
+
 -(BOOL)canHandleLinkTo:(NSString*)linkTarget {
     if(linkTarget.length != 8)
         return NO;

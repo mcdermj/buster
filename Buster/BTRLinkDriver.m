@@ -358,6 +358,9 @@
 -(BOOL)canHandleLinkTo:(NSString *)reflector {
     [self doesNotRecognizeSelector:_cmd];
 }
+-(NSArray<NSString *> *)destinations {
+    [self doesNotRecognizeSelector:_cmd];
+}
 #pragma clang diagnostic pop
 
 -(void)setLinkState:(enum linkState)linkState {

@@ -26,6 +26,7 @@
 #import "BTRSlowDataCoder.h"
 #import "BTRAudioHandler.h"
 #import "BTRMapPopupController.h"
+#import "BTRAddPopupController.h"
 
 @import MapKit;
 
@@ -202,6 +203,12 @@
     [dockTile display];
     
     self.txButton.enabled = YES;
+    
+    [self.reflectorTableView enumerateAvailableRowViewsUsingBlock:^void(NSTableRowView *rowView, NSInteger row) {
+        NSTextField *reflectorView = ((NSTableCellView *)[rowView viewAtColumn:0]).textField;
+        if([reflectorView.objectValue isEqualToString:destination])
+            reflectorView.textColor = [NSColor redColor];
+    }];
 }
 
 -(void)destinationDidUnlink:(NSString *)destination {
@@ -213,6 +220,12 @@
     [dockTile display];
     
     self.txButton.enabled = NO;
+    
+    [self.reflectorTableView enumerateAvailableRowViewsUsingBlock:^void(NSTableRowView *rowView, NSInteger row) {
+        NSTextField *reflectorView = ((NSTableCellView *)[rowView viewAtColumn:0]).textField;
+        if([reflectorView.objectValue isEqualToString:destination])
+            reflectorView.textColor = [NSColor blackColor];
+    }];
 }
 
 -(void)destinationDidError:(NSString *)destination error:(NSError *)error {
@@ -245,6 +258,29 @@
     }
 }
 
+-(IBAction)doReflectorDoubleClick:(id)sender {
+    if(self.reflectorTableController.selectedObjects.count != 1) {
+        NSBeep();
+        return;
+    }
+    
+    NSString *reflector = self.reflectorTableController.selectedObjects[0][@"reflector"];
+    
+    if(reflector.length < 8)
+        return;
+
+    if([reflector isEqualToString:[BTRDataEngine sharedInstance].network.linkTarget]) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+            [[BTRDataEngine sharedInstance] unlink];
+        });
+    } else {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+            [[BTRDataEngine sharedInstance] linkTo:reflector];
+        });
+    }
+    
+    [self.reflectorTableView deselectAll:self];
+}
 
 - (IBAction)doLink:(id)sender {
     if(self.reflectorTableController.selectedObjects.count != 1) {
@@ -260,12 +296,16 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         [[BTRDataEngine sharedInstance] linkTo:reflector];
     });
+    
+    [self.reflectorTableView deselectAll:self];
 }
 
 - (IBAction)doUnlink:(id)sender {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         [[BTRDataEngine sharedInstance] unlink];
     });
+    
+    [self.reflectorTableView deselectAll:self];
 }
 
 
@@ -419,5 +459,15 @@
        ![self.view.window.firstResponder isKindOfClass:[NSTextView class]])
         if(!theEvent.isARepeat)
             [self endTx];
+}
+
+#pragma mark - Segue support
+
+-(void)prepareForSegue:(NSStoryboardSegue *)segue sender:(id)sender {
+    if(![segue.identifier isEqualToString:@"addPopupSegue"])
+        return;
+    
+    BTRAddPopupController *destController = (BTRAddPopupController *) segue.destinationController;
+    destController.reflectorArrayController = self.reflectorTableController;
 }
 @end

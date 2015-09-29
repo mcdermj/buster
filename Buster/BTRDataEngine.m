@@ -124,6 +124,15 @@ static NSMutableArray <Class> *linkDriverClasses = nil;
     return [NSArray arrayWithArray:vocoderDrivers];
 }
 
+-(NSArray<NSString *> *)linkDriverDestinations {
+    NSMutableArray *destinations = [[NSMutableArray alloc] init];
+    
+    for(id <BTRLinkDriverProtocol> driver in self.linkDrivers) {
+        [destinations addObjectsFromArray:driver.destinations];
+    }
+    return destinations;
+}
+
 -(BOOL)isDestinationValid:(NSString *)destination {
     NSUInteger linkIndex = [self.linkDrivers indexOfObjectPassingTest:^BOOL(id <BTRLinkDriverProtocol> obj, NSUInteger idx, BOOL *stop) {
         BOOL test = [obj canHandleLinkTo:destination];
