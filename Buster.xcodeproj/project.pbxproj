@@ -47,6 +47,7 @@
 		09A994DE1B71EAD50061A929 /* BTRSerialVocoderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 09A994DD1B71EAD50061A929 /* BTRSerialVocoderView.xib */; };
 		09A994E01B7205C50061A929 /* BTRNetworkVocoderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 09A994DF1B7205C50061A929 /* BTRNetworkVocoderView.xib */; };
 		09AB117B1B5A13970067B9FB /* BTRSerialVocoderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09AB11791B5A13970067B9FB /* BTRSerialVocoderViewController.m */; };
+		09DBC7591BBAFB6200346912 /* BTRAddPopupController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09DBC7581BBAFB6200346912 /* BTRAddPopupController.m */; settings = {ASSET_TAGS = (); }; };
 		09DFDA991B8C331300D00030 /* BTRMessageFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 09DFDA981B8C331300D00030 /* BTRMessageFormatter.m */; };
 		09DFDA9F1B8D6A9700D00030 /* BTRIRCDDBGateways.m in Sources */ = {isa = PBXBuildFile; fileRef = 09DFDA9E1B8D6A9700D00030 /* BTRIRCDDBGateways.m */; };
 		09E363EC1B66F46500F74DBB /* BTRSlowDataCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E363EB1B66F46500F74DBB /* BTRSlowDataCoder.m */; };
@@ -157,6 +158,8 @@
 		09AB11781B5A13970067B9FB /* BTRSerialVocoderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRSerialVocoderViewController.h; sourceTree = "<group>"; };
 		09AB11791B5A13970067B9FB /* BTRSerialVocoderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRSerialVocoderViewController.m; sourceTree = "<group>"; };
 		09AB117A1B5A13970067B9FB /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
+		09DBC7571BBAFB6200346912 /* BTRAddPopupController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRAddPopupController.h; sourceTree = "<group>"; };
+		09DBC7581BBAFB6200346912 /* BTRAddPopupController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRAddPopupController.m; sourceTree = "<group>"; };
 		09DFDA971B8C331300D00030 /* BTRMessageFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRMessageFormatter.h; sourceTree = "<group>"; };
 		09DFDA981B8C331300D00030 /* BTRMessageFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRMessageFormatter.m; sourceTree = "<group>"; };
 		09DFDA9A1B8D191900D00030 /* BTRLinkDriverDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BTRLinkDriverDelegate.h; sourceTree = "<group>"; };
@@ -258,6 +261,8 @@
 				09E363EB1B66F46500F74DBB /* BTRSlowDataCoder.m */,
 				09A5FDEF1B57956A00AE9E1C /* BTRAudioHandler.h */,
 				09A5FDF01B57956A00AE9E1C /* BTRAudioHandler.m */,
+				09DBC7571BBAFB6200346912 /* BTRAddPopupController.h */,
+				09DBC7581BBAFB6200346912 /* BTRAddPopupController.m */,
 				093B9AFE1B50E2D500C2ABD0 /* Images.xcassets */,
 				093B9B001B50E2D500C2ABD0 /* Main.storyboard */,
 				09318EEB1B87C5FD00B1E1FE /* Buster.entitlements */,
@@ -535,6 +540,7 @@
 				09F042B61BA1F82600E9F5D2 /* PortMapper.m in Sources */,
 				095544A71B71756F00090DB7 /* BTRVocoderViewController.m in Sources */,
 				09E363EC1B66F46500F74DBB /* BTRSlowDataCoder.m in Sources */,
+				09DBC7591BBAFB6200346912 /* BTRAddPopupController.m in Sources */,
 				0924272E1B62F46600D568DE /* BTRAudioViewController.m in Sources */,
 				09DFDA9F1B8D6A9700D00030 /* BTRIRCDDBGateways.m in Sources */,
 				09E589CA1B7EAC1800A962B5 /* BTRDPlusAuthenticator.m in Sources */,

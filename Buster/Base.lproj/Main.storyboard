@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="8187.4" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="8187.4" systemVersion="14E46" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8187.4"/>
         <capability name="box content view" minToolsVersion="7.0"/>
@@ -395,7 +395,7 @@
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="mfa-SF-tPo">
                                                                     <rect key="frame" x="-2" y="0.0" width="76" height="17"/>
-                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" id="3w7-wp-A8A">
+                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" id="3w7-wp-A8A">
                                                                         <customFormatter key="formatter" id="PvT-2M-SY3" customClass="BTRDestinationCallFormatter"/>
                                                                         <font key="font" metaFont="fixedUser" size="11"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -420,6 +420,7 @@
                                                 </tableColumn>
                                             </tableColumns>
                                             <connections>
+                                                <action trigger="doubleAction" selector="doReflectorDoubleClick:" target="XfG-lQ-9wD" id="WTc-Jm-gYY"/>
                                                 <binding destination="3qO-F1-Tqi" name="content" keyPath="arrangedObjects" id="5md-w1-YER"/>
                                                 <binding destination="3qO-F1-Tqi" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="5md-w1-YER" id="tWp-Cc-FEN"/>
                                                 <binding destination="3qO-F1-Tqi" name="sortDescriptors" keyPath="sortDescriptors" previousBinding="tWp-Cc-FEN" id="iQm-fE-79q"/>
@@ -479,7 +480,7 @@
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="wbE-2Z-g0q" viewBased="YES" id="rqv-8N-voe">
-                                                        <rect key="frame" x="0.0" y="0.0" width="701" height="162"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="701" height="0.0"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <size key="intercellSpacing" width="3" height="2"/>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -934,6 +935,7 @@
                                 </buttonCell>
                                 <connections>
                                     <action selector="addReflector:" target="XfG-lQ-9wD" id="j3y-VF-RfY"/>
+                                    <segue destination="ds4-mU-xKE" kind="popover" identifier="addPopupSegue" popoverAnchorView="Y9w-7c-W1y" popoverBehavior="semitransient" preferredEdge="maxY" id="ZdS-nQ-JcP"/>
                                 </connections>
                             </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="HHn-S8-cIi" userLabel="Remove Reflector Button">
@@ -1028,6 +1030,73 @@
                 </arrayController>
             </objects>
             <point key="canvasLocation" x="92" y="1053.5"/>
+        </scene>
+        <!--Add Popup Controller-->
+        <scene sceneID="uh5-Nc-wjp">
+            <objects>
+                <viewController id="ds4-mU-xKE" customClass="BTRAddPopupController" sceneMemberID="viewController">
+                    <view key="view" id="z62-dc-7Gs">
+                        <rect key="frame" x="0.0" y="0.0" width="215" height="57"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="R6d-08-H3Q">
+                                <rect key="frame" x="108" y="14" width="54" height="26"/>
+                                <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="k9W-dY-jOP">
+                                    <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="menu"/>
+                                    <menu key="menu" id="UFv-sJ-PcM">
+                                        <items>
+                                            <menuItem title="A" id="ABh-wo-8Kc"/>
+                                            <menuItem title="B" id="Wbd-Rc-ZFi"/>
+                                            <menuItem title="C" id="NSP-Qo-8pt"/>
+                                            <menuItem title="D" id="ULU-YK-IKR">
+                                                <modifierMask key="keyEquivalentModifierMask"/>
+                                            </menuItem>
+                                            <menuItem title="E" id="pEP-Zh-TI4">
+                                                <modifierMask key="keyEquivalentModifierMask"/>
+                                            </menuItem>
+                                        </items>
+                                    </menu>
+                                </popUpButtonCell>
+                            </popUpButton>
+                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fkE-3O-bq1">
+                                <rect key="frame" x="6" y="17" width="96" height="22"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="IkQ-5X-oGN">
+                                    <customFormatter key="formatter" id="YUU-m2-Hyh" customClass="BTRCallFormatter">
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="maxLength">
+                                                <integer key="value" value="7"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </customFormatter>
+                                    <font key="font" metaFont="fixedUser" size="11"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                                <connections>
+                                    <outlet property="delegate" destination="ds4-mU-xKE" id="zqh-Al-jsa"/>
+                                </connections>
+                            </textField>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hPT-oR-XBu">
+                                <rect key="frame" x="167" y="18" width="38" height="19"/>
+                                <buttonCell key="cell" type="roundRect" title="Add" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="hPH-po-C2A">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="cellTitle"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="doAdd:" target="ds4-mU-xKE" id="3Q9-E6-wfT"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                    </view>
+                    <connections>
+                        <outlet property="destinationField" destination="IkQ-5X-oGN" id="IFX-cG-yTD"/>
+                        <outlet property="moduleField" destination="R6d-08-H3Q" id="uCn-L5-4aG"/>
+                    </connections>
+                </viewController>
+                <customObject id="M1R-T0-iSp" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="318.5" y="1334.5"/>
         </scene>
         <!--Audio-->
         <scene sceneID="elY-lg-nZP">

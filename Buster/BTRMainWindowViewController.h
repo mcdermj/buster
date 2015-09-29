@@ -34,6 +34,7 @@
 @property MASShortcut *txKeyCode;
 
 
+- (IBAction)doReflectorDoubleClick:(id)sender;
 - (IBAction)doHeardDoubleClick:(id)sender;
 - (IBAction)doLink:(id)sender;
 - (IBAction)addReflector:(id)sender;

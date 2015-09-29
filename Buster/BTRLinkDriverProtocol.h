@@ -37,6 +37,7 @@ enum linkState {
 @property (nonatomic, copy)NSString *myCall2;
 @property (nonatomic, weak) NSObject <BTRLinkDriverDelegate> *delegate;
 @property (nonatomic) dispatch_queue_t linkQueue;
+@property (nonatomic, readonly) NSArray<NSString *> *destinations;
 
 -(void)linkTo:(NSString *)linkTarget;
 -(void)unlink;
