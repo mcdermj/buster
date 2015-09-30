@@ -878,7 +878,7 @@
                                             </connections>
                                         </button>
                                         <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="EE0-G5-muf">
-                                            <rect key="frame" x="146" y="188" width="359" height="17"/>
+                                            <rect key="frame" x="146" y="188" width="257" height="17"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="17" id="JCq-wI-XFs"/>
                                             </constraints>
@@ -896,17 +896,39 @@
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
+                                        <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ZBE-VA-Xmg">
+                                            <rect key="frame" x="463" y="189" width="40" height="15"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="40" id="axB-gY-Xc2"/>
+                                            </constraints>
+                                            <sliderCell key="cell" controlSize="mini" state="on" alignment="left" maxValue="1" doubleValue="1" tickMarkPosition="above" sliderType="linear" id="cPi-Oi-mW3"/>
+                                            <connections>
+                                                <action selector="doVolumeChange:" target="XfG-lQ-9wD" id="NzM-JK-1nR"/>
+                                            </connections>
+                                        </slider>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UuP-C8-WtU">
+                                            <rect key="frame" x="407" y="188" width="50" height="17"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Volume" id="MNT-ur-s8c">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="pwT-ch-zJC" firstAttribute="leading" secondItem="EE0-G5-muf" secondAttribute="trailing" constant="8" symbolic="YES" id="2aS-CM-sA8"/>
                                         <constraint firstItem="mNc-zd-r4D" firstAttribute="leading" secondItem="mVD-lY-7a6" secondAttribute="trailing" constant="8" symbolic="YES" id="2uh-nb-G8w"/>
                                         <constraint firstItem="mNc-zd-r4D" firstAttribute="centerY" secondItem="BhH-kX-eNe" secondAttribute="centerY" id="4KF-BR-wku"/>
+                                        <constraint firstItem="EE0-G5-muf" firstAttribute="centerY" secondItem="UuP-C8-WtU" secondAttribute="centerY" id="Bs8-0f-1YK"/>
+                                        <constraint firstItem="ZBE-VA-Xmg" firstAttribute="leading" secondItem="UuP-C8-WtU" secondAttribute="trailing" constant="8" symbolic="YES" id="Hdw-HL-ZEC"/>
                                         <constraint firstItem="BhH-kX-eNe" firstAttribute="centerY" secondItem="EE0-G5-muf" secondAttribute="centerY" id="Le9-82-Tyc"/>
                                         <constraint firstItem="EE0-G5-muf" firstAttribute="leading" secondItem="BhH-kX-eNe" secondAttribute="trailing" constant="8" symbolic="YES" id="NGK-n2-fP8"/>
                                         <constraint firstItem="mVD-lY-7a6" firstAttribute="top" secondItem="5Gg-Kq-YwH" secondAttribute="top" constant="10" id="Qj4-1H-uTl"/>
                                         <constraint firstItem="BhH-kX-eNe" firstAttribute="leading" secondItem="mNc-zd-r4D" secondAttribute="trailing" constant="8" symbolic="YES" id="WrC-OM-meT"/>
+                                        <constraint firstItem="UuP-C8-WtU" firstAttribute="leading" secondItem="EE0-G5-muf" secondAttribute="trailing" constant="8" symbolic="YES" id="Zgh-hD-cND"/>
+                                        <constraint firstItem="pwT-ch-zJC" firstAttribute="leading" secondItem="ZBE-VA-Xmg" secondAttribute="trailing" constant="8" symbolic="YES" id="hLE-pJ-MbU"/>
                                         <constraint firstItem="mVD-lY-7a6" firstAttribute="centerY" secondItem="mNc-zd-r4D" secondAttribute="centerY" id="iBV-04-vXa"/>
                                         <constraint firstItem="mVD-lY-7a6" firstAttribute="leading" secondItem="5Gg-Kq-YwH" secondAttribute="leading" constant="20" symbolic="YES" id="kGX-uw-ePo"/>
+                                        <constraint firstItem="UuP-C8-WtU" firstAttribute="centerY" secondItem="ZBE-VA-Xmg" secondAttribute="centerY" id="nly-M2-Dc2"/>
                                         <constraint firstItem="ofW-7P-voU" firstAttribute="top" secondItem="mVD-lY-7a6" secondAttribute="bottom" constant="8" symbolic="YES" id="vMx-94-3NT"/>
                                     </constraints>
                                 </view>
@@ -1008,6 +1030,7 @@
                         <outlet property="repeaterInfo" destination="EE0-G5-muf" id="PRd-tb-Jh1"/>
                         <outlet property="statusLED" destination="mVD-lY-7a6" id="XRs-v4-hzd"/>
                         <outlet property="txButton" destination="mNc-zd-r4D" id="6Be-fT-qOp"/>
+                        <outlet property="volumeSlider" destination="ZBE-VA-Xmg" id="vkF-e2-OtU"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

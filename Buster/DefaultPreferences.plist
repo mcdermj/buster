@@ -35,5 +35,7 @@
 		<key>modifierFlags</key>
 		<integer>0</integer>
 	</dict>
+	<key>outputVolume</key>
+	<integer>1</integer>
 </dict>
 </plist>

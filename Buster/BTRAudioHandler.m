@@ -202,6 +202,27 @@ static OSStatus AudioDevicesChanged(AudioObjectID inObjectID, UInt32 inNumberAdd
     free(_inputFormat);
 }
 
+-(void)setOutputVolume:(float)outputVolume {
+    if(!outputUnit)
+        return;
+    
+    if(!CheckStatus(AudioUnitSetParameter(outputUnit, kHALOutputParam_Volume, kAudioUnitScope_Global, 0, outputVolume, 0), "AudioUnitSetParameter(kHALOutputParam_Volume)"))
+        return;
+}
+
+-(float)outputVolume {
+    if(!outputUnit)
+        return 0.0;
+    
+    float volume;
+    
+    if(!CheckStatus(AudioUnitGetParameter(outputUnit, kHALOutputParam_Volume, kAudioUnitScope_Global, 0, &volume), "AudioUnitGetParameter(kHALOutputParam_Volume)")) {
+        return 0.0;
+    }
+    
+    return volume;
+}
+
 - (void) setInputDevice:(AudioDeviceID)inputDevice {
     if(_inputDevice == inputDevice)
         return;

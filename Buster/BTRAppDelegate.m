@@ -84,6 +84,8 @@
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [engine.audio start];
+        engine.audio.outputVolume = [[NSUserDefaults standardUserDefaults] floatForKey:@"outputVolume"];
+        
         if(![engine.vocoder start])
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSAlert *alert = [[NSAlert alloc] init];

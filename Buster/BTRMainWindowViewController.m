@@ -192,6 +192,8 @@
     self.speechSynth = [[NSSpeechSynthesizer alloc] initWithVoice:@"com.apple.speech.synthesis.voice.Vicki"];
     self.geocoder = [[CLGeocoder alloc] init];
     NSAssert(self.geocoder != nil, @"Geocoder did not initialize");
+    
+    self.volumeSlider.floatValue = [[NSUserDefaults standardUserDefaults] floatForKey:@"outputVolume"];
 }
 
 -(void)destinationDidLink:(NSString *)destination {
@@ -308,6 +310,11 @@
     });
     
     [self.reflectorTableView deselectAll:self];
+}
+
+- (IBAction)doVolumeChange:(id)sender {
+    [BTRDataEngine sharedInstance].audio.outputVolume = self.volumeSlider.floatValue;
+    [[NSUserDefaults standardUserDefaults] setFloat:self.volumeSlider.floatValue forKey:@"outputVolume"];
 }
 
 
