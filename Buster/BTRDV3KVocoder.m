@@ -286,9 +286,9 @@ static const struct dv3k_packet dv3k_audio = {
     self.started = NO;
 }
 
-- (void)courtesyTone {
+- (void)courtesyTone:(NSUInteger)duration {
     if(self.beep) {
-        for(int i = 0; i < 5; ++i)
+        for(int i = 0; i < duration; ++i)
             [self writePacket:&bleepPacket];
         
         //  Write a silence packet to clean out the chain
@@ -314,15 +314,8 @@ static const struct dv3k_packet dv3k_audio = {
     dispatch_async(dispatchQueue, ^{
         [self writePacket:packet];
         
-        /* if(last && self.beep) {
-            for(int i = 0; i < 5; ++i)
-                [self writePacket:&bleepPacket];
-            
-            //  Write a silence packet to clean out the chain
-            [self writePacket:&silencePacket];
-        } */
         if(last)
-            [self courtesyTone];
+            [self courtesyTone:5];
         
         free(packet);
     });
@@ -349,7 +342,7 @@ static const struct dv3k_packet dv3k_audio = {
         [self writePacket:packet];
         
         if(last)
-            [self courtesyTone];
+            [self courtesyTone:5];
         
         free(packet);
     });
