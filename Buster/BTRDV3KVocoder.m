@@ -326,8 +326,6 @@ static const struct dv3k_packet dv3k_audio = {
     }];
 }
 
-
-
 - (void) encodeData:(void *) data lastPacket:(BOOL)last {
     [self enqueueWithLastPacket:last andBlock:^(struct dv3k_packet *packet) {
         memcpy(packet, &dv3k_audio, sizeof(struct dv3k_packet));

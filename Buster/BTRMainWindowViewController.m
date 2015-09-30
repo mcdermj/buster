@@ -230,7 +230,9 @@
 
 -(void)destinationDidError:(NSString *)destination error:(NSError *)error {
     NSAlert *alert = [NSAlert alertWithError:error];
-    [alert beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse response){}];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [alert beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse response){}];
+    });
 }
 
 -(void)destinationWillLink:(NSString *)destination {
