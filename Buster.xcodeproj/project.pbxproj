@@ -645,7 +645,7 @@
 				INFOPLIST_FILE = Buster/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = Buster;
-				PROVISIONING_PROFILE = "223ed247-2ec4-4b64-b819-88913f365d09";
+				PROVISIONING_PROFILE = "44c1f463-7dd8-48c7-88cf-7ce497bee6d4";
 			};
 			name = Beta;
 		};
@@ -776,7 +776,7 @@
 				INFOPLIST_FILE = Buster/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = Buster;
-				PROVISIONING_PROFILE = "223ed247-2ec4-4b64-b819-88913f365d09";
+				PROVISIONING_PROFILE = "44c1f463-7dd8-48c7-88cf-7ce497bee6d4";
 			};
 			name = Debug;
 		};
@@ -813,7 +813,7 @@
 				INFOPLIST_FILE = Buster/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = Buster;
-				PROVISIONING_PROFILE = "223ed247-2ec4-4b64-b819-88913f365d09";
+				PROVISIONING_PROFILE = "44c1f463-7dd8-48c7-88cf-7ce497bee6d4";
 			};
 			name = Release;
 		};
