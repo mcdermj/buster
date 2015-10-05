@@ -90,7 +90,8 @@
         if(self.mapPopover.isShown)
            ((BTRMapPopupController *)self.mapPopover.contentViewController).suppressClose = YES;
 
-        [self.heardTableController addObject:header];
+        [self.qsoList addObject:header];
+        [self.heardTableController rearrangeObjects];
         
         BTRMainWindowViewController __weak *weakSelf = self;
         self.qsoTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
@@ -117,8 +118,10 @@
     }];
     
     NSUInteger qsoIndex = [BTRMainWindowViewController findQsoId:streamId inArray:self.heardTableController.arrangedObjects];
-    NSAssert(qsoIndex != NSNotFound, @"QSO not found in table at end of stream");
-    [self resetColorForRowView:[self.heardTableView rowViewAtRow:qsoIndex makeIfNecessary:NO] atRow:qsoIndex];
+    
+    //  If we can't find the QSO, it's probably not visible and we don't need to reset its color.
+    if(qsoIndex != NSNotFound)
+        [self resetColorForRowView:[self.heardTableView rowViewAtRow:qsoIndex makeIfNecessary:NO] atRow:qsoIndex];
 
     self.statusLED.image = [NSImage imageNamed:@"Gray LED"];
 }
