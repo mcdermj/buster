@@ -60,6 +60,23 @@ struct dcs_packet {
 
 #pragma pack(pop)
 
+static const struct dcs_frame dcsFrameTemplate = {
+    .magic = "0001",
+    .flags = { 0x00, 0x02, 0x01 },
+    .rpt2Call = "        ",
+    .rpt1Call = "        ",
+    .urCall = "        ",
+    .myCall = "        ",
+    .myCall2 = "    ",
+    .id = 0,
+    .sequence = 0,
+    .voice = { 0 },
+    .data = { 0 },
+    .repeaterSequence = { 0 },
+    .unknown = { 0 },
+    .text = { 0 }
+};
+
 static const struct dcs_packet linkTemplate = {
     .link.callsign = "        ",
     .link.module = 'D',
@@ -287,5 +304,54 @@ static NSDictionary *_reflectorList;
 
     [self sendPacket:linkPacket];
 }
+
+-(void) sendAMBE:(void *)data lastPacket:(BOOL)last {
+    if(self.linkState != LINKED)
+        return;
+    
+    BTRLinkDriver __weak *weakSelf = self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        NSMutableData *frameData = [NSMutableData dataWithBytes:&dcsFrameTemplate length:sizeof(dcsFrameTemplate)];
+        struct dcs_frame *frame = frameData.mutableBytes;
+
+       frame->id = weakSelf.txStreamId;
+        
+        [weakSelf.myCall.paddedCall getBytes:frame->myCall maxLength:8 usedLength:NULL encoding:NSASCIIStringEncoding options:0 range:NSMakeRange(0, 8) remainingRange:NULL];
+        [weakSelf.myCall2.paddedShortCall getBytes:frame->myCall2 maxLength:4 usedLength:NULL encoding:NSASCIIStringEncoding options:0 range:NSMakeRange(0, 4) remainingRange:NULL];
+        [weakSelf.rpt1Call.paddedCall getBytes:frame->rpt1Call maxLength:8 usedLength:NULL encoding:NSASCIIStringEncoding options:0 range:NSMakeRange(0, 8) remainingRange:NULL];
+        [weakSelf.linkTarget.paddedCall getBytes:frame->rpt2Call maxLength:8 usedLength:NULL encoding:NSASCIIStringEncoding options:0 range:NSMakeRange(0, 8) remainingRange:NULL];
+        if(self.txSequence == 0) {  //  XXX This doesn't detect correctly whether it is indeed the first packet.
+            NSDictionary *streamInfo = @{
+                                         @"rpt1Call" : weakSelf.rpt1Call,
+                                         @"rpt2Call" : weakSelf.linkTarget,
+                                         @"myCall" : weakSelf.myCall,
+                                         @"myCall2" : weakSelf.myCall2,
+                                         @"urCall" : @"CQCQCQ",
+                                         @"streamId" : [NSNumber numberWithUnsignedShort:weakSelf.txStreamId],
+                                         @"time" : [NSDate date],
+                                         @"direction" : @"TX",
+                                         @"message" : @""
+                                         };
+            [weakSelf.delegate streamDidStart:streamInfo];
+        }
+        
+        frame->sequence = weakSelf.txSequence;
+
+        memcpy(&frame->data, [self.delegate getDataForSequence:weakSelf.txSequence], sizeof(frame->data));
+        
+        if(last) {
+            [self.delegate streamDidEnd:[NSNumber numberWithUnsignedShort:weakSelf.txStreamId] atTime:[NSDate date]];
+            weakSelf.txSequence = 0;
+            weakSelf.txStreamId = (short) random();
+            frame->sequence |= 0x40;
+        } else {
+            memcpy(&frame->voice, data, sizeof(frame->voice));
+            weakSelf.txSequence = (weakSelf.txSequence + 1) % 21;
+        }
+        
+        [weakSelf sendPacket:frameData];
+    });
+}
+
 
 @end

@@ -88,8 +88,6 @@
 @property (nonatomic) dispatch_source_t dispatchSource;
 @property (nonatomic) dispatch_source_t pollTimerSource;
 @property (nonatomic, readonly) dispatch_queue_t writeQueue;
-@property (nonatomic) unsigned short txStreamId;
-@property (nonatomic) char txSequence;
 @property (nonatomic, readwrite, copy) NSString * linkTarget;
 @property (nonatomic) CFAbsoluteTime connectTime;
 @property (nonatomic) PortMapper *portMapper;

@@ -62,6 +62,8 @@
 @property (nonatomic) unsigned short rxStreamId;
 @property (nonatomic) BTRNetworkTimer *qsoTimer;
 @property (nonatomic) char rxSequence;
+@property (nonatomic) unsigned short txStreamId;
+@property (nonatomic) char txSequence;
 @end
 
 //
