@@ -50,14 +50,6 @@
 
 @end
 
-@interface BTRNetworkTimer : NSObject
-@property (nonatomic) dispatch_source_t timerSource;
-@property (nonatomic) CFAbsoluteTime lastEventTime;
-
--(id)initWithTimeout:(CFAbsoluteTime)timeout failureHandler:(void(^)())failureHandler;
--(void)ping;
-@end
-
 @implementation BTRNetworkTimer
 
 -(id)initWithTimeout:(CFAbsoluteTime)timeout failureHandler:(void(^)())failureHandler {
@@ -92,20 +84,13 @@
 @interface BTRLinkDriver ()
 
 @property (nonatomic) BTRNetworkTimer *linkTimer;
-@property (nonatomic) BTRNetworkTimer *qsoTimer;
 @property (nonatomic) int socket;
 @property (nonatomic) dispatch_source_t dispatchSource;
 @property (nonatomic) dispatch_source_t pollTimerSource;
 @property (nonatomic, readonly) dispatch_queue_t writeQueue;
-@property (nonatomic) unsigned short rxStreamId;
-@property (nonatomic) char rxSequence;
-@property (nonatomic) unsigned short txStreamId;
-@property (nonatomic) char txSequence;
 @property (nonatomic, readwrite, copy) NSString * linkTarget;
 @property (nonatomic) CFAbsoluteTime connectTime;
 @property (nonatomic) PortMapper *portMapper;
-
--(void)terminateCurrentStream;
 
 @end
 
@@ -155,7 +140,7 @@
     NSString *rpt1Call = self.myCall;
     NSString *module = [self.myCall.paddedCall substringWithRange:NSMakeRange(7, 1)];
     if([module isEqualToString:@" "])
-        rpt1Call = [rpt1Call.paddedCall stringByReplacingCharactersInRange:NSMakeRange(7, 1) withString:@"A"];
+        rpt1Call = [rpt1Call.paddedCall stringByReplacingCharactersInRange:NSMakeRange(7, 1) withString:@"D"];
     
     return rpt1Call;
 }
@@ -388,7 +373,7 @@
         }
         case LINKED: {
             [self.delegate destinationDidLink:self.linkTarget];
-            if(_linkState == UNLINKED) {
+            if(_linkState == CONNECTED) {
                 [self startPoll];
                 BTRLinkDriver __weak *weakSelf = self;
                 self.linkTimer = [[BTRNetworkTimer alloc] initWithTimeout:30.0 failureHandler:^{

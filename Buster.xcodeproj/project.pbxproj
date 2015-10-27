@@ -35,6 +35,8 @@
 		096FDB7B1B96CD90006B4105 /* aprscorpus.txt in Resources */ = {isa = PBXBuildFile; fileRef = 096FDB7A1B96CD90006B4105 /* aprscorpus.txt */; settings = {ASSET_TAGS = (); }; };
 		09796FF21B800B5A0043089D /* BTRDPlusLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 09796FF11B800B5A0043089D /* BTRDPlusLink.m */; };
 		098B10F01B65FB22002C7A3B /* BTRDataEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 098B10EF1B65FB22002C7A3B /* BTRDataEngine.m */; };
+		099DF8C71BBF3DED005D1807 /* BTRDCSLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 099DF8C61BBF3DED005D1807 /* BTRDCSLink.m */; settings = {ASSET_TAGS = (); }; };
+		099DF8C91BBF43B0005D1807 /* DCSReflectors.plist in Resources */ = {isa = PBXBuildFile; fileRef = 099DF8C81BBF43B0005D1807 /* DCSReflectors.plist */; settings = {ASSET_TAGS = (); }; };
 		09A5FDEE1B5794FA00AE9E1C /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */; };
 		09A5FDF11B57956A00AE9E1C /* BTRAudioHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 09A5FDF01B57956A00AE9E1C /* BTRAudioHandler.m */; };
 		09A994BA1B6DD2E40061A929 /* BTRDV3KSerialVocoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 09A994B91B6DD2E40061A929 /* BTRDV3KSerialVocoder.m */; };
@@ -132,6 +134,9 @@
 		09796FF11B800B5A0043089D /* BTRDPlusLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRDPlusLink.m; sourceTree = "<group>"; };
 		098B10EE1B65FB22002C7A3B /* BTRDataEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRDataEngine.h; sourceTree = "<group>"; };
 		098B10EF1B65FB22002C7A3B /* BTRDataEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRDataEngine.m; sourceTree = "<group>"; };
+		099DF8C51BBF3DED005D1807 /* BTRDCSLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRDCSLink.h; sourceTree = "<group>"; };
+		099DF8C61BBF3DED005D1807 /* BTRDCSLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRDCSLink.m; sourceTree = "<group>"; };
+		099DF8C81BBF43B0005D1807 /* DCSReflectors.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DCSReflectors.plist; sourceTree = "<group>"; };
 		09A5FDEC1B5794FA00AE9E1C /* TPCircularBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TPCircularBuffer.c; sourceTree = "<group>"; };
 		09A5FDED1B5794FA00AE9E1C /* TPCircularBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPCircularBuffer.h; sourceTree = "<group>"; };
 		09A5FDEF1B57956A00AE9E1C /* BTRAudioHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = BTRAudioHandler.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -274,6 +279,7 @@
 		093B9AF41B50E2D500C2ABD0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				099DF8C81BBF43B0005D1807 /* DCSReflectors.plist */,
 				0908EF861B852541007B76F5 /* DExtraReflectors.plist */,
 				095249011B6DC79B0062F1A5 /* Credits.html */,
 				093B9AF51B50E2D500C2ABD0 /* Info.plist */,
@@ -366,6 +372,8 @@
 				09796FF11B800B5A0043089D /* BTRDPlusLink.m */,
 				0908EF831B84FDBE007B76F5 /* BTRDExtraLink.h */,
 				0908EF841B84FDBE007B76F5 /* BTRDExtraLink.m */,
+				099DF8C51BBF3DED005D1807 /* BTRDCSLink.h */,
+				099DF8C61BBF3DED005D1807 /* BTRDCSLink.m */,
 			);
 			name = "Link Drivers";
 			sourceTree = "<group>";
@@ -471,6 +479,7 @@
 				095963361B982FF8003CC8A1 /* BTRMapPopupController.xib in Resources */,
 				093B9AFF1B50E2D500C2ABD0 /* Images.xcassets in Resources */,
 				095249021B6DC79B0062F1A5 /* Credits.html in Resources */,
+				099DF8C91BBF43B0005D1807 /* DCSReflectors.plist in Resources */,
 				09A994DE1B71EAD50061A929 /* BTRSerialVocoderView.xib in Resources */,
 				0908EF871B852541007B76F5 /* DExtraReflectors.plist in Resources */,
 				093B9B021B50E2D500C2ABD0 /* Main.storyboard in Resources */,
@@ -543,6 +552,7 @@
 				09DBC7591BBAFB6200346912 /* BTRAddPopupController.m in Sources */,
 				0924272E1B62F46600D568DE /* BTRAudioViewController.m in Sources */,
 				09DFDA9F1B8D6A9700D00030 /* BTRIRCDDBGateways.m in Sources */,
+				099DF8C71BBF3DED005D1807 /* BTRDCSLink.m in Sources */,
 				09E589CA1B7EAC1800A962B5 /* BTRDPlusAuthenticator.m in Sources */,
 				09DFDA991B8C331300D00030 /* BTRMessageFormatter.m in Sources */,
 			);

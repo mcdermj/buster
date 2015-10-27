@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>DCS001</key>
+	<string>dcs001.xreflector.net</string>
+	<key>DCS002</key>
+	<string>dcs002.xreflector.net</string>
+	<key>DCS003</key>
+	<string>dcs003.xreflector.net</string>
+	<key>DCS004</key>
+	<string>dcs004.xreflector.net</string>
+	<key>DCS005</key>
+	<string>dcs005.xreflector.net</string>
+	<key>DCS006</key>
+	<string>dcs006.xreflector.net</string>
+	<key>DCS007</key>
+	<string>dcs007.xreflector.net</string>
+	<key>DCS008</key>
+	<string>dcs008.xreflector.net</string>
+	<key>DCS009</key>
+	<string>dcs009.xreflector.net</string>
+	<key>DCS010</key>
+	<string>dcs010.xreflector.net</string>
+	<key>DCS011</key>
+	<string>dcs011.xreflector.net</string>
+	<key>DCS012</key>
+	<string>dcs012.xreflector.net</string>
+	<key>DCS013</key>
+	<string>dcs013.xreflector.net</string>
+	<key>DCS014</key>
+	<string>dcs014.xreflector.net</string>
+	<key>DCS015</key>
+	<string>dcs015.xreflector.net</string>
+	<key>DCS016</key>
+	<string>dcs016.xreflector.net</string>
+	<key>DCS017</key>
+	<string>dcs017.xreflector.net</string>
+	<key>DCS018</key>
+	<string>dcs018.xreflector.net</string>
+	<key>DCS019</key>
+	<string>dcs019.xreflector.net</string>
+	<key>DCS020</key>
+	<string>dcs020.xreflector.net</string>
+	<key>DCS021</key>
+	<string>dcs021.xreflector.net</string>
+	<key>DCS022</key>
+	<string>dcs022.xreflector.net</string>
+	<key>DCS023</key>
+	<string>dcs023.xreflector.net</string>
+	<key>DCS024</key>
+	<string>dcs024.xreflector.net</string>
+	<key>DCS025</key>
+	<string>dcs025.xreflector.net</string>
+	<key>DCS027</key>
+	<string>dcs027.xreflector.net</string>
+	<key>DCS028</key>
+	<string>dcs028.xreflector.net</string>
+	<key>DCS033</key>
+	<string>dcs033.xreflector.net</string>
+	<key>DCS044</key>
+	<string>dcs044.xreflector.net</string>
+</dict>
+</plist>
