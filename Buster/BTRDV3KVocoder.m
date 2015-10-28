@@ -286,9 +286,20 @@ static const struct dv3k_packet dv3k_audio = {
     self.started = NO;
 }
 
+- (void)courtesyTone:(NSUInteger)duration {
+    if(self.beep) {
+        for(int i = 0; i < duration; ++i)
+            [self writePacket:&bleepPacket];
+        
+        //  Write a silence packet to clean out the chain
+        [self writePacket:&silencePacket];
+    }
+}
+
 #pragma mark - Data handling
 
-- (void) decodeData:(void *) data lastPacket:(BOOL)last {
+// XXX This function could be better named :/
+-(void)enqueueWithLastPacket:(BOOL)last andBlock:(void(^)(struct dv3k_packet *))block {
     struct dv3k_packet *packet;
     
     if(self.started == NO)
@@ -296,44 +307,35 @@ static const struct dv3k_packet dv3k_audio = {
     
     packet = malloc(sizeof(struct dv3k_packet));
     
-    memcpy(packet, &dv3k_ambe, sizeof(dv3k_ambe));
-    memcpy(&packet->payload.ambe.data.data, data, sizeof(packet->payload.ambe.data.data));
+    block(packet);
     
     dispatch_async(dispatchQueue, ^{
         [self writePacket:packet];
         
-        if(last && self.beep) {
-            for(int i = 0; i < 5; ++i)
-                [self writePacket:&bleepPacket];
-            
-            //  Write a silence packet to clean out the chain
-            [self writePacket:&silencePacket];
-        }
+        if(last)
+            [self courtesyTone:5];
         
         free(packet);
     });
 }
 
-- (void) encodeData:(void *)  data lastPacket:(BOOL)last {
-    struct dv3k_packet *packet;
-    
-    if(self.started == NO)
-        return;
-    
-    packet = malloc(sizeof(struct dv3k_packet));
-    memcpy(packet, &dv3k_audio, sizeof(struct dv3k_packet));
-    memcpy(&packet->payload.audio.samples, data, sizeof(packet->payload.audio.samples));
-    
-    if(last)
-        packet->payload.audio.cmode_value = htons(0x4000);
-    else
-        packet->payload.audio.cmode_value = 0x0000;
-    
-    dispatch_async(dispatchQueue, ^{
-        [self writePacket:packet];
+- (void) decodeData:(void *) data lastPacket:(BOOL)last {
+    [self enqueueWithLastPacket:last andBlock:^(struct dv3k_packet *packet) {
+        memcpy(packet, &dv3k_ambe, sizeof(dv3k_ambe));
+        memcpy(&packet->payload.ambe.data.data, data, sizeof(packet->payload.ambe.data.data));
+    }];
+}
+
+- (void) encodeData:(void *) data lastPacket:(BOOL)last {
+    [self enqueueWithLastPacket:last andBlock:^(struct dv3k_packet *packet) {
+        memcpy(packet, &dv3k_audio, sizeof(struct dv3k_packet));
+        memcpy(&packet->payload.audio.samples, data, sizeof(packet->payload.audio.samples));
         
-        free(packet);
-    });
+        if(last)
+            packet->payload.audio.cmode_value = htons(0x4000);
+        else
+            packet->payload.audio.cmode_value = 0x0000;
+    }];
 }
 
 -(void) processPacket {

@@ -127,6 +127,13 @@ static const struct dplus_packet linkModuleTemplate = {
     return NO;
 }
 
+-(NSArray<NSString *> *)destinations {
+    NSMutableArray *destinations = [[NSMutableArray alloc] initWithArray:self.authenticator.reflectorList.allKeys];
+    [destinations addObjectsFromArray:self.ircDDBGateways.gateways.allKeys];
+    
+    return destinations;
+}
+
 -(CFAbsoluteTime)pollInterval {
     return 1.0;
 }

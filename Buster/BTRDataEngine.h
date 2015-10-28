@@ -31,6 +31,7 @@
 @property (nonatomic, readonly) BTRAudioHandler *audio;
 @property (nonatomic, readonly) BTRSlowDataCoder *slowData;
 @property (nonatomic) NSObject <BTRDataEngineDelegate> *delegate;
+@property (nonatomic, readonly) NSArray<NSString *> *linkDriverDestinations;
 
 +(BTRDataEngine *)sharedInstance;
 

@@ -10,6 +10,14 @@
 
 #import "DStarUtils.h"
 
+@interface BTRNetworkTimer : NSObject
+@property (nonatomic) dispatch_source_t timerSource;
+@property (nonatomic) CFAbsoluteTime lastEventTime;
+
+-(id)initWithTimeout:(CFAbsoluteTime)timeout failureHandler:(void(^)())failureHandler;
+-(void)ping;
+@end
+
 @interface BTRLinkDriver ()
 
 //
@@ -35,6 +43,8 @@
 
 // -(void)unlink;
 
+-(void)terminateCurrentStream;
+
 //
 //  Override these to set the parameters in the subclass.
 //
@@ -49,6 +59,11 @@
 //
 @property (nonatomic, readwrite) enum linkState linkState;
 @property (nonatomic, readonly, copy) NSString *rpt1Call;
+@property (nonatomic) unsigned short rxStreamId;
+@property (nonatomic) BTRNetworkTimer *qsoTimer;
+@property (nonatomic) char rxSequence;
+@property (nonatomic) unsigned short txStreamId;
+@property (nonatomic) char txSequence;
 @end
 
 //

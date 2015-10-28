@@ -27,6 +27,8 @@
 #import "BTRAudioHandler.h"
 #import "BTRMapPopupController.h"
 #import "BTRAprsLocation.h"
+#import "BTRAddPopupController.h"
+
 
 @import MapKit;
 
@@ -90,7 +92,8 @@
         if(self.mapPopover.isShown)
            ((BTRMapPopupController *)self.mapPopover.contentViewController).suppressClose = YES;
 
-        [self.heardTableController addObject:header];
+        [self.qsoList addObject:header];
+        [self.heardTableController rearrangeObjects];
         
         BTRMainWindowViewController __weak *weakSelf = self;
         self.qsoTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
@@ -117,8 +120,10 @@
     }];
     
     NSUInteger qsoIndex = [BTRMainWindowViewController findQsoId:streamId inArray:self.heardTableController.arrangedObjects];
-    NSAssert(qsoIndex != NSNotFound, @"QSO not found in table at end of stream");
-    [self resetColorForRowView:[self.heardTableView rowViewAtRow:qsoIndex makeIfNecessary:NO] atRow:qsoIndex];
+    
+    //  If we can't find the QSO, it's probably not visible and we don't need to reset its color.
+    if(qsoIndex != NSNotFound)
+        [self resetColorForRowView:[self.heardTableView rowViewAtRow:qsoIndex makeIfNecessary:NO] atRow:qsoIndex];
 
     self.statusLED.image = [NSImage imageNamed:@"Gray LED"];
 }
@@ -192,6 +197,8 @@
     self.speechSynth = [[NSSpeechSynthesizer alloc] initWithVoice:@"com.apple.speech.synthesis.voice.Vicki"];
     self.geocoder = [[CLGeocoder alloc] init];
     NSAssert(self.geocoder != nil, @"Geocoder did not initialize");
+    
+    self.volumeSlider.floatValue = [[NSUserDefaults standardUserDefaults] floatForKey:@"outputVolume"];
 }
 
 -(void)destinationDidLink:(NSString *)destination {
@@ -203,6 +210,12 @@
     [dockTile display];
     
     self.txButton.enabled = YES;
+    
+    [self.reflectorTableView enumerateAvailableRowViewsUsingBlock:^void(NSTableRowView *rowView, NSInteger row) {
+        NSTextField *reflectorView = ((NSTableCellView *)[rowView viewAtColumn:0]).textField;
+        if([reflectorView.objectValue isEqualToString:destination])
+            reflectorView.textColor = [NSColor redColor];
+    }];
 }
 
 -(void)destinationDidUnlink:(NSString *)destination {
@@ -214,11 +227,19 @@
     [dockTile display];
     
     self.txButton.enabled = NO;
+    
+    [self.reflectorTableView enumerateAvailableRowViewsUsingBlock:^void(NSTableRowView *rowView, NSInteger row) {
+        NSTextField *reflectorView = ((NSTableCellView *)[rowView viewAtColumn:0]).textField;
+        if([reflectorView.objectValue isEqualToString:destination])
+            reflectorView.textColor = [NSColor blackColor];
+    }];
 }
 
 -(void)destinationDidError:(NSString *)destination error:(NSError *)error {
     NSAlert *alert = [NSAlert alertWithError:error];
-    [alert beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse response){}];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [alert beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse response){}];
+    });
 }
 
 -(void)destinationWillLink:(NSString *)destination {
@@ -246,6 +267,29 @@
     }
 }
 
+-(IBAction)doReflectorDoubleClick:(id)sender {
+    if(self.reflectorTableController.selectedObjects.count != 1) {
+        NSBeep();
+        return;
+    }
+    
+    NSString *reflector = self.reflectorTableController.selectedObjects[0][@"reflector"];
+    
+    if(reflector.length < 8)
+        return;
+
+    if([reflector isEqualToString:[BTRDataEngine sharedInstance].network.linkTarget]) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+            [[BTRDataEngine sharedInstance] unlink];
+        });
+    } else {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+            [[BTRDataEngine sharedInstance] linkTo:reflector];
+        });
+    }
+    
+    [self.reflectorTableView deselectAll:self];
+}
 
 - (IBAction)doLink:(id)sender {
     if(self.reflectorTableController.selectedObjects.count != 1) {
@@ -261,12 +305,21 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         [[BTRDataEngine sharedInstance] linkTo:reflector];
     });
+    
+    [self.reflectorTableView deselectAll:self];
 }
 
 - (IBAction)doUnlink:(id)sender {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         [[BTRDataEngine sharedInstance] unlink];
     });
+    
+    [self.reflectorTableView deselectAll:self];
+}
+
+- (IBAction)doVolumeChange:(id)sender {
+    [BTRDataEngine sharedInstance].audio.outputVolume = self.volumeSlider.floatValue;
+    [[NSUserDefaults standardUserDefaults] setFloat:self.volumeSlider.floatValue forKey:@"outputVolume"];
 }
 
 
@@ -420,5 +473,15 @@
        ![self.view.window.firstResponder isKindOfClass:[NSTextView class]])
         if(!theEvent.isARepeat)
             [self endTx];
+}
+
+#pragma mark - Segue support
+
+-(void)prepareForSegue:(NSStoryboardSegue *)segue sender:(id)sender {
+    if(![segue.identifier isEqualToString:@"addPopupSegue"])
+        return;
+    
+    BTRAddPopupController *destController = (BTRAddPopupController *) segue.destinationController;
+    destController.reflectorArrayController = self.reflectorTableController;
 }
 @end
