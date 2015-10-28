@@ -337,7 +337,8 @@ static NSDictionary *_reflectorList;
         
         frame->sequence = weakSelf.txSequence;
 
-        memcpy(&frame->data, [self.delegate getDataForSequence:weakSelf.txSequence], sizeof(frame->data));
+        // memcpy(&frame->data, [self.delegate getDataForSequence:weakSelf.txSequence], sizeof(frame->data));
+        [self.delegate getBytes:&frame->data forSequence:weakSelf.txSequence];
         
         if(last) {
             [self.delegate streamDidEnd:[NSNumber numberWithUnsignedShort:weakSelf.txStreamId] atTime:[NSDate date]];

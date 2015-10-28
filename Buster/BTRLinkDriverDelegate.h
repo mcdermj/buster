@@ -20,7 +20,7 @@
 @protocol BTRLinkDriverDelegate <NSObject>
 
 -(void)addData:(void *)data streamId:(NSUInteger)streamId;
--(const void *)getDataForSequence:(NSUInteger)sequence;
+-(void)getBytes:(void *)bytes forSequence:(NSUInteger)sequence;
 
 #pragma mark - Delegate methods
 -(void)destinationWillLink:(NSString *)destination;

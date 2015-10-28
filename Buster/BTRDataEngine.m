@@ -208,8 +208,8 @@ static NSMutableArray <Class> *linkDriverClasses = nil;
     [self.slowData addData:data streamId:streamId];
 }
 
--(const void *)getDataForSequence:(NSUInteger)sequence {
-    return [self.slowData getDataForSequence:sequence];
+-(void)getBytes:(void *)bytes forSequence:(NSUInteger)sequence {
+    return [self.slowData getBytes:bytes forSequence:sequence];
 }
 
 -(void)destinationDidLink:(NSString *)destination {

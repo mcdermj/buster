@@ -26,7 +26,9 @@
 #import "BTRSlowDataCoder.h"
 #import "BTRAudioHandler.h"
 #import "BTRMapPopupController.h"
+#import "BTRAprsLocation.h"
 #import "BTRAddPopupController.h"
+
 
 @import MapKit;
 
@@ -132,18 +134,18 @@
     }];
 }
 
--(void)locationReceived:(CLLocation *)location forStreamId:(NSNumber *)streamId {
+-(void)locationReceived:(BTRAprsLocation *)location forStreamId:(NSNumber *)streamId {
     NSParameterAssert(location != nil);
     
     [self updateQsoId:streamId usingBlock:^(NSMutableDictionary *qso, NSUInteger qsoIndex) {
-        CLLocation *oldLocation = qso[@"location"];
+        CLLocation *oldLocation = ((BTRAprsLocation *)qso[@"location"]).location;
         qso[@"location"] = location;
 
-        if(oldLocation && [oldLocation distanceFromLocation:qso[@"location"]] < 100.0)
+        if(oldLocation && [location.location distanceFromLocation:oldLocation] < 100.0)
             return;
 
         qso[@"city"] = @"Searching city database…";
-        [self.geocoder reverseGeocodeLocation:location completionHandler:^(NSArray <CLPlacemark *> *placemarks, NSError *error) {
+        [self.geocoder reverseGeocodeLocation:location.location completionHandler:^(NSArray <CLPlacemark *> *placemarks, NSError *error) {
             if(!placemarks) {
                 NSLog(@"placemarks are nil");
                 return;
@@ -256,9 +258,9 @@
     NSDictionary *qso = self.heardTableController.arrangedObjects[self.heardTableView.clickedRow];
     
     if(qso[@"location"]) {
-        MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
-        annotation.coordinate = ((CLLocation *)qso[@"location"]).coordinate;
-        ((BTRMapPopupController *)self.mapPopover.contentViewController).annotation = annotation;
+        //MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
+        //annotation.coordinate = ((CLLocation *)qso[@"location"]).coordinate;
+        ((BTRMapPopupController *)self.mapPopover.contentViewController).annotation = qso[@"location"];
         ((BTRMapPopupController *)self.mapPopover.contentViewController).qsoId = qso[@"streamId"];
         NSView *clickedView = [self.heardTableView viewAtColumn:[self.heardTableView columnWithIdentifier:@"Location"] row:self.heardTableView.clickedRow makeIfNecessary:NO];
         [self.mapPopover showRelativeToRect:NSMakeRect(0, 0, 300, 300) ofView:clickedView preferredEdge:NSRectEdgeMaxY];
