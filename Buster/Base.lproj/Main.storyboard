@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8191"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9060"/>
         <capability name="box content view" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
@@ -215,7 +215,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="In3-mF-eFZ">
-                                            <rect key="frame" x="48" y="45" width="28" height="17"/>
+                                            <rect key="frame" x="48" y="45" width="27" height="17"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Call" id="Z0e-RZ-RyE">
                                                 <font key="font" metaFont="system"/>
@@ -224,7 +224,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rx6-cQ-DFw">
-                                            <rect key="frame" x="82" y="42" width="61" height="24"/>
+                                            <rect key="frame" x="81" y="42" width="61" height="24"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="24" id="286-Fi-M8E"/>
                                                 <constraint firstAttribute="width" constant="61" id="yzP-y8-Hw6"/>
@@ -241,7 +241,7 @@
                                             </connections>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BmD-hr-Qzf">
-                                            <rect key="frame" x="149" y="45" width="9" height="17"/>
+                                            <rect key="frame" x="148" y="45" width="9" height="17"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="/" id="G9x-Tu-5NQ">
                                                 <font key="font" metaFont="system"/>
@@ -250,7 +250,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4wq-bQ-ClG">
-                                            <rect key="frame" x="16" y="13" width="60" height="24"/>
+                                            <rect key="frame" x="16" y="13" width="59" height="24"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Message" id="kJe-1B-IV9">
                                                 <font key="font" metaFont="system"/>
@@ -259,7 +259,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Vyd-KN-uv6">
-                                            <rect key="frame" x="164" y="42" width="35" height="24"/>
+                                            <rect key="frame" x="163" y="42" width="35" height="24"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="24" id="OaH-Nr-7Eb"/>
                                                 <constraint firstAttribute="width" constant="35" id="nQL-Zj-38Q"/>
@@ -282,7 +282,7 @@
                                             </connections>
                                         </textField>
                                         <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cjh-nh-DIG">
-                                            <rect key="frame" x="82" y="14" width="288" height="22"/>
+                                            <rect key="frame" x="81" y="14" width="289" height="22"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="22" id="EK5-lw-P3t"/>
                                             </constraints>
@@ -384,7 +384,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="8E1-QA-SES" viewBased="YES" id="sF2-ua-GZt">
-                                            <rect key="frame" x="0.0" y="0.0" width="75" height="0.0"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="75" height="176"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <animations/>
                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -475,7 +475,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pwT-ch-zJC">
-                                            <rect key="frame" x="511" y="189" width="100" height="15"/>
+                                            <rect key="frame" x="511" y="189" width="100" height="17"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="100" id="c2D-Lc-28Z"/>
                                             </constraints>
@@ -502,7 +502,7 @@
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="wbE-2Z-g0q" viewBased="YES" id="rqv-8N-voe">
-                                                        <rect key="frame" x="0.0" y="0.0" width="701" height="0.0"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="701" height="156"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <animations/>
                                                         <size key="intercellSpacing" width="3" height="2"/>
@@ -924,7 +924,7 @@
                                             </connections>
                                         </button>
                                         <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="EE0-G5-muf">
-                                            <rect key="frame" x="146" y="188" width="257" height="17"/>
+                                            <rect key="frame" x="145" y="188" width="259" height="17"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="17" id="JCq-wI-XFs"/>
                                             </constraints>
@@ -936,7 +936,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BhH-kX-eNe">
-                                            <rect key="frame" x="94" y="188" width="48" height="17"/>
+                                            <rect key="frame" x="94" y="188" width="47" height="17"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Status:" id="tbe-gl-Eea">
                                                 <font key="font" metaFont="system"/>
@@ -956,7 +956,7 @@
                                             </connections>
                                         </slider>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UuP-C8-WtU">
-                                            <rect key="frame" x="407" y="188" width="50" height="17"/>
+                                            <rect key="frame" x="408" y="188" width="49" height="17"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Volume" id="MNT-ur-s8c">
                                                 <font key="font" metaFont="system"/>
@@ -1009,8 +1009,7 @@
                                     <font key="font" metaFont="miniSystem"/>
                                 </buttonCell>
                                 <connections>
-                                    <action selector="addReflector:" target="XfG-lQ-9wD" id="j3y-VF-RfY"/>
-                                    <segue destination="ds4-mU-xKE" kind="popover" identifier="addPopupSegue" popoverAnchorView="Y9w-7c-W1y" popoverBehavior="semitransient" preferredEdge="maxY" id="ZdS-nQ-JcP"/>
+                                    <action selector="addReflector:" target="XfG-lQ-9wD" id="8Ui-e4-crC"/>
                                 </connections>
                             </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="HHn-S8-cIi" userLabel="Remove Reflector Button">
@@ -1111,77 +1110,6 @@
             </objects>
             <point key="canvasLocation" x="92" y="1053.5"/>
         </scene>
-        <!--Add Popup Controller-->
-        <scene sceneID="uh5-Nc-wjp">
-            <objects>
-                <viewController id="ds4-mU-xKE" customClass="BTRAddPopupController" sceneMemberID="viewController">
-                    <view key="view" id="z62-dc-7Gs">
-                        <rect key="frame" x="0.0" y="0.0" width="215" height="57"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <subviews>
-                            <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="R6d-08-H3Q">
-                                <rect key="frame" x="108" y="14" width="54" height="26"/>
-                                <animations/>
-                                <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="k9W-dY-jOP">
-                                    <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="menu"/>
-                                    <menu key="menu" id="UFv-sJ-PcM">
-                                        <items>
-                                            <menuItem title="A" id="ABh-wo-8Kc"/>
-                                            <menuItem title="B" id="Wbd-Rc-ZFi"/>
-                                            <menuItem title="C" id="NSP-Qo-8pt"/>
-                                            <menuItem title="D" id="ULU-YK-IKR">
-                                                <modifierMask key="keyEquivalentModifierMask"/>
-                                            </menuItem>
-                                            <menuItem title="E" id="pEP-Zh-TI4">
-                                                <modifierMask key="keyEquivalentModifierMask"/>
-                                            </menuItem>
-                                        </items>
-                                    </menu>
-                                </popUpButtonCell>
-                            </popUpButton>
-                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fkE-3O-bq1">
-                                <rect key="frame" x="6" y="17" width="96" height="22"/>
-                                <animations/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="IkQ-5X-oGN">
-                                    <customFormatter key="formatter" id="YUU-m2-Hyh" customClass="BTRCallFormatter">
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="maxLength">
-                                                <integer key="value" value="7"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                    </customFormatter>
-                                    <font key="font" metaFont="fixedUser" size="11"/>
-                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                                <connections>
-                                    <outlet property="delegate" destination="ds4-mU-xKE" id="zqh-Al-jsa"/>
-                                </connections>
-                            </textField>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hPT-oR-XBu">
-                                <rect key="frame" x="167" y="18" width="38" height="19"/>
-                                <animations/>
-                                <buttonCell key="cell" type="roundRect" title="Add" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="hPH-po-C2A">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="cellTitle"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="doAdd:" target="ds4-mU-xKE" id="3Q9-E6-wfT"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <animations/>
-                    </view>
-                    <connections>
-                        <outlet property="destinationField" destination="IkQ-5X-oGN" id="IFX-cG-yTD"/>
-                        <outlet property="moduleField" destination="R6d-08-H3Q" id="uCn-L5-4aG"/>
-                    </connections>
-                </viewController>
-                <customObject id="M1R-T0-iSp" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="318.5" y="1334.5"/>
-        </scene>
         <!--Audio-->
         <scene sceneID="elY-lg-nZP">
             <objects>
@@ -1191,7 +1119,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TRZ-HT-6PH">
-                                <rect key="frame" x="57" y="20" width="36" height="17"/>
+                                <rect key="frame" x="57" y="20" width="35" height="17"/>
                                 <animations/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Input" id="vtg-eW-9ai">
                                     <font key="font" metaFont="system"/>
@@ -1222,7 +1150,7 @@
                                 </connections>
                             </popUpButton>
                             <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TXG-GC-K3t">
-                                <rect key="frame" x="97" y="15" width="312" height="26"/>
+                                <rect key="frame" x="96" y="15" width="312" height="26"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="307" id="004-cg-u2i"/>
                                     <constraint firstAttribute="height" constant="21" id="nnL-Wd-qEf"/>
@@ -1285,7 +1213,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9vt-yH-YFp" userLabel="Driver Menu">
-                                <rect key="frame" x="176" y="189" width="73" height="26"/>
+                                <rect key="frame" x="175" y="189" width="76" height="26"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="d4T-y0-aKp"/>
                                 </constraints>

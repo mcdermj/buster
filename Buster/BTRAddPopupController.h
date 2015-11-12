@@ -6,7 +6,7 @@
 //  Copyright © 2015 NH6Z. All rights reserved.
 //
 
-@interface BTRAddPopupController : NSViewController <NSControlTextEditingDelegate>
+@interface BTRAddPopupController : NSViewController <NSControlTextEditingDelegate, NSPopoverDelegate>
 
 @property (nonatomic) NSArrayController *reflectorArrayController;
 @property (weak) IBOutlet NSTextFieldCell *destinationField;

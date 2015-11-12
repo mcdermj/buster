@@ -40,6 +40,8 @@
 @property (nonatomic) CLGeocoder *geocoder;
 @property (nonatomic, readwrite) NSMutableArray <NSMutableDictionary *> *qsoList;
 @property (nonatomic) NSPopover *mapPopover;
+@property (nonatomic) NSPopover *addPopover;
+
 
 @end
 
@@ -178,6 +180,14 @@
     self.mapPopover.contentViewController = [[BTRMapPopupController alloc] initWithNibName:nil bundle:nil];
     self.mapPopover.behavior = NSPopoverBehaviorTransient;
     self.mapPopover.delegate = (BTRMapPopupController *) self.mapPopover.contentViewController;
+    
+    self.addPopover = [[NSPopover alloc] init];
+    BTRAddPopupController *addController = [[BTRAddPopupController alloc] initWithNibName:nil bundle:nil];
+    addController.reflectorArrayController = self.reflectorTableController;
+    self.addPopover.contentViewController = addController;
+    self.addPopover.behavior = NSPopoverBehaviorTransient;
+    self.addPopover.delegate = addController;
+    
     [self bind:@"txKeyCode" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.shortcutValue" options:@{NSValueTransformerNameBindingOption: MASDictionaryTransformerName}];
     
     [self.view.window makeFirstResponder:self.view];
@@ -324,12 +334,7 @@
 
 
 -(void) addReflector:(id)sender {
-    NSMutableDictionary *newObject = [NSMutableDictionary dictionaryWithDictionary:@{ @"reflector": @"REFXXX C" }];
-    [self.reflectorTableController addObject:newObject];
-    
-    NSInteger insertedObjectIndex = [self.reflectorTableController.arrangedObjects indexOfObject:newObject];
-    self.reflectorTableController.selectionIndex = insertedObjectIndex;
-    [self.reflectorTableView editColumn:0 row:insertedObjectIndex withEvent:nil select:YES];
+    [self.addPopover showRelativeToRect:NSMakeRect(0, 0, 300, 300) ofView:sender preferredEdge:NSRectEdgeMaxY];
 }
 
 -(void)startTx {
@@ -473,15 +478,5 @@
        ![self.view.window.firstResponder isKindOfClass:[NSTextView class]])
         if(!theEvent.isARepeat)
             [self endTx];
-}
-
-#pragma mark - Segue support
-
--(void)prepareForSegue:(NSStoryboardSegue *)segue sender:(id)sender {
-    if(![segue.identifier isEqualToString:@"addPopupSegue"])
-        return;
-    
-    BTRAddPopupController *destController = (BTRAddPopupController *) segue.destinationController;
-    destController.reflectorArrayController = self.reflectorTableController;
 }
 @end
