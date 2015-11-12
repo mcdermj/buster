@@ -213,7 +213,9 @@
 
 -(void)destinationDidLink:(NSString *)destination {
     self.repeaterInfo.stringValue = [NSString stringWithFormat:@"Linked to %@", destination];
-    [self.speechSynth startSpeakingString:[NSString stringWithFormat:@"Linked to [[rate -60.0]][[char LTRL]] %@ [[char NORM]][[rate +60.0]]", destination]];
+
+    if([[NSUserDefaults standardUserDefaults] boolForKey:@"voiceAnnounceOnStatusChange"])
+        [self.speechSynth startSpeakingString:[NSString stringWithFormat:@"Linked to [[rate -60.0]][[char LTRL]] %@ [[char NORM]][[rate +60.0]]", destination]];
     
     NSDockTile *dockTile = [NSApplication sharedApplication].dockTile;
     dockTile.badgeLabel = destination;
@@ -230,7 +232,9 @@
 
 -(void)destinationDidUnlink:(NSString *)destination {
     self.repeaterInfo.stringValue = @"Unlinked";
-    [self.speechSynth startSpeakingString:self.repeaterInfo.stringValue];
+    
+    if([[NSUserDefaults standardUserDefaults] boolForKey:@"voiceAnnounceOnStatusChange"])
+        [self.speechSynth startSpeakingString:self.repeaterInfo.stringValue];
     
     NSDockTile *dockTile = [NSApplication sharedApplication].dockTile;
     dockTile.badgeLabel = nil;

@@ -98,8 +98,6 @@ static const struct dv3k_packet dv3k_audio = {
         dispatchSource = NULL;
         
         responsePacket = calloc(1, sizeof(struct dv3k_packet));
-                
-        self.beep = YES;
         
         self.started = NO;
     }
@@ -287,7 +285,7 @@ static const struct dv3k_packet dv3k_audio = {
 }
 
 - (void)courtesyTone:(NSUInteger)duration {
-    if(self.beep) {
+    if([[NSUserDefaults standardUserDefaults] boolForKey:@"courtesyTone"]) {
         for(int i = 0; i < duration; ++i)
             [self writePacket:&bleepPacket];
         

@@ -1115,11 +1115,11 @@
             <objects>
                 <viewController title="Audio" id="PTa-5A-wC9" customClass="BTRAudioViewController" sceneMemberID="viewController">
                     <view key="view" id="XSw-uU-Ge2">
-                        <rect key="frame" x="0.0" y="0.0" width="424" height="82"/>
+                        <rect key="frame" x="0.0" y="0.0" width="424" height="138"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TRZ-HT-6PH">
-                                <rect key="frame" x="57" y="20" width="35" height="17"/>
+                                <rect key="frame" x="58" y="76" width="35" height="17"/>
                                 <animations/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Input" id="vtg-eW-9ai">
                                     <font key="font" metaFont="system"/>
@@ -1128,7 +1128,7 @@
                                 </textFieldCell>
                             </textField>
                             <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="mVy-ci-K0O">
-                                <rect key="frame" x="97" y="40" width="312" height="26"/>
+                                <rect key="frame" x="97" y="96" width="312" height="26"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="ctk-Go-p0c"/>
                                     <constraint firstAttribute="width" constant="307" id="d8k-Qt-eop"/>
@@ -1150,7 +1150,7 @@
                                 </connections>
                             </popUpButton>
                             <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TXG-GC-K3t">
-                                <rect key="frame" x="96" y="15" width="312" height="26"/>
+                                <rect key="frame" x="97" y="71" width="312" height="26"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="307" id="004-cg-u2i"/>
                                     <constraint firstAttribute="height" constant="21" id="nnL-Wd-qEf"/>
@@ -1172,7 +1172,7 @@
                                 </connections>
                             </popUpButton>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="h5x-4o-35e">
-                                <rect key="frame" x="46" y="45" width="47" height="17"/>
+                                <rect key="frame" x="46" y="101" width="47" height="17"/>
                                 <animations/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Output" id="TqM-9f-QPD">
                                     <font key="font" metaFont="system"/>
@@ -1180,17 +1180,53 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="dee-IL-Aaz">
+                                <rect key="frame" x="97" y="38" width="287" height="18"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="14" id="Zog-on-uc2"/>
+                                    <constraint firstAttribute="width" constant="283" id="mmQ-G5-7rm"/>
+                                </constraints>
+                                <animations/>
+                                <buttonCell key="cell" type="check" title="Play Courtesy Tone at End of Transmissions" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="sRO-D3-EGD">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <binding destination="aLa-Lb-SUp" name="value" keyPath="values.courtesyTone" id="xb9-if-x5J"/>
+                                </connections>
+                            </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="x50-db-H91">
+                                <rect key="frame" x="97" y="18" width="242" height="18"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="238" id="8f9-nt-kLq"/>
+                                    <constraint firstAttribute="height" constant="14" id="K84-JK-nOu"/>
+                                </constraints>
+                                <animations/>
+                                <buttonCell key="cell" type="check" title="Announce Reflector Status Changes" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="wx5-Qg-WX9">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <binding destination="aLa-Lb-SUp" name="value" keyPath="values.voiceAnnounceOnStatusChange" id="cTp-eU-u54"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="dee-IL-Aaz" firstAttribute="leading" secondItem="TXG-GC-K3t" secondAttribute="leading" id="4do-ez-ICt"/>
                             <constraint firstItem="mVy-ci-K0O" firstAttribute="leading" secondItem="h5x-4o-35e" secondAttribute="trailing" constant="8" symbolic="YES" id="BlQ-uE-PHn"/>
                             <constraint firstItem="h5x-4o-35e" firstAttribute="top" secondItem="XSw-uU-Ge2" secondAttribute="top" constant="20" symbolic="YES" id="ByX-X5-voL"/>
+                            <constraint firstItem="x50-db-H91" firstAttribute="top" secondItem="dee-IL-Aaz" secondAttribute="bottom" constant="6" id="JrN-e0-mLZ"/>
                             <constraint firstItem="TXG-GC-K3t" firstAttribute="centerY" secondItem="TRZ-HT-6PH" secondAttribute="centerY" id="QQ5-DO-9c8"/>
+                            <constraint firstItem="TRZ-HT-6PH" firstAttribute="top" secondItem="h5x-4o-35e" secondAttribute="bottom" constant="8" id="T71-ID-wum"/>
+                            <constraint firstItem="TRZ-HT-6PH" firstAttribute="trailing" secondItem="h5x-4o-35e" secondAttribute="trailing" id="VG9-fc-BEA"/>
+                            <constraint firstItem="x50-db-H91" firstAttribute="leading" secondItem="dee-IL-Aaz" secondAttribute="leading" id="Wkd-3c-wo5"/>
+                            <constraint firstItem="TXG-GC-K3t" firstAttribute="top" secondItem="mVy-ci-K0O" secondAttribute="bottom" constant="4" id="Ypb-W9-Tdz"/>
                             <constraint firstItem="h5x-4o-35e" firstAttribute="centerY" secondItem="mVy-ci-K0O" secondAttribute="centerY" id="e9L-lJ-IFi"/>
                             <constraint firstItem="h5x-4o-35e" firstAttribute="leading" secondItem="XSw-uU-Ge2" secondAttribute="leading" constant="48" id="gZw-u5-NcY"/>
                             <constraint firstItem="TRZ-HT-6PH" firstAttribute="top" secondItem="h5x-4o-35e" secondAttribute="bottom" constant="8" symbolic="YES" id="hbE-0u-afy"/>
-                            <constraint firstItem="TRZ-HT-6PH" firstAttribute="leading" secondItem="XSw-uU-Ge2" secondAttribute="leading" constant="59" id="me4-BT-aYV"/>
+                            <constraint firstAttribute="bottom" secondItem="x50-db-H91" secondAttribute="bottom" constant="20" symbolic="YES" id="rAM-Kh-i4N"/>
+                            <constraint firstItem="dee-IL-Aaz" firstAttribute="top" secondItem="TXG-GC-K3t" secondAttribute="bottom" constant="20" id="tqJ-A9-N6n"/>
                             <constraint firstItem="TXG-GC-K3t" firstAttribute="leading" secondItem="TRZ-HT-6PH" secondAttribute="trailing" constant="8" symbolic="YES" id="wJ1-Rc-A1O"/>
-                            <constraint firstAttribute="bottom" secondItem="TRZ-HT-6PH" secondAttribute="bottom" constant="20" symbolic="YES" id="zwK-IP-w1n"/>
                         </constraints>
                         <animations/>
                     </view>
@@ -1201,8 +1237,9 @@
                 </viewController>
                 <customObject id="B0j-BN-CLv" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <userDefaultsController id="daA-mL-Cd4"/>
+                <userDefaultsController id="aLa-Lb-SUp"/>
             </objects>
-            <point key="canvasLocation" x="966" y="304"/>
+            <point key="canvasLocation" x="966" y="332"/>
         </scene>
         <!--Vocoder View Controller-->
         <scene sceneID="WY5-J8-QDS">
@@ -1254,7 +1291,7 @@
                 </viewController>
                 <customObject id="nvC-gc-sMP" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="966" y="507.5"/>
+            <point key="canvasLocation" x="966" y="577.5"/>
         </scene>
     </scenes>
     <resources>
