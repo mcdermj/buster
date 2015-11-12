@@ -18,6 +18,13 @@
 
 @implementation BTRAddPopupController
 
+-(void)awakeFromNib {
+    [self.moduleField removeAllItems];
+    
+    for(unichar i = 'A'; i <= 'Z'; ++i)
+        [self.moduleField addItemWithTitle:[NSString stringWithCharacters:&i length:1]];
+}
+
 - (IBAction)doAdd:(id)sender {
     NSString *linkTarget = [self.destinationField.stringValue stringByPaddingToLength:8 withString:@" " startingAtIndex:0];
     linkTarget = [linkTarget stringByReplacingCharactersInRange:NSMakeRange(7, 1) withString:self.moduleField.titleOfSelectedItem];
@@ -43,8 +50,10 @@
     if(self.inAutoComplete)
         return;
     
+    NSText *destination = [[obj userInfo] objectForKey:@"NSFieldEditor"];
+    
     self.complete = YES;
-    [[[obj userInfo] objectForKey:@"NSFieldEditor"] complete:nil];
+    [destination complete:nil];
     self.complete = NO;
 }
 

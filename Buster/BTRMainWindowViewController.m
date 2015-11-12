@@ -185,7 +185,7 @@
     BTRAddPopupController *addController = [[BTRAddPopupController alloc] initWithNibName:nil bundle:nil];
     addController.reflectorArrayController = self.reflectorTableController;
     self.addPopover.contentViewController = addController;
-    self.addPopover.behavior = NSPopoverBehaviorTransient;
+    self.addPopover.behavior = NSPopoverBehaviorSemitransient;
     self.addPopover.delegate = addController;
     
     [self bind:@"txKeyCode" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.shortcutValue" options:@{NSValueTransformerNameBindingOption: MASDictionaryTransformerName}];
