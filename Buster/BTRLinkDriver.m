@@ -356,7 +356,16 @@
         case UNLINKED: {
             [self.delegate destinationDidUnlink:self.linkTarget];
             [self stopPoll];
+            
             self.linkTimer = nil;
+            
+            if(self.rxStreamId != 0)
+                [self terminateCurrentStream];
+            
+            NSLog(@"Unlinked from %@", self.linkTarget);
+            
+            self.linkTarget = @"";
+            
             break;
         }
         case CONNECTED: {
@@ -367,7 +376,7 @@
             [self startPoll];
             BTRLinkDriver __weak *weakSelf = self;
             self.linkTimer = [[BTRNetworkTimer alloc] initWithTimeout:30.0 failureHandler:^{
-                [weakSelf unlink];
+                weakSelf.linkState = UNLINKED;
             }];
             break;
         }
@@ -377,7 +386,7 @@
                 [self startPoll];
                 BTRLinkDriver __weak *weakSelf = self;
                 self.linkTimer = [[BTRNetworkTimer alloc] initWithTimeout:30.0 failureHandler:^{
-                    [weakSelf unlink];
+                    weakSelf.linkState = UNLINKED;
                 }];
             }
         }
@@ -402,9 +411,6 @@
         
         int tries = 0;
         
-        if(weakSelf.rxStreamId != 0)
-            [weakSelf terminateCurrentStream];
-        
         do {
             dispatch_sync(weakSelf.writeQueue, ^{
                 [weakSelf sendUnlink];
@@ -414,10 +420,7 @@
                 break;
         } while(weakSelf.linkState != UNLINKED);
         
-        weakSelf.linkTimer = nil;
-        
-        NSLog(@"Unlinked from %@", weakSelf.linkTarget);
-        weakSelf.linkTarget = @"";
+        weakSelf.linkState = UNLINKED;
     });
 }
 
