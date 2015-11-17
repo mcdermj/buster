@@ -70,6 +70,7 @@ static void VocoderAdded(void *refCon, io_iterator_t iterator) {
         NSArray *ports = [BTRDV3KSerialVocoder ports];
         if(ports.count == 1) {
             self.serialPort = ports[0];
+            [[NSUserDefaults standardUserDefaults] setObject:self.serialPort forKey:@"DV3KSerialVocoderPort"];
             [self start];
         }
         
@@ -129,6 +130,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     if([serialPort isEqualToString:_serialPort]) return;
     
     _serialPort = serialPort;
+    [[NSUserDefaults standardUserDefaults] setObject:self.serialPort forKey:@"DV3KSerialVocoderPort"];
     
     if(self.started)
         [self stop];
@@ -199,12 +201,16 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     if(self) {
         _speed = [[NSUserDefaults standardUserDefaults] integerForKey:@"DV3KSerialVocoderSpeed"];
         _serialPort = [[NSUserDefaults standardUserDefaults] stringForKey:@"DV3KSerialVocoderPort"];
-        if(!_serialPort) {
+        
+        if(!_serialPort || (_serialPort && ![[NSURL fileURLWithPath:_serialPort] checkResourceIsReachableAndReturnError:NULL])) {
             NSArray *ports = [BTRDV3KSerialVocoder ports];
-            if(ports.count == 1)
+            
+            if(ports.count == 1) {
+                [[NSUserDefaults standardUserDefaults] setObject:ports[0] forKey:@"DV3KSerialVocoderPort"];
                 _serialPort = ports[0];
-            else
+            } else {
                 _serialPort = @"";
+            }
         }
         
         mach_port_t masterPort;
