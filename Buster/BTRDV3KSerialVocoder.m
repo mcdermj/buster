@@ -250,8 +250,8 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         
         mach_port_deallocate(mach_task_self(), masterPort);
         
-        BTRDV3KSerialVocoder __weak *weakSelf = self;
-        [[NSNotificationCenter defaultCenter] addObserverForName:NSUserDefaultsDidChangeNotification
+        // BTRDV3KSerialVocoder __weak *weakSelf = self;
+        /* [[NSNotificationCenter defaultCenter] addObserverForName:NSUserDefaultsDidChangeNotification
                                                           object:nil
                                                            queue:[NSOperationQueue mainQueue]
                                                       usingBlock: ^(NSNotification *notification) {
@@ -259,7 +259,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
                                                           NSString *serialPort =[[NSUserDefaults standardUserDefaults] stringForKey:@"DV3KSerialVocoderPort"];
                                                           if(serialPort)
                                                               weakSelf.serialPort = serialPort;
-                                                      }];
+                                                      }]; */
     }
     return self;
 }
