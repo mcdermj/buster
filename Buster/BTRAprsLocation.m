@@ -142,7 +142,7 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
 }
 
 -(NSString *)title {
-    return [self.callsign copy];
+        return [self.callsign copy];
 }
 
 -(NSString *)subtitle {

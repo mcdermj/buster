@@ -272,8 +272,10 @@
     NSDictionary *qso = self.heardTableController.arrangedObjects[self.heardTableView.clickedRow];
     
     if(qso[@"location"]) {
-        //MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
-        //annotation.coordinate = ((CLLocation *)qso[@"location"]).coordinate;
+        BTRAprsLocation *location = qso[@"location"];
+        if(!location.callsign)
+            location.callsign = qso[@"myCall"];
+
         ((BTRMapPopupController *)self.mapPopover.contentViewController).annotation = qso[@"location"];
         ((BTRMapPopupController *)self.mapPopover.contentViewController).qsoId = qso[@"streamId"];
         NSView *clickedView = [self.heardTableView viewAtColumn:[self.heardTableView columnWithIdentifier:@"Location"] row:self.heardTableView.clickedRow makeIfNecessary:NO];
