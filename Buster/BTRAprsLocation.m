@@ -141,6 +141,33 @@ NS_INLINE unsigned char nmea_calc_sum(unsigned char *data, size_t length) {
     return self.location.coordinate;
 }
 
+-(NSString *)title {
+    return [self.callsign copy];
+}
+
+-(NSString *)subtitle {
+    NSString *subtitle = nil;
+    if(self.location.coordinate.latitude < 0) {
+        subtitle = [NSString stringWithFormat:@"%f S", -self.location.coordinate.latitude];
+    } else {
+        subtitle = [NSString stringWithFormat:@"%f N", self.location.coordinate.latitude];
+    }
+    
+    if(self.location.coordinate.longitude < 0) {
+        subtitle = [NSString stringWithFormat:@"%@ %f W\n", subtitle, -self.location.coordinate.longitude];
+    } else {
+        subtitle = [NSString stringWithFormat:@"%@ %f E\n", subtitle, self.location.coordinate.longitude];
+    }
+    
+    NSString *measurementSystem = [[NSLocale currentLocale] objectForKey:NSLocaleMeasurementSystem];
+    if([measurementSystem isEqualToString:@"U.K."] || [measurementSystem isEqualToString:@"U.S."])
+        subtitle = [NSString stringWithFormat:@"%@%.2f° @ %.2f mph\n%.2f ft altitude\n", subtitle, self.location.course, self.location.speed * 2.23694, self.location.altitude * 3.281];
+    else
+        subtitle = [NSString stringWithFormat:@"%@%.2f° @ %.2f m/s\n%.2f m altitude\n", subtitle, self.location.course, self.location.speed, self.location.altitude];
+    
+    return subtitle;
+}
+
 #pragma mark - APRS Parsing
 
 -(NSString *)aprsTimestampFromDate:(NSDate *)date {

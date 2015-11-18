@@ -32,6 +32,7 @@
         }
     };
     self.mapView.region = region;
+    [self.mapView selectAnnotation:self.annotation animated:YES];
 }
 
 -(BOOL)popoverShouldClose:(NSPopover *)popover {
