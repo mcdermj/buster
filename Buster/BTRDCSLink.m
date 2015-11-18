@@ -65,7 +65,7 @@ static const struct dcs_frame dcsFrameTemplate = {
     .flags = { 0x00, 0x02, 0x01 },
     .rpt2Call = "        ",
     .rpt1Call = "        ",
-    .urCall = "        ",
+    .urCall = "CQCQCQ  ",
     .myCall = "        ",
     .myCall2 = "    ",
     .id = 0,
@@ -337,7 +337,6 @@ static NSDictionary *_reflectorList;
         
         frame->sequence = weakSelf.txSequence;
 
-        // memcpy(&frame->data, [self.delegate getDataForSequence:weakSelf.txSequence], sizeof(frame->data));
         [self.delegate getBytes:&frame->data forSequence:weakSelf.txSequence];
         
         if(last) {
