@@ -90,6 +90,8 @@ static NSDictionary *_reflectorList;
 
 @interface BTRDCSLink ()
 
+@property int repeaterSequence;
+
 +(NSDictionary *)reflectorList;
 
 -(void)processFrame:(struct dcs_frame *)frame;
@@ -348,6 +350,15 @@ static NSDictionary *_reflectorList;
             memcpy(&frame->voice, data, sizeof(frame->voice));
             weakSelf.txSequence = (weakSelf.txSequence + 1) % 21;
         }
+        
+        //  Deal with the repeater sequence
+        ++self.repeaterSequence;
+        if(self.repeaterSequence > 0x0FFF)
+            self.repeaterSequence = 0;
+        
+        frame->repeaterSequence[2] = (self.repeaterSequence >> 16) & 0xFF;
+        frame->repeaterSequence[1] = (self.repeaterSequence >> 8) & 0xFF;
+        frame->repeaterSequence[0] = (self.repeaterSequence) & 0xFF;
         
         [weakSelf sendPacket:frameData];
     });
