@@ -182,7 +182,7 @@ static NSDictionary *_reflectorList;
             //  Status data
             break;
         default:
-            NSLog(@"Unknown link packet");
+            NSLog(@"Unknown link packet size %ld, %@, \"%@\"", packetData.length, packetData, [[NSString alloc] initWithData:packetData encoding:NSASCIIStringEncoding]);
             break;
     }
 }
