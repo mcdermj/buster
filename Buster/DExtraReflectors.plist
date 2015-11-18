@@ -27,7 +27,7 @@
 	<key>XRF011</key>
 	<string>87.106.3.249</string>
 	<key>XRF012</key>
-	<string>98.173.155.126</string>
+	<string>xrf012.papasys.com</string>
 	<key>XRF013</key>
 	<string>xrf013.vkradio.com</string>
 	<key>XRF014</key>
@@ -74,14 +74,14 @@
 	<string>xrf040.dyndns.org</string>
 	<key>XRF041</key>
 	<string>167.88.37.80</string>
+	<key>XRF042</key>
+	<string>xrf042.luthienstar.fr</string>
 	<key>XRF043</key>
 	<string>xrf043.aotnet.it</string>
 	<key>XRF044</key>
 	<string>82.1.185.173</string>
 	<key>XRF045</key>
 	<string>045.xreflector.org</string>
-	<key>XRF048</key>
-	<string>allstar.n5uxt.net</string>
 	<key>XRF050</key>
 	<string>050.xreflector.org</string>
 	<key>XRF055</key>
@@ -91,7 +91,7 @@
 	<key>XRF067</key>
 	<string>xrf067.f5kav.org</string>
 	<key>XRF069</key>
-	<string>37.187.176.70</string>
+	<string>069.xreflector.es</string>
 	<key>XRF070</key>
 	<string>xrf070.iptime.org</string>
 	<key>XRF073</key>
@@ -114,6 +114,8 @@
 	<string>5.196.3.184</string>
 	<key>XRF112</key>
 	<string>92.222.47.175</string>
+	<key>XRF113</key>
+	<string>113.dstarspain.es</string>
 	<key>XRF117</key>
 	<string>xrf117.dyndns.org</string>
 	<key>XRF118</key>
@@ -124,6 +126,8 @@
 	<string>213.126.90.100</string>
 	<key>XRF133</key>
 	<string>xrf133.gb7de.co.uk</string>
+	<key>XRF150</key>
+	<string>xrf150.dstarspain.es</string>
 	<key>XRF168</key>
 	<string>xrf168.duckdns.org</string>
 	<key>XRF185</key>
@@ -140,8 +144,12 @@
 	<string>xrf250.dstar.su</string>
 	<key>XRF255</key>
 	<string>xrf255.reflector.up4dar.de</string>
+	<key>XRF260</key>
+	<string>93.182.23.51</string>
 	<key>XRF262</key>
 	<string>xrf262.reflector.up4dar.de</string>
+	<key>XRF270</key>
+	<string>xrf270.reflector.up4dar.de</string>
 	<key>XRF295</key>
 	<string>104.167.96.2</string>
 	<key>XRF295</key>
@@ -155,7 +163,7 @@
 	<key>XRF345</key>
 	<string>104.167.114.4</string>
 	<key>XRF350</key>
-	<string>46.105.27.191</string>
+	<string>350.dstarspain.es</string>
 	<key>XRF353</key>
 	<string>94.173.206.53</string>
 	<key>XRF390</key>
@@ -167,15 +175,19 @@
 	<key>XRF423</key>
 	<string>4ix.hacktic.de</string>
 	<key>XRF433</key>
-	<string>217.160.22.17</string>
+	<string>xrf433.de</string>
 	<key>XRF444</key>
 	<string>70.125.157.44</string>
 	<key>XRF450</key>
 	<string>450.xreflector.org</string>
 	<key>XRF456</key>
-	<string>94.114.94.218</string>
+	<string>149.202.45.162</string>
 	<key>XRF500</key>
 	<string>xrf500.org</string>
+	<key>XRF502</key>
+	<string>66.240.187.126</string>
+	<key>XRF550</key>
+	<string>550.xreflector.es</string>
 	<key>XRF555</key>
 	<string>54.191.67.121</string>
 	<key>XRF559</key>
@@ -200,6 +212,8 @@
 	<string>108.33.72.83</string>
 	<key>XRF740</key>
 	<string>imagewell.duckdns.org</string>
+	<key>XRF747</key>
+	<string>xrf747.de</string>
 	<key>XRF748</key>
 	<string>104.167.109.27</string>
 	<key>XRF757</key>
@@ -207,11 +221,11 @@
 	<key>XRF773</key>
 	<string>xrf773.iz0rin.it</string>
 	<key>XRF777</key>
-	<string>62.167.15.53</string>
+	<string>112.218.40.91</string>
 	<key>XRF780</key>
 	<string>96.53.97.22</string>
-	<key>XRF828</key>
-	<string>xrf828.ddnss.de</string>
+	<key>XRF850</key>
+	<string>xrf850.xrfmaster.net</string>
 	<key>XRF851</key>
 	<string>xrf851.rsdt.de</string>
 	<key>XRF858</key>
@@ -219,7 +233,7 @@
 	<key>XRF870</key>
 	<string>103.18.207.114</string>
 	<key>XRF888</key>
-	<string>5.135.147.180</string>
+	<string>888.xreflector.es</string>
 	<key>XRF901</key>
 	<string>xrf901.dyndns.org</string>
 	<key>XRF902</key>
@@ -239,7 +253,7 @@
 	<key>XRF987</key>
 	<string>xrf987.metro-uhf.org</string>
 	<key>XRF988</key>
-	<string>149.202.61.56</string>
+	<string>988.xreflector.es</string>
 	<key>XRF989</key>
 	<string>xrf989.bbhill.net</string>
 	<key>XRFWDX</key>
