@@ -32,4 +32,9 @@
     NSLog(@"Deallocing");
 }
 
+-(IBAction)doTest:(id)sender {
+    [self.driver stop];
+    [self.driver start];
+}
+
 @end
