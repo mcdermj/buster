@@ -54,8 +54,7 @@
 		09DFDA991B8C331300D00030 /* BTRMessageFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 09DFDA981B8C331300D00030 /* BTRMessageFormatter.m */; };
 		09DFDA9F1B8D6A9700D00030 /* BTRIRCDDBGateways.m in Sources */ = {isa = PBXBuildFile; fileRef = 09DFDA9E1B8D6A9700D00030 /* BTRIRCDDBGateways.m */; };
 		09E363EC1B66F46500F74DBB /* BTRSlowDataCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E363EB1B66F46500F74DBB /* BTRSlowDataCoder.m */; };
-		09E36AC71B9B94570055BF46 /* HockeySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09E36AC61B9B94570055BF46 /* HockeySDK.framework */; };
-		09E36AC91B9B94770055BF46 /* HockeySDK.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 09E36AC81B9B94770055BF46 /* HockeySDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		09E36AC71B9B94570055BF46 /* HockeySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09E36AC61B9B94570055BF46 /* HockeySDK.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		09E589CA1B7EAC1800A962B5 /* BTRDPlusAuthenticator.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E589C91B7EAC1800A962B5 /* BTRDPlusAuthenticator.m */; };
 		09F042B21B9E365D00E9F5D2 /* BTRAprsLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 09F042B11B9E365D00E9F5D2 /* BTRAprsLocation.m */; };
 		09F042B61BA1F82600E9F5D2 /* PortMapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 09F042B51BA1F82600E9F5D2 /* PortMapper.m */; };
@@ -70,19 +69,6 @@
 			remoteInfo = Buster;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		09A994C21B6F1F990061A929 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				09E36AC91B9B94770055BF46 /* HockeySDK.framework in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0908EF7F1B8388B5007B76F5 /* BTRLinkDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = BTRLinkDriver.h; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; wrapsLines = 1; };
@@ -406,7 +392,6 @@
 				093B9AEE1B50E2D500C2ABD0 /* Frameworks */,
 				093B9AEF1B50E2D500C2ABD0 /* Resources */,
 				095248FD1B6DC45D0062F1A5 /* ShellScript */,
-				09A994C21B6F1F990061A929 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -796,7 +781,7 @@
 				INFOPLIST_FILE = Buster/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = Buster;
-				PROVISIONING_PROFILE = "c0668731-c3de-40f6-b3c3-242954814f48";
+				PROVISIONING_PROFILE = "3903bbe5-ea0b-40b4-883f-e382e41fe30c";
 			};
 			name = Debug;
 		};
@@ -833,7 +818,7 @@
 				INFOPLIST_FILE = Buster/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = Buster;
-				PROVISIONING_PROFILE = "c0668731-c3de-40f6-b3c3-242954814f48";
+				PROVISIONING_PROFILE = "45f1c043-7a39-48af-a801-eddfde763dbf";
 			};
 			name = Release;
 		};

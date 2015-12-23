@@ -23,12 +23,12 @@
                         <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LG0-2N-dnr">
                             <rect key="frame" x="108" y="14" width="54" height="26"/>
                             <animations/>
-                            <popUpButtonCell key="cell" type="push" title="A" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="5Cf-QO-wyY">
+                            <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="5Cf-QO-wyY">
                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                 <font key="font" metaFont="menu"/>
                                 <menu key="menu" id="vJi-Tr-9Os">
                                     <items>
-                                        <menuItem title="A" state="on" id="dKb-Um-bvo"/>
+                                        <menuItem title="A" id="dKb-Um-bvo"/>
                                         <menuItem title="B" id="cHy-s8-HCT"/>
                                         <menuItem title="C" id="0Rk-u6-aXn"/>
                                         <menuItem title="D" id="Csv-Oy-eE1">
