@@ -212,7 +212,10 @@
     [self.txButton setPeriodicDelay:.1f interval:.1f];
     self.txButtonState = NSOffState;
     
-    self.speechSynth = [[NSSpeechSynthesizer alloc] initWithVoice:@"com.apple.speech.synthesis.voice.Vicki"];
+    self.speechSynth = [[NSSpeechSynthesizer alloc] initWithVoice:@"com.apple.speech.synthesis.voice.samantha"];
+    if(self.speechSynth == nil) {
+        NSLog(@"Could not initialize speech synthesizer.");
+    }
     self.geocoder = [[CLGeocoder alloc] init];
     NSAssert(self.geocoder != nil, @"Geocoder did not initialize");
     
@@ -223,7 +226,7 @@
     self.repeaterInfo.stringValue = [NSString stringWithFormat:@"Linked to %@", destination];
 
     if([[NSUserDefaults standardUserDefaults] boolForKey:@"voiceAnnounceOnStatusChange"])
-        [self.speechSynth startSpeakingString:[NSString stringWithFormat:@"Linked to [[rate -60.0]][[char LTRL]] %@ [[char NORM]][[rate +60.0]]", destination]];
+        [self.speechSynth startSpeakingString:[[NSString stringWithFormat:@"Linked to [[rate -60.0]][[char LTRL]] %@ [[char NORM]][[rate +60.0]]", destination] lowercaseString]];
     
     NSDockTile *dockTile = [NSApplication sharedApplication].dockTile;
     dockTile.badgeLabel = destination;
