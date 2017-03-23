@@ -97,7 +97,7 @@
         if(![engine.vocoder start])
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSAlert *alert = [[NSAlert alloc] init];
-                alert.alertStyle = NSWarningAlertStyle;
+                alert.alertStyle = NSAlertStyleWarning;
                 alert.messageText = @"Cannot Open the Serial Port";
                 alert.informativeText = @"Please check your serial port and speed settings in the Perferences menu";
                 [alert runModal];

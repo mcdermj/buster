@@ -36,7 +36,7 @@
         // Check if the cases are different, we know ours is lower and that shift is included in our modifiers
         // If theirs is capitol, we need to add shift to their modifiers
         if (equalHotkeyLowercase && ![menuItem.keyEquivalent isEqualToString:keyEquivalent]) {
-            equalFlags = (MASPickCocoaModifiers(menuItem.keyEquivalentModifierMask | NSShiftKeyMask) == flags);
+            equalFlags = (MASPickCocoaModifiers(menuItem.keyEquivalentModifierMask | NSEventModifierFlagShift) == flags);
         }
         
         if (equalFlags && equalHotkeyLowercase) {
