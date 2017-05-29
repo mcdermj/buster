@@ -1,335 +1,186 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Prepared at ar-dns.net - Mon, 29 May 2017 23:53:35 GMT -->
 <plist version="1.0">
 <dict>
-	<key>XRF000</key>
-	<string>000.xreflector.org</string>
-	<key>XRF001</key>
-	<string>75.76.90.90</string>
-	<key>XRF002</key>
-	<string>91.201.57.233</string>
-	<key>XRF003</key>
-	<string>xrf003.iw0red.it</string>
-	<key>XRF004</key>
-	<string>96.36.58.9</string>
-	<key>XRF005</key>
-	<string>216.16.240.236</string>
-	<key>XRF006</key>
-	<string>80.62.20.151</string>
-	<key>XRF007</key>
-	<string>84.232.6.94</string>
-	<key>XRF008</key>
-	<string>95.110.231.219</string>
-	<key>XRF009</key>
-	<string>141.22.15.29</string>
-	<key>XRF010</key>
-	<string>87.106.48.7</string>
-	<key>XRF011</key>
-	<string>87.106.3.249</string>
-	<key>XRF012</key>
-	<string>xrf012.papasys.com</string>
-	<key>XRF013</key>
-	<string>xrf013.vkradio.com</string>
-	<key>XRF014</key>
-	<string>xrf014.iz0rin.it</string>
-	<key>XRF015</key>
-	<string>xrf015.theapplecore.me</string>
-	<key>XRF017</key>
-	<string>87.253.159.114</string>
-	<key>XRF018</key>
-	<string>199.167.129.166</string>
-	<key>XRF019</key>
-	<string>66.30.81.236</string>
-	<key>XRF020</key>
-	<string>67.210.212.144</string>
-	<key>XRF021</key>
-	<string>74.204.50.67</string>
-	<key>XRF022</key>
-	<string>xrf022.tms-it.net</string>
-	<key>XRF023</key>
-	<string>141.75.245.225</string>
-	<key>XRF024</key>
-	<string>xrf024.dstar.at</string>
-	<key>XRF025</key>
-	<string>63.133.189.2</string>
-	<key>XRF026</key>
-	<string>139.13.100.34</string>
-	<key>XRF027</key>
-	<string>194.116.29.78</string>
-	<key>XRF028</key>
-	<string>193.190.240.228</string>
-	<key>XRF030</key>
-	<string>xrf030.oe3xht.at</string>
-	<key>XRF031</key>
-	<string>83.241.141.245</string>
-	<key>XRF033</key>
-	<string>46.226.178.81</string>
-	<key>XRF036</key>
-	<string>xrf036.ddns.net</string>
-	<key>XRF037</key>
-	<string>185.58.193.163</string>
-	<key>XRF038</key>
-	<string>66.6.171.228</string>
-	<key>XRF040</key>
-	<string>xrf040.dyndns.org</string>
-	<key>XRF041</key>
-	<string>167.88.37.80</string>
-	<key>XRF042</key>
-	<string>xrf042.luthienstar.fr</string>
-	<key>XRF043</key>
-	<string>xrf043.aotnet.it</string>
-	<key>XRF044</key>
-	<string>82.1.185.173</string>
-	<key>XRF045</key>
-	<string>045.xreflector.org</string>
-	<key>XRF050</key>
-	<string>050.xreflector.org</string>
-	<key>XRF055</key>
-	<string>95.110.229.195</string>
-	<key>XRF063</key>
-	<string>162.248.141.148</string>
-	<key>XRF067</key>
-	<string>xrf067.f5kav.org</string>
-	<key>XRF069</key>
-	<string>069.xreflector.es</string>
-	<key>XRF070</key>
-	<string>xrf070.iptime.org</string>
-	<key>XRF073</key>
-	<string>147.102.7.34</string>
-	<key>XRF077</key>
-	<string>xrf077.duckdns.org</string>
-	<key>XRF078</key>
-	<string>217.112.102.132</string>
-	<key>XRF084</key>
-	<string>xrf084.fabbroni.eu</string>
-	<key>XRF088</key>
-	<string>xrf088.pa4tw.nl</string>
-	<key>XRF090</key>
-	<string>46.37.185.184</string>
-	<key>XRF099</key>
-	<string>76.71.89.114</string>
-	<key>XRF100</key>
-	<string>88.46.211.5</string>
-	<key>XRF111</key>
-	<string>5.196.3.184</string>
-	<key>XRF112</key>
-	<string>92.222.47.175</string>
-	<key>XRF113</key>
-	<string>113.dstarspain.es</string>
-	<key>XRF117</key>
-	<string>xrf117.dyndns.org</string>
-	<key>XRF118</key>
-	<string>xrf118.dyndns.org</string>
-	<key>XRF119</key>
-	<string>149.154.158.170</string>
-	<key>XRF123</key>
-	<string>213.126.90.100</string>
-	<key>XRF133</key>
-	<string>xrf133.gb7de.co.uk</string>
-	<key>XRF150</key>
-	<string>xrf150.dstarspain.es</string>
-	<key>XRF168</key>
-	<string>xrf168.duckdns.org</string>
-	<key>XRF185</key>
-	<string>xrf185.dyndns.org</string>
-	<key>XRF200</key>
-	<string>xrf200.theapplecore.me</string>
-	<key>XRF210</key>
-	<string>210.xreflector.org</string>
-	<key>XRF228</key>
-	<string>xrf228.duckdns.org</string>
-	<key>XRF232</key>
-	<string>xrf232.tms-it.net</string>
-	<key>XRF250</key>
-	<string>xrf250.dstar.su</string>
-	<key>XRF255</key>
-	<string>xrf255.reflector.up4dar.de</string>
-	<key>XRF260</key>
-	<string>93.182.23.51</string>
-	<key>XRF262</key>
-	<string>xrf262.reflector.up4dar.de</string>
-	<key>XRF270</key>
-	<string>xrf270.reflector.up4dar.de</string>
-	<key>XRF295</key>
-	<string>104.167.96.2</string>
-	<key>XRF295</key>
-	<string>xrf295.dyndns.org</string>
-	<key>XRF307</key>
-	<string>104.167.106.95</string>
-	<key>XRF310</key>
-	<string>server1.xrefl.net</string>
-	<key>XRF333</key>
-	<string>xrf333.f1smf.com</string>
-	<key>XRF345</key>
-	<string>104.167.114.4</string>
-	<key>XRF350</key>
-	<string>350.dstarspain.es</string>
-	<key>XRF353</key>
-	<string>94.173.206.53</string>
-	<key>XRF390</key>
-	<string>xrf390.aotnet.it</string>
-	<key>XRF400</key>
-	<string>xrf400.no-ip.org</string>
-	<key>XRF420</key>
-	<string>kc9qen.com</string>
-	<key>XRF423</key>
-	<string>4ix.hacktic.de</string>
-	<key>XRF433</key>
-	<string>xrf433.de</string>
-	<key>XRF444</key>
-	<string>70.125.157.44</string>
-	<key>XRF450</key>
-	<string>450.xreflector.org</string>
-	<key>XRF456</key>
-	<string>149.202.45.162</string>
-	<key>XRF500</key>
-	<string>xrf500.org</string>
-	<key>XRF502</key>
-	<string>66.240.187.126</string>
-	<key>XRF550</key>
-	<string>550.xreflector.es</string>
-	<key>XRF555</key>
-	<string>54.191.67.121</string>
-	<key>XRF559</key>
-	<string>98.239.113.175</string>
-	<key>XRF580</key>
-	<string>67.20.31.79</string>
-	<key>XRF600</key>
-	<string>xrf600.gb7de.co.uk</string>
-	<key>XRF603</key>
-	<string>74.104.179.159</string>
-	<key>XRF666</key>
-	<string>vpngrf.webandcloud.net #VPN</string>
-	<key>XRF669</key>
-	<string>xrf669.no-ip.org</string>
-	<key>XRF707</key>
-	<string>xrf707.openquad.net</string>
-	<key>XRF714</key>
-	<string>xrf714.ea3hkb.com</string>
-	<key>XRF720</key>
-	<string>204.45.107.21</string>
-	<key>XRF727</key>
-	<string>108.33.72.83</string>
-	<key>XRF740</key>
-	<string>imagewell.duckdns.org</string>
-	<key>XRF747</key>
-	<string>xrf747.de</string>
-	<key>XRF748</key>
-	<string>104.167.109.27</string>
-	<key>XRF757</key>
-	<string>xrf757.openquad.net</string>
-	<key>XRF773</key>
-	<string>xrf773.iz0rin.it</string>
-	<key>XRF777</key>
-	<string>112.218.40.91</string>
-	<key>XRF780</key>
-	<string>96.53.97.22</string>
-	<key>XRF850</key>
-	<string>xrf850.xrfmaster.net</string>
-	<key>XRF851</key>
-	<string>xrf851.rsdt.de</string>
-	<key>XRF858</key>
-	<string>198.57.255.30</string>
-	<key>XRF870</key>
-	<string>103.18.207.114</string>
-	<key>XRF888</key>
-	<string>888.xreflector.es</string>
-	<key>XRF901</key>
-	<string>xrf901.dyndns.org</string>
-	<key>XRF902</key>
-	<string>xrf902.dyndns.org</string>
-	<key>XRF905</key>
-	<string>199.212.121.20</string>
-	<key>XRF906</key>
-	<string>xrf906.radioclubveleta.es</string>
-	<key>XRF909</key>
-	<string>216.86.147.198</string>
-	<key>XRF911</key>
-	<string>xrf911.ns0.it</string>
-	<key>XRF929</key>
-	<string>xrf929.ddns.net</string>
-	<key>XRF978</key>
-	<string>74.104.179.159</string>
-	<key>XRF987</key>
-	<string>xrf987.metro-uhf.org</string>
-	<key>XRF988</key>
-	<string>988.xreflector.es</string>
-	<key>XRF989</key>
-	<string>xrf989.bbhill.net</string>
-	<key>XRFWDX</key>
-	<string>xrfwdx.ham-radio-op.net</string>
+	<key>7K1AYZ</key>
+	<string>126.115.48.33</string>
+	<key>7K1MHJ</key>
+	<string>114.149.105.78</string>
+	<key>7K3RPN</key>
+	<string>60.144.76.130</string>
+	<key>7K4QCQ</key>
+	<string>153.157.118.140</string>
+	<key>7L1FFN</key>
+	<string>126.200.4.240</string>
+	<key>7L1SCC</key>
+	<string>116.82.67.78</string>
+	<key>7L2JPI</key>
+	<string>106.73.64.0</string>
+	<key>7L3BRO</key>
+	<string>118.109.225.255</string>
+	<key>7L4UCV</key>
+	<string>61.117.10.200</string>
+	<key>7M1KFK</key>
+	<string>114.180.201.191</string>
+	<key>7M1VGP</key>
+	<string>153.234.227.230</string>
+	<key>7M1VGQ</key>
+	<string>122.130.217.144</string>
+	<key>7M1XBC</key>
+	<string>68.224.107.214</string>
+	<key>7M2RBF</key>
+	<string>118.241.248.24</string>
+	<key>7M3TJZ</key>
+	<string>183.177.205.138</string>
+	<key>7M4AJL</key>
+	<string>49.135.79.68</string>
+	<key>7M4LAS</key>
+	<string>219.164.163.168</string>
+	<key>7M4MCY</key>
+	<string>133.232.121.248</string>
+	<key>7N1MPI</key>
+	<string>223.219.185.44</string>
+	<key>7N2CCK</key>
+	<string>114.183.91.141</string>
+	<key>7N2EYI</key>
+	<string>36.9.94.9</string>
+	<key>7N2GDV</key>
+	<string>39.110.102.10</string>
+	<key>7N3OQR</key>
+	<string>49.109.133.182</string>
+	<key>7N4NCM</key>
+	<string>122.131.220.209</string>
+	<key>7N4OFP</key>
+	<string>122.249.82.229</string>
+	<key>7N4TDN</key>
+	<string>49.97.97.189</string>
+	<key>9A0DKS</key>
+	<string>80.81.9.242</string>
+	<key>9A0DRI</key>
+	<string>80.81.9.242</string>
 	<key>9A0DZG</key>
 	<string>213.147.105.121</string>
+	<key>AB5MF</key>
+	<string>142.105.35.1</string>
+	<key>AC6SO</key>
+	<string>107.218.158.197</string>
 	<key>AH2G</key>
 	<string>206.212.249.68</string>
+	<key>AK4DB</key>
+	<string>2.29.209.252</string>
+	<key>AX4TUX</key>
+	<string>158.140.210.193</string>
+	<key>BA8CW</key>
+	<string>45.118.255.164</string>
+	<key>BD2RJ</key>
+	<string>113.235.254.130</string>
+	<key>BD2VAA</key>
+	<string>60.16.197.231</string>
+	<key>BG2RIW</key>
+	<string>221.200.59.30</string>
+	<key>BG2WMA</key>
+	<string>182.200.62.237</string>
+	<key>BG8FZ</key>
+	<string>125.69.30.36</string>
+	<key>BH2RCV</key>
+	<string>45.118.255.163</string>
+	<key>BH2SJS</key>
+	<string>202.155.249.130</string>
+	<key>BH2WY</key>
+	<string>175.160.61.192</string>
+	<key>BI8BKX</key>
+	<string>125.65.16.173</string>
+	<key>BR2SY</key>
+	<string>182.200.63.24</string>
+	<key>BX3AH</key>
+	<string>203.74.132.36</string>
 	<key>CE3AA</key>
-	<string>186.79.35.89</string>
+	<string>179.8.142.13</string>
 	<key>CQ0DAH</key>
 	<string>84.90.202.45</string>
 	<key>CQ0DAM</key>
-	<string>188.82.206.175</string>
+	<string>2.83.41.111</string>
 	<key>CQ0DBA</key>
-	<string>94.132.67.40</string>
+	<string>213.22.255.15</string>
 	<key>CQ0DBO</key>
-	<string>188.80.13.111</string>
+	<string>176.79.101.18</string>
+	<key>CQ0DCH</key>
+	<string>188.82.69.230</string>
+	<key>CQ0DCO</key>
+	<string>89.114.46.111</string>
 	<key>CQ0DCS</key>
-	<string>93.108.124.92</string>
+	<string>89.115.177.91</string>
 	<key>CQ0DFO</key>
-	<string>89.214.137.122</string>
+	<string>46.50.110.170</string>
+	<key>CQ0DFR</key>
+	<string>78.137.240.94</string>
 	<key>CQ0DGM</key>
-	<string>188.251.244.85</string>
+	<string>188.83.126.65</string>
+	<key>CQ0DKE</key>
+	<string>46.189.228.230</string>
 	<key>CQ0DLR</key>
-	<string>2.83.44.153</string>
+	<string>2.80.110.76</string>
 	<key>CQ0DLX</key>
-	<string>188.93.239.212</string>
+	<string>84.90.7.110</string>
 	<key>CQ0DMC</key>
 	<string>84.91.174.176</string>
 	<key>CQ0DOA</key>
-	<string>188.250.123.112</string>
+	<string>188.250.123.136</string>
+	<key>CQ0DPD</key>
+	<string>82.155.240.162</string>
 	<key>CQ0DPT</key>
 	<string>85.240.54.181</string>
 	<key>CQ0DS</key>
 	<string>79.169.225.144</string>
 	<key>CQ0DSA</key>
-	<string>85.139.221.18</string>
+	<string>85.139.220.203</string>
 	<key>CQ0DSE</key>
-	<string>84.91.174.176</string>
+	<string>178.166.86.9</string>
 	<key>CQ0DSI</key>
-	<string>79.169.225.144</string>
+	<string>84.90.7.110</string>
 	<key>CQ0DSL</key>
-	<string>213.63.1.113</string>
+	<string>89.214.191.100</string>
 	<key>CQ0DSM</key>
-	<string>84.91.25.83</string>
+	<string>188.81.38.53</string>
 	<key>CQ0DTV</key>
-	<string>81.193.0.219</string>
+	<string>81.193.36.49</string>
 	<key>CQ0DVI</key>
 	<string>89.155.233.237</string>
+	<key>CQ1DAH</key>
+	<string>85.241.214.106</string>
+	<key>CQ1DUR</key>
+	<string>85.241.215.164</string>
 	<key>CX4AXX</key>
 	<string>188.63.84.60</string>
 	<key>DB0AB</key>
-	<string>188.194.252.132</string>
+	<string>188.194.117.71</string>
+	<key>DB0ABZ</key>
+	<string>87.132.55.121</string>
 	<key>DB0ADB</key>
-	<string>141.75.245.252</string>
+	<string>185.76.97.90</string>
 	<key>DB0ADN</key>
 	<string>195.243.163.162</string>
 	<key>DB0AFZ</key>
-	<string>5.10.169.82</string>
+	<string>92.50.67.6</string>
 	<key>DB0AMK</key>
-	<string>79.221.133.203</string>
+	<string>79.221.168.74</string>
 	<key>DB0BHN</key>
 	<string>82.198.222.49</string>
 	<key>DB0BLB</key>
-	<string>80.141.109.170</string>
+	<string>80.141.115.122</string>
+	<key>DB0BLW</key>
+	<string>84.147.115.127</string>
 	<key>DB0BOS</key>
 	<string>94.249.216.106</string>
 	<key>DB0BS</key>
-	<string>79.253.132.170</string>
+	<string>134.19.119.19</string>
 	<key>DB0BUX</key>
 	<string>93.232.136.85</string>
 	<key>DB0CHV</key>
-	<string>95.119.127.211</string>
+	<string>80.187.112.100</string>
 	<key>DB0CI</key>
-	<string>79.249.51.196</string>
+	<string>79.249.40.233</string>
 	<key>DB0COM</key>
 	<string>217.24.207.22</string>
 	<key>DB0CW</key>
@@ -341,39 +192,49 @@
 	<key>DB0DB</key>
 	<string>185.70.220.35</string>
 	<key>DB0DBN</key>
-	<string>93.214.136.118</string>
+	<string>93.214.135.44</string>
 	<key>DB0DDE</key>
-	<string>78.50.51.133</string>
+	<string>134.91.90.125</string>
 	<key>DB0DDO</key>
-	<string>85.22.104.229</string>
+	<string>85.22.117.247</string>
 	<key>DB0DF</key>
-	<string>92.200.121.123</string>
+	<string>92.200.187.101</string>
 	<key>DB0DJ</key>
 	<string>217.92.28.60</string>
 	<key>DB0DLR</key>
-	<string>77.22.254.13</string>
+	<string>77.20.195.65</string>
 	<key>DB0DMB</key>
-	<string>2.204.230.142</string>
+	<string>2.203.110.51</string>
+	<key>DB0DON</key>
+	<string>62.204.167.188</string>
 	<key>DB0DOS</key>
-	<string>131.173.32.248</string>
+	<string>131.173.32.247</string>
+	<key>DB0DRB</key>
+	<string>87.167.176.69</string>
 	<key>DB0DS</key>
 	<string>176.199.152.106</string>
 	<key>DB0DTR</key>
 	<string>195.46.251.108</string>
+	<key>DB0DWL</key>
+	<string>80.187.108.192</string>
+	<key>DB0DY</key>
+	<string>89.166.178.42</string>
 	<key>DB0DZ</key>
 	<string>212.17.239.127</string>
 	<key>DB0EAT</key>
-	<string>82.83.79.22</string>
+	<string>88.73.140.81</string>
 	<key>DB0EIS</key>
-	<string>84.119.170.62</string>
+	<string>178.200.28.163</string>
 	<key>DB0ELD</key>
 	<string>84.63.178.201</string>
 	<key>DB0END</key>
 	<string>89.238.78.164</string>
 	<key>DB0ERK</key>
-	<string>185.22.143.54</string>
+	<string>185.22.143.181</string>
 	<key>DB0ERZ</key>
 	<string>46.227.221.228</string>
+	<key>DB0ESG</key>
+	<string>91.8.175.237</string>
 	<key>DB0ESS</key>
 	<string>80.81.9.242</string>
 	<key>DB0FEU</key>
@@ -381,35 +242,39 @@
 	<key>DB0FIB</key>
 	<string>77.235.169.90</string>
 	<key>DB0FRB</key>
-	<string>88.70.43.228</string>
+	<string>188.98.70.135</string>
 	<key>DB0FS</key>
-	<string>85.176.49.253</string>
+	<string>77.187.7.111</string>
 	<key>DB0FTS</key>
-	<string>95.90.214.248</string>
+	<string>37.85.74.188</string>
 	<key>DB0FWS</key>
 	<string>194.94.48.144</string>
 	<key>DB0FZH</key>
 	<string>79.204.26.108</string>
+	<key>DB0GAP</key>
+	<string>37.5.206.11</string>
 	<key>DB0GM</key>
-	<string>84.189.40.254</string>
+	<string>79.248.204.149</string>
 	<key>DB0HAA</key>
-	<string>93.197.233.252</string>
+	<string>93.197.239.102</string>
 	<key>DB0HAS</key>
-	<string>87.176.17.136</string>
+	<string>84.189.41.8</string>
 	<key>DB0HCC</key>
-	<string>93.232.177.146</string>
+	<string>93.232.143.53</string>
 	<key>DB0HDF</key>
-	<string>146.52.73.7</string>
+	<string>146.52.190.243</string>
+	<key>DB0HE</key>
+	<string>178.201.193.183</string>
 	<key>DB0HEW</key>
-	<string>82.113.98.93</string>
+	<string>2.247.247.181</string>
 	<key>DB0HFD</key>
 	<string>178.208.98.198</string>
 	<key>DB0HFT</key>
 	<string>194.94.26.189</string>
 	<key>DB0HGW</key>
-	<string>87.145.170.110</string>
+	<string>87.142.213.157</string>
 	<key>DB0HHO</key>
-	<string>46.114.42.194</string>
+	<string>176.2.97.183</string>
 	<key>DB0HPA</key>
 	<string>37.4.9.252</string>
 	<key>DB0HRF</key>
@@ -417,21 +282,25 @@
 	<key>DB0HRM</key>
 	<string>176.102.173.77</string>
 	<key>DB0HRR</key>
-	<string>84.171.28.143</string>
+	<string>84.171.1.231</string>
 	<key>DB0HSK</key>
 	<string>80.149.48.126</string>
 	<key>DB0HUS</key>
 	<string>89.244.91.2</string>
+	<key>DB0ICM</key>
+	<string>62.159.57.154</string>
 	<key>DB0IKS</key>
-	<string>37.230.9.14</string>
+	<string>37.230.18.10</string>
+	<key>DB0INS</key>
+	<string>87.146.31.174</string>
 	<key>DB0IR</key>
-	<string>91.57.218.182</string>
+	<string>84.158.126.48</string>
 	<key>DB0IZ</key>
-	<string>83.135.47.8</string>
+	<string>83.135.44.104</string>
 	<key>DB0KH</key>
-	<string>84.134.103.88</string>
+	<string>84.134.106.2</string>
 	<key>DB0KLI</key>
-	<string>91.89.133.189</string>
+	<string>91.89.132.121</string>
 	<key>DB0KOE</key>
 	<string>212.17.239.121</string>
 	<key>DB0KUE</key>
@@ -441,53 +310,69 @@
 	<key>DB0LAR</key>
 	<string>79.249.92.224</string>
 	<key>DB0LBX</key>
-	<string>80.153.19.36</string>
+	<string>185.156.157.212</string>
 	<key>DB0LE</key>
 	<string>84.133.84.34</string>
 	<key>DB0LER</key>
 	<string>194.94.26.157</string>
 	<key>DB0LJ</key>
-	<string>84.188.127.34</string>
+	<string>79.198.238.119</string>
 	<key>DB0LY</key>
 	<string>212.185.185.244</string>
 	<key>DB0MAR</key>
-	<string>2.203.178.187</string>
+	<string>109.47.0.106</string>
+	<key>DB0MDX</key>
+	<string>137.248.141.153</string>
 	<key>DB0MGN</key>
-	<string>87.148.128.45</string>
+	<string>84.154.252.75</string>
+	<key>DB0MIA</key>
+	<string>84.154.233.178</string>
 	<key>DB0MOT</key>
 	<string>94.249.222.90</string>
 	<key>DB0MYK</key>
 	<string>87.139.70.67</string>
 	<key>DB0NG</key>
-	<string>217.191.61.185</string>
+	<string>217.191.69.201</string>
+	<key>DB0NIC</key>
+	<string>188.194.13.113</string>
 	<key>DB0NIS</key>
-	<string>80.145.98.71</string>
+	<string>78.94.50.211</string>
 	<key>DB0NU</key>
-	<string>84.153.59.156</string>
+	<string>217.241.11.28</string>
 	<key>DB0OAL</key>
 	<string>212.125.105.177</string>
 	<key>DB0OFI</key>
 	<string>79.197.246.185</string>
 	<key>DB0OHA</key>
-	<string>77.22.84.6</string>
+	<string>77.22.37.160</string>
 	<key>DB0OL</key>
 	<string>194.94.26.157</string>
+	<key>DB0ORT</key>
+	<string>193.197.184.11</string>
 	<key>DB0OTV</key>
-	<string>88.78.215.117</string>
+	<string>146.60.63.5</string>
+	<key>DB0OX</key>
+	<string>77.21.172.109</string>
 	<key>DB0PBS</key>
 	<string>192.26.179.90</string>
+	<key>DB0PLN</key>
+	<string>217.83.72.121</string>
 	<key>DB0POB</key>
-	<string>84.153.131.61</string>
+	<string>84.133.41.125</string>
 	<key>DB0RDH</key>
 	<string>80.153.138.172</string>
+	<key>DB0REI</key>
+	<string>80.187.107.49</string>
 	<key>DB0REU</key>
-	<string>93.210.211.75</string>
+	<string>93.210.200.97</string>
 	<key>DB0RIG</key>
 	<string>212.87.140.9</string>
 	<key>DB0RKB</key>
 	<string>84.170.133.207</string>
 	<key>DB0RKD</key>
 	<string>212.17.239.126</string>
+	<key>DB0RTV</key>
+	<string>92.252.105.120</string>
 	<key>DB0RZS</key>
 	<string>79.240.190.243</string>
 	<key>DB0SAT</key>
@@ -495,23 +380,27 @@
 	<key>DB0SBX</key>
 	<string>217.92.213.164</string>
 	<key>DB0SHA</key>
-	<string>77.20.23.147</string>
+	<string>130.75.211.129</string>
 	<key>DB0SIF</key>
-	<string>93.229.152.209</string>
+	<string>134.176.128.63</string>
 	<key>DB0SN</key>
 	<string>134.76.247.241</string>
 	<key>DB0ST</key>
-	<string>95.113.146.225</string>
+	<string>88.67.139.84</string>
 	<key>DB0SWR</key>
-	<string>db0swr.dyndns.org</string>
+	<string>46.92.173.204</string>
 	<key>DB0SZS</key>
 	<string>85.8.93.210</string>
 	<key>DB0THM</key>
-	<string>188.210.40.28</string>
+	<string>79.249.252.213</string>
 	<key>DB0TIT</key>
-	<string>91.5.228.204</string>
+	<string>91.5.225.161</string>
+	<key>DB0TOD</key>
+	<string>87.154.107.25</string>
 	<key>DB0TUV</key>
-	<string>212.17.239.125</string>
+	<string>78.35.82.82</string>
+	<key>DB0TV</key>
+	<string>130.180.78.74</string>
 	<key>DB0TVM</key>
 	<string>129.187.5.189</string>
 	<key>DB0UHC</key>
@@ -521,13 +410,15 @@
 	<key>DB0USK</key>
 	<string>91.40.86.245</string>
 	<key>DB0VA</key>
-	<string>95.116.157.223</string>
+	<string>217.51.132.56</string>
 	<key>DB0VOX</key>
 	<string>141.75.245.244</string>
 	<key>DB0VS</key>
-	<string>92.211.227.93</string>
+	<string>84.57.181.10</string>
 	<key>DB0WA</key>
 	<string>137.226.79.113</string>
+	<key>DB0WBZ</key>
+	<string>91.33.44.72</string>
 	<key>DB0WE</key>
 	<string>134.91.90.125</string>
 	<key>DB0WHV</key>
@@ -535,127 +426,211 @@
 	<key>DB0WIM</key>
 	<string>84.172.46.107</string>
 	<key>DB0WK</key>
-	<string>88.75.25.196</string>
+	<string>84.58.69.195</string>
+	<key>DB0WO</key>
+	<string>194.94.26.157</string>
 	<key>DB0WTV</key>
-	<string>79.227.1.227</string>
+	<string>79.227.18.125</string>
 	<key>DB0WUN</key>
-	<string>62.227.205.99</string>
+	<string>178.27.245.3</string>
 	<key>DB0WV</key>
-	<string>80.150.89.125</string>
+	<string>185.139.93.23</string>
 	<key>DB0WZ</key>
-	<string>77.0.73.83</string>
+	<string>80.147.61.209</string>
+	<key>DB0WZB</key>
+	<string>217.6.32.154</string>
+	<key>DB0XN</key>
+	<string>91.57.207.232</string>
 	<key>DB0XO</key>
-	<string>80.152.168.48</string>
+	<string>85.197.17.166</string>
 	<key>DB0XPO</key>
 	<string>77.189.65.133</string>
 	<key>DB0ZB</key>
-	<string>178.25.244.121</string>
+	<string>178.25.243.189</string>
 	<key>DB0ZKA</key>
-	<string>91.61.246.152</string>
+	<string>87.176.102.234</string>
 	<key>DB0ZO</key>
-	<string>217.93.60.112</string>
+	<string>79.222.195.11</string>
 	<key>DF0GC</key>
-	<string>79.199.131.250</string>
+	<string>79.199.149.40</string>
 	<key>DF0MHR</key>
 	<string>134.91.90.124</string>
 	<key>DF0WUN</key>
-	<string>178.25.244.121</string>
+	<string>178.25.243.189</string>
+	<key>DJ7FG</key>
+	<string>178.203.55.254</string>
+	<key>DL7DW</key>
+	<string>109.91.136.204</string>
+	<key>DM0BAM</key>
+	<string>91.58.235.110</string>
+	<key>DM0BS</key>
+	<string>84.129.211.96</string>
 	<key>DM0DWD</key>
-	<string>95.222.27.220</string>
+	<string>95.222.24.105</string>
 	<key>DM0GAP</key>
 	<string>24.134.234.46</string>
 	<key>DM0GER</key>
-	<string>80.137.100.192</string>
+	<string>217.251.32.252</string>
 	<key>DM0GRI</key>
 	<string>79.240.53.7</string>
+	<key>DM0HAT</key>
+	<string>91.39.111.88</string>
 	<key>DM0HEI</key>
-	<string>93.195.138.58</string>
+	<string>46.85.47.20</string>
 	<key>DM0HHW</key>
-	<string>31.16.121.50</string>
+	<string>31.17.183.109</string>
 	<key>DM0HMB</key>
 	<string>141.22.12.147</string>
 	<key>DM0IZH</key>
 	<string>217.7.213.254</string>
+	<key>DM0KR</key>
+	<string>85.197.13.90</string>
 	<key>DM0LEI</key>
-	<string>77.64.253.198</string>
+	<string>178.12.198.226</string>
 	<key>DM0LUE</key>
 	<string>185.8.138.7</string>
 	<key>DM0MW</key>
 	<string>141.55.128.102</string>
+	<key>DM0NOR</key>
+	<string>77.21.233.224</string>
 	<key>DM0PX</key>
 	<string>87.163.86.155</string>
 	<key>DM0RAM</key>
-	<string>46.59.151.131</string>
+	<string>46.59.223.126</string>
 	<key>DM0RW</key>
 	<string>79.250.111.119</string>
 	<key>DM0SAT</key>
-	<string>84.146.228.112</string>
+	<string>79.234.66.123</string>
+	<key>DM0SL</key>
+	<string>91.57.193.61</string>
+	<key>DM0TR</key>
+	<string>185.22.141.191</string>
 	<key>DM0ULM</key>
-	<string>193.138.219.228</string>
+	<string>130.255.111.80</string>
+	<key>DM0WL</key>
+	<string>217.94.181.42</string>
 	<key>DM0WM</key>
 	<string>193.196.117.161</string>
 	<key>DM0ZOG</key>
 	<string>193.197.187.14</string>
 	<key>DO0ERK</key>
-	<string>84.135.51.120</string>
+	<string>84.135.57.80</string>
 	<key>DO0FWH</key>
-	<string>91.5.138.197</string>
+	<string>91.5.149.137</string>
 	<key>DO0SRE</key>
-	<string>84.149.92.205</string>
+	<string>78.94.25.38</string>
 	<key>DO0TPB</key>
-	<string>47.64.18.69</string>
+	<string>47.67.134.226</string>
 	<key>DX1PAR</key>
 	<string>112.206.97.48</string>
+	<key>E24DB</key>
+	<string>210.86.135.13</string>
+	<key>E24DC</key>
+	<string>119.42.123.252</string>
+	<key>E24DD</key>
+	<string>49.228.213.89</string>
+	<key>E24DE</key>
+	<string>49.228.36.143</string>
+	<key>E24DF</key>
+	<string>110.77.153.121</string>
+	<key>E24DG</key>
+	<string>118.174.121.81</string>
+	<key>E24DH</key>
+	<string>118.173.204.34</string>
+	<key>E24DI</key>
+	<string>183.89.206.36</string>
+	<key>E24DJ</key>
+	<string>183.89.198.111</string>
+	<key>E25BI</key>
+	<string>110.77.204.149</string>
+	<key>E25BL</key>
+	<string>49.228.96.240</string>
+	<key>E25BM</key>
+	<string>49.228.229.210</string>
+	<key>E25CL</key>
+	<string>49.228.222.212</string>
 	<key>E29AB</key>
 	<string>118.174.62.161</string>
+	<key>E29AJ</key>
+	<string>113.53.67.192</string>
+	<key>E70TM</key>
+	<string>178.236.87.7</string>
 	<key>EA1RKG</key>
 	<string>85.251.52.170</string>
+	<key>EA3RCC</key>
+	<string>80.28.236.210</string>
 	<key>EA3URE</key>
-	<string>95.62.174.142</string>
+	<string>80.31.83.88</string>
 	<key>EA5DW</key>
 	<string>83.231.60.134</string>
 	<key>EA5RKD</key>
 	<string>62.43.198.66</string>
 	<key>ED1YAG</key>
-	<string>91.117.52.125</string>
+	<string>91.116.186.174</string>
 	<key>ED1YBK</key>
 	<string>213.60.194.98</string>
 	<key>ED1YBL</key>
 	<string>213.60.194.98</string>
 	<key>ED1YBQ</key>
 	<string>95.18.64.212</string>
+	<key>ED1YBY</key>
+	<string>213.60.194.98</string>
 	<key>ED1YCD</key>
 	<string>89.130.190.218</string>
 	<key>ED1ZAB</key>
-	<string>79.154.155.222</string>
+	<string>79.158.94.235</string>
 	<key>ED1ZAC</key>
-	<string>83.58.74.17</string>
+	<string>83.40.255.156</string>
+	<key>ED1ZAE</key>
+	<string>85.57.151.65</string>
 	<key>ED1ZAJ</key>
 	<string>81.169.133.171</string>
+	<key>ED1ZAK</key>
+	<string>88.23.184.179</string>
+	<key>ED1ZAM</key>
+	<string>91.117.67.25</string>
+	<key>ED1ZAS</key>
+	<string>154.58.48.254</string>
+	<key>ED1ZAT</key>
+	<string>77.27.223.62</string>
 	<key>ED2YAA</key>
-	<string>85.86.137.53</string>
+	<string>83.213.145.3</string>
 	<key>ED2YAE</key>
 	<string>89.7.121.26</string>
 	<key>ED2YAN</key>
 	<string>80.35.102.65</string>
 	<key>ED2YAO</key>
-	<string>80.35.102.65</string>
+	<string>85.87.244.112</string>
 	<key>ED2YAP</key>
 	<string>85.86.27.35</string>
+	<key>ED2ZAB</key>
+	<string>2.142.99.100</string>
 	<key>ED2ZAC</key>
 	<string>80.35.102.65</string>
+	<key>ED2ZAD</key>
+	<string>83.213.197.60</string>
+	<key>ED2ZAE</key>
+	<string>83.213.57.159</string>
 	<key>ED3YAC</key>
 	<string>37.15.158.172</string>
+	<key>ED3YAK</key>
+	<string>181.199.207.146</string>
 	<key>ED3YAQ</key>
-	<string>79.156.129.145</string>
+	<string>85.54.247.169</string>
+	<key>ED4YAG</key>
+	<string>83.56.7.187</string>
+	<key>ED4YAO</key>
+	<string>79.150.137.101</string>
+	<key>ED4ZAD</key>
+	<string>193.153.97.116</string>
 	<key>ED5YAA</key>
 	<string>81.38.122.23</string>
 	<key>ED5YAU</key>
 	<string>62.14.178.40</string>
 	<key>ED5ZAE</key>
-	<string>80.39.163.107</string>
+	<string>37.59.115.215</string>
 	<key>ED5ZAG</key>
-	<string>47.61.236.160</string>
+	<string>47.61.236.109</string>
 	<key>ED6ZAA</key>
 	<string>37.152.91.24</string>
 	<key>ED6ZAC</key>
@@ -663,26 +638,32 @@
 	<key>ED7YAB</key>
 	<string>217.216.174.179</string>
 	<key>ED7YAU</key>
-	<string>81.38.238.200</string>
+	<string>83.33.247.198</string>
 	<key>ED7ZAC</key>
-	<string>37.11.190.32</string>
+	<string>37.11.191.198</string>
+	<key>ED7ZAD</key>
+	<string>212.225.223.240</string>
 	<key>ED7ZAE</key>
 	<string>217.216.83.87</string>
 	<key>ED7ZAJ</key>
 	<string>88.148.91.18</string>
 	<key>ED8ZAB</key>
-	<string>95.60.217.127</string>
+	<string>79.147.218.213</string>
 	<key>ED8ZAG</key>
 	<string>95.60.217.127</string>
 	<key>F1ZBE</key>
-	<string>92.155.137.152</string>
+	<string>195.146.255.71</string>
+	<key>F1ZBO</key>
+	<string>46.218.36.233</string>
 	<key>F1ZBU</key>
 	<string>128.140.139.125</string>
 	<key>F1ZCD</key>
 	<string>88.187.220.2</string>
 	<key>F1ZCK</key>
-	<string>82.239.192.149</string>
+	<string>90.29.32.120</string>
 	<key>F1ZDF</key>
+	<string>78.203.212.22</string>
+	<key>F1ZDH</key>
 	<string>78.203.212.22</string>
 	<key>F1ZDI</key>
 	<string>213.244.25.3</string>
@@ -691,31 +672,37 @@
 	<key>F1ZDZ</key>
 	<string>82.231.84.133</string>
 	<key>F1ZEM</key>
-	<string>90.14.65.163</string>
+	<string>80.14.15.141</string>
 	<key>F1ZET</key>
 	<string>85.68.144.222</string>
 	<key>F1ZEU</key>
 	<string>78.209.109.149</string>
 	<key>F1ZFI</key>
-	<string>88.188.121.72</string>
+	<string>83.143.83.196</string>
 	<key>F1ZGG</key>
-	<string>77.154.202.113</string>
+	<string>77.154.204.241</string>
 	<key>F1ZGK</key>
-	<string>109.217.60.205</string>
+	<string>90.39.128.153</string>
 	<key>F1ZGY</key>
-	<string>79.141.201.54</string>
+	<string>195.146.255.71</string>
 	<key>F1ZHP</key>
 	<string>88.174.140.210</string>
 	<key>F1ZHY</key>
-	<string>90.4.231.212</string>
+	<string>86.194.238.17</string>
 	<key>F1ZHZ</key>
 	<string>213.111.35.103</string>
+	<key>F1ZID</key>
+	<string>109.213.246.9</string>
+	<key>F1ZIE</key>
+	<string>86.196.126.228</string>
 	<key>F1ZII</key>
-	<string>78.203.212.22</string>
+	<string>88.164.2.51</string>
+	<key>F1ZIM</key>
+	<string>78.212.149.118</string>
 	<key>F1ZPK</key>
 	<string>80.12.43.12</string>
 	<key>F1ZPL</key>
-	<string>77.132.70.210</string>
+	<string>77.132.203.254</string>
 	<key>F1ZTC</key>
 	<string>81.57.52.36</string>
 	<key>F1ZTD</key>
@@ -727,63 +714,411 @@
 	<key>F1ZYI</key>
 	<string>78.203.212.22</string>
 	<key>F5ZCV</key>
-	<string>90.13.227.76</string>
+	<string>90.13.224.172</string>
+	<key>F5ZEE</key>
+	<string>149.202.53.0</string>
 	<key>F5ZFM</key>
-	<string>84.98.250.253</string>
+	<string>84.98.250.118</string>
 	<key>F5ZFY</key>
-	<string>90.7.62.232</string>
+	<string>86.228.17.41</string>
 	<key>F5ZIC</key>
 	<string>78.203.212.22</string>
 	<key>F5ZIM</key>
-	<string>90.7.56.44</string>
+	<string>90.34.6.204</string>
 	<key>F5ZIN</key>
 	<string>77.128.155.56</string>
 	<key>F5ZIO</key>
+	<string>88.164.255.242</string>
+	<key>F5ZIP</key>
 	<string>82.238.70.192</string>
 	<key>F5ZIR</key>
 	<string>86.195.184.220</string>
+	<key>F5ZJK</key>
+	<string>2.13.172.174</string>
+	<key>F5ZJQ</key>
+	<string>80.119.209.204</string>
 	<key>F5ZSS</key>
-	<string>78.203.212.22</string>
+	<string>84.103.137.200</string>
 	<key>GB3LR</key>
-	<string>81.149.121.128</string>
+	<string>151.228.138.41</string>
+	<key>GB7DA</key>
+	<string>82.43.115.234</string>
 	<key>GB7DX</key>
-	<string>86.142.38.200</string>
+	<string>81.158.29.106</string>
 	<key>GB7FK</key>
 	<string>217.155.103.254</string>
 	<key>GB7GC</key>
-	<string>86.24.204.251</string>
+	<string>86.22.29.217</string>
+	<key>GB7HE</key>
+	<string>91.125.112.225</string>
 	<key>GB7IC</key>
-	<string>185.14.167.195</string>
+	<string>62.49.140.9</string>
+	<key>GB7IV</key>
+	<string>92.40.145.125</string>
+	<key>GB7JD</key>
+	<string>212.56.100.200</string>
+	<key>GB7JM</key>
+	<string>86.168.101.241</string>
+	<key>GB7KH</key>
+	<string>85.119.82.151</string>
 	<key>GB7MA</key>
 	<string>217.34.220.43</string>
+	<key>GB7MW</key>
+	<string>86.132.203.114</string>
+	<key>GB7PB</key>
+	<string>86.160.248.67</string>
 	<key>GB7PD</key>
-	<string>86.155.123.192</string>
-	<key>GB7PI</key>
-	<string>80.229.199.9</string>
+	<string>86.136.12.237</string>
 	<key>GB7PP</key>
-	<string>86.181.108.92</string>
+	<string>81.140.60.229</string>
 	<key>GB7SB</key>
-	<string>188.30.137.245</string>
+	<string>92.40.107.57</string>
 	<key>GB7SO</key>
-	<string>77.98.10.206</string>
+	<string>92.239.142.68</string>
+	<key>GB7SS</key>
+	<string>88.97.60.116</string>
+	<key>GB7TP</key>
+	<string>46.37.36.183</string>
+	<key>GB7TY</key>
+	<string>31.66.98.19</string>
+	<key>GB7WC</key>
+	<string>81.5.173.129</string>
+	<key>GB7WP</key>
+	<string>84.92.46.36</string>
 	<key>GB7ZP</key>
-	<string>217.42.188.157</string>
+	<string>93.97.108.23</string>
+	<key>GB7ZZ</key>
+	<string>62.49.140.9</string>
 	<key>HB9AK</key>
 	<string>80.75.115.66</string>
+	<key>HB9AR</key>
+	<string>195.70.3.120</string>
+	<key>HB9AW</key>
+	<string>81.62.93.191</string>
+	<key>HB9BG</key>
+	<string>92.107.2.173</string>
+	<key>HB9BO</key>
+	<string>213.202.33.211</string>
+	<key>HB9CSR</key>
+	<string>83.78.252.158</string>
+	<key>HB9DD</key>
+	<string>89.217.221.28</string>
+	<key>HB9DR</key>
+	<string>178.197.226.49</string>
+	<key>HB9DS</key>
+	<string>194.29.11.9</string>
+	<key>HB9EAS</key>
+	<string>94.16.138.117</string>
+	<key>HB9EBS</key>
+	<string>188.63.52.179</string>
+	<key>HB9EME</key>
+	<string>62.207.190.131</string>
+	<key>HB9GR</key>
+	<string>88.84.24.206</string>
+	<key>HB9HD</key>
+	<string>178.194.231.186</string>
+	<key>HB9IAC</key>
+	<string>195.70.3.121</string>
+	<key>HB9IAP</key>
+	<string>78.214.76.21</string>
+	<key>HB9LC</key>
+	<string>195.70.21.119</string>
+	<key>HB9LU</key>
+	<string>46.14.177.200</string>
+	<key>HB9OH</key>
+	<string>213.202.44.195</string>
+	<key>HB9PE</key>
+	<string>188.62.97.217</string>
+	<key>HB9RAR</key>
+	<string>178.198.151.168</string>
+	<key>HB9RD</key>
+	<string>92.105.96.21</string>
+	<key>HB9RF</key>
+	<string>176.10.105.14</string>
+	<key>HB9RL</key>
+	<string>83.77.71.160</string>
+	<key>HB9SI</key>
+	<string>92.106.234.97</string>
+	<key>HB9UCQ</key>
+	<string>46.14.203.46</string>
+	<key>HB9VD</key>
+	<string>51.254.122.59</string>
+	<key>HB9VSD</key>
+	<string>86.111.139.178</string>
+	<key>HB9W</key>
+	<string>77.56.104.16</string>
+	<key>HB9Y</key>
+	<string>92.107.206.143</string>
+	<key>HB9ZRH</key>
+	<string>176.10.105.5</string>
+	<key>HG0RUA</key>
+	<string>78.131.94.46</string>
+	<key>HG2RUF</key>
+	<string>188.6.160.218</string>
+	<key>HG3RUE</key>
+	<string>77.234.92.234</string>
+	<key>HG5RUD</key>
+	<string>217.113.55.18</string>
+	<key>HG6RUB</key>
+	<string>79.172.236.163</string>
+	<key>HG7RUD</key>
+	<string>195.228.218.209</string>
+	<key>HK6FRC</key>
+	<string>181.56.164.49</string>
+	<key>HP1RCD</key>
+	<string>190.218.204.221</string>
+	<key>HS0AC</key>
+	<string>101.108.10.34</string>
+	<key>HS3AK</key>
+	<string>58.10.139.98</string>
+	<key>HS5AC</key>
+	<string>61.7.185.179</string>
+	<key>HS9AN</key>
+	<string>27.55.8.251</string>
+	<key>IQ2GM</key>
+	<string>87.15.131.218</string>
+	<key>IR0AAB</key>
+	<string>79.33.233.204</string>
+	<key>IR0AAC</key>
+	<string>95.110.161.166</string>
+	<key>IR0AAZ</key>
+	<string>2.236.185.93</string>
+	<key>IR0AY</key>
+	<string>185.29.144.147</string>
+	<key>IR0BP</key>
+	<string>93.189.136.50</string>
+	<key>IR0CD</key>
+	<string>185.49.59.90</string>
+	<key>IR0CJ</key>
+	<string>185.82.114.251</string>
+	<key>IR0CP</key>
+	<string>185.82.114.254</string>
+	<key>IR0DE</key>
+	<string>185.82.114.251</string>
+	<key>IR0DT</key>
+	<string>95.236.30.215</string>
+	<key>IR0DV</key>
+	<string>94.39.111.55</string>
+	<key>IR0K</key>
+	<string>2.227.252.182</string>
+	<key>IR0MA</key>
+	<string>176.62.60.249</string>
+	<key>IR0UAS</key>
+	<string>93.189.136.50</string>
+	<key>IR0UBT</key>
+	<string>84.221.128.250</string>
+	<key>IR0UCA</key>
+	<string>194.183.20.184</string>
+	<key>IR0UDE</key>
+	<string>93.150.134.139</string>
+	<key>IR0UEH</key>
+	<string>88.86.174.242</string>
+	<key>IR0UEZ</key>
+	<string>185.82.114.253</string>
+	<key>IR0UFL</key>
+	<string>85.18.212.19</string>
+	<key>IR0UGC</key>
+	<string>185.82.114.252</string>
+	<key>IR0UGN</key>
+	<string>95.110.229.223</string>
+	<key>IR0UGO</key>
+	<string>151.24.55.115</string>
+	<key>IR0UGR</key>
+	<string>185.82.114.252</string>
+	<key>IR0UHW</key>
+	<string>194.183.27.251</string>
+	<key>IR1BZ</key>
+	<string>194.116.59.82</string>
+	<key>IR1CJ</key>
+	<string>194.116.29.66</string>
+	<key>IR1CT</key>
+	<string>2.40.22.239</string>
+	<key>IR1CV</key>
+	<string>79.54.121.211</string>
+	<key>IR1DA</key>
+	<string>2.230.98.76</string>
+	<key>IR1DB</key>
+	<string>151.16.17.199</string>
+	<key>IR1DC</key>
+	<string>88.149.181.240</string>
+	<key>IR1DF</key>
+	<string>79.30.122.95</string>
+	<key>IR1DK</key>
+	<string>194.116.59.36</string>
+	<key>IR1UAW</key>
+	<string>87.8.125.3</string>
+	<key>IR1UB</key>
+	<string>88.32.121.247</string>
+	<key>IR1UBR</key>
+	<string>81.30.11.81</string>
+	<key>IR1UCB</key>
+	<string>194.116.56.98</string>
+	<key>IR1UDI</key>
+	<string>194.116.59.218</string>
+	<key>IR1UDT</key>
+	<string>94.143.97.45</string>
+	<key>IR1UEI</key>
+	<string>95.110.229.196</string>
+	<key>IR1UEY</key>
+	<string>79.58.198.149</string>
+	<key>IR1UFM</key>
+	<string>79.30.122.95</string>
+	<key>IR1UGD</key>
+	<string>188.9.55.218</string>
+	<key>IR1UGF</key>
+	<string>78.134.100.34</string>
+	<key>IR1UGM</key>
+	<string>82.215.168.29</string>
+	<key>IR1UGO</key>
+	<string>79.56.70.11</string>
+	<key>IR1UHA</key>
+	<string>194.116.56.217</string>
+	<key>IR1UHC</key>
+	<string>79.40.127.34</string>
+	<key>IR1UHT</key>
+	<string>88.149.181.240</string>
+	<key>IR1UII</key>
+	<string>194.116.59.211</string>
+	<key>IR1UIM</key>
+	<string>151.16.215.168</string>
+	<key>IR1UIV</key>
+	<string>217.19.146.213</string>
+	<key>IR1UIW</key>
+	<string>2.235.33.50</string>
+	<key>IR2AF</key>
+	<string>151.65.231.254</string>
+	<key>IR2AY</key>
+	<string>79.50.138.33</string>
+	<key>IR2CP</key>
+	<string>79.54.92.101</string>
+	<key>IR2UBG</key>
+	<string>5.34.190.98</string>
+	<key>IR2UDW</key>
+	<string>91.142.66.115</string>
+	<key>IR2UDY</key>
+	<string>93.50.151.35</string>
+	<key>IR2UEI</key>
+	<string>87.28.47.210</string>
+	<key>IR2UEZ</key>
+	<string>78.134.11.75</string>
+	<key>IR2UFH</key>
+	<string>79.24.5.133</string>
+	<key>IR2UFQ</key>
+	<string>87.15.136.157</string>
+	<key>IR2UFV</key>
+	<string>2.238.198.249</string>
+	<key>IR2UGK</key>
+	<string>79.40.85.46</string>
+	<key>IR2UGU</key>
+	<string>82.56.28.187</string>
+	<key>IR2UM</key>
+	<string>2.230.252.159</string>
+	<key>IR2UX</key>
+	<string>82.105.60.221</string>
+	<key>IR3DA</key>
+	<string>88.32.99.141</string>
+	<key>IR3DI</key>
+	<string>46.28.127.132</string>
+	<key>IR3DV</key>
+	<string>31.207.110.231</string>
+	<key>IR3EE</key>
+	<string>213.21.185.184</string>
+	<key>IR3UAP</key>
+	<string>87.5.230.115</string>
+	<key>IR3UBK</key>
+	<string>46.19.235.134</string>
+	<key>IR3UFO</key>
+	<string>88.32.99.142</string>
+	<key>IR3UG</key>
+	<string>95.142.180.57</string>
+	<key>IR3UIE</key>
+	<string>2.234.159.69</string>
+	<key>IR3UIM</key>
+	<string>151.49.225.253</string>
+	<key>IR3UIV</key>
+	<string>81.174.3.170</string>
+	<key>IR4UAJ</key>
+	<string>79.23.49.236</string>
+	<key>IR4UBH</key>
+	<string>79.12.240.135</string>
+	<key>IR4UBL</key>
+	<string>79.10.8.223</string>
+	<key>IR4UBP</key>
+	<string>95.224.133.238</string>
+	<key>IR4UBX</key>
+	<string>79.36.39.19</string>
+	<key>IR4UCF</key>
+	<string>79.8.228.37</string>
+	<key>IR4UCJ</key>
+	<string>5.94.83.110</string>
+	<key>IR4URE</key>
+	<string>82.106.69.15</string>
+	<key>IR5AF</key>
+	<string>62.48.46.186</string>
+	<key>IR5AG</key>
+	<string>151.40.69.59</string>
+	<key>IR5AH</key>
+	<string>87.11.205.248</string>
+	<key>IR5AN</key>
+	<string>62.48.40.65</string>
+	<key>IR5AR</key>
+	<string>213.136.145.34</string>
+	<key>IR5AY</key>
+	<string>79.23.129.14</string>
+	<key>IR5UAP</key>
+	<string>95.239.131.244</string>
+	<key>IR5UBM</key>
+	<string>95.243.25.20</string>
+	<key>IR5UBN</key>
+	<string>213.225.213.138</string>
+	<key>IR5UBO</key>
+	<string>93.188.115.147</string>
+	<key>IR5UBS</key>
+	<string>46.226.178.83</string>
+	<key>IR5UCB</key>
+	<string>46.226.178.82</string>
+	<key>IR5UCC</key>
+	<string>217.112.102.122</string>
+	<key>IR5UCK</key>
+	<string>46.226.176.11</string>
+	<key>IR5UCL</key>
+	<string>80.180.209.123</string>
+	<key>IR5UCM</key>
+	<string>91.214.61.109</string>
+	<key>IR5UCQ</key>
+	<string>188.13.250.107</string>
+	<key>IR5UCU</key>
+	<string>217.112.103.56</string>
+	<key>IR5UD</key>
+	<string>213.225.228.106</string>
+	<key>IR5UDB</key>
+	<string>46.226.178.84</string>
+	<key>IR6AL</key>
+	<string>109.236.25.120</string>
+	<key>IR6BK</key>
+	<string>79.52.182.43</string>
+	<key>IR6BL</key>
+	<string>82.104.82.57</string>
+	<key>IR6L</key>
+	<string>178.23.10.46</string>
+	<key>IR6UCC</key>
+	<string>93.63.183.34</string>
+	<key>IR6UCD</key>
+	<string>93.63.183.111</string>
 	<key>IR6UCI</key>
-	<string>87.11.182.62</string>
+	<string>151.26.207.106</string>
 	<key>IR6UCO</key>
 	<string>79.32.68.54</string>
 	<key>IR6UCP</key>
 	<string>95.251.31.28</string>
 	<key>IR6UCU</key>
-	<string>151.26.182.230</string>
+	<string>151.26.175.72</string>
 	<key>IR6UCW</key>
-	<string>134.19.173.75</string>
+	<string>195.81.99.154</string>
 	<key>IR6UCX</key>
-	<string>151.26.129.49</string>
+	<string>151.76.236.96</string>
 	<key>IR6UDB</key>
-	<string>82.55.35.129</string>
+	<string>212.171.220.26</string>
 	<key>IR6UDC</key>
 	<string>89.97.149.97</string>
 	<key>IR6UDD</key>
@@ -792,150 +1127,1776 @@
 	<string>2.35.128.25</string>
 	<key>IR6UDL</key>
 	<string>2.38.21.251</string>
+	<key>IR6UDO</key>
+	<string>95.228.227.237</string>
 	<key>IR6UJ</key>
 	<string>79.26.187.8</string>
 	<key>IR7AZ</key>
-	<string>95.110.161.166</string>
+	<string>88.41.179.164</string>
 	<key>IR7BH</key>
 	<string>95.110.161.166</string>
+	<key>IR7BJ</key>
+	<string>130.25.148.40</string>
 	<key>IR7BK</key>
-	<string>79.47.79.92</string>
+	<string>79.53.74.144</string>
+	<key>IR7UBA</key>
+	<string>37.59.188.8</string>
 	<key>IR7UBB</key>
 	<string>95.110.231.219</string>
+	<key>IR7UBL</key>
+	<string>80.116.29.105</string>
 	<key>IR7UBP</key>
-	<string>79.36.18.152</string>
+	<string>79.13.249.86</string>
 	<key>IR7UBQ</key>
 	<string>80.83.169.146</string>
 	<key>IR7UBR</key>
-	<string>91.121.90.186</string>
+	<string>2.237.73.137</string>
+	<key>IR7UBX</key>
+	<string>2.237.73.137</string>
 	<key>IR7UBY</key>
-	<string>151.45.182.191</string>
+	<string>151.45.1.4</string>
 	<key>IR7UY</key>
-	<string>87.6.252.77</string>
+	<string>80.116.25.134</string>
+	<key>IR8AF</key>
+	<string>151.14.6.84</string>
 	<key>IR8AW</key>
-	<string>95.242.168.6</string>
+	<string>95.242.168.126</string>
+	<key>IR8BA</key>
+	<string>37.99.224.224</string>
 	<key>IR8BP</key>
-	<string>95.247.14.94</string>
+	<string>82.57.55.122</string>
+	<key>IR8BQ</key>
+	<string>185.99.196.211</string>
 	<key>IR8BT</key>
 	<string>134.90.237.74</string>
+	<key>IR8CA</key>
+	<string>134.90.225.184</string>
+	<key>IR8UAE</key>
+	<string>37.99.224.232</string>
 	<key>IR8UAG</key>
-	<string>95.235.192.213</string>
+	<string>79.51.44.12</string>
 	<key>IR8UAX</key>
-	<string>151.14.6.2</string>
+	<string>79.35.118.236</string>
+	<key>IR8UBW</key>
+	<string>82.61.53.47</string>
+	<key>IR8UCN</key>
+	<string>79.52.113.144</string>
 	<key>IR9AC</key>
-	<string>95.246.110.4</string>
+	<string>79.36.103.180</string>
 	<key>IR9BC</key>
-	<string>151.74.152.222</string>
+	<string>151.54.37.192</string>
 	<key>IR9BJ</key>
-	<string>94.83.141.158</string>
+	<string>94.83.141.154</string>
 	<key>IR9BP</key>
 	<string>217.196.138.41</string>
 	<key>IR9BQ</key>
-	<string>87.19.162.132</string>
+	<string>79.19.106.159</string>
 	<key>IR9BR</key>
 	<string>217.196.138.39</string>
 	<key>IR9BS</key>
-	<string>151.63.170.78</string>
-	<key>IR9G</key>
-	<string>78.15.39.218</string>
+	<string>151.52.143.86</string>
 	<key>IR9P</key>
 	<string>151.0.167.49</string>
 	<key>IR9UAA</key>
 	<string>2.40.231.147</string>
 	<key>IR9UBD</key>
-	<string>151.54.97.2</string>
+	<string>151.74.152.105</string>
 	<key>IR9UBK</key>
-	<string>87.17.99.187</string>
+	<string>151.74.146.166</string>
 	<key>IR9UBM</key>
-	<string>185.48.143.60</string>
+	<string>176.32.20.49</string>
 	<key>IR9UBQ</key>
-	<string>31.199.174.58</string>
+	<string>185.152.140.1</string>
 	<key>IR9UBR</key>
 	<string>5.99.89.34</string>
+	<key>IR9UBT</key>
+	<string>79.13.101.72</string>
+	<key>IR9UBU</key>
+	<string>2.237.112.17</string>
+	<key>IR9UBV</key>
+	<string>151.53.29.19</string>
 	<key>IR9UG</key>
 	<string>2.194.15.97</string>
 	<key>IR9UL</key>
 	<string>5.99.89.34</string>
 	<key>IR9W</key>
 	<string>93.148.198.73</string>
+	<key>JA0EAK</key>
+	<string>1.79.81.55</string>
+	<key>JA0HNN</key>
+	<string>60.239.42.109</string>
+	<key>JA0IKP</key>
+	<string>61.205.232.109</string>
+	<key>JA0RBG</key>
+	<string>106.185.119.190</string>
+	<key>JA0YOT</key>
+	<string>126.73.168.240</string>
+	<key>JA1BBX</key>
+	<string>27.228.175.1</string>
+	<key>JA1CMM</key>
+	<string>59.86.153.30</string>
+	<key>JA1CXA</key>
+	<string>153.157.174.25</string>
+	<key>JA1CXN</key>
+	<string>49.109.98.158</string>
+	<key>JA1DQW</key>
+	<string>49.109.36.167</string>
+	<key>JA1DRE</key>
+	<string>27.230.241.61</string>
+	<key>JA1DVS</key>
+	<string>1.73.250.241</string>
+	<key>JA1GJD</key>
+	<string>49.107.31.154</string>
+	<key>JA1HYK</key>
+	<string>153.233.251.93</string>
+	<key>JA1PUN</key>
+	<string>14.193.68.87</string>
+	<key>JA1PYZ</key>
+	<string>110.4.248.36</string>
+	<key>JA1RBY</key>
+	<string>121.1.204.168</string>
+	<key>JA1RCN</key>
+	<string>114.167.2.114</string>
+	<key>JA1SST</key>
+	<string>125.205.18.23</string>
+	<key>JA1UKM</key>
+	<string>126.184.3.193</string>
+	<key>JA1XWK</key>
+	<string>1.75.254.21</string>
+	<key>JA1YKM</key>
+	<string>126.69.115.169</string>
+	<key>JA1ZIH</key>
+	<string>180.29.37.112</string>
+	<key>JA1ZUO</key>
+	<string>118.243.157.73</string>
+	<key>JA2GOX</key>
+	<string>126.189.106.67</string>
+	<key>JA2INL</key>
+	<string>203.180.199.161</string>
+	<key>JA2JIP</key>
+	<string>126.183.41.97</string>
+	<key>JA2JMV</key>
+	<string>119.63.120.24</string>
+	<key>JA2LBA</key>
+	<string>126.161.17.86</string>
+	<key>JA2MTD</key>
+	<string>180.21.128.42</string>
+	<key>JA2NID</key>
+	<string>220.146.101.114</string>
+	<key>JA2OHP</key>
+	<string>14.132.122.35</string>
+	<key>JA2POE</key>
+	<string>126.187.185.203</string>
+	<key>JA2TJY</key>
+	<string>110.161.115.119</string>
+	<key>JA2TVD</key>
+	<string>49.110.217.71</string>
+	<key>JA2UJI</key>
+	<string>153.176.216.170</string>
+	<key>JA2YCQ</key>
+	<string>153.236.50.171</string>
+	<key>JA2YJW</key>
+	<string>27.229.204.24</string>
+	<key>JA2YJZ</key>
+	<string>180.21.128.42</string>
+	<key>JA2YXY</key>
+	<string>182.255.78.158</string>
+	<key>JA3DZM</key>
+	<string>182.164.96.152</string>
+	<key>JA3FRI</key>
+	<string>153.237.199.44</string>
+	<key>JA3GPY</key>
+	<string>27.230.233.34</string>
+	<key>JA3IVV</key>
+	<string>153.248.15.187</string>
+	<key>JA3KPZ</key>
+	<string>121.87.24.91</string>
+	<key>JA3NCD</key>
+	<string>61.86.148.150</string>
+	<key>JA3QWG</key>
+	<string>153.159.78.109</string>
+	<key>JA3RPY</key>
+	<string>106.151.3.9</string>
+	<key>JA3YUA</key>
+	<string>106.181.75.232</string>
+	<key>JA4BAC</key>
+	<string>210.154.137.31</string>
+	<key>JA4CGU</key>
+	<string>116.83.82.34</string>
+	<key>JA4CLM</key>
+	<string>180.49.224.16</string>
+	<key>JA4EOQ</key>
+	<string>153.248.208.197</string>
+	<key>JA4NYY</key>
+	<string>49.135.16.207</string>
+	<key>JA4PAB</key>
+	<string>180.25.83.6</string>
+	<key>JA4QZD</key>
+	<string>153.182.180.250</string>
+	<key>JA4UNI</key>
+	<string>180.54.2.201</string>
+	<key>JA4VLO</key>
+	<string>124.154.183.68</string>
+	<key>JA4YDU</key>
+	<string>180.54.139.182</string>
+	<key>JA4YUL</key>
+	<string>110.50.10.168</string>
+	<key>JA4YWH</key>
+	<string>122.250.188.180</string>
+	<key>JA4ZZZ</key>
+	<string>101.128.221.16</string>
+	<key>JA5KUF</key>
+	<string>153.124.182.47</string>
+	<key>JA5MMS</key>
+	<string>218.110.143.208</string>
+	<key>JA5NUU</key>
+	<string>175.179.240.211</string>
+	<key>JA5OO</key>
+	<string>153.177.45.244</string>
+	<key>JA5WTL</key>
+	<string>118.16.32.224</string>
+	<key>JA5WWD</key>
+	<string>210.149.253.221</string>
+	<key>JA5YDB</key>
+	<string>111.64.122.199</string>
+	<key>JA5YOM</key>
+	<string>61.44.103.7</string>
+	<key>JA5YWZ</key>
+	<string>125.215.102.251</string>
+	<key>JA6CTI</key>
+	<string>180.9.0.32</string>
+	<key>JA6DQI</key>
+	<string>110.161.217.28</string>
+	<key>JA6EKC</key>
+	<string>121.82.121.83</string>
+	<key>JA6EWH</key>
+	<string>153.250.147.110</string>
+	<key>JA6GLQ</key>
+	<string>110.158.169.95</string>
+	<key>JA6GXZ</key>
+	<string>153.233.196.6</string>
+	<key>JA6JMJ</key>
+	<string>49.135.80.80</string>
+	<key>JA6LYP</key>
+	<string>124.102.181.231</string>
+	<key>JA6MPR</key>
+	<string>110.135.196.190</string>
+	<key>JA6NGD</key>
+	<string>121.3.128.97</string>
+	<key>JA6NHN</key>
+	<string>1.77.181.209</string>
+	<key>JA6SUO</key>
+	<string>210.203.214.9</string>
+	<key>JA7AHO</key>
+	<string>153.248.2.99</string>
+	<key>JA7DFI</key>
+	<string>106.129.212.203</string>
+	<key>JA7EEF</key>
+	<string>125.202.97.42</string>
+	<key>JA7OBK</key>
+	<string>153.248.2.99</string>
+	<key>JA7UDE</key>
+	<string>221.20.82.33</string>
+	<key>JA7ZQY</key>
+	<string>119.241.52.238</string>
+	<key>JA8NSJ</key>
+	<string>113.159.215.11</string>
+	<key>JA8YFI</key>
+	<string>211.132.61.243</string>
+	<key>JA9GEE</key>
+	<string>106.130.138.172</string>
+	<key>JA9KZU</key>
+	<string>60.134.59.236</string>
+	<key>JA9THA</key>
+	<string>202.222.40.32</string>
+	<key>JE0ATD</key>
+	<string>133.202.191.188</string>
+	<key>JE0HUR</key>
+	<string>106.158.118.43</string>
+	<key>JE1BMF</key>
+	<string>219.201.6.97</string>
+	<key>JE1FFU</key>
+	<string>211.135.204.115</string>
+	<key>JE1FZT</key>
+	<string>153.159.204.154</string>
+	<key>JE1NYD</key>
+	<string>153.250.148.217</string>
+	<key>JE1NZZ</key>
+	<string>122.16.95.200</string>
+	<key>JE1PIU</key>
+	<string>60.36.142.28</string>
+	<key>JE1PPE</key>
+	<string>119.10.166.31</string>
+	<key>JE1TJD</key>
+	<string>221.31.16.143</string>
+	<key>JE1VMR</key>
+	<string>163.58.167.57</string>
+	<key>JE1VXQ</key>
+	<string>27.229.185.15</string>
+	<key>JE1ZVX</key>
+	<string>118.236.206.188</string>
+	<key>JE2YHP</key>
+	<string>122.20.242.132</string>
+	<key>JE2ZND</key>
+	<string>160.249.135.101</string>
+	<key>JE3CDW</key>
+	<string>180.147.194.42</string>
+	<key>JE3EEF</key>
+	<string>211.124.68.51</string>
+	<key>JE3GKV</key>
+	<string>153.147.212.96</string>
+	<key>JE3HCZ</key>
+	<string>222.159.240.172</string>
+	<key>JE3JBA</key>
+	<string>160.249.130.188</string>
+	<key>JE3XDR</key>
+	<string>121.84.59.99</string>
+	<key>JE3YHH</key>
+	<string>125.202.217.109</string>
+	<key>JE3YUI</key>
+	<string>114.152.20.165</string>
+	<key>JE3ZNO</key>
+	<string>121.80.73.62</string>
+	<key>JE4FBA</key>
+	<string>49.253.196.140</string>
+	<key>JE4KIY</key>
+	<string>60.238.74.40</string>
+	<key>JE4MKV</key>
+	<string>49.98.76.76</string>
+	<key>JE4UOI</key>
+	<string>153.136.68.94</string>
+	<key>JE4WWK</key>
+	<string>110.50.10.168</string>
+	<key>JE4YKI</key>
+	<string>222.231.77.133</string>
 	<key>JE4YLP</key>
-	<string>153.197.185.232</string>
+	<string>180.18.250.233</string>
+	<key>JE4YMR</key>
+	<string>153.147.98.137</string>
+	<key>JE4YND</key>
+	<string>118.110.227.105</string>
+	<key>JE4YNP</key>
+	<string>133.218.247.88</string>
+	<key>JE4YNR</key>
+	<string>110.50.10.168</string>
+	<key>JE6DND</key>
+	<string>125.13.76.32</string>
+	<key>JE6EFV</key>
+	<string>124.102.181.231</string>
+	<key>JE6MEU</key>
+	<string>182.251.233.30</string>
+	<key>JE6MIQ</key>
+	<string>60.42.207.180</string>
+	<key>JE6RLV</key>
+	<string>219.103.15.246</string>
+	<key>JE6SPJ</key>
+	<string>133.232.96.135</string>
+	<key>JE6XDR</key>
+	<string>114.176.32.84</string>
+	<key>JE7YZI</key>
+	<string>133.203.183.155</string>
+	<key>JE7ZAX</key>
+	<string>49.109.187.209</string>
+	<key>JE7ZBN</key>
+	<string>180.3.4.210</string>
+	<key>JE7ZBQ</key>
+	<string>60.95.164.25</string>
+	<key>JE7ZBU</key>
+	<string>114.183.171.186</string>
+	<key>JE7ZBX</key>
+	<string>106.157.27.166</string>
+	<key>JE7ZCK</key>
+	<string>153.145.220.55</string>
+	<key>JE7ZCR</key>
+	<string>126.216.106.87</string>
+	<key>JE7ZCW</key>
+	<string>111.217.99.177</string>
+	<key>JE7ZDC</key>
+	<string>49.135.1.105</string>
+	<key>JE7ZDE</key>
+	<string>220.220.128.13</string>
+	<key>JE7ZDG</key>
+	<string>114.160.187.135</string>
+	<key>JE7ZDI</key>
+	<string>124.41.67.59</string>
+	<key>JE9LMZ</key>
+	<string>220.21.130.253</string>
+	<key>JF1ENW</key>
+	<string>220.210.15.200</string>
+	<key>JF1IKV</key>
+	<string>126.170.63.212</string>
+	<key>JF1IMB</key>
+	<string>1.77.238.135</string>
+	<key>JF1JGA</key>
+	<string>1.77.110.252</string>
+	<key>JF1LGV</key>
+	<string>49.107.40.82</string>
+	<key>JF1OUX</key>
+	<string>133.232.118.117</string>
+	<key>JF1PYL</key>
+	<string>116.81.129.138</string>
+	<key>JF1QEY</key>
+	<string>116.83.236.237</string>
+	<key>JF1VJS</key>
+	<string>153.155.188.210</string>
+	<key>JF2ANH</key>
+	<string>153.249.79.241</string>
+	<key>JF2GOG</key>
+	<string>153.157.82.43</string>
+	<key>JF2OWN</key>
+	<string>153.147.232.174</string>
+	<key>JF2YYS</key>
+	<string>121.94.228.57</string>
+	<key>JF2ZUZ</key>
+	<string>115.177.218.74</string>
+	<key>JF2ZXZ</key>
+	<string>220.216.88.5</string>
+	<key>JF3NPR</key>
+	<string>1.72.143.253</string>
+	<key>JF3NUQ</key>
+	<string>119.228.110.167</string>
+	<key>JF3PGH</key>
+	<string>180.26.204.194</string>
+	<key>JF3QUT</key>
+	<string>58.188.208.204</string>
+	<key>JF3ZEI</key>
+	<string>203.136.65.152</string>
+	<key>JF4CYP</key>
+	<string>153.159.237.127</string>
+	<key>JF4HIC</key>
+	<string>110.158.228.14</string>
+	<key>JF5KJY</key>
+	<string>49.135.17.225</string>
+	<key>JF6ROW</key>
+	<string>1.77.35.19</string>
+	<key>JF6VNB</key>
+	<string>126.160.56.94</string>
+	<key>JF6ZJT</key>
+	<string>49.135.66.222</string>
+	<key>JF7XRY</key>
+	<string>153.235.0.133</string>
+	<key>JF8NKM</key>
+	<string>49.109.209.48</string>
+	<key>JF9PKI</key>
+	<string>153.159.49.255</string>
+	<key>JF9QCK</key>
+	<string>110.161.247.168</string>
+	<key>JF9QCQ</key>
+	<string>124.208.81.48</string>
+	<key>JG0KHR</key>
+	<string>183.73.121.231</string>
+	<key>JG1AOX</key>
+	<string>122.217.141.54</string>
+	<key>JG1BQK</key>
+	<string>222.144.57.49</string>
+	<key>JG1EKA</key>
+	<string>101.55.171.69</string>
+	<key>JG1FGV</key>
+	<string>61.205.102.110</string>
+	<key>JG1FWE</key>
+	<string>153.154.86.7</string>
+	<key>JG1GQD</key>
+	<string>116.80.6.60</string>
+	<key>JG1HXU</key>
+	<string>175.104.159.179</string>
+	<key>JG1LFF</key>
+	<string>49.109.193.148</string>
+	<key>JG1NCB</key>
+	<string>36.78.210.202</string>
+	<key>JG1NDC</key>
+	<string>106.158.164.34</string>
+	<key>JG1PGO</key>
+	<string>153.249.39.155</string>
+	<key>JG1PLA</key>
+	<string>49.135.95.181</string>
+	<key>JG1RNL</key>
+	<string>126.75.174.32</string>
+	<key>JG1SYB</key>
+	<string>218.33.219.72</string>
+	<key>JG1WOC</key>
+	<string>49.109.53.71</string>
+	<key>JG1WQM</key>
+	<string>219.175.160.4</string>
+	<key>JG1YFU</key>
+	<string>1.75.213.166</string>
+	<key>JG1YJA</key>
+	<string>49.109.181.206</string>
+	<key>JG1ZPG</key>
+	<string>113.151.96.109</string>
+	<key>JG2CPW</key>
+	<string>211.1.214.7</string>
+	<key>JG2FFB</key>
+	<string>202.241.146.249</string>
+	<key>JG2WIK</key>
+	<string>49.110.216.206</string>
+	<key>JG2YGE</key>
+	<string>202.232.166.208</string>
+	<key>JG2ZHE</key>
+	<string>49.98.128.102</string>
+	<key>JG3BVK</key>
+	<string>153.237.74.75</string>
+	<key>JG3EBB</key>
+	<string>133.218.168.184</string>
+	<key>JG3ETW</key>
+	<string>202.229.231.73</string>
+	<key>JG3MFP</key>
+	<string>153.155.97.222</string>
+	<key>JG3XDJ</key>
+	<string>1.78.178.33</string>
+	<key>JG3YMK</key>
+	<string>106.142.119.164</string>
+	<key>JG3YVS</key>
+	<string>153.154.13.175</string>
+	<key>JG5EQV</key>
+	<string>133.236.119.67</string>
+	<key>JG5VFK</key>
+	<string>119.239.158.209</string>
+	<key>JG6UGG</key>
+	<string>27.230.208.135</string>
 	<key>JG6YCZ</key>
 	<string>202.124.49.44</string>
+	<key>JG6YDE</key>
+	<string>153.237.143.131</string>
+	<key>JG6YEC</key>
+	<string>218.42.64.242</string>
+	<key>JG6YFN</key>
+	<string>110.233.51.59</string>
+	<key>JG6YHY</key>
+	<string>121.2.231.107</string>
+	<key>JG6YIE</key>
+	<string>110.92.57.249</string>
+	<key>JG6YIP</key>
+	<string>126.22.36.158</string>
+	<key>JG6YJR</key>
+	<string>116.70.244.164</string>
+	<key>JG6YJT</key>
+	<string>119.170.134.102</string>
+	<key>JG6YJU</key>
+	<string>27.81.119.156</string>
+	<key>JG7ALI</key>
+	<string>126.216.106.87</string>
+	<key>JG7GHY</key>
+	<string>153.250.37.8</string>
+	<key>JG7NIF</key>
+	<string>220.220.128.13</string>
+	<key>JH0BDK</key>
+	<string>126.184.34.243</string>
+	<key>JH0EYA</key>
+	<string>61.206.112.154</string>
+	<key>JH0LRC</key>
+	<string>220.219.62.142</string>
+	<key>JH0ZMR</key>
+	<string>221.17.230.187</string>
+	<key>JH1HJL</key>
+	<string>153.140.57.201</string>
+	<key>JH1HPL</key>
+	<string>219.126.152.31</string>
+	<key>JH1ICJ</key>
+	<string>115.65.102.158</string>
+	<key>JH1JKH</key>
+	<string>119.175.6.197</string>
+	<key>JH1QYL</key>
+	<string>153.227.96.221</string>
+	<key>JH1RTU</key>
+	<string>106.160.62.59</string>
+	<key>JH1SQF</key>
+	<string>27.139.112.77</string>
+	<key>JH1TWX</key>
+	<string>153.237.11.31</string>
+	<key>JH2ECC</key>
+	<string>1.74.38.185</string>
+	<key>JH2NKE</key>
+	<string>49.129.184.224</string>
+	<key>JH2OES</key>
+	<string>111.64.47.74</string>
+	<key>JH2YHN</key>
+	<string>210.156.114.166</string>
+	<key>JH3CMD</key>
+	<string>219.121.52.75</string>
+	<key>JH3EBA</key>
+	<string>126.109.210.239</string>
+	<key>JH3IJF</key>
+	<string>121.84.94.113</string>
+	<key>JH3LOI</key>
+	<string>153.235.35.118</string>
+	<key>JH3VFZ</key>
+	<string>110.161.223.99</string>
+	<key>JH4GLG</key>
+	<string>153.144.22.22</string>
+	<key>JH4LXI</key>
+	<string>60.90.161.218</string>
+	<key>JH4YOP</key>
+	<string>153.182.168.200</string>
+	<key>JH5YHO</key>
+	<string>106.144.154.74</string>
+	<key>JH6EPZ</key>
+	<string>116.70.244.164</string>
+	<key>JH6QBY</key>
+	<string>153.147.39.100</string>
+	<key>JH6RDQ</key>
+	<string>1.77.176.67</string>
+	<key>JH6ZBS</key>
+	<string>124.41.83.11</string>
+	<key>JH7KAG</key>
+	<string>218.231.252.32</string>
+	<key>JH7UJR</key>
+	<string>1.77.82.246</string>
+	<key>JH7WFF</key>
+	<string>180.3.227.226</string>
+	<key>JH8FWD</key>
+	<string>49.240.118.172</string>
+	<key>JH8JFI</key>
+	<string>219.102.186.199</string>
+	<key>JH9CGH</key>
+	<string>59.146.224.6</string>
+	<key>JH9YIM</key>
+	<string>219.121.52.109</string>
+	<key>JH9YIZ</key>
+	<string>219.121.52.108</string>
+	<key>JH9YVJ</key>
+	<string>128.28.191.124</string>
+	<key>JH9YWG</key>
+	<string>126.188.41.203</string>
+	<key>JH9YXT</key>
+	<string>125.53.61.14</string>
+	<key>JH9YXW</key>
+	<string>160.249.202.207</string>
+	<key>JI0LQJ</key>
+	<string>183.72.15.231</string>
+	<key>JI0TWA</key>
+	<string>122.29.24.28</string>
+	<key>JI0WLC</key>
+	<string>126.172.52.97</string>
+	<key>JI1AAF</key>
+	<string>125.2.44.40</string>
+	<key>JI1AME</key>
+	<string>122.249.82.229</string>
+	<key>JI1BPP</key>
+	<string>58.12.138.153</string>
+	<key>JI1CYL</key>
+	<string>153.236.135.38</string>
+	<key>JI1HRC</key>
+	<string>153.236.76.81</string>
+	<key>JI1JOQ</key>
+	<string>49.135.74.79</string>
+	<key>JI1MQA</key>
+	<string>153.204.103.62</string>
+	<key>JI1NKJ</key>
+	<string>153.236.51.27</string>
+	<key>JI1OST</key>
+	<string>126.236.6.100</string>
+	<key>JI1RSF</key>
+	<string>126.198.109.216</string>
+	<key>JI1SQA</key>
+	<string>74.68.43.162</string>
+	<key>JI1SQI</key>
+	<string>74.68.60.184</string>
+	<key>JI1TOF</key>
+	<string>160.249.13.70</string>
+	<key>JI1UBF</key>
+	<string>153.249.170.253</string>
+	<key>JI1VTG</key>
+	<string>220.100.115.50</string>
+	<key>JI1WLN</key>
+	<string>114.148.192.59</string>
+	<key>JI1WPX</key>
+	<string>1.78.200.100</string>
+	<key>JI1WSR</key>
+	<string>106.157.15.133</string>
+	<key>JI1WXQ</key>
+	<string>219.111.170.113</string>
+	<key>JI1XOB</key>
+	<string>123.218.182.151</string>
+	<key>JI1XVS</key>
+	<string>121.117.117.213</string>
+	<key>JI2AFG</key>
+	<string>27.98.102.167</string>
+	<key>JI2OLV</key>
+	<string>123.223.218.226</string>
+	<key>JI2TZE</key>
+	<string>49.111.151.65</string>
+	<key>JI2VEV</key>
+	<string>160.249.63.21</string>
+	<key>JI2ZKT</key>
+	<string>59.135.247.100</string>
+	<key>JI2ZNK</key>
+	<string>210.145.63.224</string>
+	<key>JI2ZZV</key>
+	<string>1.78.213.31</string>
+	<key>JI3BCS</key>
+	<string>110.165.172.1</string>
+	<key>JI3BGB</key>
+	<string>114.187.147.130</string>
+	<key>JI3BXL</key>
+	<string>27.230.226.122</string>
+	<key>JI3IBK</key>
+	<string>220.157.202.190</string>
+	<key>JI3OHN</key>
+	<string>153.237.197.145</string>
+	<key>JI3WIF</key>
+	<string>153.154.252.10</string>
+	<key>JI3XEF</key>
+	<string>219.114.170.120</string>
+	<key>JI3ZGB</key>
+	<string>106.148.112.74</string>
+	<key>JI4VSH</key>
+	<string>1.72.82.64</string>
+	<key>JI6SBW</key>
+	<string>49.107.48.117</string>
+	<key>JI6XMH</key>
+	<string>153.237.217.238</string>
+	<key>JI7XRU</key>
+	<string>119.243.223.56</string>
+	<key>JJ0ONK</key>
+	<string>106.148.59.23</string>
+	<key>JJ0QWD</key>
+	<string>1.78.173.117</string>
+	<key>JJ0RXU</key>
+	<string>153.250.218.158</string>
+	<key>JJ0TPX</key>
+	<string>106.159.9.208</string>
+	<key>JJ1ABP</key>
+	<string>61.213.89.22</string>
+	<key>JJ1BJF</key>
+	<string>210.251.185.1</string>
+	<key>JJ1BWR</key>
+	<string>61.21.100.20</string>
+	<key>JJ1CHF</key>
+	<string>106.151.109.236</string>
+	<key>JJ1DLA</key>
+	<string>126.155.22.66</string>
+	<key>JJ1DRW</key>
+	<string>211.13.48.127</string>
+	<key>JJ1HTI</key>
+	<string>124.87.99.55</string>
+	<key>JJ1NNG</key>
+	<string>153.157.40.166</string>
+	<key>JJ1PLH</key>
+	<string>175.133.110.56</string>
+	<key>JJ1YYG</key>
+	<string>153.157.3.127</string>
+	<key>JJ1YYY</key>
+	<string>124.87.15.178</string>
+	<key>JJ2BXL</key>
+	<string>124.25.128.22</string>
+	<key>JJ2LJL</key>
+	<string>153.249.227.73</string>
+	<key>JJ2YAE</key>
+	<string>180.19.224.191</string>
+	<key>JJ2YFY</key>
+	<string>49.98.128.231</string>
+	<key>JJ2YGK</key>
+	<string>1.78.164.84</string>
+	<key>JJ2YKJ</key>
+	<string>112.140.8.175</string>
+	<key>JJ2YMG</key>
+	<string>183.77.99.191</string>
+	<key>JJ2YMH</key>
+	<string>116.81.183.165</string>
+	<key>JJ2YOU</key>
+	<string>202.215.52.184</string>
+	<key>JJ2YPB</key>
+	<string>183.72.240.26</string>
+	<key>JJ2YPD</key>
+	<string>1.73.47.70</string>
+	<key>JJ2YPS</key>
+	<string>211.131.15.183</string>
+	<key>JJ2YQH</key>
+	<string>153.250.127.194</string>
+	<key>JJ2YQR</key>
+	<string>49.111.198.93</string>
+	<key>JJ2YQU</key>
+	<string>221.118.133.17</string>
+	<key>JJ2YRJ</key>
+	<string>157.112.21.237</string>
+	<key>JJ3BNL</key>
+	<string>221.113.39.226</string>
+	<key>JJ3JNR</key>
+	<string>117.108.45.83</string>
+	<key>JJ3ZSD</key>
+	<string>49.109.129.28</string>
+	<key>JJ4HMO</key>
+	<string>122.130.205.50</string>
+	<key>JJ4IOT</key>
+	<string>153.234.232.203</string>
+	<key>JJ4QKY</key>
+	<string>42.151.112.38</string>
+	<key>JJ4VBY</key>
+	<string>153.147.119.50</string>
+	<key>JJ5DBB</key>
+	<string>49.107.162.170</string>
+	<key>JJ5GYG</key>
+	<string>106.151.100.232</string>
+	<key>JJ5MMS</key>
+	<string>120.75.68.172</string>
+	<key>JJ5NEL</key>
+	<string>49.135.31.211</string>
+	<key>JJ5NEX</key>
+	<string>183.176.118.251</string>
+	<key>JJ6LQE</key>
+	<string>49.104.33.9</string>
+	<key>JJ6PGK</key>
+	<string>116.82.250.57</string>
+	<key>JJ7CBV</key>
+	<string>153.205.48.80</string>
+	<key>JJ8LNX</key>
+	<string>61.27.86.17</string>
+	<key>JK1AIB</key>
+	<string>153.154.227.109</string>
+	<key>JK1AIC</key>
+	<string>49.98.138.53</string>
+	<key>JK1DZT</key>
+	<string>153.155.177.94</string>
+	<key>JK1HMJ</key>
+	<string>153.159.170.127</string>
+	<key>JK1MOH</key>
+	<string>1.78.142.30</string>
+	<key>JK1PEB</key>
+	<string>1.78.169.62</string>
+	<key>JK1PEU</key>
+	<string>49.111.103.10</string>
+	<key>JK1YES</key>
+	<string>124.26.230.67</string>
+	<key>JK1ZRW</key>
+	<string>157.7.128.150</string>
+	<key>JK2FMN</key>
+	<string>49.97.105.68</string>
+	<key>JK3AZL</key>
+	<string>49.109.226.207</string>
+	<key>JK3BVK</key>
+	<string>153.190.20.100</string>
+	<key>JK3FRY</key>
+	<string>36.10.89.202</string>
+	<key>JK3RHX</key>
+	<string>112.71.72.204</string>
+	<key>JK3WOJ</key>
+	<string>125.198.147.56</string>
+	<key>JK3XKA</key>
+	<string>106.148.198.231</string>
+	<key>JK3ZNB</key>
+	<string>219.122.32.118</string>
+	<key>JK4MRL</key>
+	<string>202.241.149.197</string>
+	<key>JK6FXP</key>
+	<string>114.175.3.221</string>
+	<key>JK7BEJ</key>
+	<string>153.212.9.219</string>
+	<key>JK7CJM</key>
+	<string>118.22.210.8</string>
+	<key>JL1EPZ</key>
+	<string>106.141.132.221</string>
+	<key>JL1GYB</key>
+	<string>111.110.144.163</string>
+	<key>JL1HHL</key>
+	<string>153.250.80.102</string>
+	<key>JL1MAE</key>
+	<string>125.193.157.135</string>
+	<key>JL1NLO</key>
+	<string>116.80.218.98</string>
+	<key>JL1SFJ</key>
+	<string>113.37.189.122</string>
+	<key>JL1YRL</key>
+	<string>118.7.171.235</string>
+	<key>JL2VER</key>
+	<string>202.79.136.161</string>
+	<key>JL3BHQ</key>
+	<string>114.191.220.131</string>
+	<key>JL3EBZ</key>
+	<string>119.229.6.97</string>
+	<key>JL3JUZ</key>
+	<string>106.148.100.107</string>
+	<key>JL3OHN</key>
+	<string>153.155.166.186</string>
+	<key>JL3QTH</key>
+	<string>106.169.178.214</string>
+	<key>JL3VSE</key>
+	<string>150.31.17.12</string>
+	<key>JL3VSK</key>
+	<string>220.46.114.69</string>
+	<key>JL3YJT</key>
+	<string>114.168.139.233</string>
+	<key>JL3YKZ</key>
+	<string>220.158.99.229</string>
+	<key>JL3YRP</key>
+	<string>153.155.192.225</string>
+	<key>JL3YST</key>
+	<string>124.110.160.197</string>
+	<key>JL3YTN</key>
+	<string>126.241.25.83</string>
+	<key>JL3YYW</key>
+	<string>153.237.66.142</string>
+	<key>JL3YZI</key>
+	<string>153.184.22.164</string>
+	<key>JL3ZAB</key>
+	<string>124.110.172.130</string>
+	<key>JL3ZAY</key>
+	<string>157.7.139.243</string>
+	<key>JL3ZBF</key>
+	<string>124.110.174.240</string>
+	<key>JL3ZBZ</key>
+	<string>58.191.196.63</string>
+	<key>JL3ZDB</key>
+	<string>1.72.116.140</string>
+	<key>JL3ZDO</key>
+	<string>27.228.35.106</string>
+	<key>JL3ZDV</key>
+	<string>126.62.94.228</string>
+	<key>JL3ZEE</key>
+	<string>49.110.203.92</string>
+	<key>JL3ZER</key>
+	<string>117.108.9.227</string>
+	<key>JL3ZGJ</key>
+	<string>112.71.233.186</string>
+	<key>JL3ZGL</key>
+	<string>106.147.247.83</string>
+	<key>JL3ZGU</key>
+	<string>1.73.15.123</string>
+	<key>JL3ZHD</key>
+	<string>60.56.200.49</string>
+	<key>JL3ZHF</key>
+	<string>153.159.104.248</string>
+	<key>JL3ZHH</key>
+	<string>58.70.20.80</string>
+	<key>JL3ZHK</key>
+	<string>182.164.195.70</string>
+	<key>JL3ZHR</key>
+	<string>150.31.129.126</string>
+	<key>JL3ZNB</key>
+	<string>125.172.54.185</string>
+	<key>JL6ACV</key>
+	<string>153.234.132.242</string>
+	<key>JL6XUN</key>
+	<string>118.236.107.81</string>
+	<key>JL7KGW</key>
+	<string>124.41.67.59</string>
+	<key>JL7KOV</key>
+	<string>106.148.141.34</string>
+	<key>JL8GQK</key>
+	<string>126.205.145.35</string>
+	<key>JL8QYD</key>
+	<string>49.107.118.251</string>
+	<key>JL8XFY</key>
+	<string>220.247.39.55</string>
+	<key>JM1BFM</key>
+	<string>1.72.183.189</string>
+	<key>JM1DVI</key>
+	<string>111.64.33.218</string>
+	<key>JM1FWS</key>
+	<string>1.75.1.84</string>
+	<key>JM1MTE</key>
+	<string>106.129.178.118</string>
+	<key>JM1OWS</key>
+	<string>27.229.143.80</string>
+	<key>JM1TOF</key>
+	<string>106.148.250.245</string>
+	<key>JM1WXY</key>
+	<string>153.250.158.181</string>
+	<key>JM1ZIL</key>
+	<string>106.160.62.59</string>
+	<key>JM1ZLK</key>
+	<string>153.249.243.94</string>
+	<key>JM1ZXZ</key>
+	<string>210.149.27.30</string>
+	<key>JM2AZA</key>
+	<string>219.121.149.183</string>
+	<key>JM2WQD</key>
+	<string>49.98.167.184</string>
+	<key>JM3ADO</key>
+	<string>219.75.211.174</string>
+	<key>JM3GWD</key>
+	<string>183.72.231.187</string>
+	<key>JM3XHD</key>
+	<string>133.137.184.116</string>
+	<key>JM4EAX</key>
+	<string>153.234.5.30</string>
+	<key>JM8GIB</key>
+	<string>126.3.243.54</string>
+	<key>JM8IMH</key>
+	<string>182.169.214.39</string>
+	<key>JM8IXA</key>
+	<string>115.176.52.204</string>
+	<key>JN1CFQ</key>
+	<string>125.53.3.198</string>
+	<key>JN1CJS</key>
+	<string>61.124.244.176</string>
+	<key>JN1ENU</key>
+	<string>133.232.69.211</string>
+	<key>JN1KTG</key>
+	<string>153.147.12.255</string>
+	<key>JN1NSB</key>
+	<string>118.152.141.101</string>
+	<key>JN1ZBZ</key>
+	<string>203.141.138.126</string>
+	<key>JN2ESN</key>
+	<string>125.203.253.99</string>
+	<key>JN2JWA</key>
+	<string>202.94.209.96</string>
+	<key>JN2OBG</key>
+	<string>49.107.153.84</string>
+	<key>JN2SZP</key>
+	<string>153.236.19.148</string>
+	<key>JN3GWD</key>
+	<string>49.111.160.235</string>
+	<key>JN3RVM</key>
+	<string>110.161.241.82</string>
+	<key>JN4KIC</key>
+	<string>126.212.146.17</string>
+	<key>JN4NEI</key>
+	<string>126.211.117.86</string>
+	<key>JN7LNU</key>
+	<string>106.144.161.209</string>
+	<key>JO1ALE</key>
+	<string>202.238.80.99</string>
+	<key>JO1GSD</key>
+	<string>106.142.69.76</string>
+	<key>JO1GTW</key>
+	<string>121.119.36.118</string>
+	<key>JO1KVS</key>
+	<string>219.126.174.236</string>
+	<key>JO1PGG</key>
+	<string>133.236.130.178</string>
+	<key>JO1PVF</key>
+	<string>153.159.222.22</string>
+	<key>JO1QOF</key>
+	<string>114.181.121.225</string>
+	<key>JO1SKW</key>
+	<string>175.179.110.28</string>
+	<key>JO1SVJ</key>
+	<string>1.74.49.240</string>
+	<key>JO1WSH</key>
+	<string>118.108.248.181</string>
+	<key>JO1XDW</key>
+	<string>1.75.252.205</string>
+	<key>JO1ZDS</key>
+	<string>157.107.143.56</string>
+	<key>JO1ZTG</key>
+	<string>36.10.180.215</string>
+	<key>JO2AXB</key>
+	<string>49.135.89.249</string>
+	<key>JO2IQS</key>
+	<string>49.111.198.148</string>
+	<key>JO3CPX</key>
+	<string>49.109.150.70</string>
+	<key>JO3DPF</key>
+	<string>49.135.89.250</string>
+	<key>JO3FXU</key>
+	<string>1.74.52.193</string>
+	<key>JO3HYM</key>
+	<string>111.237.30.183</string>
+	<key>JO3HYR</key>
+	<string>133.232.68.106</string>
+	<key>JO3MFX</key>
+	<string>153.249.83.248</string>
+	<key>JO3NAO</key>
+	<string>106.139.10.203</string>
+	<key>JO3SGN</key>
+	<string>61.206.114.252</string>
+	<key>JO3SLK</key>
+	<string>125.4.6.95</string>
+	<key>JO3TLO</key>
+	<string>160.249.145.37</string>
+	<key>JO3UJR</key>
+	<string>160.249.145.37</string>
+	<key>JO3WSX</key>
+	<string>106.182.86.15</string>
+	<key>JO3WXM</key>
+	<string>58.70.36.146</string>
+	<key>JO3XVQ</key>
+	<string>58.95.152.141</string>
+	<key>JO4DYL</key>
+	<string>153.235.210.149</string>
+	<key>JO4FLG</key>
+	<string>36.54.33.46</string>
+	<key>JO4HHL</key>
+	<string>128.53.194.148</string>
+	<key>JO4IKW</key>
+	<string>119.104.67.41</string>
+	<key>JO7SSP</key>
+	<string>160.249.214.109</string>
+	<key>JP0YDP</key>
+	<string>219.117.234.39</string>
+	<key>JP0YDR</key>
+	<string>133.218.166.250</string>
+	<key>JP0YDU</key>
+	<string>202.214.122.193</string>
+	<key>JP0YDX</key>
+	<string>203.181.0.77</string>
+	<key>JP0YDY</key>
+	<string>133.35.204.86</string>
+	<key>JP0YEB</key>
+	<string>219.119.76.131</string>
+	<key>JP0YEC</key>
+	<string>180.22.146.186</string>
+	<key>JP1DHG</key>
+	<string>210.155.199.88</string>
+	<key>JP1EED</key>
+	<string>49.135.70.54</string>
+	<key>JP1FHC</key>
+	<string>153.250.47.161</string>
+	<key>JP1YCS</key>
+	<string>203.189.36.145</string>
+	<key>JP1YDG</key>
+	<string>133.20.112.219</string>
+	<key>JP1YEM</key>
+	<string>203.165.129.179</string>
+	<key>JP1YEV</key>
+	<string>202.250.238.134</string>
+	<key>JP1YFY</key>
+	<string>114.148.253.6</string>
+	<key>JP1YGY</key>
+	<string>122.223.185.231</string>
+	<key>JP1YIK</key>
+	<string>122.24.225.99</string>
+	<key>JP1YIQ</key>
+	<string>115.176.39.178</string>
+	<key>JP1YIU</key>
+	<string>202.213.133.118</string>
+	<key>JP1YIV</key>
+	<string>111.101.140.156</string>
+	<key>JP1YJL</key>
+	<string>27.114.84.100</string>
+	<key>JP1YJT</key>
+	<string>14.3.94.41</string>
+	<key>JP1YKD</key>
+	<string>118.108.135.135</string>
+	<key>JP1YLJ</key>
+	<string>219.164.15.203</string>
+	<key>JP1YLK</key>
+	<string>126.78.103.200</string>
+	<key>JP1YLL</key>
+	<string>114.186.74.19</string>
+	<key>JP1YLM</key>
+	<string>121.1.254.47</string>
+	<key>JP1YLN</key>
+	<string>153.232.193.242</string>
+	<key>JP1YLO</key>
+	<string>58.98.101.168</string>
+	<key>JP1YLP</key>
+	<string>60.113.85.41</string>
+	<key>JP1YLQ</key>
+	<string>220.247.93.190</string>
+	<key>JP1YLR</key>
+	<string>222.1.206.73</string>
+	<key>JP2BBA</key>
+	<string>126.183.56.150</string>
+	<key>JP2JSC</key>
+	<string>220.26.174.5</string>
+	<key>JP2RCC</key>
+	<string>118.243.36.145</string>
+	<key>JP2SEW</key>
+	<string>220.26.174.5</string>
+	<key>JP2YFO</key>
+	<string>202.243.71.44</string>
+	<key>JP2YGA</key>
+	<string>133.232.73.99</string>
+	<key>JP2YHR</key>
+	<string>118.5.100.214</string>
+	<key>JP2YHS</key>
+	<string>120.51.26.55</string>
+	<key>JP2YHT</key>
+	<string>133.232.66.18</string>
+	<key>JP2YHU</key>
+	<string>180.30.140.123</string>
+	<key>JP3BQG</key>
+	<string>49.106.203.175</string>
+	<key>JP3DDI</key>
+	<string>153.237.181.118</string>
+	<key>JP3DOM</key>
+	<string>153.248.0.24</string>
+	<key>JP3EHZ</key>
+	<string>160.249.145.37</string>
+	<key>JP3EJC</key>
+	<string>222.159.244.190</string>
+	<key>JP3GHA</key>
+	<string>153.155.49.107</string>
+	<key>JP3GPX</key>
+	<string>49.111.144.169</string>
+	<key>JP3HIM</key>
+	<string>180.200.6.214</string>
+	<key>JP3JZK</key>
+	<string>153.155.162.30</string>
+	<key>JP3KBM</key>
+	<string>49.109.94.1</string>
+	<key>JP3KEL</key>
+	<string>133.232.119.83</string>
+	<key>JP3KGP</key>
+	<string>58.70.20.80</string>
+	<key>JP3KSK</key>
+	<string>124.110.174.240</string>
+	<key>JP3KVS</key>
+	<string>220.247.9.247</string>
+	<key>JP3LGE</key>
+	<string>36.10.239.8</string>
+	<key>JP3MXH</key>
+	<string>36.9.162.234</string>
+	<key>JP3MXV</key>
+	<string>1.79.36.19</string>
+	<key>JP3NGM</key>
+	<string>153.155.13.138</string>
+	<key>JP3PMF</key>
+	<string>121.86.172.126</string>
+	<key>JP3PXV</key>
+	<string>111.64.234.167</string>
+	<key>JP3QKD</key>
+	<string>180.36.95.122</string>
+	<key>JP3QLO</key>
+	<string>49.109.59.88</string>
+	<key>JP3YIT</key>
+	<string>220.110.36.214</string>
+	<key>JP3YIU</key>
+	<string>114.160.79.70</string>
+	<key>JP3YIV</key>
+	<string>122.21.27.212</string>
+	<key>JP3YIW</key>
+	<string>153.136.193.21</string>
+	<key>JP3YIX</key>
+	<string>125.201.165.229</string>
+	<key>JP3YIY</key>
+	<string>114.154.108.67</string>
+	<key>JP3YIZ</key>
+	<string>114.173.19.105</string>
+	<key>JP4YDY</key>
+	<string>202.244.90.21</string>
+	<key>JP4YDZ</key>
+	<string>180.18.250.233</string>
+	<key>JP4YEA</key>
+	<string>133.4.86.39</string>
+	<key>JP5YCS</key>
+	<string>59.135.238.228</string>
+	<key>JP6BGG</key>
+	<string>133.232.71.34</string>
+	<key>JP6KLO</key>
+	<string>1.73.73.211</string>
+	<key>JP6YEL</key>
+	<string>111.236.147.44</string>
+	<key>JP6YHZ</key>
+	<string>210.136.81.222</string>
+	<key>JP6YIA</key>
+	<string>175.28.217.215</string>
+	<key>JP6YIB</key>
+	<string>49.156.232.39</string>
+	<key>JP6YIC</key>
+	<string>49.241.106.28</string>
+	<key>JP7FCS</key>
+	<string>180.13.131.32</string>
+	<key>JP7FYZ</key>
+	<string>125.1.122.8</string>
+	<key>JP7HEO</key>
+	<string>220.106.154.212</string>
+	<key>JP7JKT</key>
+	<string>110.161.14.144</string>
+	<key>JP7LGB</key>
+	<string>106.130.48.80</string>
+	<key>JP7NJT</key>
+	<string>1.79.83.85</string>
+	<key>JP7OFH</key>
+	<string>133.232.66.16</string>
+	<key>JP7QNY</key>
+	<string>153.174.153.101</string>
+	<key>JP7YEU</key>
+	<string>202.254.153.129</string>
+	<key>JP7YEV</key>
+	<string>122.249.177.136</string>
+	<key>JP7YEW</key>
+	<string>180.53.108.102</string>
+	<key>JP7YEX</key>
+	<string>124.100.61.197</string>
+	<key>JP9YEN</key>
+	<string>121.1.138.225</string>
+	<key>JQ1EUE</key>
+	<string>126.115.48.33</string>
+	<key>JQ1LYW</key>
+	<string>118.18.49.95</string>
+	<key>JQ1QBR</key>
+	<string>27.229.249.94</string>
+	<key>JQ1YBV</key>
+	<string>153.234.200.137</string>
+	<key>JQ1YOL</key>
+	<string>153.157.30.32</string>
+	<key>JQ1YQM</key>
+	<string>183.73.9.230</string>
+	<key>JQ1YVF</key>
+	<string>121.112.236.117</string>
+	<key>JQ1YWV</key>
+	<string>49.109.228.204</string>
+	<key>JQ1YWY</key>
+	<string>119.242.96.12</string>
+	<key>JQ1ZAB</key>
+	<string>219.174.248.13</string>
+	<key>JQ1ZBA</key>
+	<string>124.210.163.68</string>
+	<key>JQ1ZGY</key>
+	<string>49.135.70.54</string>
+	<key>JQ1ZKB</key>
+	<string>219.174.248.11</string>
+	<key>JQ1ZKG</key>
+	<string>121.1.190.137</string>
+	<key>JQ1ZLM</key>
+	<string>124.154.212.91</string>
+	<key>JQ1ZLR</key>
+	<string>157.107.146.75</string>
+	<key>JQ1ZNX</key>
+	<string>122.132.163.175</string>
+	<key>JQ1ZOR</key>
+	<string>118.241.159.202</string>
+	<key>JQ1ZPG</key>
+	<string>113.151.96.109</string>
+	<key>JQ1ZQR</key>
+	<string>49.135.15.182</string>
+	<key>JQ1ZRC</key>
+	<string>221.17.67.22</string>
+	<key>JQ1ZRS</key>
+	<string>119.105.177.125</string>
+	<key>JQ1ZRY</key>
+	<string>221.27.66.171</string>
+	<key>JQ1ZSU</key>
+	<string>180.47.180.138</string>
+	<key>JQ1ZTF</key>
+	<string>153.154.196.94</string>
+	<key>JQ1ZTN</key>
+	<string>114.149.86.44</string>
+	<key>JQ1ZTQ</key>
+	<string>153.248.93.104</string>
+	<key>JQ1ZTZ</key>
+	<string>219.174.46.218</string>
+	<key>JQ1ZUA</key>
+	<string>211.19.67.21</string>
+	<key>JQ1ZUB</key>
+	<string>36.10.180.146</string>
+	<key>JQ1ZUK</key>
+	<string>183.76.170.134</string>
+	<key>JQ1ZUO</key>
+	<string>110.4.248.36</string>
+	<key>JQ1ZUP</key>
+	<string>218.139.65.130</string>
+	<key>JQ1ZUR</key>
+	<string>49.135.19.224</string>
+	<key>JQ1ZUU</key>
+	<string>222.150.249.89</string>
+	<key>JQ1ZUY</key>
+	<string>49.105.43.189</string>
+	<key>JQ1ZVB</key>
+	<string>49.108.206.65</string>
+	<key>JQ1ZVC</key>
+	<string>118.158.192.187</string>
+	<key>JQ1ZVE</key>
+	<string>153.175.55.20</string>
+	<key>JQ1ZVF</key>
+	<string>118.20.67.93</string>
+	<key>JQ1ZVK</key>
+	<string>106.157.116.30</string>
+	<key>JQ1ZVN</key>
+	<string>118.8.247.205</string>
+	<key>JQ1ZVP</key>
+	<string>153.156.212.64</string>
+	<key>JQ1ZVR</key>
+	<string>27.87.25.94</string>
+	<key>JQ1ZVS</key>
+	<string>118.236.198.162</string>
+	<key>JQ1ZVT</key>
+	<string>160.249.231.88</string>
+	<key>JQ1ZWE</key>
+	<string>114.185.176.232</string>
+	<key>JQ2AVM</key>
+	<string>27.229.254.196</string>
+	<key>JQ2CME</key>
+	<string>103.226.44.18</string>
+	<key>JQ2PXW</key>
+	<string>118.105.210.137</string>
+	<key>JQ2QME</key>
+	<string>119.83.107.94</string>
+	<key>JQ2WJO</key>
+	<string>220.211.148.17</string>
+	<key>JQ3OPJ</key>
+	<string>49.135.11.195</string>
+	<key>JQ6DXR</key>
+	<string>1.72.35.45</string>
+	<key>JQ6YZ</key>
+	<string>153.176.6.188</string>
+	<key>JR0DIL</key>
+	<string>122.131.26.13</string>
+	<key>JR0JOW</key>
+	<string>173.197.107.26</string>
+	<key>JR0LRY</key>
+	<string>1.66.173.113</string>
+	<key>JR0QWW</key>
+	<string>220.109.125.3</string>
+	<key>JR0ZBG</key>
+	<string>133.202.22.243</string>
+	<key>JR0ZBK</key>
+	<string>49.107.36.178</string>
+	<key>JR0ZDZ</key>
+	<string>153.124.178.65</string>
+	<key>JR0ZEY</key>
+	<string>180.3.22.203</string>
+	<key>JR0ZFI</key>
+	<string>120.143.14.239</string>
+	<key>JR0ZGB</key>
+	<string>133.232.97.119</string>
+	<key>JR1AQN</key>
+	<string>71.198.37.250</string>
+	<key>JR1IQF</key>
+	<string>125.204.111.158</string>
+	<key>JR1LKL</key>
+	<string>133.232.69.244</string>
+	<key>JR1OAO</key>
+	<string>182.251.147.39</string>
+	<key>JR1OFP</key>
+	<string>118.152.21.76</string>
+	<key>JR1SWD</key>
+	<string>133.232.70.142</string>
+	<key>JR1VD</key>
+	<string>14.3.42.141</string>
+	<key>JR1WFW</key>
+	<string>60.153.89.167</string>
+	<key>JR1ZAZ</key>
+	<string>220.150.225.22</string>
+	<key>JR1ZLK</key>
+	<string>116.0.251.83</string>
+	<key>JR2CAJ</key>
+	<string>153.159.183.34</string>
+	<key>JR2CBE</key>
+	<string>49.241.212.161</string>
+	<key>JR2DHP</key>
+	<string>124.146.211.212</string>
+	<key>JR2DMY</key>
+	<string>166.170.47.124</string>
+	<key>JR2JDE</key>
+	<string>153.157.195.30</string>
+	<key>JR2JYA</key>
+	<string>153.124.177.173</string>
+	<key>JR2MOK</key>
+	<string>153.248.26.209</string>
+	<key>JR2PCK</key>
+	<string>42.125.146.94</string>
+	<key>JR2RLA</key>
+	<string>58.95.119.151</string>
+	<key>JR2SEY</key>
+	<string>133.209.248.5</string>
+	<key>JR2SRH</key>
+	<string>153.249.21.74</string>
+	<key>JR2SUX</key>
+	<string>49.135.69.206</string>
+	<key>JR2TSO</key>
+	<string>114.151.188.210</string>
+	<key>JR2TTA</key>
+	<string>153.249.167.234</string>
+	<key>JR2VU</key>
+	<string>220.216.71.120</string>
+	<key>JR2WCC</key>
+	<string>126.234.19.206</string>
+	<key>JR2XTF</key>
+	<string>60.107.31.242</string>
+	<key>JR2YJC</key>
+	<string>153.194.158.156</string>
+	<key>JR2YJW</key>
+	<string>1.73.21.200</string>
+	<key>JR2YSM</key>
+	<string>153.236.61.217</string>
+	<key>JR4CQW</key>
+	<string>133.204.45.208</string>
+	<key>JR4CZM</key>
+	<string>121.94.108.190</string>
+	<key>JR4DHK</key>
+	<string>222.231.80.47</string>
+	<key>JR4YBN</key>
+	<string>111.169.11.21</string>
+	<key>JR4YHB</key>
+	<string>203.99.231.133</string>
+	<key>JR4ZEY</key>
+	<string>1.72.50.197</string>
+	<key>JR4ZLD</key>
+	<string>153.183.175.196</string>
+	<key>JR5YDB</key>
+	<string>220.145.63.202</string>
+	<key>JR6CLO</key>
+	<string>49.239.72.161</string>
+	<key>JR6KNE</key>
+	<string>153.250.57.125</string>
+	<key>JR6YTJ</key>
+	<string>126.211.120.93</string>
+	<key>JR6YTR</key>
+	<string>222.14.59.184</string>
+	<key>JR7HBZ</key>
+	<string>153.234.88.112</string>
+	<key>JR7JAW</key>
+	<string>157.107.148.69</string>
+	<key>JR7RFF</key>
+	<string>59.133.66.170</string>
+	<key>JR7YVR</key>
+	<string>221.117.106.173</string>
+	<key>JR7YVT</key>
+	<string>221.117.106.176</string>
+	<key>JR8EFG</key>
+	<string>220.220.191.54</string>
+	<key>JR8EKN</key>
+	<string>126.202.133.69</string>
+	<key>JR8ORI</key>
+	<string>1.73.221.228</string>
+	<key>JR8YLV</key>
+	<string>118.157.125.151</string>
+	<key>JR8YOQ</key>
+	<string>219.165.130.35</string>
+	<key>JR9EIE</key>
+	<string>1.66.224.156</string>
+	<key>JR9TNI</key>
+	<string>220.221.55.41</string>
+	<key>JS1BIB</key>
+	<string>1.73.68.126</string>
+	<key>JS1JYW</key>
+	<string>106.73.9.224</string>
+	<key>JS1QIZ</key>
+	<string>133.242.228.244</string>
+	<key>JS1SGM</key>
+	<string>60.100.30.113</string>
+	<key>JS2AVW</key>
+	<string>153.250.147.205</string>
+	<key>JS2BSI</key>
+	<string>115.37.12.170</string>
+	<key>JS2DDS</key>
+	<string>221.121.215.86</string>
+	<key>JS2LGP</key>
+	<string>150.42.55.5</string>
+	<key>JS6DIK</key>
+	<string>153.159.211.71</string>
+	<key>JS6QMR</key>
+	<string>49.135.84.225</string>
+	<key>JS6RRW</key>
+	<string>126.5.63.31</string>
+	<key>JS6SYE</key>
+	<string>106.151.175.194</string>
+	<key>JS6TLE</key>
+	<string>119.224.166.122</string>
+	<key>JS6TSQ</key>
+	<string>180.4.186.12</string>
+	<key>K2HE</key>
+	<string>67.140.72.187</string>
+	<key>K3IMD</key>
+	<string>24.154.48.171</string>
+	<key>K3TI</key>
+	<string>174.49.146.159</string>
+	<key>K3WRB</key>
+	<string>24.154.48.125</string>
+	<key>K4BRK</key>
+	<string>207.32.165.245</string>
+	<key>K4CPO</key>
+	<string>107.201.144.200</string>
+	<key>K5PSA</key>
+	<string>24.54.146.202</string>
+	<key>K6CLX</key>
+	<string>98.145.235.19</string>
+	<key>K7BSK</key>
+	<string>63.78.117.230</string>
+	<key>K7CLL</key>
+	<string>107.0.67.93</string>
+	<key>K7EVR</key>
+	<string>72.201.150.71</string>
+	<key>K7NAZ</key>
+	<string>206.80.215.17</string>
+	<key>K7SEX</key>
+	<string>71.231.25.135</string>
+	<key>K7STI</key>
+	<string>68.224.107.214</string>
+	<key>KA0JSW</key>
+	<string>50.188.55.154</string>
+	<key>KB3KWD</key>
+	<string>208.44.56.43</string>
+	<key>KC3FHC</key>
+	<string>71.244.175.2</string>
+	<key>KC7KEY</key>
+	<string>63.225.171.156</string>
+	<key>KC8ARJ</key>
+	<string>66.87.92.115</string>
+	<key>KC9URF</key>
+	<string>173.209.211.212</string>
+	<key>KC9WUS</key>
+	<string>65.27.56.53</string>
+	<key>KD2DZE</key>
+	<string>67.237.7.125</string>
+	<key>KD2LAQ</key>
+	<string>73.10.182.15</string>
+	<key>KD2LWX</key>
+	<string>67.140.73.26</string>
+	<key>KD2LYO</key>
+	<string>66.243.219.222</string>
+	<key>KD2MNA</key>
+	<string>173.189.193.186</string>
 	<key>KD2STR</key>
 	<string>72.65.63.204</string>
+	<key>KD5RCA</key>
+	<string>173.184.158.14</string>
+	<key>KD6FFT</key>
+	<string>10.0.0.37</string>
+	<key>KD8JGF</key>
+	<string>68.55.187.249</string>
+	<key>KD8RXD</key>
+	<string>75.133.53.37</string>
+	<key>KD9CSI</key>
+	<string>70.92.84.0</string>
+	<key>KD9FUR</key>
+	<string>104.243.226.199</string>
+	<key>KD9ICN</key>
+	<string>12.148.203.147</string>
+	<key>KD9IPR</key>
+	<string>97.80.94.110</string>
+	<key>KE0FXH</key>
+	<string>129.138.31.76</string>
+	<key>KE0KKN</key>
+	<string>174.137.86.157</string>
+	<key>KE5FYL</key>
+	<string>63.231.126.10</string>
+	<key>KE6ANM</key>
+	<string>172.91.54.88</string>
+	<key>KE8BUO</key>
+	<string>98.29.31.4</string>
+	<key>KE8EMD</key>
+	<string>65.24.227.189</string>
+	<key>KE8EVF</key>
+	<string>68.61.246.212</string>
+	<key>KG5FJW</key>
+	<string>199.38.184.250</string>
+	<key>KG5JPI</key>
+	<string>98.172.10.198</string>
+	<key>KG5JPJ</key>
+	<string>98.172.10.197</string>
+	<key>KG5JPK</key>
+	<string>98.172.10.196</string>
+	<key>KG5KUQ</key>
+	<string>66.87.97.212</string>
+	<key>KG5MMT</key>
+	<string>76.213.76.20</string>
+	<key>KG5MMU</key>
+	<string>204.16.17.18</string>
+	<key>KG5OXR</key>
+	<string>24.54.138.222</string>
+	<key>KG5RED</key>
+	<string>24.182.107.171</string>
+	<key>KG7QPU</key>
+	<string>24.143.109.15</string>
+	<key>KG7TTL</key>
+	<string>50.123.98.0</string>
+	<key>KG7WZG</key>
+	<string>168.103.142.41</string>
+	<key>KH7RC</key>
+	<string>70.109.54.105</string>
+	<key>KI7BER</key>
+	<string>65.131.39.126</string>
+	<key>KI7BPY</key>
+	<string>76.191.75.42</string>
+	<key>KI7EWH</key>
+	<string>73.53.100.168</string>
+	<key>KI7W</key>
+	<string>67.215.23.198</string>
+	<key>KJ4PYC</key>
+	<string>66.168.187.77</string>
+	<key>KJ4VO</key>
+	<string>96.86.226.202</string>
+	<key>KJ6KTV</key>
+	<string>67.49.60.122</string>
+	<key>KK4GQ</key>
+	<string>24.221.27.69</string>
+	<key>KK4PGE</key>
+	<string>74.131.186.40</string>
+	<key>KK4QXJ</key>
+	<string>173.214.210.223</string>
 	<key>KK6GIZ</key>
-	<string>76.178.120.32</string>
+	<string>70.93.130.74</string>
+	<key>KK6JA</key>
+	<string>73.70.190.55</string>
+	<key>KK6NGT</key>
+	<string>96.81.165.196</string>
+	<key>KM4GHK</key>
+	<string>23.25.160.92</string>
+	<key>KM4JXA</key>
+	<string>172.98.74.80</string>
+	<key>KM4MCN</key>
+	<string>104.192.68.35</string>
+	<key>KM4SGI</key>
+	<string>74.138.244.77</string>
+	<key>KM4VWS</key>
+	<string>74.126.132.31</string>
+	<key>KM6GFG</key>
+	<string>99.105.109.2</string>
+	<key>KN4BDJ</key>
+	<string>74.137.9.242</string>
+	<key>KN4BOF</key>
+	<string>166.137.96.208</string>
+	<key>KR7MC</key>
+	<string>24.121.228.117</string>
 	<key>LD1FR</key>
 	<string>109.169.111.113</string>
 	<key>LD1OT</key>
-	<string>85.166.120.176</string>
+	<string>85.166.144.128</string>
+	<key>LD1XB</key>
+	<string>46.46.252.169</string>
 	<key>LD1XI</key>
 	<string>85.164.53.158</string>
 	<key>LD2EM</key>
-	<string>82.148.189.210</string>
+	<string>82.148.183.154</string>
 	<key>LD2HJ</key>
 	<string>87.248.20.198</string>
 	<key>LD2KR</key>
 	<string>84.247.186.130</string>
 	<key>LD2VR</key>
-	<string>90.149.192.146</string>
+	<string>81.167.186.162</string>
 	<key>LD3DV</key>
-	<string>84.211.161.136</string>
+	<string>84.211.135.115</string>
 	<key>LD3GL</key>
 	<string>93.184.126.70</string>
 	<key>LD3NM</key>
-	<string>85.165.156.16</string>
+	<string>85.165.176.37</string>
 	<key>LD3SM</key>
-	<string>81.167.57.66</string>
+	<string>92.220.244.110</string>
 	<key>LD3TS</key>
-	<string>85.167.6.252</string>
+	<string>81.167.179.100</string>
 	<key>LD4AR</key>
-	<string>46.212.13.49</string>
+	<string>193.213.50.83</string>
 	<key>LD4FH</key>
-	<string>46.46.212.155</string>
+	<string>91.149.0.183</string>
 	<key>LD4GA</key>
 	<string>51.174.36.39</string>
 	<key>LD4LA</key>
 	<string>148.122.181.246</string>
 	<key>LD4LK</key>
-	<string>46.46.249.87</string>
+	<string>91.149.1.168</string>
 	<key>LD4RH</key>
-	<string>89.9.173.124</string>
+	<string>89.9.164.194</string>
 	<key>LD4VF</key>
-	<string>93.179.1.111</string>
+	<string>91.149.0.153</string>
 	<key>LD5BG</key>
-	<string>84.247.188.167</string>
+	<string>84.247.188.103</string>
 	<key>LD7FF</key>
-	<string>84.52.254.163</string>
+	<string>148.252.109.16</string>
 	<key>LD8BS</key>
-	<string>85.166.141.64</string>
+	<string>85.166.137.224</string>
 	<key>LD8DN</key>
-	<string>88.91.72.30</string>
+	<string>85.166.222.70</string>
 	<key>LD8LK</key>
-	<string>81.167.121.17</string>
+	<string>81.167.105.194</string>
 	<key>LD8MK</key>
-	<string>85.221.119.20</string>
+	<string>178.16.68.20</string>
 	<key>LD8MM</key>
-	<string>195.0.207.213</string>
+	<string>88.88.231.102</string>
 	<key>LD8MR</key>
 	<string>95.34.217.81</string>
 	<key>LD8NA</key>
-	<string>91.198.201.28</string>
+	<string>80.212.36.184</string>
 	<key>LD8NN</key>
-	<string>85.166.221.46</string>
+	<string>85.166.223.205</string>
 	<key>LD8SA</key>
 	<string>89.162.81.202</string>
 	<key>LD9KV</key>
 	<string>84.49.225.244</string>
 	<key>LD9TN</key>
 	<string>88.84.179.237</string>
+	<key>LU3AOC</key>
+	<string>200.59.37.187</string>
 	<key>LU4HH</key>
 	<string>190.17.112.136</string>
 	<key>LX0DRD</key>
 	<string>195.46.251.108</string>
 	<key>LX0DRH</key>
-	<string>87.240.227.12</string>
+	<string>178.254.95.31</string>
 	<key>LX0DRJ</key>
 	<string>80.90.62.105</string>
 	<key>LX0DRR</key>
@@ -943,13 +2904,13 @@
 	<key>LX0DRV</key>
 	<string>193.168.82.24</string>
 	<key>LX0RL</key>
-	<string>83.99.52.190</string>
+	<string>83.99.17.17</string>
 	<key>LX1DRV</key>
 	<string>85.94.226.206</string>
 	<key>LX9EPF</key>
 	<string>158.64.26.2</string>
 	<key>LZ0CAR</key>
-	<string>176.4.55.110</string>
+	<string>176.4.139.52</string>
 	<key>LZ0DAA</key>
 	<string>151.237.50.158</string>
 	<key>LZ0DAB</key>
@@ -959,33 +2920,121 @@
 	<key>LZ0DAD</key>
 	<string>213.16.55.2</string>
 	<key>LZ0DAF</key>
-	<string>84.54.189.220</string>
+	<string>213.16.39.170</string>
 	<key>LZ0DAH</key>
 	<string>95.158.175.90</string>
+	<key>LZ0DAM</key>
+	<string>151.237.6.74</string>
 	<key>LZ0DAO</key>
 	<string>62.73.71.6</string>
 	<key>LZ0DAP</key>
 	<string>78.130.149.52</string>
+	<key>LZ0DAR</key>
+	<string>212.73.131.203</string>
 	<key>LZ0DAV</key>
 	<string>213.16.49.230</string>
 	<key>LZ0DAX</key>
-	<string>87.126.155.39</string>
+	<string>77.85.232.23</string>
 	<key>LZ0DBS</key>
 	<string>185.18.57.21</string>
+	<key>LZ0DDR</key>
+	<string>77.70.61.230</string>
+	<key>LZ0DRZ</key>
+	<string>188.254.153.82</string>
 	<key>LZ0DSR</key>
 	<string>92.247.14.76</string>
 	<key>LZ0DVB</key>
 	<string>62.176.87.194</string>
 	<key>LZ0RDB</key>
 	<string>212.5.158.25</string>
+	<key>LZ0RVD</key>
+	<string>151.237.50.158</string>
+	<key>LZ0SUN</key>
+	<string>151.237.49.30</string>
+	<key>LZ0ZAF</key>
+	<string>94.156.200.100</string>
+	<key>M0NDS</key>
+	<string>81.134.11.190</string>
+	<key>M0NKD</key>
+	<string>92.250.229.111</string>
+	<key>M0XDV</key>
+	<string>81.109.40.40</string>
+	<key>MB6AF</key>
+	<string>217.35.241.168</string>
+	<key>MB6BH</key>
+	<string>82.15.39.155</string>
+	<key>MB6BN</key>
+	<string>86.181.249.76</string>
+	<key>MB6IAL</key>
+	<string>151.228.238.48</string>
+	<key>MB6IBN</key>
+	<string>86.180.235.4</string>
+	<key>MB6IBO</key>
+	<string>109.156.89.196</string>
+	<key>MB6ICS</key>
+	<string>90.192.243.222</string>
+	<key>MB6IDD</key>
+	<string>80.194.187.28</string>
+	<key>MB6IGD</key>
+	<string>82.43.115.234</string>
+	<key>MB6IGH</key>
+	<string>82.1.185.173</string>
+	<key>MB6IGR</key>
+	<string>86.181.249.76</string>
+	<key>MB6IJD</key>
+	<string>212.56.100.200</string>
+	<key>MB6IKA</key>
+	<string>95.145.34.123</string>
+	<key>MB6IMG</key>
+	<string>89.240.74.58</string>
+	<key>MB6IOG</key>
+	<string>81.129.203.201</string>
+	<key>MB6IOW</key>
+	<string>86.173.96.88</string>
+	<key>MB6IRD</key>
+	<string>81.156.127.46</string>
+	<key>MB6IVS</key>
+	<string>87.114.176.108</string>
+	<key>MB6LT</key>
+	<string>82.15.82.6</string>
+	<key>MB6OR</key>
+	<string>176.227.134.46</string>
+	<key>MB6PM</key>
+	<string>95.150.78.50</string>
+	<key>MB6SP</key>
+	<string>213.104.234.4</string>
 	<key>N2GQ</key>
 	<string>74.108.42.99</string>
 	<key>N3CAL</key>
 	<string>69.161.83.35</string>
+	<key>N4EMA</key>
+	<string>65.34.108.91</string>
+	<key>N5QHO</key>
+	<string>66.169.138.213</string>
+	<key>N5ZNO</key>
+	<string>75.65.213.222</string>
+	<key>N6CYP</key>
+	<string>45.50.71.45</string>
+	<key>N7COV</key>
+	<string>76.121.248.29</string>
+	<key>N7ERP</key>
+	<string>70.89.121.129</string>
 	<key>N8CZI</key>
-	<string>63.155.107.108</string>
+	<string>63.155.105.64</string>
+	<key>N8DPR</key>
+	<string>50.253.229.17</string>
 	<key>N8GY</key>
 	<string>n8gy.duckdns.org</string>
+	<key>N8VDU</key>
+	<string>97.84.254.33</string>
+	<key>N9AG</key>
+	<string>23.124.82.210</string>
+	<key>N9PMR</key>
+	<string>107.133.54.204</string>
+	<key>NE4ST</key>
+	<string>76.177.34.203</string>
+	<key>NT4MC</key>
+	<string>72.4.27.164</string>
 	<key>OE1XCA</key>
 	<string>212.236.24.186</string>
 	<key>OE1XDS</key>
@@ -993,13 +3042,17 @@
 	<key>OE1XIK</key>
 	<string>213.47.219.169</string>
 	<key>OE1XIT</key>
-	<string>62.178.72.63</string>
+	<string>84.113.122.4</string>
 	<key>OE1XIW</key>
 	<string>80.109.80.3</string>
 	<key>OE3XPA</key>
 	<string>82.218.61.93</string>
+	<key>OE3XVI</key>
+	<string>82.218.215.205</string>
 	<key>OE3XWW</key>
-	<string>62.46.220.121</string>
+	<string>188.23.202.223</string>
+	<key>OE5XBN</key>
+	<string>78.104.49.35</string>
 	<key>OE5XGL</key>
 	<string>109.68.104.38</string>
 	<key>OE5XKL</key>
@@ -1013,15 +3066,23 @@
 	<key>OE6XDF</key>
 	<string>80.122.31.56</string>
 	<key>OE6XDG</key>
-	<string>87.243.131.66</string>
+	<string>87.243.155.120</string>
 	<key>OE7XLH</key>
-	<string>91.114.121.190</string>
+	<string>192.164.58.191</string>
+	<key>OE7XLI</key>
+	<string>192.164.56.117</string>
 	<key>OE8XIS</key>
 	<string>84.113.51.105</string>
 	<key>OE8XKK</key>
 	<string>89.16.199.123</string>
+	<key>OE8XWZ</key>
+	<string>188.22.188.162</string>
+	<key>OE9XDV</key>
+	<string>178.188.83.118</string>
 	<key>OE9XMV</key>
 	<string>194.208.184.211</string>
+	<key>OH0DST</key>
+	<string>79.133.3.134</string>
 	<key>OH2RCH</key>
 	<string>212.226.160.8</string>
 	<key>OH6RAG</key>
@@ -1035,7 +3096,9 @@
 	<key>OK0CHB</key>
 	<string>217.197.156.31</string>
 	<key>OK0DHD</key>
-	<string>91.219.240.150</string>
+	<string>91.219.240.1</string>
+	<key>OK0DIT</key>
+	<string>88.146.217.109</string>
 	<key>OK0DJ</key>
 	<string>151.249.104.121</string>
 	<key>OK0DPL</key>
@@ -1044,8 +3107,10 @@
 	<string>89.235.49.32</string>
 	<key>OK0DSK</key>
 	<string>217.196.211.210</string>
+	<key>OK0DV</key>
+	<string>37.221.252.37</string>
 	<key>OK0EB</key>
-	<string>178.17.9.7</string>
+	<string>92.62.226.10</string>
 	<key>OK0HCS</key>
 	<string>151.249.107.194</string>
 	<key>OK0J</key>
@@ -1055,39 +3120,47 @@
 	<key>OK0NCC</key>
 	<string>151.249.105.43</string>
 	<key>OK0OMX</key>
-	<string>160.218.184.165</string>
+	<string>160.218.22.197</string>
 	<key>OK0POR</key>
 	<string>178.17.9.7</string>
 	<key>OK0PVD</key>
 	<string>188.75.190.46</string>
+	<key>OM0OAA</key>
+	<string>91.127.145.185</string>
 	<key>OM0OAE</key>
 	<string>158.255.26.213</string>
 	<key>OM0ODB</key>
-	<string>188.121.183.171</string>
+	<string>193.93.75.98</string>
+	<key>OM0ODK</key>
+	<string>88.212.32.147</string>
+	<key>OM0ODM</key>
+	<string>88.212.46.248</string>
 	<key>OM0OUT</key>
 	<string>195.80.166.34</string>
 	<key>ON0BE</key>
-	<string>81.245.102.219</string>
+	<string>217.136.80.184</string>
 	<key>ON0BXL</key>
-	<string>109.129.149.234</string>
+	<string>109.129.90.62</string>
+	<key>ON0CEE</key>
+	<string>91.183.63.226</string>
 	<key>ON0CK</key>
-	<string>109.130.44.191</string>
+	<string>44.144.15.15</string>
 	<key>ON0CPS</key>
-	<string>213.213.251.253</string>
+	<string>81.246.176.241</string>
 	<key>ON0DAS</key>
-	<string>44.144.15.245</string>
+	<string>193.190.240.227</string>
 	<key>ON0DEN</key>
-	<string>78.23.222.134</string>
+	<string>78.20.146.57</string>
 	<key>ON0DP</key>
 	<string>84.198.155.10</string>
 	<key>ON0DST</key>
 	<string>193.190.240.231</string>
 	<key>ON0DXK</key>
-	<string>81.165.144.76</string>
+	<string>94.110.157.104</string>
 	<key>ON0ESC</key>
 	<string>81.243.166.13</string>
 	<key>ON0KTK</key>
-	<string>81.165.144.76</string>
+	<string>94.110.157.104</string>
 	<key>ON0LB</key>
 	<string>193.190.240.235</string>
 	<key>ON0LGE</key>
@@ -1097,17 +3170,17 @@
 	<key>ON0LN</key>
 	<string>188.210.92.3</string>
 	<key>ON0LOK</key>
-	<string>78.20.178.71</string>
+	<string>78.20.15.153</string>
 	<key>ON0LRG</key>
 	<string>85.201.230.14</string>
 	<key>ON0LUS</key>
-	<string>87.64.45.135</string>
+	<string>109.134.55.247</string>
 	<key>ON0MON</key>
-	<string>83.101.41.221</string>
+	<string>83.101.41.200</string>
 	<key>ON0MWV</key>
-	<string>81.242.207.88</string>
+	<string>37.62.17.65</string>
 	<key>ON0NIV</key>
-	<string>85.201.149.250</string>
+	<string>109.89.49.6</string>
 	<key>ON0OS</key>
 	<string>178.116.206.238</string>
 	<key>ON0PLL</key>
@@ -1115,61 +3188,63 @@
 	<key>ON0SEA</key>
 	<string>87.64.193.253</string>
 	<key>ON0SNW</key>
-	<string>91.209.133.196</string>
+	<string>5.9.62.189</string>
 	<key>ON0TB</key>
 	<string>44.144.11.50</string>
 	<key>ON0THN</key>
-	<string>78.129.10.169</string>
+	<string>213.213.194.119</string>
 	<key>ON0TVA</key>
 	<string>81.164.136.186</string>
 	<key>ON0ULG</key>
-	<string>139.165.16.53</string>
+	<string>139.165.129.10</string>
 	<key>ON0VA</key>
-	<string>213.119.237.227</string>
+	<string>178.117.220.251</string>
 	<key>ON0WIN</key>
-	<string>81.240.121.0</string>
+	<string>80.201.160.133</string>
 	<key>OZ0DST</key>
-	<string>94.146.33.94</string>
+	<string>77.68.171.30</string>
+	<key>OZ0EVA</key>
+	<string>85.202.72.96</string>
 	<key>OZ0REA</key>
-	<string>94.189.5.10</string>
+	<string>212.130.200.24</string>
 	<key>OZ0REB</key>
 	<string>5.103.223.241</string>
 	<key>OZ0REC</key>
-	<string>93.160.176.76</string>
+	<string>80.164.105.66</string>
 	<key>OZ0RED</key>
 	<string>80.251.196.244</string>
 	<key>OZ0REH</key>
-	<string>37.128.208.91</string>
+	<string>109.59.224.76</string>
 	<key>OZ0RET</key>
 	<string>87.62.236.144</string>
 	<key>OZ0REV</key>
-	<string>87.58.20.61</string>
+	<string>5.186.131.220</string>
 	<key>OZ1DHS</key>
-	<string>178.132.226.49</string>
+	<string>185.37.87.215</string>
 	<key>OZ1REC</key>
-	<string>77.68.246.48</string>
+	<string>77.68.246.90</string>
 	<key>OZ1REG</key>
 	<string>93.166.194.198</string>
 	<key>OZ1REH</key>
-	<string>87.56.97.107</string>
+	<string>93.167.29.252</string>
 	<key>OZ1REI</key>
 	<string>80.160.64.50</string>
 	<key>OZ1REJ</key>
-	<string>77.68.237.154</string>
+	<string>109.57.212.32</string>
 	<key>OZ1REK</key>
-	<string>188.182.237.178</string>
+	<string>188.176.28.114</string>
 	<key>OZ1REO</key>
 	<string>217.157.198.138</string>
 	<key>OZ1REQ</key>
 	<string>188.183.157.74</string>
 	<key>OZ1RES</key>
-	<string>87.56.120.205</string>
+	<string>2.109.131.128</string>
 	<key>OZ1RET</key>
 	<string>109.56.183.158</string>
 	<key>OZ1RHS</key>
-	<string>131.164.233.100</string>
+	<string>87.61.154.109</string>
 	<key>OZ2DSD</key>
-	<string>109.57.165.15</string>
+	<string>109.57.70.5</string>
 	<key>OZ2DST</key>
 	<string>176.23.108.33</string>
 	<key>OZ2FYN</key>
@@ -1177,13 +3252,13 @@
 	<key>OZ2RBF</key>
 	<string>83.92.10.124</string>
 	<key>OZ2REA</key>
-	<string>95.154.31.11</string>
+	<string>109.57.116.164</string>
 	<key>OZ2REE</key>
 	<string>93.160.253.190</string>
 	<key>OZ2REG</key>
-	<string>80.62.116.250</string>
+	<string>80.62.117.6</string>
 	<key>OZ2REL</key>
-	<string>85.129.36.70</string>
+	<string>80.197.155.47</string>
 	<key>OZ2REM</key>
 	<string>212.98.114.58</string>
 	<key>OZ2REO</key>
@@ -1191,13 +3266,15 @@
 	<key>OZ2RES</key>
 	<string>77.215.146.58</string>
 	<key>OZ2RET</key>
-	<string>77.215.146.58</string>
+	<string>193.0.243.15</string>
 	<key>OZ2REX</key>
 	<string>87.59.85.22</string>
 	<key>OZ3DSR</key>
 	<string>212.10.144.52</string>
 	<key>OZ3DST</key>
 	<string>87.57.60.243</string>
+	<key>OZ3KV</key>
+	<string>212.27.4.98</string>
 	<key>OZ3REQ</key>
 	<string>130.225.2.3</string>
 	<key>OZ3REU</key>
@@ -1207,31 +3284,35 @@
 	<key>OZ3REX</key>
 	<string>92.243.252.78</string>
 	<key>OZ3REY</key>
-	<string>80.62.117.166</string>
+	<string>80.62.116.31</string>
 	<key>OZ4RED</key>
 	<string>80.63.56.122</string>
 	<key>OZ4REN</key>
-	<string>83.90.179.38</string>
+	<string>83.90.173.65</string>
 	<key>OZ5DS</key>
-	<string>2.128.22.167</string>
+	<string>212.10.180.59</string>
+	<key>OZ6DSD</key>
+	<string>78.156.113.221</string>
 	<key>OZ6DST</key>
-	<string>87.57.69.92</string>
+	<string>77.68.172.116</string>
 	<key>OZ6FYN</key>
 	<string>89.150.123.197</string>
 	<key>OZ7DSD</key>
 	<string>62.242.112.138</string>
+	<key>OZ7DST</key>
+	<string>85.191.251.9</string>
 	<key>OZ7REL</key>
-	<string>62.44.134.160</string>
+	<string>62.44.134.182</string>
 	<key>OZ7RET</key>
-	<string>80.62.117.95</string>
+	<string>87.49.147.104</string>
 	<key>OZ7RSP</key>
 	<string>5.103.134.188</string>
 	<key>OZ8DSD</key>
 	<string>188.176.130.197</string>
 	<key>OZ9AFZ</key>
-	<string>185.37.86.17</string>
+	<string>185.109.76.192</string>
 	<key>OZ9DSD</key>
-	<string>94.145.143.202</string>
+	<string>178.157.215.250</string>
 	<key>OZ9DST</key>
 	<string>77.213.119.177</string>
 	<key>OZ9RED</key>
@@ -1239,7 +3320,7 @@
 	<key>OZ9REL</key>
 	<string>94.138.78.78</string>
 	<key>OZ9RET</key>
-	<string>87.55.110.141</string>
+	<string>2.105.135.12</string>
 	<key>OZ9REZ</key>
 	<string>194.255.84.2</string>
 	<key>PI1ALK</key>
@@ -1253,7 +3334,7 @@
 	<key>PI1BOZ</key>
 	<string>84.26.245.247</string>
 	<key>PI1CJP</key>
-	<string>82.217.66.25</string>
+	<string>83.87.195.38</string>
 	<key>PI1DAF</key>
 	<string>77.174.218.149</string>
 	<key>PI1DEC</key>
@@ -1263,19 +3344,19 @@
 	<key>PI1DHD</key>
 	<string>212.127.170.46</string>
 	<key>PI1DRA</key>
-	<string>77.251.238.52</string>
+	<string>44.137.87.7</string>
 	<key>PI1DSE</key>
 	<string>88.159.83.58</string>
-	<key>PI1DST</key>
-	<string>188.203.83.180</string>
 	<key>PI1GLP</key>
-	<string>88.159.206.124</string>
+	<string>88.159.190.143</string>
 	<key>PI1HGL</key>
-	<string>83.85.95.98</string>
+	<string>83.85.108.198</string>
 	<key>PI1HHW</key>
 	<string>84.106.211.96</string>
 	<key>PI1HNZ</key>
-	<string>84.104.245.89</string>
+	<string>84.104.222.181</string>
+	<key>PI1HWB</key>
+	<string>213.125.243.158</string>
 	<key>PI1KAN</key>
 	<string>80.101.217.2</string>
 	<key>PI1KAR</key>
@@ -1288,22 +3369,24 @@
 	<string>77.249.4.31</string>
 	<key>PI1NHN</key>
 	<string>109.33.239.57</string>
+	<key>PI1NL</key>
+	<string>50.246.28.217</string>
 	<key>PI1NYM</key>
 	<string>131.174.37.15</string>
 	<key>PI1NYV</key>
-	<string>217.123.176.67</string>
+	<string>217.123.162.115</string>
 	<key>PI1ORB</key>
 	<string>84.24.216.24</string>
 	<key>PI1OSH</key>
 	<string>83.82.24.82</string>
 	<key>PI1RYS</key>
-	<string>44.137.37.37</string>
-	<key>PI1SHA</key>
-	<string>77.175.183.32</string>
-	<key>PI1SNK</key>
-	<string>195.240.171.148</string>
-	<key>PI1UTR</key>
 	<string>213.222.29.194</string>
+	<key>PI1SHA</key>
+	<string>84.83.171.182</string>
+	<key>PI1SNK</key>
+	<string>145.129.86.235</string>
+	<key>PI1UTR</key>
+	<string>44.137.72.10</string>
 	<key>PI1XDV</key>
 	<string>80.101.233.106</string>
 	<key>PI1YBR</key>
@@ -1319,49 +3402,65 @@
 	<key>PJ2A</key>
 	<string>190.112.246.172</string>
 	<key>PJ2D</key>
-	<string>200.26.215.7</string>
+	<string>190.88.137.146</string>
+	<key>PP5DST</key>
+	<string>187.18.32.135</string>
 	<key>PP6DIG</key>
-	<string>187.12.113.42</string>
+	<string>189.71.179.34</string>
 	<key>PP6DV</key>
-	<string>189.71.202.135</string>
+	<string>189.71.177.140</string>
+	<key>PT2DIG</key>
+	<string>177.72.56.154</string>
+	<key>PT2MTD</key>
+	<string>200.101.117.170</string>
 	<key>PY1CEU</key>
-	<string>179.158.161.199</string>
+	<string>179.158.96.18</string>
 	<key>PY1EGR</key>
-	<string>186.241.144.15</string>
+	<string>179.197.214.234</string>
 	<key>PY1GVK</key>
-	<string>179.197.214.101</string>
+	<string>187.78.173.87</string>
 	<key>PY1GVN</key>
-	<string>179.197.214.101</string>
+	<string>187.78.173.87</string>
 	<key>PY1LRP</key>
-	<string>200.199.51.139</string>
+	<string>189.106.36.180</string>
 	<key>PY1MRA</key>
 	<string>179.210.153.29</string>
 	<key>PY1MRD</key>
-	<string>192.100.229.56</string>
+	<string>179.158.38.237</string>
 	<key>PY1MRE</key>
 	<string>186.228.82.115</string>
 	<key>PY1RSU</key>
-	<string>138.36.15.251</string>
+	<string>186.228.82.115</string>
 	<key>PY1UEB</key>
-	<string>179.210.153.29</string>
+	<string>179.210.146.225</string>
+	<key>PY2KAP</key>
+	<string>189.55.152.225</string>
 	<key>PY2KBH</key>
-	<string>189.79.125.9</string>
+	<string>191.19.56.97</string>
+	<key>PY2KBL</key>
+	<string>189.55.152.225</string>
 	<key>PY2KCA</key>
-	<string>187.50.254.2</string>
+	<string>187.32.126.2</string>
 	<key>PY2KEP</key>
 	<string>177.45.173.152</string>
 	<key>PY2KET</key>
 	<string>200.158.222.168</string>
 	<key>PY2KJF</key>
-	<string>201.74.204.58</string>
+	<string>191.190.154.176</string>
+	<key>PY2KJM</key>
+	<string>75.99.228.37</string>
+	<key>PY2KMA</key>
+	<string>186.220.109.158</string>
 	<key>PY2KMJ</key>
 	<string>191.136.152.59</string>
+	<key>PY2KPE</key>
+	<string>187.74.210.178</string>
 	<key>PY2KPP</key>
 	<string>200.168.70.125</string>
 	<key>PY2KPR</key>
 	<string>179.186.117.201</string>
 	<key>PY2KRG</key>
-	<string>177.148.229.59</string>
+	<string>179.34.231.175</string>
 	<key>PY2KRJ</key>
 	<string>177.91.73.10</string>
 	<key>PY2KRP</key>
@@ -1369,37 +3468,51 @@
 	<key>PY3NOR</key>
 	<string>201.7.254.97</string>
 	<key>PY4RCR</key>
-	<string>179.236.213.169</string>
+	<string>177.115.176.162</string>
 	<key>PY4RFM</key>
-	<string>201.77.140.34</string>
+	<string>201.77.140.249</string>
 	<key>PY4RHC</key>
 	<string>187.104.32.208</string>
 	<key>PY4RJB</key>
 	<string>200.178.68.16</string>
+	<key>PY4RPS</key>
+	<string>179.184.161.70</string>
 	<key>PY4RPV</key>
-	<string>201.80.168.201</string>
+	<string>191.185.61.95</string>
 	<key>PY4RSE</key>
 	<string>201.71.47.42</string>
 	<key>PY7DIG</key>
-	<string>189.81.177.126</string>
+	<string>177.158.98.13</string>
 	<key>PY7GFF</key>
 	<string>138.36.240.18</string>
+	<key>PY7NJ</key>
+	<string>177.72.208.5</string>
+	<key>R1OAL</key>
+	<string>95.30.167.140</string>
 	<key>RM3A</key>
 	<string>91.76.94.89</string>
+	<key>ROOTG3</key>
+	<string>208.67.255.219</string>
+	<key>RPT000</key>
+	<string>14.3.20.106</string>
 	<key>S55DGO</key>
 	<string>149.62.65.16</string>
 	<key>S55DLJ</key>
 	<string>193.77.169.245</string>
 	<key>S55DMX</key>
 	<string>164.8.106.109</string>
+	<key>S55DPI</key>
+	<string>84.255.240.243</string>
 	<key>S55DZA</key>
 	<string>88.200.95.123</string>
+	<key>S55UGO</key>
+	<string>193.77.81.153</string>
 	<key>SA2D</key>
-	<string>90.235.30.23</string>
+	<string>44.140.236.2</string>
 	<key>SA3S</key>
 	<string>78.73.237.9</string>
 	<key>SA5RG</key>
-	<string>81.232.163.61</string>
+	<string>2.71.55.240</string>
 	<key>SA7M</key>
 	<string>77.244.225.232</string>
 	<key>SB0K</key>
@@ -1409,99 +3522,127 @@
 	<key>SB6B</key>
 	<string>176.10.140.161</string>
 	<key>SC5SLU</key>
-	<string>46.230.211.90</string>
+	<string>90.235.11.41</string>
 	<key>SD4C</key>
 	<string>81.232.145.64</string>
 	<key>SD6GB</key>
-	<string>46.230.212.211</string>
+	<string>46.230.209.143</string>
+	<key>SE0O</key>
+	<string>80.216.243.38</string>
 	<key>SE0P</key>
 	<string>80.170.217.57</string>
+	<key>SE0S</key>
+	<string>193.150.251.57</string>
 	<key>SE0YOS</key>
 	<string>2.69.95.59</string>
+	<key>SE2RHL</key>
+	<string>62.220.174.55</string>
 	<key>SE3IVF</key>
 	<string>46.46.219.134</string>
 	<key>SE3LDP</key>
 	<string>78.72.95.241</string>
 	<key>SE3XCH</key>
-	<string>83.209.98.187</string>
+	<string>79.136.33.247</string>
 	<key>SE6H</key>
-	<string>83.233.54.115</string>
+	<string>176.10.140.161</string>
 	<key>SE7HZK</key>
 	<string>77.53.197.250</string>
+	<key>SG0AHH</key>
+	<string>2.248.47.171</string>
 	<key>SG0AMO</key>
 	<string>213.185.228.169</string>
 	<key>SG0BAB</key>
 	<string>178.174.128.123</string>
 	<key>SG0BON</key>
-	<string>81.230.84.74</string>
+	<string>217.209.63.185</string>
 	<key>SG0CDE</key>
 	<string>94.254.48.165</string>
+	<key>SG0DMR</key>
+	<string>83.251.214.239</string>
 	<key>SG0NTM</key>
-	<string>83.226.180.49</string>
+	<string>83.226.179.31</string>
 	<key>SG0POH</key>
-	<string>79.102.151.93</string>
+	<string>79.102.153.175</string>
+	<key>SG0PRZ</key>
+	<string>81.170.194.100</string>
 	<key>SG0RPF</key>
-	<string>79.102.158.176</string>
+	<string>79.102.138.237</string>
 	<key>SG0SMP</key>
 	<string>178.78.252.148</string>
 	<key>SG0UAO</key>
 	<string>213.66.105.80</string>
 	<key>SG0VKU</key>
-	<string>85.224.143.130</string>
+	<string>81.225.119.145</string>
 	<key>SG0YOS</key>
-	<string>85.229.112.253</string>
+	<string>85.224.126.210</string>
+	<key>SG2AWO</key>
+	<string>5.241.16.28</string>
+	<key>SG2RHL</key>
+	<string>95.195.197.250</string>
+	<key>SG2WSE</key>
+	<string>46.230.220.186</string>
 	<key>SG3AHH</key>
-	<string>90.227.217.253</string>
+	<string>217.215.195.119</string>
 	<key>SG3BDF</key>
-	<string>91.145.9.86</string>
+	<string>91.145.18.25</string>
 	<key>SG3BDM</key>
 	<string>213.80.103.215</string>
+	<key>SG3CFY</key>
+	<string>155.4.213.244</string>
+	<key>SG3DYE</key>
+	<string>37.196.1.56</string>
 	<key>SG3EFS</key>
-	<string>44.140.96.196</string>
+	<string>94.254.4.185</string>
 	<key>SG3GDT</key>
-	<string>83.186.84.63</string>
+	<string>87.249.187.160</string>
 	<key>SG3IVF</key>
-	<string>2.67.146.124</string>
+	<string>109.189.12.193</string>
 	<key>SG3UXV</key>
-	<string>83.216.100.12</string>
+	<string>83.216.122.169</string>
+	<key>SG3VEG</key>
+	<string>37.196.156.147</string>
 	<key>SG4AXQ</key>
-	<string>81.224.180.221</string>
+	<string>2.248.0.86</string>
 	<key>SG4AXV</key>
-	<string>62.20.180.28</string>
+	<string>62.20.204.169</string>
 	<key>SG4BYH</key>
 	<string>81.226.208.145</string>
 	<key>SG4JPK</key>
-	<string>176.68.219.207</string>
+	<string>82.117.112.146</string>
 	<key>SG4KUH</key>
-	<string>90.231.54.216</string>
+	<string>155.4.34.100</string>
 	<key>SG4MKF</key>
 	<string>78.69.109.173</string>
+	<key>SG4MKG</key>
+	<string>90.236.85.184</string>
 	<key>SG4OUF</key>
-	<string>2.248.69.156</string>
+	<string>213.65.61.104</string>
 	<key>SG4Q</key>
 	<string>78.73.24.90</string>
 	<key>SG4TYA</key>
-	<string>90.232.119.91</string>
+	<string>46.230.233.32</string>
 	<key>SG4UOF</key>
-	<string>79.138.32.69</string>
+	<string>77.53.38.251</string>
 	<key>SG4UZM</key>
-	<string>37.196.205.151</string>
+	<string>37.196.197.93</string>
 	<key>SG4VBO</key>
-	<string>94.254.23.129</string>
+	<string>155.4.32.228</string>
 	<key>SG4XEX</key>
-	<string>79.102.63.49</string>
+	<string>178.28.38.133</string>
+	<key>SG4XRT</key>
+	<string>2.248.4.98</string>
 	<key>SG4YPG</key>
 	<string>90.227.245.29</string>
 	<key>SG5BJY</key>
-	<string>85.230.236.155</string>
+	<string>2.248.148.27</string>
 	<key>SG5BMF</key>
-	<string>85.8.24.248</string>
+	<string>37.152.141.7</string>
 	<key>SG5DV</key>
-	<string>85.230.236.155</string>
+	<string>85.227.70.138</string>
 	<key>SG5EWE</key>
 	<string>180.191.106.3</string>
 	<key>SG5EZN</key>
-	<string>90.235.94.232</string>
+	<string>90.235.60.89</string>
 	<key>SG5RVH</key>
 	<string>78.70.208.148</string>
 	<key>SG5SIK</key>
@@ -1509,9 +3650,9 @@
 	<key>SG5TAH</key>
 	<string>78.70.204.201</string>
 	<key>SG5UM</key>
-	<string>90.231.168.49</string>
+	<string>78.70.204.147</string>
 	<key>SG6BNA</key>
-	<string>80.170.1.231</string>
+	<string>176.71.24.40</string>
 	<key>SG6BWX</key>
 	<string>85.229.66.114</string>
 	<key>SG6JWU</key>
@@ -1523,59 +3664,69 @@
 	<key>SG6UDU</key>
 	<string>89.160.39.187</string>
 	<key>SG6XGP</key>
-	<string>213.113.204.73</string>
+	<string>213.112.148.27</string>
 	<key>SG7ADV</key>
-	<string>2.70.160.40</string>
+	<string>90.228.193.108</string>
 	<key>SG7BIK</key>
 	<string>217.210.214.55</string>
 	<key>SG7BKX</key>
 	<string>77.244.225.232</string>
+	<key>SG7CDJ</key>
+	<string>83.209.82.230</string>
+	<key>SG7FFI</key>
+	<string>62.20.176.218</string>
 	<key>SG7FLD</key>
-	<string>85.197.137.231</string>
+	<string>109.228.170.112</string>
 	<key>SG7HTP</key>
-	<string>46.195.59.213</string>
+	<string>31.208.124.15</string>
 	<key>SG7IKJ</key>
 	<string>62.20.176.218</string>
 	<key>SG7NUM</key>
-	<string>85.230.96.86</string>
+	<string>85.230.96.201</string>
 	<key>SG7PAT</key>
 	<string>62.20.176.218</string>
 	<key>SG7SKI</key>
-	<string>77.53.204.122</string>
+	<string>90.232.61.68</string>
 	<key>SG7TKS</key>
 	<string>95.195.24.162</string>
 	<key>SG7VLL</key>
 	<string>85.30.140.101</string>
 	<key>SG7WDL</key>
-	<string>83.226.87.153</string>
+	<string>85.224.98.49</string>
 	<key>SG7YTC</key>
 	<string>85.224.78.212</string>
 	<key>SI9AM</key>
-	<string>44.140.96.195</string>
+	<string>44.140.102.134</string>
 	<key>SK0AI</key>
 	<string>37.123.157.248</string>
 	<key>SK0BO</key>
-	<string>85.229.119.240</string>
+	<string>2.71.132.66</string>
 	<key>SK0FR</key>
-	<string>83.251.209.150</string>
+	<string>83.251.209.186</string>
 	<key>SK0JS</key>
-	<string>46.59.86.196</string>
+	<string>46.59.83.50</string>
 	<key>SK0MQ</key>
-	<string>83.251.218.195</string>
+	<string>83.251.214.239</string>
+	<key>SK0MT</key>
+	<string>44.140.13.5</string>
 	<key>SK0NU</key>
 	<string>213.80.99.172</string>
 	<key>SK0PT</key>
-	<string>37.2.81.97</string>
+	<string>217.211.97.46</string>
 	<key>SK0QO</key>
 	<string>95.209.158.218</string>
 	<key>SK0RPF</key>
 	<string>85.224.143.104</string>
 	<key>SK0VF</key>
-	<string>89.253.108.43</string>
+	<string>78.46.225.231</string>
 	<key>SK2AT</key>
 	<string>80.244.89.169</string>
+	<key>SK2DR</key>
+	<string>44.140.73.61</string>
 	<key>SK2HG</key>
 	<string>44.140.64.57</string>
+	<key>SK2RFV</key>
+	<string>44.140.67.16</string>
 	<key>SK2TP</key>
 	<string>195.196.136.6</string>
 	<key>SK3BG</key>
@@ -1583,27 +3734,27 @@
 	<key>SK3GA</key>
 	<string>62.63.228.105</string>
 	<key>SK3GY</key>
-	<string>90.236.181.227</string>
+	<string>90.236.46.0</string>
 	<key>SK3JR</key>
 	<string>46.230.185.80</string>
 	<key>SK3KH</key>
 	<string>80.245.230.67</string>
 	<key>SK3LH</key>
-	<string>46.230.183.190</string>
+	<string>46.230.233.3</string>
 	<key>SK3PH</key>
-	<string>94.254.52.227</string>
+	<string>81.170.251.254</string>
 	<key>SK3RET</key>
-	<string>91.145.9.120</string>
+	<string>91.145.18.25</string>
 	<key>SK3RFG</key>
 	<string>44.140.96.134</string>
 	<key>SK3RHU</key>
-	<string>62.63.230.71</string>
+	<string>62.63.229.181</string>
 	<key>SK3RNJ</key>
 	<string>109.189.12.193</string>
 	<key>SK3WH</key>
 	<string>92.32.214.193</string>
 	<key>SK3XX</key>
-	<string>37.196.203.201</string>
+	<string>37.196.20.54</string>
 	<key>SK4AO</key>
 	<string>90.231.54.216</string>
 	<key>SK4BW</key>
@@ -1611,13 +3762,15 @@
 	<key>SK4DE</key>
 	<string>89.233.248.231</string>
 	<key>SK4NI</key>
-	<string>46.230.179.4</string>
+	<string>46.230.228.116</string>
+	<key>SK4RGL</key>
+	<string>44.140.130.8</string>
 	<key>SK4RKD</key>
 	<string>89.233.248.173</string>
 	<key>SK5BN</key>
 	<string>193.14.12.246</string>
 	<key>SK5LW</key>
-	<string>90.224.143.13</string>
+	<string>78.67.149.168</string>
 	<key>SK5UM</key>
 	<string>78.70.204.147</string>
 	<key>SK6BA</key>
@@ -1627,11 +3780,13 @@
 	<key>SK6EP</key>
 	<string>81.230.199.160</string>
 	<key>SK6IF</key>
-	<string>78.78.38.216</string>
+	<string>78.78.44.17</string>
 	<key>SK6KA</key>
 	<string>91.214.88.152</string>
+	<key>SK6LK</key>
+	<string>193.11.73.19</string>
 	<key>SK6MA</key>
-	<string>95.209.33.196</string>
+	<string>2.68.108.30</string>
 	<key>SK6QA</key>
 	<string>217.208.4.58</string>
 	<key>SK6RIP</key>
@@ -1639,27 +3794,31 @@
 	<key>SK6RKG</key>
 	<string>176.10.145.198</string>
 	<key>SK6RKI</key>
-	<string>90.227.110.235</string>
+	<string>217.212.207.6</string>
 	<key>SK6SA</key>
-	<string>81.231.68.98</string>
+	<string>176.71.121.58</string>
+	<key>SK7BS</key>
+	<string>44.140.236.21</string>
 	<key>SK7DS</key>
-	<string>87.251.195.241</string>
+	<string>83.233.169.173</string>
 	<key>SK7DX</key>
-	<string>85.197.168.166</string>
+	<string>83.226.204.50</string>
 	<key>SK7ES</key>
-	<string>193.164.89.254</string>
+	<string>44.140.236.50</string>
 	<key>SK7HW</key>
-	<string>37.2.151.108</string>
+	<string>37.2.118.54</string>
 	<key>SK7JL</key>
-	<string>83.209.82.101</string>
+	<string>79.138.26.208</string>
 	<key>SK7NU</key>
-	<string>79.136.85.221</string>
+	<string>37.123.177.152</string>
 	<key>SK7RDS</key>
-	<string>46.230.213.75</string>
+	<string>46.230.239.7</string>
 	<key>SK7RGM</key>
-	<string>46.195.33.73</string>
+	<string>46.195.142.183</string>
+	<key>SK7RJL</key>
+	<string>77.53.204.122</string>
 	<key>SK7RMQ</key>
-	<string>46.195.157.85</string>
+	<string>46.195.148.88</string>
 	<key>SK7RNQ</key>
 	<string>85.30.164.129</string>
 	<key>SK7RPQ</key>
@@ -1667,33 +3826,49 @@
 	<key>SK7RQX</key>
 	<string>77.53.214.14</string>
 	<key>SK7RRV</key>
-	<string>90.230.46.41</string>
+	<string>81.170.157.133</string>
 	<key>SK7RSR</key>
-	<string>46.162.115.64</string>
+	<string>46.162.115.29</string>
 	<key>SL2ZA</key>
-	<string>85.226.179.212</string>
+	<string>44.140.236.90</string>
 	<key>SL5ZYT</key>
 	<string>44.140.163.21</string>
 	<key>SL6ZAQ</key>
-	<string>2.69.61.54</string>
+	<string>2.69.66.156</string>
 	<key>SL6ZD</key>
 	<string>83.252.33.184</string>
+	<key>SM7I</key>
+	<string>83.226.205.168</string>
+	<key>SP5QWK</key>
+	<string>93.105.17.236</string>
+	<key>SP5SO</key>
+	<string>89.70.157.30</string>
 	<key>SQ5AGQ</key>
 	<string>share.sq5agq.net</string>
+	<key>SQ5DCP</key>
+	<string>91.203.55.87</string>
+	<key>SQ5DRM</key>
+	<string>91.203.55.87</string>
+	<key>SQ7AYZ</key>
+	<string>83.5.186.132</string>
 	<key>SR1UVD</key>
-	<string>46.215.16.33</string>
+	<string>37.98.217.115</string>
 	<key>SR1UVH</key>
 	<string>178.238.252.12</string>
+	<key>SR1UVS</key>
+	<string>83.168.110.14</string>
 	<key>SR1UVX</key>
 	<string>91.226.237.55</string>
 	<key>SR1ZK</key>
-	<string>62.69.193.29</string>
+	<string>5.172.255.236</string>
 	<key>SR2BX</key>
 	<string>193.188.198.121</string>
 	<key>SR2GR</key>
 	<string>176.221.121.215</string>
 	<key>SR2UVF</key>
 	<string>89.191.131.117</string>
+	<key>SR2UVG</key>
+	<string>185.53.144.249</string>
 	<key>SR2UVO</key>
 	<string>77.91.35.6</string>
 	<key>SR2UVT</key>
@@ -1702,8 +3877,12 @@
 	<string>193.188.198.80</string>
 	<key>SR2VVV</key>
 	<string>193.188.198.121</string>
+	<key>SR3UVL</key>
+	<string>94.40.46.152</string>
 	<key>SR3UVP</key>
 	<string>37.247.62.54</string>
+	<key>SR3ZX</key>
+	<string>31.179.247.147</string>
 	<key>SR4DG</key>
 	<string>185.103.153.5</string>
 	<key>SR4KT</key>
@@ -1712,10 +3891,18 @@
 	<string>213.73.1.102</string>
 	<key>SR4MR</key>
 	<string>89.229.112.15</string>
+	<key>SR4SWE</key>
+	<string>83.12.21.1</string>
+	<key>SR4UBI</key>
+	<string>109.231.36.129</string>
 	<key>SR4UG</key>
 	<string>91.229.88.192</string>
+	<key>SR4UVD</key>
+	<string>185.103.153.5</string>
 	<key>SR4UVE</key>
-	<string>79.186.42.241</string>
+	<string>83.23.142.88</string>
+	<key>SR4UVM</key>
+	<string>213.73.1.102</string>
 	<key>SR4UVN</key>
 	<string>213.73.1.101</string>
 	<key>SR4VVQ</key>
@@ -1725,25 +3912,27 @@
 	<key>SR5RK</key>
 	<string>212.2.124.66</string>
 	<key>SR5SQ</key>
-	<string>213.238.64.204</string>
+	<string>77.255.245.185</string>
+	<key>SR5UOS</key>
+	<string>194.50.158.122</string>
 	<key>SR5UVA</key>
-	<string>83.19.6.244</string>
+	<string>185.28.103.77</string>
 	<key>SR5WC</key>
 	<string>195.137.246.150</string>
 	<key>SR5WW</key>
-	<string>83.19.6.244</string>
+	<string>46.229.152.226</string>
 	<key>SR5WZ</key>
 	<string>195.137.246.150</string>
 	<key>SR5YAM</key>
-	<string>83.16.93.198</string>
+	<string>193.192.62.74</string>
 	<key>SR5ZQ</key>
 	<string>82.160.51.73</string>
 	<key>SR6AA</key>
-	<string>89.79.226.112</string>
+	<string>87.206.197.150</string>
 	<key>SR6UKB</key>
 	<string>88.81.82.191</string>
 	<key>SR6UPK</key>
-	<string>88.199.82.79</string>
+	<string>88.199.82.70</string>
 	<key>SR6UVO</key>
 	<string>79.190.179.186</string>
 	<key>SR6UVW</key>
@@ -1757,27 +3946,41 @@
 	<key>SR6WB</key>
 	<string>95.143.241.86</string>
 	<key>SR6WS</key>
-	<string>78.88.200.123</string>
+	<string>88.199.82.79</string>
 	<key>SR7AL</key>
-	<string>83.29.6.81</string>
+	<string>83.29.12.42</string>
+	<key>SR7LDZ</key>
+	<string>217.113.226.137</string>
 	<key>SR7SC</key>
 	<string>93.105.17.236</string>
+	<key>SR7UAL</key>
+	<string>212.51.192.46</string>
 	<key>SR7ULD</key>
-	<string>83.5.2.146</string>
+	<string>79.191.159.135</string>
 	<key>SR7ULM</key>
 	<string>217.113.226.137</string>
 	<key>SR7USC</key>
 	<string>93.105.207.178</string>
 	<key>SR7USI</key>
-	<string>46.45.93.82</string>
+	<string>88.156.77.184</string>
 	<key>SR7UTM</key>
 	<string>176.221.105.50</string>
+	<key>SR7UVK</key>
+	<string>46.45.109.210</string>
+	<key>SR7UVL</key>
+	<string>195.26.77.71</string>
 	<key>SR7UVV</key>
 	<string>80.53.157.106</string>
 	<key>SR7UWI</key>
-	<string>31.41.141.165</string>
+	<string>31.41.137.224</string>
+	<key>SR8UD</key>
+	<string>213.136.248.97</string>
 	<key>SR8UKS</key>
 	<string>78.11.38.223</string>
+	<key>SR8UVB</key>
+	<string>178.213.56.99</string>
+	<key>SR8UVC</key>
+	<string>155.133.63.170</string>
 	<key>SR8UVL</key>
 	<string>46.21.222.34</string>
 	<key>SR8UVP</key>
@@ -1785,217 +3988,271 @@
 	<key>SR8UWD</key>
 	<string>5.226.117.26</string>
 	<key>SR9AD</key>
-	<string>94.254.145.90</string>
+	<string>78.11.185.131</string>
+	<key>SR9BN</key>
+	<string>31.1.119.206</string>
+	<key>SR9DBN</key>
+	<string>188.125.61.125</string>
+	<key>SR9DV</key>
+	<string>46.151.16.22</string>
+	<key>SR9KR</key>
+	<string>46.169.63.29</string>
 	<key>SR9NJ</key>
 	<string>194.15.121.98</string>
+	<key>SR9SS</key>
+	<string>89.78.129.213</string>
 	<key>SR9SZ</key>
-	<string>94.254.193.241</string>
+	<string>89.78.129.144</string>
+	<key>SR9TR</key>
+	<string>83.4.95.236</string>
 	<key>SR9UCZ</key>
 	<string>87.239.183.173</string>
 	<key>SR9UV</key>
-	<string>37.249.92.128</string>
+	<string>176.112.78.254</string>
 	<key>SR9UVC</key>
 	<string>91.231.60.95</string>
 	<key>SR9UVJ</key>
 	<string>176.111.31.31</string>
 	<key>SR9UVK</key>
-	<string>89.64.218.61</string>
+	<string>194.187.236.178</string>
+	<key>SR9UVM</key>
+	<string>178.23.105.130</string>
 	<key>SR9UVP</key>
-	<string>37.249.35.242</string>
+	<string>46.76.189.18</string>
 	<key>SR9UVR</key>
-	<string>193.242.212.16</string>
+	<string>193.242.212.14</string>
 	<key>SR9UVT</key>
-	<string>93.159.188.186</string>
+	<string>5.185.76.16</string>
 	<key>SR9UVU</key>
-	<string>91.197.225.18</string>
+	<string>46.151.19.250</string>
 	<key>SR9VVO</key>
 	<string>89.234.225.126</string>
 	<key>SV1O</key>
 	<string>194.219.40.134</string>
 	<key>SV1P</key>
-	<string>188.4.8.111</string>
+	<string>194.219.40.101</string>
 	<key>SV1Y</key>
-	<string>5.172.204.142</string>
+	<string>5.172.204.150</string>
+	<key>SV2F</key>
+	<string>87.202.97.202</string>
 	<key>SV2H</key>
-	<string>79.103.152.53</string>
+	<string>46.12.165.85</string>
 	<key>SV2K</key>
-	<string>46.176.119.146</string>
+	<string>141.237.72.107</string>
 	<key>SV2O</key>
 	<string>46.103.189.6</string>
 	<key>SV2Q</key>
-	<string>94.69.11.250</string>
+	<string>87.203.221.61</string>
 	<key>SV3G</key>
-	<string>85.74.254.115</string>
+	<string>77.69.6.142</string>
 	<key>SV4J</key>
-	<string>94.69.222.60</string>
+	<string>85.72.232.150</string>
 	<key>SV4M</key>
 	<string>195.130.75.225</string>
+	<key>SV4P</key>
+	<string>178.59.23.138</string>
+	<key>SV8S</key>
+	<string>80.106.196.187</string>
 	<key>SV8Z</key>
 	<string>94.64.244.77</string>
+	<key>SW1I</key>
+	<string>178.59.23.138</string>
 	<key>SW1J</key>
 	<string>178.59.23.138</string>
+	<key>SW2A</key>
+	<string>2.85.108.146</string>
 	<key>SZ1A</key>
-	<string>79.107.22.124</string>
+	<string>79.130.74.159</string>
 	<key>SZ1SV</key>
-	<string>77.49.105.132</string>
+	<string>212.54.194.75</string>
+	<key>SZ7SER</key>
+	<string>79.103.210.38</string>
+	<key>SZ9ERK</key>
+	<string>176.92.164.170</string>
 	<key>T79DV</key>
-	<string>31.193.36.30</string>
+	<string>77.242.217.248</string>
 	<key>TF3RPI</key>
-	<string>78.40.252.241</string>
+	<string>194.144.104.195</string>
+	<key>TG0AA</key>
+	<string>186.151.129.201</string>
 	<key>TK1ZAR</key>
 	<string>81.56.157.35</string>
+	<key>TK1ZBG</key>
+	<string>92.153.40.135</string>
+	<key>UR0CUA</key>
+	<string>193.107.109.131</string>
 	<key>UR0DSD</key>
 	<string>195.128.182.242</string>
 	<key>UR0DUA</key>
-	<string>195.225.231.242</string>
+	<string>195.16.76.152</string>
 	<key>UR0DUB</key>
-	<string>195.225.231.242</string>
+	<string>213.179.252.228</string>
 	<key>UR0DUC</key>
 	<string>31.41.95.18</string>
 	<key>UR0DUD</key>
 	<string>91.195.172.150</string>
+	<key>UR0HUA</key>
+	<string>82.117.243.194</string>
 	<key>UR0UDS</key>
 	<string>31.43.129.125</string>
 	<key>V53DV</key>
-	<string>41.182.138.2</string>
+	<string>197.188.160.123</string>
 	<key>V53W</key>
 	<string>41.63.247.109</string>
+	<key>VA2AAE</key>
+	<string>24.114.86.237</string>
 	<key>VA2BQ</key>
 	<string>74.210.228.242</string>
 	<key>VA2FPI</key>
-	<string>216.239.77.229</string>
+	<string>216.239.66.228</string>
 	<key>VA2LX</key>
 	<string>45.42.113.21</string>
 	<key>VA2REH</key>
-	<string>176.179.115.72</string>
+	<string>184.151.112.119</string>
+	<key>VA2RFC</key>
+	<string>69.70.170.178</string>
 	<key>VA2RIU</key>
-	<string>74.59.125.85</string>
+	<string>135.19.9.124</string>
+	<key>VA2RKB</key>
+	<string>205.173.252.251</string>
 	<key>VA2RMP</key>
 	<string>192.81.15.13</string>
 	<key>VA2RVB</key>
-	<string>174.92.190.43</string>
+	<string>209.169.129.23</string>
+	<key>VA2RVO</key>
+	<string>207.253.107.5</string>
 	<key>VA3AAR</key>
-	<string>209.87.238.183</string>
+	<string>209.87.226.58</string>
 	<key>VA3AIT</key>
-	<string>174.93.42.140</string>
+	<string>174.89.128.158</string>
 	<key>VA3EDG</key>
 	<string>108.170.164.130</string>
 	<key>VA3FS</key>
-	<string>24.36.248.109</string>
+	<string>24.36.251.244</string>
 	<key>VA3HOA</key>
 	<string>65.93.111.135</string>
 	<key>VA3IBA</key>
 	<string>23.233.113.52</string>
 	<key>VA3ITL</key>
-	<string>174.112.150.126</string>
+	<string>174.117.156.18</string>
 	<key>VA3JJA</key>
 	<string>74.14.37.36</string>
 	<key>VA3MCU</key>
-	<string>70.54.128.109</string>
+	<string>69.156.126.219</string>
 	<key>VA3NAG</key>
-	<string>157.52.0.226</string>
+	<string>192.171.42.54</string>
+	<key>VA3ODG</key>
+	<string>64.179.223.221</string>
 	<key>VA3ODH</key>
-	<string>174.88.72.217</string>
+	<string>76.64.191.215</string>
 	<key>VA3ORN</key>
 	<string>76.64.204.42</string>
 	<key>VA3PMO</key>
-	<string>208.124.214.227</string>
+	<string>208.124.214.226</string>
 	<key>VA3RDD</key>
-	<string>70.26.146.239</string>
+	<string>142.114.101.157</string>
 	<key>VA3SDG</key>
-	<string>72.38.164.252</string>
+	<string>72.38.79.206</string>
 	<key>VA3SLU</key>
-	<string>174.119.232.166</string>
+	<string>174.119.240.66</string>
 	<key>VA3URU</key>
 	<string>67.210.212.144</string>
 	<key>VA3WDG</key>
-	<string>70.49.142.117</string>
+	<string>65.92.108.52</string>
 	<key>VA3YYZ</key>
-	<string>104.222.123.147</string>
+	<string>173.238.192.124</string>
 	<key>VA5DR</key>
 	<string>128.233.238.66</string>
 	<key>VA5EIS</key>
-	<string>207.195.72.207</string>
+	<string>44.135.130.2</string>
 	<key>VA6ACW</key>
 	<string>68.147.141.84</string>
 	<key>VA6EFR</key>
-	<string>75.156.177.133</string>
+	<string>75.152.112.98</string>
 	<key>VA6JHS</key>
-	<string>70.73.223.28</string>
+	<string>70.65.189.42</string>
 	<key>VA6MEO</key>
-	<string>98.158.124.37</string>
+	<string>68.147.44.248</string>
 	<key>VA6SRG</key>
 	<string>162.157.81.197</string>
 	<key>VA6XG</key>
-	<string>96.52.49.0</string>
+	<string>68.149.138.68</string>
 	<key>VA7DSR</key>
 	<string>184.66.1.172</string>
 	<key>VA7DXH</key>
 	<string>154.20.57.42</string>
 	<key>VA7GQ</key>
-	<string>24.207.55.178</string>
+	<string>24.207.12.33</string>
 	<key>VA7ICM</key>
 	<string>206.116.12.63</string>
+	<key>VA7VIC</key>
+	<string>184.66.1.172</string>
 	<key>VA7WHI</key>
 	<string>206.172.6.228</string>
+	<key>VE1CRA</key>
+	<string>142.177.186.122</string>
 	<key>VE1DNR</key>
-	<string>47.55.199.213</string>
+	<string>156.57.17.176</string>
 	<key>VE1DSR</key>
-	<string>71.7.138.69</string>
+	<string>199.255.222.51</string>
 	<key>VE1JSR</key>
-	<string>24.89.211.161</string>
+	<string>71.7.131.187</string>
 	<key>VE1UHF</key>
-	<string>142.177.238.56</string>
+	<string>142.177.186.122</string>
+	<key>VE2CBS</key>
+	<string>142.116.255.112</string>
 	<key>VE2CSA</key>
-	<string>66.38.237.43</string>
-	<key>VE2FCT</key>
-	<string>173.176.34.31</string>
+	<string>64.18.76.171</string>
+	<key>VE2MRC</key>
+	<string>173.177.204.40</string>
 	<key>VE2QE</key>
-	<string>65.94.29.2</string>
+	<string>65.94.31.181</string>
 	<key>VE2REG</key>
-	<string>137.175.226.210</string>
+	<string>137.175.224.141</string>
 	<key>VE2REH</key>
 	<string>74.57.224.39</string>
+	<key>VE2REX</key>
+	<string>209.226.17.162</string>
 	<key>VE2RHH</key>
-	<string>70.27.230.5</string>
-	<key>VE2RIO</key>
-	<string>50.100.135.67</string>
+	<string>67.68.20.55</string>
 	<key>VE2RKL</key>
 	<string>70.26.255.92</string>
 	<key>VE2RM</key>
 	<string>206.248.137.110</string>
 	<key>VE2RMF</key>
-	<string>205.237.230.245</string>
-	<key>VE2RTO</key>
-	<string>24.122.111.203</string>
+	<string>107.171.153.11</string>
 	<key>VE2RVI</key>
 	<string>74.210.212.157</string>
+	<key>VE2SEW</key>
+	<string>184.148.216.35</string>
 	<key>VE2SKG</key>
 	<string>74.210.130.99</string>
 	<key>VE2VPS</key>
 	<string>66.159.41.113</string>
 	<key>VE2VYZ</key>
-	<string>135.19.170.60</string>
+	<string>135.19.172.30</string>
 	<key>VE2YUU</key>
-	<string>174.91.243.80</string>
+	<string>67.68.202.224</string>
 	<key>VE3AZX</key>
-	<string>108.170.165.213</string>
+	<string>108.170.145.134</string>
 	<key>VE3BFH</key>
 	<string>192.95.217.140</string>
+	<key>VE3CTP</key>
+	<string>24.55.220.80</string>
 	<key>VE3DSL</key>
-	<string>208.114.155.82</string>
+	<string>208.114.155.78</string>
 	<key>VE3EBX</key>
 	<string>174.112.63.79</string>
 	<key>VE3ELF</key>
 	<string>72.39.17.239</string>
 	<key>VE3ENH</key>
-	<string>74.14.160.16</string>
+	<string>104.229.74.179</string>
 	<key>VE3FCD</key>
-	<string>23.91.226.153</string>
+	<string>198.91.147.223</string>
 	<key>VE3FSR</key>
-	<string>174.95.147.206</string>
+	<string>174.95.140.207</string>
 	<key>VE3HJ</key>
-	<string>76.64.106.30</string>
+	<string>142.46.249.118</string>
 	<key>VE3HXP</key>
 	<string>64.179.223.211</string>
 	<key>VE3ILN</key>
@@ -2008,8 +4265,10 @@
 	<string>208.80.97.190</string>
 	<key>VE3NMN</key>
 	<string>97.107.56.92</string>
+	<key>VE3NUS</key>
+	<string>76.10.128.211</string>
 	<key>VE3NUU</key>
-	<string>216.221.64.241</string>
+	<string>216.221.64.214</string>
 	<key>VE3OBP</key>
 	<string>24.226.125.248</string>
 	<key>VE3ORC</key>
@@ -2017,116 +4276,1496 @@
 	<key>VE3PLF</key>
 	<string>76.10.128.37</string>
 	<key>VE3QSB</key>
-	<string>65.95.223.100</string>
+	<string>70.27.133.149</string>
+	<key>VE3RIG</key>
+	<string>76.10.152.152</string>
 	<key>VE3RPT</key>
 	<string>24.138.113.81</string>
+	<key>VE3RSB</key>
+	<string>184.151.190.199</string>
 	<key>VE3RSD</key>
-	<string>70.50.43.152</string>
+	<string>64.231.98.110</string>
 	<key>VE3RTR</key>
-	<string>76.75.116.224</string>
+	<string>76.75.119.187</string>
 	<key>VE3SIP</key>
 	<string>76.10.165.130</string>
 	<key>VE3SRY</key>
-	<string>76.64.207.135</string>
+	<string>70.49.100.212</string>
+	<key>VE3SSF</key>
+	<string>24.235.195.130</string>
 	<key>VE3STP</key>
-	<string>74.14.160.16</string>
+	<string>104.245.3.63</string>
+	<key>VE3SVR</key>
+	<string>198.254.250.106</string>
 	<key>VE3TIR</key>
-	<string>216.167.244.19</string>
+	<string>208.96.95.159</string>
 	<key>VE3TTT</key>
-	<string>99.249.90.195</string>
+	<string>99.225.244.141</string>
 	<key>VE3UHF</key>
-	<string>99.239.60.197</string>
+	<string>99.251.117.10</string>
 	<key>VE3URU</key>
 	<string>50.101.83.254</string>
 	<key>VE3VXZ</key>
-	<string>64.231.72.134</string>
+	<string>65.94.59.188</string>
 	<key>VE3WIK</key>
 	<string>24.150.102.2</string>
 	<key>VE3WWD</key>
-	<string>216.46.143.223</string>
+	<string>216.46.157.213</string>
 	<key>VE3XXL</key>
 	<string>96.63.29.199</string>
 	<key>VE3YRK</key>
 	<string>24.138.105.164</string>
 	<key>VE3YTS</key>
-	<string>69.60.239.191</string>
+	<string>69.60.243.92</string>
 	<key>VE3YYZ</key>
 	<string>206.248.184.50</string>
+	<key>VE3ZIN</key>
+	<string>24.55.209.26</string>
+	<key>VE4WDR</key>
+	<string>44.135.120.20</string>
 	<key>VE5DRR</key>
 	<string>24.72.16.157</string>
 	<key>VE5MBX</key>
-	<string>24.72.16.22</string>
+	<string>142.165.246.46</string>
 	<key>VE5RAD</key>
 	<string>192.34.225.244</string>
 	<key>VE5UFO</key>
 	<string>207.47.253.107</string>
 	<key>VE6BHX</key>
-	<string>174.3.219.171</string>
+	<string>174.3.23.15</string>
 	<key>VE6BWL</key>
-	<string>70.73.223.28</string>
+	<string>70.72.235.110</string>
 	<key>VE6CWK</key>
-	<string>162.157.81.197</string>
+	<string>207.228.78.164</string>
 	<key>VE6GHZ</key>
-	<string>184.71.208.226</string>
+	<string>96.51.224.167</string>
 	<key>VE6IPG</key>
 	<string>68.145.206.48</string>
 	<key>VE6JKB</key>
 	<string>108.181.157.83</string>
+	<key>VE6KM</key>
+	<string>69.196.80.40</string>
 	<key>VE6MHD</key>
-	<string>209.89.197.39</string>
+	<string>198.53.218.88</string>
 	<key>VE6VOA</key>
 	<string>70.72.243.106</string>
+	<key>VE6WRE</key>
+	<string>68.146.233.232</string>
 	<key>VE6WRO</key>
 	<string>142.179.148.196</string>
+	<key>VE6XXZ</key>
+	<string>75.152.114.103</string>
 	<key>VE7MDD</key>
 	<string>207.216.6.180</string>
 	<key>VE7RES</key>
 	<string>184.70.240.254</string>
+	<key>VE7RMR</key>
+	<string>216.13.198.52</string>
 	<key>VE7SUN</key>
 	<string>24.207.0.137</string>
 	<key>VK2HK</key>
 	<string>dstar.vk2hk.net</string>
 	<key>VK2HL</key>
 	<string>nbtv.com.au</string>
-	<key>VK2JN</key>
-	<string>vk2jn.ddns.net</string>
+	<key>VK2RCW</key>
+	<string>1.43.221.16</string>
+	<key>VK2ROZ</key>
+	<string>110.174.20.47</string>
 	<key>VK3BDG</key>
 	<string>vk3bdg.ddns.net</string>
+	<key>VK3XE</key>
+	<string>1.152.97.112</string>
 	<key>VK4RBD</key>
-	<string>vk4rbd.dyndns.org</string>
+	<string>120.146.38.176</string>
+	<key>VK4RBM</key>
+	<string>120.157.77.70</string>
 	<key>VK4RBY</key>
-	<string>120.157.35.99</string>
+	<string>120.157.117.206</string>
 	<key>VK4RCN</key>
 	<string>44.136.150.44</string>
+	<key>VK4RRC</key>
+	<string>149.135.18.141</string>
+	<key>VK4RSA</key>
+	<string>111.220.131.151</string>
 	<key>VK4RTQ</key>
 	<string>120.146.176.118</string>
 	<key>VK4RUS</key>
-	<string>vk4rus.dyndns.org</string>
-	<key>VK4TUX</key>
-	<string>vk4tux.duckdns.org</string>
+	<string>111.220.131.151</string>
+	<key>VK7RAA</key>
+	<string>118.208.224.102</string>
+	<key>VK7RAC</key>
+	<string>120.146.254.119</string>
+	<key>VK7RMD</key>
+	<string>14.2.187.141</string>
+	<key>VK8HF</key>
+	<string>118.211.231.249</string>
+	<key>VO1NTV</key>
+	<string>173.239.165.154</string>
 	<key>VY2DSR</key>
-	<string>96.30.167.7</string>
+	<string>96.30.162.129</string>
+	<key>W0KEV</key>
+	<string>207.119.153.110</string>
+	<key>W2QW</key>
+	<string>70.21.190.19</string>
+	<key>W2XRX</key>
+	<string>199.190.197.242</string>
+	<key>W3DRA</key>
+	<string>69.242.93.85</string>
+	<key>W4CCA</key>
+	<string>73.7.116.209</string>
+	<key>W4HPL</key>
+	<string>199.33.100.149</string>
+	<key>W4LCO</key>
+	<string>208.89.76.203</string>
+	<key>W4NQ</key>
+	<string>64.130.102.103</string>
+	<key>W4RRG</key>
+	<string>104.192.65.44</string>
+	<key>W4VM</key>
+	<string>70.196.131.9</string>
+	<key>W5AV</key>
+	<string>50.157.13.208</string>
+	<key>W5DTB</key>
+	<string>50.27.63.160</string>
+	<key>W5LND</key>
+	<string>74.195.103.141</string>
+	<key>W5MEL</key>
+	<string>68.12.188.93</string>
+	<key>W5SLA</key>
+	<string>68.191.93.71</string>
+	<key>W5STR</key>
+	<string>70.215.137.241</string>
+	<key>W5SUL</key>
+	<string>74.193.212.65</string>
+	<key>W6TPR</key>
+	<string>24.4.10.2</string>
+	<key>W7AI</key>
+	<string>75.146.134.20</string>
+	<key>W7BDR</key>
+	<string>75.167.173.94</string>
+	<key>W7DIG</key>
+	<string>70.167.216.14</string>
+	<key>W7NPG</key>
+	<string>174.31.35.205</string>
+	<key>W8DGN</key>
+	<string>66.162.79.44</string>
+	<key>W8DTW</key>
+	<string>68.55.187.249</string>
+	<key>W8VY</key>
+	<string>68.55.187.249</string>
+	<key>W9DIG</key>
+	<string>50.165.135.39</string>
+	<key>W9MWC</key>
+	<string>12.188.149.194</string>
+	<key>W9NTP</key>
+	<string>75.100.156.217</string>
+	<key>WA2EMO</key>
+	<string>72.230.182.182</string>
+	<key>WA4YIH</key>
+	<string>172.16.2.33</string>
+	<key>WA7KTM</key>
+	<string>75.165.53.18</string>
+	<key>WD1CRS</key>
+	<string>73.126.57.171</string>
+	<key>WD4EOG</key>
+	<string>130.127.123.6</string>
+	<key>WI8DX</key>
+	<string>184.58.20.34</string>
+	<key>WI9WIN</key>
+	<string>216.246.177.7</string>
 	<key>WW9P</key>
 	<string>70.194.139.2</string>
+	<key>WW9RS</key>
+	<string>216.222.190.20</string>
+	<key>WX4ATL</key>
+	<string>73.106.124.246</string>
+	<key>WX4BCA</key>
+	<string>174.218.5.101</string>
+	<key>XE1VHF</key>
+	<string>189.211.214.36</string>
+	<key>XE2ITB</key>
+	<string>187.143.206.25</string>
+	<key>XLX000</key>
+	<string>45.62.255.217</string>
+	<key>XLX001</key>
+	<string>79.0.3.228</string>
+	<key>XLX003</key>
+	<string>45.62.246.223</string>
+	<key>XLX004</key>
+	<string>44.103.34.3</string>
+	<key>XLX005</key>
+	<string>91.121.101.163</string>
+	<key>XLX008</key>
+	<string>104.233.106.84</string>
+	<key>XLX009</key>
+	<string>118.150.164.96</string>
+	<key>XLX010</key>
+	<string>162.243.74.151</string>
+	<key>XLX011</key>
+	<string>107.170.48.100</string>
+	<key>XLX012</key>
+	<string>45.62.229.186</string>
+	<key>XLX013</key>
+	<string>209.112.244.27</string>
+	<key>XLX017</key>
+	<string>92.177.212.64</string>
+	<key>XLX018</key>
+	<string>149.202.61.56</string>
+	<key>XLX019</key>
+	<string>46.28.108.233</string>
+	<key>XLX022</key>
+	<string>91.118.53.116</string>
+	<key>XLX023</key>
+	<string>79.47.249.105</string>
+	<key>XLX024</key>
+	<string>194.208.150.205</string>
+	<key>XLX025</key>
+	<string>89.38.150.252</string>
+	<key>XLX026</key>
+	<string>24.233.121.226</string>
+	<key>XLX029</key>
+	<string>80.120.95.238</string>
+	<key>XLX032</key>
+	<string>158.64.26.140</string>
+	<key>XLX033</key>
+	<string>46.226.178.81</string>
+	<key>XLX035</key>
+	<string>45.79.94.184</string>
+	<key>XLX036</key>
+	<string>192.168.2.150</string>
+	<key>XLX040</key>
+	<string>109.71.45.29</string>
+	<key>XLX045</key>
+	<string>64.137.172.60</string>
+	<key>XLX046</key>
+	<string>176.10.140.161</string>
+	<key>XLX047</key>
+	<string>222.159.237.81</string>
+	<key>XLX052</key>
+	<string>114.184.89.75</string>
+	<key>XLX054</key>
+	<string>52.86.180.251</string>
+	<key>XLX057</key>
+	<string>74.193.209.102</string>
+	<key>XLX062</key>
+	<string>70.88.145.163</string>
+	<key>XLX064</key>
+	<string>202.241.175.133</string>
+	<key>XLX066</key>
+	<string>203.150.19.26</string>
+	<key>XLX068</key>
+	<string>92.222.145.202</string>
+	<key>XLX070</key>
+	<string>58.122.123.18</string>
+	<key>XLX071</key>
+	<string>211.60.41.185</string>
+	<key>XLX072</key>
+	<string>211.60.41.186</string>
+	<key>XLX075</key>
+	<string>5.135.162.136</string>
+	<key>XLX076</key>
+	<string>203.137.116.117</string>
+	<key>XLX077</key>
+	<string>5.249.151.111</string>
+	<key>XLX080</key>
+	<string>121.85.180.61</string>
+	<key>XLX081</key>
+	<string>220.147.140.236</string>
+	<key>XLX082</key>
+	<string>108.21.232.21</string>
+	<key>XLX083</key>
+	<string>108.21.232.22</string>
+	<key>XLX085</key>
+	<string>119.105.177.125</string>
+	<key>XLX086</key>
+	<string>220.133.89.28</string>
+	<key>XLX087</key>
+	<string>44.137.36.209</string>
+	<key>XLX088</key>
+	<string>194.109.192.235</string>
+	<key>XLX089</key>
+	<string>194.109.192.236</string>
+	<key>XLX093</key>
+	<string>98.29.99.252</string>
+	<key>XLX095</key>
+	<string>153.224.247.53</string>
+	<key>XLX098</key>
+	<string>111.169.31.153</string>
+	<key>XLX100</key>
+	<string>96.94.7.196</string>
+	<key>XLX101</key>
+	<string>64.137.180.82</string>
+	<key>XLX102</key>
+	<string>206.208.56.13</string>
+	<key>XLX103</key>
+	<string>64.137.183.222</string>
+	<key>XLX104</key>
+	<string>64.137.226.103</string>
+	<key>XLX105</key>
+	<string>64.137.188.224</string>
+	<key>XLX112</key>
+	<string>92.222.47.175</string>
+	<key>XLX114</key>
+	<string>91.121.136.94</string>
+	<key>XLX115</key>
+	<string>217.182.128.3</string>
+	<key>XLX118</key>
+	<string>5.249.148.252</string>
+	<key>XLX119</key>
+	<string>210.178.113.106</string>
+	<key>XLX120</key>
+	<string>24.43.83.140</string>
+	<key>XLX125</key>
+	<string>213.181.208.52</string>
+	<key>XLX132</key>
+	<string>193.106.216.154</string>
+	<key>XLX145</key>
+	<string>178.59.21.32</string>
+	<key>XLX146</key>
+	<string>128.0.212.190</string>
+	<key>XLX147</key>
+	<string>46.41.1.127</string>
+	<key>XLX170</key>
+	<string>210.178.113.238</string>
+	<key>XLX200</key>
+	<string>176.126.243.213</string>
+	<key>XLX204</key>
+	<string>185.85.18.162</string>
+	<key>XLX208</key>
+	<string>151.80.155.39</string>
+	<key>XLX210</key>
+	<string>64.137.244.233</string>
+	<key>XLX212</key>
+	<string>52.38.90.188</string>
+	<key>XLX214</key>
+	<string>89.36.214.120</string>
+	<key>XLX222</key>
+	<string>5.134.124.207</string>
+	<key>XLX226</key>
+	<string>77.81.104.26</string>
+	<key>XLX227</key>
+	<string>86.122.173.9</string>
+	<key>XLX230</key>
+	<string>80.250.3.114</string>
+	<key>XLX235</key>
+	<string>86.5.193.62</string>
+	<key>XLX262</key>
+	<string>136.243.72.242</string>
+	<key>XLX264</key>
+	<string>52.2.131.118</string>
+	<key>XLX270</key>
+	<string>158.64.26.132</string>
+	<key>XLX300</key>
+	<string>64.137.185.249</string>
+	<key>XLX307</key>
+	<string>72.174.58.87</string>
+	<key>XLX310</key>
+	<string>104.233.109.56</string>
+	<key>XLX311</key>
+	<string>78.47.206.12</string>
+	<key>XLX313</key>
+	<string>52.35.167.210</string>
+	<key>XLX332</key>
+	<string>188.213.168.99</string>
+	<key>XLX333</key>
+	<string>194.116.29.73</string>
+	<key>XLX334</key>
+	<string>199.119.98.174</string>
+	<key>XLX336</key>
+	<string>23.226.233.133</string>
+	<key>XLX357</key>
+	<string>162.244.28.186</string>
+	<key>XLX365</key>
+	<string>175.179.113.33</string>
+	<key>XLX370</key>
+	<string>188.213.168.24</string>
+	<key>XLX373</key>
+	<string>101.141.81.139</string>
+	<key>XLX390</key>
+	<string>31.14.140.230</string>
+	<key>XLX400</key>
+	<string>213.202.229.15</string>
+	<key>XLX404</key>
+	<string>163.172.140.188</string>
+	<key>XLX433</key>
+	<string>217.160.22.17</string>
+	<key>XLX444</key>
+	<string>85.214.69.145</string>
+	<key>XLX450</key>
+	<string>45.62.249.14</string>
+	<key>XLX486</key>
+	<string>51.255.172.249</string>
+	<key>XLX500</key>
+	<string>125.63.63.112</string>
+	<key>XLX502</key>
+	<string>74.208.88.137</string>
+	<key>XLX518</key>
+	<string>176.9.1.168</string>
+	<key>XLX519</key>
+	<string>24.55.196.105</string>
+	<key>XLX520</key>
+	<string>202.142.213.58</string>
+	<key>XLX555</key>
+	<string>104.167.117.252</string>
+	<key>XLX569</key>
+	<string>219.122.217.203</string>
+	<key>XLX569</key>
+	<string>xlxreflector.jpn.ph</string>
+	<key>XLX570</key>
+	<string>104.128.230.153</string>
+	<key>XLX573</key>
+	<string>216.189.148.204</string>
+	<key>XLX600</key>
+	<string>13.69.14.204</string>
+	<key>XLX603</key>
+	<string>24.233.107.8</string>
+	<key>XLX616</key>
+	<string>44.103.39.7</string>
+	<key>XLX699</key>
+	<string>82.102.5.239</string>
+	<key>XLX700</key>
+	<string>78.47.222.93</string>
+	<key>XLX706</key>
+	<string>151.80.132.155</string>
+	<key>XLX707</key>
+	<string>90.145.156.196</string>
+	<key>XLX708</key>
+	<string>180.27.41.154</string>
+	<key>XLX714</key>
+	<string>85.214.119.76</string>
+	<key>XLX724</key>
+	<string>191.232.36.180</string>
+	<key>XLX737</key>
+	<string>195.130.75.246</string>
+	<key>XLX747</key>
+	<string>93.209.44.168</string>
+	<key>XLX755</key>
+	<string>193.248.45.246</string>
+	<key>XLX766</key>
+	<string>201.62.48.61</string>
+	<key>XLX773</key>
+	<string>94.177.175.230</string>
+	<key>XLX777</key>
+	<string>45.62.251.163</string>
+	<key>XLX787</key>
+	<string>93.201.108.164</string>
+	<key>XLX789</key>
+	<string>75.144.65.122</string>
+	<key>XLX800</key>
+	<string>52.26.26.195</string>
+	<key>XLX807</key>
+	<string>118.6.221.210</string>
+	<key>XLX810</key>
+	<string>45.62.237.134</string>
+	<key>XLX828</key>
+	<string>5.1.85.55</string>
+	<key>XLX850</key>
+	<string>88.198.94.77</string>
+	<key>XLX873</key>
+	<string>219.122.217.203</string>
+	<key>XLX886</key>
+	<string>118.163.103.179</string>
+	<key>XLX888</key>
+	<string>31.14.135.7</string>
+	<key>XLX897</key>
+	<string>92.222.23.124</string>
+	<key>XLX900</key>
+	<string>85.214.114.27</string>
+	<key>XLX902</key>
+	<string>104.233.76.150</string>
+	<key>XLX908</key>
+	<string>164.132.193.165</string>
+	<key>XLX909</key>
+	<string>216.86.147.198</string>
+	<key>XLX911</key>
+	<string>5.196.73.89</string>
+	<key>XLX921</key>
+	<string>44.143.184.83</string>
+	<key>XLX929</key>
+	<string>158.69.166.132</string>
+	<key>XLX930</key>
+	<string>94.177.160.5</string>
+	<key>XLX935</key>
+	<string>87.11.253.40</string>
+	<key>XLX950</key>
+	<string>158.64.26.134</string>
+	<key>XLX967</key>
+	<string>95.158.165.32</string>
+	<key>XLX970</key>
+	<string>81.224.72.172</string>
+	<key>XLX985</key>
+	<string>81.89.101.155</string>
+	<key>XLX986</key>
+	<string>81.89.102.160</string>
+	<key>XLX997</key>
+	<string>213.45.29.230</string>
+	<key>XLX998</key>
+	<string>44.140.236.20</string>
+	<key>XLX999</key>
+	<string>94.177.173.53</string>
+	<key>XRF000</key>
+	<string>000.xreflector.org</string>
+	<key>XRF001</key>
+	<string>xref.homepc.it</string>
+	<key>XRF002</key>
+	<string>xrf002.dstar.club</string>
+	<key>XRF003</key>
+	<string>95.110.157.83</string>
+	<key>XRF004</key>
+	<string>xlx004.kb8zgl.net</string>
+	<key>XRF005</key>
+	<string>216.16.240.236</string>
+	<key>XRF006</key>
+	<string>80.62.20.151</string>
+	<key>XRF007</key>
+	<string>84.232.6.94</string>
+	<key>XRF008</key>
+	<string>95.110.231.219</string>
+	<key>XRF009</key>
+	<string>141.22.15.29</string>
+	<key>XRF010</key>
+	<string>162.243.74.151</string>
+	<key>XRF011</key>
+	<string>87.106.3.249</string>
+	<key>XRF012</key>
+	<string>xrf012.papasys.com</string>
+	<key>XRF013</key>
+	<string>xrf013.vkradio.com</string>
+	<key>XRF014</key>
+	<string>xrf014.iz0rin.it</string>
+	<key>XRF015</key>
+	<string>xrf015.theapplecore.me</string>
+	<key>XRF016</key>
+	<string>xrf016.ampr.at</string>
+	<key>XRF017</key>
+	<string>87.253.159.114</string>
+	<key>XRF018</key>
+	<string>199.167.129.166</string>
+	<key>XRF019</key>
+	<string>xlx019.ok2it.com</string>
+	<key>XRF020</key>
+	<string>67.210.212.144</string>
+	<key>XRF021</key>
+	<string>44.103.32.250</string>
+	<key>XRF022</key>
+	<string>xrf022.tms-it.net</string>
+	<key>XRF023</key>
+	<string>141.75.245.225</string>
+	<key>XRF024</key>
+	<string>xrf024.dstar.at</string>
+	<key>XRF025</key>
+	<string>025.ham-digital.es</string>
+	<key>XRF026</key>
+	<string>139.13.100.34</string>
+	<key>XRF027</key>
+	<string>194.116.29.78</string>
+	<key>XRF028</key>
+	<string>stn028.dstar.be</string>
+	<key>XRF029</key>
+	<string>tyrol-dstar.ddns.net</string>
+	<key>XRF030</key>
+	<string>xrf030.oe3xht.at</string>
+	<key>XRF031</key>
+	<string>83.241.141.245</string>
+	<key>XRF032</key>
+	<string>xrf032.dstar.radom.pl</string>
+	<key>XRF033</key>
+	<string>46.226.178.81</string>
+	<key>XRF035</key>
+	<string>xrf035.wa7dre.org</string>
+	<key>XRF037</key>
+	<string>185.58.193.163</string>
+	<key>XRF038</key>
+	<string>66.6.171.228</string>
+	<key>XRF040</key>
+	<string>109.71.45.29</string>
+	<key>XRF041</key>
+	<string>167.88.37.80</string>
+	<key>XRF042</key>
+	<string>xrf042.luthienstar.fr</string>
+	<key>XRF043</key>
+	<string>xrf043.aotnet.it</string>
+	<key>XRF044</key>
+	<string>82.1.185.173</string>
+	<key>XRF045</key>
+	<string>104.233.124.22</string>
+	<key>XRF046</key>
+	<string>xlx.c4fm.se</string>
+	<key>XRF047</key>
+	<string>xlx047.ddns.net</string>
+	<key>XRF048</key>
+	<string>xrf048.n5uxt.org</string>
+	<key>XRF050</key>
+	<string>104.233.126.150</string>
+	<key>XRF052</key>
+	<string>je7zbu.dip.jp</string>
+	<key>XRF054</key>
+	<string>xrf054.metro-uhf.org</string>
+	<key>XRF055</key>
+	<string>95.110.229.195</string>
+	<key>XRF057</key>
+	<string>xlx057.ddns.net</string>
+	<key>XRF058</key>
+	<string>xrf058.dip.jp</string>
+	<key>XRF061</key>
+	<string>68.115.205.110</string>
+	<key>XRF062</key>
+	<string>70.88.145.163</string>
+	<key>XRF063</key>
+	<string>162.248.141.148</string>
+	<key>XRF064</key>
+	<string>xrf064.owari.biz</string>
+	<key>XRF067</key>
+	<string>xrf067.f5kav.org</string>
+	<key>XRF068</key>
+	<string>92.222.145.202</string>
+	<key>XRF069</key>
+	<string>91.142.221.75</string>
+	<key>XRF070</key>
+	<string>xrf070.iptime.org</string>
+	<key>XRF071</key>
+	<string>xrf071.dv.or.kr</string>
+	<key>XRF072</key>
+	<string>xrf072.dv.or.kr</string>
+	<key>XRF073</key>
+	<string>147.102.7.34</string>
+	<key>XRF074</key>
+	<string>xrf074.dyndns.org</string>
+	<key>XRF075</key>
+	<string>xrf075.ir9bs.it</string>
+	<key>XRF076</key>
+	<string>xrf076.xreflector-jp.org</string>
+	<key>XRF077</key>
+	<string>vpngrf.webandcloud.net</string>
+	<key>XRF078</key>
+	<string>217.112.102.132</string>
+	<key>XRF080</key>
+	<string>jr3vh.dip.jp</string>
+	<key>XRF081</key>
+	<string>jr3vh.dip.jp</string>
+	<key>XRF082</key>
+	<string>xlx082.pungsan.com</string>
+	<key>XRF083</key>
+	<string>xlx083.pungsan.com</string>
+	<key>XRF085</key>
+	<string>jr1ofp.dip.jp</string>
+	<key>XRF086</key>
+	<string>203.74.132.37</string>
+	<key>XRF087</key>
+	<string>44.137.36.209</string>
+	<key>XRF088</key>
+	<string>xlx088.pa4tw.nl</string>
+	<key>XRF089</key>
+	<string>xlx089.pa4tw.nl</string>
+	<key>XRF090</key>
+	<string>46.37.185.184</string>
+	<key>XRF091</key>
+	<string>89.36.219.197</string>
+	<key>XRF095</key>
+	<string>xrf095.dip.jp</string>
+	<key>XRF098</key>
+	<string>xrf098.dip.jp</string>
+	<key>XRF099</key>
+	<string>76.71.89.114</string>
+	<key>XRF100</key>
+	<string>xlx100.xlxreflector.org</string>
+	<key>XRF101</key>
+	<string>xlx101.xreflector.org</string>
+	<key>XRF102</key>
+	<string>206.208.56.13</string>
+	<key>XRF103</key>
+	<string>64.137.183.222</string>
+	<key>XRF104</key>
+	<string>xlx104.xlxreflector.org</string>
+	<key>XRF105</key>
+	<string>xrf105.xlxreflector.org</string>
+	<key>XRF111</key>
+	<string>5.196.3.184</string>
+	<key>XRF112</key>
+	<string>112.xreflector.es</string>
+	<key>XRF113</key>
+	<string>xlx113.homepc.it</string>
+	<key>XRF118</key>
+	<string>xlx118.ns0.it</string>
+	<key>XRF119</key>
+	<string>149.154.158.170</string>
+	<key>XRF120</key>
+	<string>24.43.83.140</string>
+	<key>XRF122</key>
+	<string>xrf.vpn4ham.com</string>
+	<key>XRF123</key>
+	<string>213.126.90.100</string>
+	<key>XRF125</key>
+	<string>78.131.97.211</string>
+	<key>XRF127</key>
+	<string>pj2man.hopto.org</string>
+	<key>XRF132</key>
+	<string>xrf132.dstar.radom.pl</string>
+	<key>XRF133</key>
+	<string>xrf133.gb7de.co.uk</string>
+	<key>XRF145</key>
+	<string>178.59.21.32</string>
+	<key>XRF146</key>
+	<string>xlx146.ddns.net</string>
+	<key>XRF147</key>
+	<string>46.41.1.127</string>
+	<key>XRF150</key>
+	<string>xrf150.dstarspain.es</string>
+	<key>XRF168</key>
+	<string>xrf168.duckdns.org</string>
+	<key>XRF170</key>
+	<string>dvham.mooo.com</string>
+	<key>XRF177</key>
+	<string>xlx177.webandcloud.net</string>
+	<key>XRF185</key>
+	<string>104.167.117.71</string>
+	<key>XRF200</key>
+	<string>xrf200.theapplecore.me</string>
+	<key>XRF202</key>
+	<string>81.4.107.250</string>
+	<key>XRF204</key>
+	<string>ref204.ph0dv.nl</string>
+	<key>XRF208</key>
+	<string>xlx208.f5kav.org</string>
+	<key>XRF210</key>
+	<string>210.xreflector.org</string>
+	<key>XRF212</key>
+	<string>52.38.90.188</string>
+	<key>XRF214</key>
+	<string>xlx214.sustrai.org</string>
+	<key>XRF216</key>
+	<string>74.214.25.135</string>
+	<key>XRF222</key>
+	<string>93.189.136.50</string>
+	<key>XRF223</key>
+	<string>k0pra.ddns.net</string>
+	<key>XRF226</key>
+	<string>216.158.224.28</string>
+	<key>XRF226</key>
+	<string>xrf.226.ro</string>
+	<key>XRF228</key>
+	<string>xrf228.duckdns.org</string>
+	<key>XRF230</key>
+	<string>ref.dstar.cz</string>
+	<key>XRF232</key>
+	<string>xrf232.tms-it.net</string>
+	<key>XRF235</key>
+	<string>xlx235.duckdns.org</string>
+	<key>XRF238</key>
+	<string>xlx.brandmeister.digital</string>
+	<key>XRF242</key>
+	<string>xrf242.k7edw.com</string>
+	<key>XRF246</key>
+	<string>xlx.mkagawa.com</string>
+	<key>XRF248</key>
+	<string>xrf248.dyndns.org</string>
+	<key>XRF250</key>
+	<string>xrf250.dstar.su</string>
+	<key>XRF255</key>
+	<string>xrf255.reflector.up4dar.de</string>
+	<key>XRF262</key>
+	<string>xrf262.reflector.up4dar.de</string>
+	<key>XRF264</key>
+	<string>52.2.131.118</string>
+	<key>XRF270</key>
+	<string>xrf270.epf.lu</string>
+	<key>XRF275</key>
+	<string>xrf275.dyndns.org</string>
+	<key>XRF277</key>
+	<string>xlx277.dyndns.org</string>
+	<key>XRF295</key>
+	<string>104.167.96.2</string>
+	<key>XRF300</key>
+	<string>300.xreflector.org</string>
+	<key>XRF302</key>
+	<string>xlx302.hopto.org</string>
+	<key>XRF307</key>
+	<string>xlx307.ddns.net</string>
+	<key>XRF307</key>
+	<string>104.167.106.95</string>
+	<key>XRF310</key>
+	<string>server1.xrefl.net</string>
+	<key>XRF311</key>
+	<string>xrf311.ernix.de</string>
+	<key>XRF312</key>
+	<string>xrf312.xrefl.net</string>
+	<key>XRF313</key>
+	<string>xlx313.xrefl.net</string>
+	<key>XRF314</key>
+	<string>162.248.10.154</string>
+	<key>XRF315</key>
+	<string>104.233.109.56</string>
+	<key>XRF317</key>
+	<string>xrf317.crossroadsdmr.org</string>
+	<key>XRF318</key>
+	<string>xrf318.xrefl.net</string>
+	<key>XRF332</key>
+	<string>iz7jwr.dtdns.net</string>
+	<key>XRF332</key>
+	<string>188.213.168.99</string>
+	<key>XRF333</key>
+	<string>xrf333.f1smf.com</string>
+	<key>XRF334</key>
+	<string>199.119.98.174</string>
+	<key>XRF336</key>
+	<string>xrf336.mawcg.org</string>
+	<key>XRF345</key>
+	<string>104.167.114.4</string>
+	<key>XRF350</key>
+	<string>350.dstarspain.es</string>
+	<key>XRF353</key>
+	<string>94.173.206.53</string>
+	<key>XRF357</key>
+	<string>162.244.28.186</string>
+	<key>XRF359</key>
+	<string>217.174.155.51</string>
+	<key>XRF365</key>
+	<string>xrf365.dip.jp</string>
+	<key>XRF370</key>
+	<string>188.213.168.24</string>
+	<key>XRF373</key>
+	<string>xrf373.dip.jp</string>
+	<key>XRF387</key>
+	<string>195.130.59.77</string>
+	<key>XRF390</key>
+	<string>xrf390.aotnet.it</string>
+	<key>XRF398</key>
+	<string>104.167.117.71</string>
+	<key>XRF400</key>
+	<string>5.196.8.77</string>
+	<key>XRF404</key>
+	<string>163.172.140.188</string>
+	<key>XRF404</key>
+	<string>xlx.bendiksverden.net</string>
+	<key>XRF420</key>
+	<string>kc9qen.com</string>
+	<key>XRF423</key>
+	<string>4ix.hacktic.de</string>
+	<key>XRF425</key>
+	<string>xlx425.xlx.ar-dns.net</string>
+	<key>XRF433</key>
+	<string>217.160.22.17</string>
+	<key>XRF440</key>
+	<string>dg8rp.dynaccess.de</string>
+	<key>XRF443</key>
+	<string>xrf443.arisondrio.it</string>
+	<key>XRF444</key>
+	<string>xlx444.pa4tw.nl</string>
+	<key>XRF450</key>
+	<string>450.xreflector.org</string>
+	<key>XRF456</key>
+	<string>xrf456.de</string>
+	<key>XRF486</key>
+	<string>xlx486.iz8gur.it</string>
+	<key>XRF490</key>
+	<string>xrf490.dyndns.org</string>
+	<key>XRF500</key>
+	<string>xrf500.org</string>
+	<key>XRF502</key>
+	<string>74.208.88.137</string>
+	<key>XRF510</key>
+	<string>xrf510.s56g.net</string>
+	<key>XRF515</key>
+	<string>shounandstar.dip.jp</string>
+	<key>XRF518</key>
+	<string>xrf518.n18.de</string>
+	<key>XRF519</key>
+	<string>24.55.196.105</string>
+	<key>XRF519</key>
+	<string>xrf519.ve3zin.com</string>
+	<key>XRF520</key>
+	<string>dstar.thdar.com</string>
+	<key>XRF550</key>
+	<string>550.xreflector.es</string>
+	<key>XRF555</key>
+	<string>54.191.67.121</string>
+	<key>XRF556</key>
+	<string>xrf556.w6kd.com</string>
+	<key>XRF559</key>
+	<string>98.239.113.175</string>
+	<key>XRF569</key>
+	<string>xlxreflector.jpn.ph</string>
+	<key>XRF570</key>
+	<string>104.128.230.153</string>
+	<key>XRF573</key>
+	<string>216.189.148.204</string>
+	<key>XRF580</key>
+	<string>67.20.31.79</string>
+	<key>XRF600</key>
+	<string>xrf600.gb7de.co.uk</string>
+	<key>XRF603</key>
+	<string>xlx.cnharc.org</string>
+	<key>XRF651</key>
+	<string>66.240.165.26</string>
+	<key>XRF666</key>
+	<string>vpngrf.webandcloud.net</string>
+	<key>XRF678</key>
+	<string>xrf678.ddns.net</string>
+	<key>XRF699</key>
+	<string>xlx.tekniksnack.se</string>
+	<key>XRF700</key>
+	<string>xrf700.d-star.se</string>
+	<key>XRF706</key>
+	<string>xlx706.iz0rin.it</string>
+	<key>XRF707</key>
+	<string>irc-3.openquad.net</string>
+	<key>XRF708</key>
+	<string>xrf708.dip.jp</string>
+	<key>XRF710</key>
+	<string>oe7mfi.ddns.net</string>
+	<key>XRF714</key>
+	<string>xrf714.ea3hkb.com</string>
+	<key>XRF720</key>
+	<string>204.45.107.21</string>
+	<key>XRF724</key>
+	<string>191.232.36.180</string>
+	<key>XRF727</key>
+	<string>108.33.72.83</string>
+	<key>XRF737</key>
+	<string>195.130.75.246</string>
+	<key>XRF740</key>
+	<string>imagewell.duckdns.org</string>
+	<key>XRF747</key>
+	<string>xrf747.de</string>
+	<key>XRF748</key>
+	<string>104.167.109.27</string>
+	<key>XRF750</key>
+	<string>104.167.106.247</string>
+	<key>XRF755</key>
+	<string>xlx.radioamateur.tk</string>
+	<key>XRF757</key>
+	<string>xrf757.openquad.net</string>
+	<key>XRF766</key>
+	<string>201.62.48.61</string>
+	<key>XRF767</key>
+	<string>xrf767.de</string>
+	<key>XRF773</key>
+	<string>xrf773.iz0rin.it</string>
+	<key>XRF777</key>
+	<string>112.218.40.91</string>
+	<key>XRF780</key>
+	<string>96.53.97.22</string>
+	<key>XRF781</key>
+	<string>xrf781.dip.jp</string>
+	<key>XRF787</key>
+	<string>xrf787.de</string>
+	<key>XRF789</key>
+	<string>xrf789.dstarxlx.com.br</string>
+	<key>XRF800</key>
+	<string>52.26.26.195</string>
+	<key>XRF807</key>
+	<string>hajikko.iobb.net</string>
+	<key>XRF810</key>
+	<string>45.62.237.134</string>
+	<key>XRF828</key>
+	<string>5.1.85.55</string>
+	<key>XRF850</key>
+	<string>xrf850.xrfmaster.net</string>
+	<key>XRF851</key>
+	<string>xrf851.rsdt.de</string>
+	<key>XRF858</key>
+	<string>198.57.255.30</string>
+	<key>XRF860</key>
+	<string>xrf.njpaasterisk.org</string>
+	<key>XRF886</key>
+	<string>xlx886.metropit.net</string>
+	<key>XRF888</key>
+	<string>37.187.0.15</string>
+	<key>XRF897</key>
+	<string>92.222.23.124</string>
+	<key>XRF900</key>
+	<string>91.134.142.18</string>
+	<key>XRF901</key>
+	<string>xrf901.dyndns.org</string>
+	<key>XRF902</key>
+	<string>xrf902.dyndns.org</string>
+	<key>XRF905</key>
+	<string>199.212.121.20</string>
+	<key>XRF906</key>
+	<string>xrf906.radioclubveleta.es</string>
+	<key>XRF909</key>
+	<string>216.86.147.198</string>
+	<key>XRF910</key>
+	<string>92.177.212.64</string>
+	<key>XRF911</key>
+	<string>217.196.138.39</string>
+	<key>XRF920</key>
+	<string>xrf920.oe7xxr.ampr.at</string>
+	<key>XRF921</key>
+	<string>xlx921.oe7xxr.ampr.at</string>
+	<key>XRF929</key>
+	<string>xrf929.ddns.net</string>
+	<key>XRF930</key>
+	<string>xreflector.ddns.net</string>
+	<key>XRF935</key>
+	<string>xlx935.ddns.net</string>
+	<key>XRF950</key>
+	<string>xlx950.epf.lu</string>
+	<key>XRF967</key>
+	<string>xlx967.uk.to</string>
+	<key>XRF978</key>
+	<string>74.104.179.159</string>
+	<key>XRF986</key>
+	<string>81.89.102.160</string>
+	<key>XRF987</key>
+	<string>xrf987.metro-uhf.org</string>
+	<key>XRF988</key>
+	<string>988.xreflector.es</string>
+	<key>XRF989</key>
+	<string>xrf989.bbhill.net</string>
+	<key>XRF997</key>
+	<string>xrf997.iw2gob.it</string>
+	<key>XRF998</key>
+	<string>44.140.236.20</string>
+	<key>XRF999</key>
+	<string>xrf999.no-ip.org</string>
+	<key>XRFWDX</key>
+	<string>47.149.178.211</string>
+	<key>XRX000</key>
+	<string>xlx000.xlx.ar-dns.net</string>
+	<key>XRX001</key>
+	<string>xlx001.xlx.ar-dns.net</string>
+	<key>XRX002</key>
+	<string>xlx002.xlx.ar-dns.net</string>
+	<key>XRX003</key>
+	<string>xlx003.xlx.ar-dns.net</string>
+	<key>XRX004</key>
+	<string>xlx004.xlx.ar-dns.net</string>
+	<key>XRX005</key>
+	<string>xlx005.xlx.ar-dns.net</string>
+	<key>XRX008</key>
+	<string>xlx008.xlx.ar-dns.net</string>
+	<key>XRX009</key>
+	<string>xlx009.xlx.ar-dns.net</string>
+	<key>XRX010</key>
+	<string>xlx010.xlx.ar-dns.net</string>
+	<key>XRX011</key>
+	<string>xlx011.xlx.ar-dns.net</string>
+	<key>XRX012</key>
+	<string>xlx012.xlx.ar-dns.net</string>
+	<key>XRX013</key>
+	<string>xlx013.xlx.ar-dns.net</string>
+	<key>XRX017</key>
+	<string>xlx017.xlx.ar-dns.net</string>
+	<key>XRX018</key>
+	<string>xlx018.xlx.ar-dns.net</string>
+	<key>XRX019</key>
+	<string>xlx019.xlx.ar-dns.net</string>
+	<key>XRX022</key>
+	<string>xlx022.xlx.ar-dns.net</string>
+	<key>XRX023</key>
+	<string>xlx023.xlx.ar-dns.net</string>
+	<key>XRX024</key>
+	<string>xlx024.xlx.ar-dns.net</string>
+	<key>XRX025</key>
+	<string>xlx025.xlx.ar-dns.net</string>
+	<key>XRX026</key>
+	<string>xlx026.xlx.ar-dns.net</string>
+	<key>XRX028</key>
+	<string>xlx028.xlx.ar-dns.net</string>
+	<key>XRX029</key>
+	<string>xlx029.xlx.ar-dns.net</string>
+	<key>XRX032</key>
+	<string>xlx032.xlx.ar-dns.net</string>
+	<key>XRX033</key>
+	<string>xlx033.xlx.ar-dns.net</string>
+	<key>XRX035</key>
+	<string>xlx035.xlx.ar-dns.net</string>
+	<key>XRX036</key>
+	<string>xlx036.xlx.ar-dns.net</string>
+	<key>XRX040</key>
+	<string>xlx040.xlx.ar-dns.net</string>
+	<key>XRX044</key>
+	<string>xlx044.xlx.ar-dns.net</string>
+	<key>XRX045</key>
+	<string>xlx045.xlx.ar-dns.net</string>
+	<key>XRX046</key>
+	<string>xlx046.xlx.ar-dns.net</string>
+	<key>XRX047</key>
+	<string>xlx047.xlx.ar-dns.net</string>
+	<key>XRX052</key>
+	<string>xlx052.xlx.ar-dns.net</string>
+	<key>XRX054</key>
+	<string>xlx054.xlx.ar-dns.net</string>
+	<key>XRX057</key>
+	<string>xlx057.xlx.ar-dns.net</string>
+	<key>XRX058</key>
+	<string>xlx058.xlx.ar-dns.net</string>
+	<key>XRX060</key>
+	<string>odroidcity.duckdns.org</string>
+	<key>XRX061</key>
+	<string>xlx061.xlx.ar-dns.net</string>
+	<key>XRX062</key>
+	<string>xlx062.xlx.ar-dns.net</string>
+	<key>XRX064</key>
+	<string>xlx064.xlx.ar-dns.net</string>
+	<key>XRX066</key>
+	<string>xlx066.xlx.ar-dns.net</string>
+	<key>XRX067</key>
+	<string>xlx067.xlx.ar-dns.net</string>
+	<key>XRX068</key>
+	<string>xlx068.xlx.ar-dns.net</string>
+	<key>XRX070</key>
+	<string>xlx070.xlx.ar-dns.net</string>
+	<key>XRX071</key>
+	<string>xlx071.xlx.ar-dns.net</string>
+	<key>XRX072</key>
+	<string>xlx072.xlx.ar-dns.net</string>
+	<key>XRX075</key>
+	<string>xlx075.xlx.ar-dns.net</string>
+	<key>XRX076</key>
+	<string>xlx076.xlx.ar-dns.net</string>
+	<key>XRX077</key>
+	<string>xlx077.xlx.ar-dns.net</string>
+	<key>XRX080</key>
+	<string>xlx080.xlx.ar-dns.net</string>
+	<key>XRX081</key>
+	<string>xlx081.xlx.ar-dns.net</string>
+	<key>XRX082</key>
+	<string>xlx082.xlx.ar-dns.net</string>
+	<key>XRX083</key>
+	<string>xlx083.xlx.ar-dns.net</string>
+	<key>XRX085</key>
+	<string>xlx085.xlx.ar-dns.net</string>
+	<key>XRX086</key>
+	<string>xlx086.xlx.ar-dns.net</string>
+	<key>XRX087</key>
+	<string>xlx087.xlx.ar-dns.net</string>
+	<key>XRX088</key>
+	<string>xlx088.xlx.ar-dns.net</string>
+	<key>XRX089</key>
+	<string>xlx089.xlx.ar-dns.net</string>
+	<key>XRX090</key>
+	<string>xlx090.xlx.ar-dns.net</string>
+	<key>XRX093</key>
+	<string>xlx093.xlx.ar-dns.net</string>
+	<key>XRX095</key>
+	<string>xlx095.xlx.ar-dns.net</string>
+	<key>XRX098</key>
+	<string>xlx098.xlx.ar-dns.net</string>
+	<key>XRX100</key>
+	<string>xlx100.xlx.ar-dns.net</string>
+	<key>XRX101</key>
+	<string>xlx101.xlx.ar-dns.net</string>
+	<key>XRX102</key>
+	<string>xlx102.xlx.ar-dns.net</string>
+	<key>XRX103</key>
+	<string>xlx103.xlx.ar-dns.net</string>
+	<key>XRX104</key>
+	<string>xlx104.xlx.ar-dns.net</string>
+	<key>XRX105</key>
+	<string>xlx105.xlx.ar-dns.net</string>
+	<key>XRX111</key>
+	<string>xlx111.xlx.ar-dns.net</string>
+	<key>XRX112</key>
+	<string>xlx112.xlx.ar-dns.net</string>
+	<key>XRX114</key>
+	<string>xlx114.xlx.ar-dns.net</string>
+	<key>XRX115</key>
+	<string>xlx115.xlx.ar-dns.net</string>
+	<key>XRX118</key>
+	<string>xlx118.xlx.ar-dns.net</string>
+	<key>XRX119</key>
+	<string>xlx119.xlx.ar-dns.net</string>
+	<key>XRX120</key>
+	<string>xlx120.xlx.ar-dns.net</string>
+	<key>XRX125</key>
+	<string>xlx125.xlx.ar-dns.net</string>
+	<key>XRX127</key>
+	<string>xlx127.xlx.ar-dns.net</string>
+	<key>XRX132</key>
+	<string>xlx132.xlx.ar-dns.net</string>
+	<key>XRX145</key>
+	<string>xlx145.xlx.ar-dns.net</string>
+	<key>XRX146</key>
+	<string>xlx146.xlx.ar-dns.net</string>
+	<key>XRX147</key>
+	<string>xlx147.xlx.ar-dns.net</string>
+	<key>XRX150</key>
+	<string>xlx150.xlx.ar-dns.net</string>
+	<key>XRX170</key>
+	<string>xlx170.xlx.ar-dns.net</string>
+	<key>XRX171</key>
+	<string>xlx171.xlx.ar-dns.net</string>
+	<key>XRX200</key>
+	<string>xlx200.xlx.ar-dns.net</string>
+	<key>XRX204</key>
+	<string>xlx204.xlx.ar-dns.net</string>
+	<key>XRX208</key>
+	<string>xlx208.xlx.ar-dns.net</string>
+	<key>XRX210</key>
+	<string>xlx210.xlx.ar-dns.net</string>
+	<key>XRX212</key>
+	<string>xlx212.xlx.ar-dns.net</string>
+	<key>XRX214</key>
+	<string>xlx214.xlx.ar-dns.net</string>
+	<key>XRX222</key>
+	<string>xlx222.xlx.ar-dns.net</string>
+	<key>XRX226</key>
+	<string>xlx226.xlx.ar-dns.net</string>
+	<key>XRX227</key>
+	<string>xlx227.xlx.ar-dns.net</string>
+	<key>XRX228</key>
+	<string>xlx228.xlx.ar-dns.net</string>
+	<key>XRX230</key>
+	<string>xlx230.xlx.ar-dns.net</string>
+	<key>XRX235</key>
+	<string>xlx235.xlx.ar-dns.net</string>
+	<key>XRX238</key>
+	<string>xlx238.xlx.ar-dns.net</string>
+	<key>XRX242</key>
+	<string>xlx242.xlx.ar-dns.net</string>
+	<key>XRX246</key>
+	<string>xlx246.xlx.ar-dns.net</string>
+	<key>XRX262</key>
+	<string>xlx262.xlx.ar-dns.net</string>
+	<key>XRX264</key>
+	<string>xlx264.xlx.ar-dns.net</string>
+	<key>XRX270</key>
+	<string>xlx270.xlx.ar-dns.net</string>
+	<key>XRX277</key>
+	<string>xlx277.xlx.ar-dns.net</string>
+	<key>XRX300</key>
+	<string>xlx300.xlx.ar-dns.net</string>
+	<key>XRX302</key>
+	<string>xlx302.xlx.ar-dns.net</string>
+	<key>XRX307</key>
+	<string>xlx307.xlx.ar-dns.net</string>
+	<key>XRX310</key>
+	<string>xlx310.xlx.ar-dns.net</string>
+	<key>XRX311</key>
+	<string>xlx311.xlx.ar-dns.net</string>
+	<key>XRX313</key>
+	<string>xlx313.xlx.ar-dns.net</string>
+	<key>XRX317</key>
+	<string>xlx317.xlx.ar-dns.net</string>
+	<key>XRX332</key>
+	<string>xlx332.xlx.ar-dns.net</string>
+	<key>XRX333</key>
+	<string>xlx333.xlx.ar-dns.net</string>
+	<key>XRX334</key>
+	<string>xlx334.xlx.ar-dns.net</string>
+	<key>XRX336</key>
+	<string>xlx336.xlx.ar-dns.net</string>
+	<key>XRX357</key>
+	<string>xlx357.xlx.ar-dns.net</string>
+	<key>XRX365</key>
+	<string>xlx365.xlx.ar-dns.net</string>
+	<key>XRX370</key>
+	<string>xlx370.xlx.ar-dns.net</string>
+	<key>XRX373</key>
+	<string>xlx373.xlx.ar-dns.net</string>
+	<key>XRX390</key>
+	<string>xlx390.xlx.ar-dns.net</string>
+	<key>XRX400</key>
+	<string>xlx400.xlx.ar-dns.net</string>
+	<key>XRX404</key>
+	<string>xlx404.xlx.ar-dns.net</string>
+	<key>XRX425</key>
+	<string>xlx425.xlx.ar-dns.net</string>
+	<key>XRX433</key>
+	<string>xlx433.xlx.ar-dns.net</string>
+	<key>XRX440</key>
+	<string>xlx440.xlx.ar-dns.net</string>
+	<key>XRX443</key>
+	<string>xlx443.xlx.ar-dns.net</string>
+	<key>XRX444</key>
+	<string>xlx444.xlx.ar-dns.net</string>
+	<key>XRX450</key>
+	<string>xlx450.xlx.ar-dns.net</string>
+	<key>XRX456</key>
+	<string>xlx456.xlx.ar-dns.net</string>
+	<key>XRX486</key>
+	<string>xlx486.xlx.ar-dns.net</string>
+	<key>XRX500</key>
+	<string>xlx500.xlx.ar-dns.net</string>
+	<key>XRX502</key>
+	<string>xlx502.xlx.ar-dns.net</string>
+	<key>XRX515</key>
+	<string>xlx515.xlx.ar-dns.net</string>
+	<key>XRX518</key>
+	<string>xlx518.xlx.ar-dns.net</string>
+	<key>XRX519</key>
+	<string>xlx519.xlx.ar-dns.net</string>
+	<key>XRX520</key>
+	<string>xlx520.xlx.ar-dns.net</string>
+	<key>XRX550</key>
+	<string>xlx550.xlx.ar-dns.net</string>
+	<key>XRX555</key>
+	<string>xlx555.xlx.ar-dns.net</string>
+	<key>XRX569</key>
+	<string>xlx569.xlx.ar-dns.net</string>
+	<key>XRX570</key>
+	<string>xlx570.xlx.ar-dns.net</string>
+	<key>XRX573</key>
+	<string>xlx573.xlx.ar-dns.net</string>
+	<key>XRX595</key>
+	<string>xlx595.xlx.ar-dns.net</string>
+	<key>XRX600</key>
+	<string>xlx600.xlx.ar-dns.net</string>
+	<key>XRX603</key>
+	<string>xlx603.xlx.ar-dns.net</string>
+	<key>XRX610</key>
+	<string>xlx610.xlx.ar-dns.net</string>
+	<key>XRX616</key>
+	<string>xlx616.xlx.ar-dns.net</string>
+	<key>XRX626</key>
+	<string>xlx626.xlx.ar-dns.net</string>
+	<key>XRX666</key>
+	<string>xlx666.xlx.ar-dns.net</string>
+	<key>XRX699</key>
+	<string>xlx699.xlx.ar-dns.net</string>
+	<key>XRX700</key>
+	<string>xlx700.xlx.ar-dns.net</string>
+	<key>XRX706</key>
+	<string>xlx706.xlx.ar-dns.net</string>
+	<key>XRX707</key>
+	<string>xlx707.xlx.ar-dns.net</string>
+	<key>XRX708</key>
+	<string>xlx708.xlx.ar-dns.net</string>
+	<key>XRX714</key>
+	<string>xlx714.xlx.ar-dns.net</string>
+	<key>XRX715</key>
+	<string>xlx715.xlx.ar-dns.net</string>
+	<key>XRX716</key>
+	<string>xlx716.xlx.ar-dns.net</string>
+	<key>XRX724</key>
+	<string>xlx724.xlx.ar-dns.net</string>
+	<key>XRX727</key>
+	<string>xlx727.xlx.ar-dns.net</string>
+	<key>XRX737</key>
+	<string>xlx737.xlx.ar-dns.net</string>
+	<key>XRX747</key>
+	<string>xlx747.xlx.ar-dns.net</string>
+	<key>XRX755</key>
+	<string>xlx755.xlx.ar-dns.net</string>
+	<key>XRX766</key>
+	<string>xlx766.xlx.ar-dns.net</string>
+	<key>XRX773</key>
+	<string>xlx773.xlx.ar-dns.net</string>
+	<key>XRX777</key>
+	<string>xlx777.xlx.ar-dns.net</string>
+	<key>XRX781</key>
+	<string>xlx781.xlx.ar-dns.net</string>
+	<key>XRX787</key>
+	<string>xlx787.xlx.ar-dns.net</string>
+	<key>XRX789</key>
+	<string>xlx789.xlx.ar-dns.net</string>
+	<key>XRX800</key>
+	<string>xlx800.xlx.ar-dns.net</string>
+	<key>XRX801</key>
+	<string>xlx801.xlx.ar-dns.net</string>
+	<key>XRX807</key>
+	<string>xlx807.xlx.ar-dns.net</string>
+	<key>XRX810</key>
+	<string>xlx810.xlx.ar-dns.net</string>
+	<key>XRX813</key>
+	<string>xlx813.xlx.ar-dns.net</string>
+	<key>XRX828</key>
+	<string>xlx828.xlx.ar-dns.net</string>
+	<key>XRX850</key>
+	<string>xlx850.xlx.ar-dns.net</string>
+	<key>XRX870</key>
+	<string>xlx870.xlx.ar-dns.net</string>
+	<key>XRX873</key>
+	<string>xlx873.xlx.ar-dns.net</string>
+	<key>XRX886</key>
+	<string>xlx886.xlx.ar-dns.net</string>
+	<key>XRX888</key>
+	<string>xlx888.xlx.ar-dns.net</string>
+	<key>XRX897</key>
+	<string>xlx897.xlx.ar-dns.net</string>
+	<key>XRX900</key>
+	<string>xlx900.xlx.ar-dns.net</string>
+	<key>XRX901</key>
+	<string>xlx901.xlx.ar-dns.net</string>
+	<key>XRX902</key>
+	<string>xlx902.xlx.ar-dns.net</string>
+	<key>XRX908</key>
+	<string>xlx908.xlx.ar-dns.net</string>
+	<key>XRX909</key>
+	<string>xlx909.xlx.ar-dns.net</string>
+	<key>XRX911</key>
+	<string>xlx911.xlx.ar-dns.net</string>
+	<key>XRX921</key>
+	<string>xlx921.xlx.ar-dns.net</string>
+	<key>XRX929</key>
+	<string>xlx929.xlx.ar-dns.net</string>
+	<key>XRX930</key>
+	<string>xlx930.xlx.ar-dns.net</string>
+	<key>XRX931</key>
+	<string>xlx931.xlx.ar-dns.net</string>
+	<key>XRX935</key>
+	<string>xlx935.xlx.ar-dns.net</string>
+	<key>XRX950</key>
+	<string>xlx950.xlx.ar-dns.net</string>
+	<key>XRX967</key>
+	<string>xlx967.xlx.ar-dns.net</string>
+	<key>XRX970</key>
+	<string>xlx970.xlx.ar-dns.net</string>
+	<key>XRX972</key>
+	<string>xlx972.xlx.ar-dns.net</string>
+	<key>XRX985</key>
+	<string>xlx985.xlx.ar-dns.net</string>
+	<key>XRX986</key>
+	<string>xlx986.xlx.ar-dns.net</string>
+	<key>XRX997</key>
+	<string>xlx997.xlx.ar-dns.net</string>
+	<key>XRX998</key>
+	<string>xlx998.xlx.ar-dns.net</string>
+	<key>XRX999</key>
+	<string>xlx999.xlx.ar-dns.net</string>
+	<key>YD0ZUB</key>
+	<string>115.178.216.69</string>
 	<key>YO6KAF</key>
-	<string>213.233.64.161</string>
+	<string>213.112.243.94</string>
+	<key>ZL1AKD</key>
+	<string>203.152.97.212</string>
+	<key>ZL1AMK</key>
+	<string>zl1amk.ddns.net</string>
+	<key>ZL1HN</key>
+	<string>zl1hn.ddns.net</string>
+	<key>ZL1HND</key>
+	<string>219.89.200.182</string>
 	<key>ZL1KFM</key>
 	<string>zl1kfm.asuscomm.com</string>
+	<key>ZL1RLD</key>
+	<string>222.154.227.90</string>
 	<key>ZL2ARN</key>
 	<string>zl2arn.dyndns.org</string>
+	<key>ZL2DRN</key>
+	<string>zl2arn.dyndns.org</string>
+	<key>ZL2HBD</key>
+	<string>43.245.175.32</string>
 	<key>ZL2KB</key>
 	<string>131.203.251.134</string>
 	<key>ZL2NSA</key>
 	<string>zl2nsa.ddns.net</string>
+	<key>ZL2ROR</key>
+	<string>125.236.227.43</string>
 	<key>ZL2SFM</key>
 	<string>zl2sfm.ddns.net</string>
+	<key>ZL2TFG</key>
+	<string>222.154.245.110</string>
 	<key>ZL2TWS</key>
 	<string>zl2tws.ddns.net</string>
 	<key>ZL2TWT</key>
 	<string>zl2twt.ddns.net</string>
+	<key>ZL2UDG</key>
+	<string>202.154.159.177</string>
+	<key>ZL3TJH</key>
+	<string>202.124.104.19</string>
 	<key>ZS0HAC</key>
 	<string>105.227.95.136</string>
+	<key>ZS0JPL</key>
+	<string>105.226.184.58</string>
+	<key>ZS6MRK</key>
+	<string>146.64.235.18</string>
 	<key>ZS6TJ</key>
 	<string>196.210.62.52</string>
+	<key>ZS6VTS</key>
+	<string>146.64.235.18</string>
+	<key>ZU9DBI</key>
+	<string>154.73.157.17</string>
 </dict>
 </plist>
