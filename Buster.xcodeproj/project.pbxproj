@@ -54,7 +54,6 @@
 		09DFDA991B8C331300D00030 /* BTRMessageFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 09DFDA981B8C331300D00030 /* BTRMessageFormatter.m */; };
 		09DFDA9F1B8D6A9700D00030 /* BTRIRCDDBGateways.m in Sources */ = {isa = PBXBuildFile; fileRef = 09DFDA9E1B8D6A9700D00030 /* BTRIRCDDBGateways.m */; };
 		09E363EC1B66F46500F74DBB /* BTRSlowDataCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E363EB1B66F46500F74DBB /* BTRSlowDataCoder.m */; };
-		09E36AC71B9B94570055BF46 /* HockeySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09E36AC61B9B94570055BF46 /* HockeySDK.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		09E589CA1B7EAC1800A962B5 /* BTRDPlusAuthenticator.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E589C91B7EAC1800A962B5 /* BTRDPlusAuthenticator.m */; };
 		09F042B21B9E365D00E9F5D2 /* BTRAprsLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 09F042B11B9E365D00E9F5D2 /* BTRAprsLocation.m */; };
 		09F042B61BA1F82600E9F5D2 /* PortMapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 09F042B51BA1F82600E9F5D2 /* PortMapper.m */; };
@@ -163,8 +162,6 @@
 		09DFDA9E1B8D6A9700D00030 /* BTRIRCDDBGateways.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRIRCDDBGateways.m; sourceTree = "<group>"; };
 		09E363EA1B66F46500F74DBB /* BTRSlowDataCoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRSlowDataCoder.h; sourceTree = "<group>"; };
 		09E363EB1B66F46500F74DBB /* BTRSlowDataCoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRSlowDataCoder.m; sourceTree = "<group>"; };
-		09E36AC61B9B94570055BF46 /* HockeySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HockeySDK.framework; path = "HockeySDK-Mac/HockeySDK.framework"; sourceTree = "<group>"; };
-		09E36AC81B9B94770055BF46 /* HockeySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HockeySDK.framework; path = "HockeySDK-Mac/HockeySDK.framework"; sourceTree = "<group>"; };
 		09E589C81B7EAC1800A962B5 /* BTRDPlusAuthenticator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRDPlusAuthenticator.h; sourceTree = "<group>"; };
 		09E589C91B7EAC1800A962B5 /* BTRDPlusAuthenticator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRDPlusAuthenticator.m; sourceTree = "<group>"; };
 		09E589CB1B82880B00A962B5 /* BTRLinkDriverProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BTRLinkDriverProtocol.h; sourceTree = "<group>"; };
@@ -180,7 +177,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				095963311B980C12003CC8A1 /* MapKit.framework in Frameworks */,
-				09E36AC71B9B94570055BF46 /* HockeySDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,8 +194,6 @@
 			isa = PBXGroup;
 			children = (
 				095963301B980C12003CC8A1 /* MapKit.framework */,
-				09E36AC81B9B94770055BF46 /* HockeySDK.framework */,
-				09E36AC61B9B94570055BF46 /* HockeySDK.framework */,
 				093B9AF31B50E2D500C2ABD0 /* Buster */,
 				093B9B0A1B50E2D500C2ABD0 /* BusterTests */,
 				093B9AF21B50E2D500C2ABD0 /* Products */,
@@ -441,6 +435,7 @@
 					};
 					093B9B061B50E2D500C2ABD0 = {
 						CreatedOnToolsVersion = 6.4;
+						DevelopmentTeam = 45GE4EAF74;
 						TestTargetID = 093B9AF01B50E2D500C2ABD0;
 					};
 				};
@@ -602,9 +597,10 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Mac Developer: Jeremy McDermond (3R68W65G4N)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 45GE4EAF74;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -617,6 +613,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "0a3ce750-ed2a-45ec-aa8c-a3756970d4c3";
 				SDKROOT = macosx;
 			};
 			name = Beta;
@@ -693,9 +690,10 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Mac Developer: Jeremy McDermond (3R68W65G4N)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 45GE4EAF74;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -716,6 +714,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "0a3ce750-ed2a-45ec-aa8c-a3756970d4c3";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -739,9 +738,10 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Mac Developer: Jeremy McDermond (3R68W65G4N)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 45GE4EAF74;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -754,6 +754,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "0a3ce750-ed2a-45ec-aa8c-a3756970d4c3";
 				SDKROOT = macosx;
 			};
 			name = Release;
