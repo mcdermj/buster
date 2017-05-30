@@ -226,7 +226,7 @@
     self.repeaterInfo.stringValue = [NSString stringWithFormat:@"Linked to %@", destination];
 
     if([[NSUserDefaults standardUserDefaults] boolForKey:@"voiceAnnounceOnStatusChange"])
-        [self.speechSynth startSpeakingString:[[NSString stringWithFormat:@"Linked to [[rate -60.0]][[char LTRL]] %@ [[char NORM]][[rate +60.0]]", destination] lowercaseString]];
+        [self.speechSynth startSpeakingString:[[NSString stringWithFormat:@"Linked to [[char LTRL]] %@ [[char NORM]]", destination] lowercaseString]];
     
     NSDockTile *dockTile = [NSApplication sharedApplication].dockTile;
     dockTile.badgeLabel = destination;
