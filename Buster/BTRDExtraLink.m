@@ -44,15 +44,20 @@ static NSDictionary *_reflectorList;
 @implementation BTRDExtraLink
 
 +(NSDictionary *) reflectorList {
-    if(!_reflectorList)
-        _reflectorList = [NSDictionary dictionaryWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"DExtraReflectors" withExtension:@"plist"]];
-    
     return _reflectorList;
 }
 
 
 +(void) load {
     [BTRDataEngine registerLinkDriver:self];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if(!_reflectorList) {
+            if ((_reflectorList = [NSDictionary dictionaryWithContentsOfURL:[NSURL URLWithString:@"http://ar-dns.net/dextra-gw.plist"]]) == nil) {
+                _reflectorList = [NSDictionary dictionaryWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"DExtraReflectors" withExtension:@"plist"]];
+            }
+        }
+    });
 }
 
 -(NSArray<NSString *> *)destinations {

@@ -102,14 +102,19 @@ static NSDictionary *_reflectorList;
 @implementation BTRDCSLink
 
 +(NSDictionary *) reflectorList {
-    if(!_reflectorList)
-        _reflectorList = [NSDictionary dictionaryWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"DCSReflectors" withExtension:@"plist"]];
-    
     return _reflectorList;
 }
 
 +(void) load {
     [BTRDataEngine registerLinkDriver:self];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if(!_reflectorList) {
+            if ((_reflectorList = [NSDictionary dictionaryWithContentsOfURL:[NSURL URLWithString:@"http://ar-dns.net/dcs.plist"]]) == nil) {
+                _reflectorList = [NSDictionary dictionaryWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"DCSReflectors" withExtension:@"plist"]];
+            }
+        }
+    });
 }
 
 -(unsigned short)clientPort {

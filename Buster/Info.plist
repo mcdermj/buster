@@ -30,6 +30,11 @@
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
+			<key>ar-dns.net</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
 			<key>status.ircddb.net</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
