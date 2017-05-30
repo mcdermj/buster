@@ -120,6 +120,9 @@
 
 - (BOOL) openPort {
     NSHost *destination = [NSHost hostWithAddress:self.address];
+    if(!destination.address) {
+        destination = [NSHost hostWithName:self.address];
+    }
     
     if(!destination.address || self.port == 0)
         return NO;
