@@ -61,6 +61,24 @@
     return [BTRDataEngine sharedInstance].audio.outputDevice;
 }
 
+- (void)setCourtesyTone:(BOOL)value {
+    [[NSUserDefaults standardUserDefaults] setBool:value forKey:@"courtesyTone"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (BOOL)courtesyTone {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"courtesyTone"];
+}
+
+- (void)setVoiceAnnounceOnStatusChange:(BOOL)value {
+    [[NSUserDefaults standardUserDefaults] setBool:value forKey:@"voiceAnnounceOnStatusChange"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (BOOL)voiceAnnounceOnStatusChange {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"voiceAnnounceOnStatusChange"];
+}
+
 -(void)refreshDevices {
     [self.inputDeviceMenu removeAllItems];
     for(NSDictionary *entry in [BTRAudioHandler enumerateInputDevices]) {
@@ -80,11 +98,12 @@
 -(void)viewDidLoad {
     [self refreshDevices];
     
+    __weak BTRAudioViewController * const audioViewController = self;
     [[NSNotificationCenter defaultCenter] addObserverForName:BTRAudioDeviceChanged
                                                       object:nil
                                                        queue:[NSOperationQueue mainQueue]
                                                   usingBlock:^(NSNotification *notification){
-                                                      [self refreshDevices];
+                                                      [audioViewController refreshDevices];
                                                   }];
 }
 
