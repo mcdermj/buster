@@ -52,11 +52,9 @@ static NSDictionary *_reflectorList;
     [BTRDataEngine registerLinkDriver:self];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if(!_reflectorList) {
-            if ((_reflectorList = [NSDictionary dictionaryWithContentsOfURL:[NSURL URLWithString:@"http://ar-dns.net/dextra-gw.plist"]]) == nil) {
-                _reflectorList = [NSDictionary dictionaryWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"DExtraReflectors" withExtension:@"plist"]];
-            }
-        }
+        NSMutableDictionary *tmpReflectorList = [NSMutableDictionary dictionaryWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"DExtraReflectors" withExtension:@"plist"]];
+        [tmpReflectorList addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfURL:[NSURL URLWithString:@"http://ar-dns.net/dextra-gw.plist"]]];
+        _reflectorList = [NSDictionary dictionaryWithDictionary:tmpReflectorList];
     });
 }
 
