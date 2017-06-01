@@ -31,4 +31,6 @@
 
 @property (nonatomic) NSInteger selectedInput;
 @property (nonatomic) NSInteger selectedOutput;
+@property (nonatomic) BOOL courtesyTone;
+@property (nonatomic) BOOL voiceAnnounceOnStatusChange;
 @end
