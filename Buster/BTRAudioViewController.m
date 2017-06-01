@@ -98,12 +98,12 @@
 -(void)viewDidLoad {
     [self refreshDevices];
     
-    __weak BTRAudioViewController * const audioViewController = self;
+    __weak BTRAudioViewController * const weakSelf = self;
     [[NSNotificationCenter defaultCenter] addObserverForName:BTRAudioDeviceChanged
                                                       object:nil
                                                        queue:[NSOperationQueue mainQueue]
                                                   usingBlock:^(NSNotification *notification){
-                                                      [audioViewController refreshDevices];
+                                                      [weakSelf refreshDevices];
                                                   }];
 }
 
