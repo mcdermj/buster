@@ -648,6 +648,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = Buster/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.nh6z.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Buster;
 				PROVISIONING_PROFILE = "c0668731-c3de-40f6-b3c3-242954814f48";
@@ -791,6 +792,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = Buster/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.nh6z.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Buster;
 				PROVISIONING_PROFILE = "f9f9c1ee-1c63-4af6-950e-bcd01939ec74";
@@ -831,6 +833,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = Buster/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.nh6z.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Buster;
 				PROVISIONING_PROFILE = "f9f9c1ee-1c63-4af6-950e-bcd01939ec74";
