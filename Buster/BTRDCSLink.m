@@ -110,7 +110,7 @@ static NSDictionary *_reflectorList;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSMutableDictionary *tmpReflectorList = [NSMutableDictionary dictionaryWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"DCSReflectors" withExtension:@"plist"]];
-        [tmpReflectorList addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfURL:[NSURL URLWithString:@"http://ar-dns.net/dcs.plist"]]];
+        [tmpReflectorList addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfURL:[NSURL URLWithString:@"https://ar-dns.net/dcs.plist"]]];
         _reflectorList = [NSDictionary dictionaryWithDictionary:tmpReflectorList];
     });
 }
