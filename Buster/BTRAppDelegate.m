@@ -93,7 +93,7 @@
                 NSAlert *alert = [[NSAlert alloc] init];
                 alert.alertStyle = NSAlertStyleWarning;
                 alert.messageText = @"Cannot Open the Serial Port";
-                alert.informativeText = @"Please check your serial port and speed settings in the Perferences menu";
+                alert.informativeText = @"Please check your serial port and speed settings in the Preferences menu";
                 [alert runModal];
             });
     });    
