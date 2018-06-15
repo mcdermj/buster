@@ -295,9 +295,9 @@ static OSStatus AudioDevicesChanged(AudioObjectID inObjectID, UInt32 inNumberAdd
             bufferList.mBuffers[0].mData = calloc(1, bufferList.mBuffers[0].mDataByteSize);
             
             if(weakSelf.hardwareSampleRate == 8000.0) {
-                TPCircularBufferDequeueBufferListFrames(_recordBuffer, &numSamples, &bufferList, &timestamp, self.inputFormat);
+                TPCircularBufferDequeueBufferListFrames(self->_recordBuffer, &numSamples, &bufferList, &timestamp, self.inputFormat);
             } else {
-                OSStatus error = AudioConverterFillComplexBuffer(inputConverter, audioConverterCallback, (__bridge void *)(weakSelf), &numSamples, &bufferList, NULL);
+                OSStatus error = AudioConverterFillComplexBuffer(self->inputConverter, audioConverterCallback, (__bridge void *)(weakSelf), &numSamples, &bufferList, NULL);
                 
                 if(error != noErr && error != kAudioConverterErr_UnspecifiedError) {
                     NSLog(@"Error in audio converter: %d", error);
@@ -307,7 +307,7 @@ static OSStatus AudioDevicesChanged(AudioObjectID inObjectID, UInt32 inNumberAdd
             
             if(!weakSelf.xmit && numSamples == 0) {
                 last = YES;
-                dispatch_source_cancel(inputAudioSource);
+                dispatch_source_cancel(self->inputAudioSource);
             }
             
             [weakSelf.vocoder encodeData:bufferList.mBuffers[0].mData lastPacket:last];
@@ -504,7 +504,7 @@ static inline BOOL CheckStatus(OSStatus error, const char *operation) {
     propertyAddress.mSelector = kAudioHardwarePropertyDefaultInputDevice;
     
     if(self.inputDevice == 0) {
-        UInt32 defaultDeviceSize = sizeof(_inputDevice);
+        AudioDeviceID defaultDeviceSize = sizeof(_inputDevice);
         if(!CheckStatus(AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &defaultDeviceSize, &_inputDevice), "AudioUnitGetPropertyData(kAudioHardwarePropertyDefaultInputDevice)"))
         return NO;
     }

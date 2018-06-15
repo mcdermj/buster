@@ -52,7 +52,7 @@
 
 @implementation BTRNetworkTimer
 
--(id)initWithTimeout:(CFAbsoluteTime)timeout failureHandler:(void(^)())failureHandler {
+-(id)initWithTimeout:(CFAbsoluteTime)timeout failureHandler:(void(^)(void))failureHandler {
     self = [super init];
     if(self) {
         _lastEventTime = CFAbsoluteTimeGetCurrent() + (3600.0 * 24.0 * 365.0);

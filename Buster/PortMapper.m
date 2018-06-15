@@ -112,12 +112,13 @@ static NSString* StringFromIPv4Addr( UInt32 ipv4Addr )
         [self priv_disconnect];
 }
 
-- (void) finalize
+// XXX
+/* - (void) finalize
 {
     if( _service )
         [self priv_disconnect];
     [super finalize];
-}
+} */
 
 
 @synthesize publicAddress=_publicAddress, rawPublicAddress=_rawPublicAddress,

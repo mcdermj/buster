@@ -14,7 +14,7 @@
 @property (nonatomic) dispatch_source_t timerSource;
 @property (nonatomic) CFAbsoluteTime lastEventTime;
 
--(id)initWithTimeout:(CFAbsoluteTime)timeout failureHandler:(void(^)())failureHandler;
+-(id)initWithTimeout:(CFAbsoluteTime)timeout failureHandler:(void(^)(void))failureHandler;
 -(void)ping;
 @end
 
