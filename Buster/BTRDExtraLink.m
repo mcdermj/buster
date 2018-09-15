@@ -53,7 +53,9 @@ static NSDictionary *_reflectorList;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSMutableDictionary *tmpReflectorList = [NSMutableDictionary dictionaryWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"DExtraReflectors" withExtension:@"plist"]];
+        [tmpReflectorList addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"XLXReflectors" withExtension:@"plist"]]];
         [tmpReflectorList addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfURL:[NSURL URLWithString:@"https://ar-dns.net/dextra-gw.plist"]]];
+        [tmpReflectorList addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfURL:[NSURL URLWithString:@"https://ar-dns.net/xlx.plist"]]];
         _reflectorList = [NSDictionary dictionaryWithDictionary:tmpReflectorList];
     });
 }

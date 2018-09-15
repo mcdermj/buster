@@ -50,6 +50,7 @@
 		09A994DE1B71EAD50061A929 /* BTRSerialVocoderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 09A994DD1B71EAD50061A929 /* BTRSerialVocoderView.xib */; };
 		09A994E01B7205C50061A929 /* BTRNetworkVocoderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 09A994DF1B7205C50061A929 /* BTRNetworkVocoderView.xib */; };
 		09AB117B1B5A13970067B9FB /* BTRSerialVocoderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09AB11791B5A13970067B9FB /* BTRSerialVocoderViewController.m */; };
+		09B053B8214C9E12002A6F3C /* XLXReflectors.plist in Resources */ = {isa = PBXBuildFile; fileRef = 09B053B7214C9E12002A6F3C /* XLXReflectors.plist */; };
 		09DBC7591BBAFB6200346912 /* BTRAddPopupController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09DBC7581BBAFB6200346912 /* BTRAddPopupController.m */; };
 		09DFDA991B8C331300D00030 /* BTRMessageFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 09DFDA981B8C331300D00030 /* BTRMessageFormatter.m */; };
 		09DFDA9F1B8D6A9700D00030 /* BTRIRCDDBGateways.m in Sources */ = {isa = PBXBuildFile; fileRef = 09DFDA9E1B8D6A9700D00030 /* BTRIRCDDBGateways.m */; };
@@ -151,6 +152,7 @@
 		09AB11781B5A13970067B9FB /* BTRSerialVocoderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRSerialVocoderViewController.h; sourceTree = "<group>"; };
 		09AB11791B5A13970067B9FB /* BTRSerialVocoderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRSerialVocoderViewController.m; sourceTree = "<group>"; };
 		09AB117A1B5A13970067B9FB /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
+		09B053B7214C9E12002A6F3C /* XLXReflectors.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = XLXReflectors.plist; sourceTree = "<group>"; };
 		09DBC7571BBAFB6200346912 /* BTRAddPopupController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRAddPopupController.h; sourceTree = "<group>"; };
 		09DBC7581BBAFB6200346912 /* BTRAddPopupController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRAddPopupController.m; sourceTree = "<group>"; };
 		09DFDA971B8C331300D00030 /* BTRMessageFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRMessageFormatter.h; sourceTree = "<group>"; };
@@ -267,6 +269,7 @@
 		093B9AF41B50E2D500C2ABD0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				09B053B7214C9E12002A6F3C /* XLXReflectors.plist */,
 				099DF8C81BBF43B0005D1807 /* DCSReflectors.plist */,
 				0908EF861B852541007B76F5 /* DExtraReflectors.plist */,
 				095249011B6DC79B0062F1A5 /* Credits.html */,
@@ -473,6 +476,7 @@
 				0908EF871B852541007B76F5 /* DExtraReflectors.plist in Resources */,
 				093B9B021B50E2D500C2ABD0 /* Main.storyboard in Resources */,
 				095521D51BF52BA50002E230 /* BTRAddPopupController.xib in Resources */,
+				09B053B8214C9E12002A6F3C /* XLXReflectors.plist in Resources */,
 				096F2B5C1B58ED1B00766A95 /* DefaultPreferences.plist in Resources */,
 				09A994E01B7205C50061A929 /* BTRNetworkVocoderView.xib in Resources */,
 			);
@@ -639,7 +643,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 45GE4EAF74;
 				ENABLE_NS_ASSERTIONS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -801,7 +805,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 45GE4EAF74;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -839,10 +843,10 @@
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CODE_SIGN_ENTITLEMENTS = Buster/Buster.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "3rd Party Mac Developer Application";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 45GE4EAF74;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
