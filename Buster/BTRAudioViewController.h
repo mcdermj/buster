@@ -21,7 +21,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * Copyright (c) 2015 Jeremy McDermond (NH6Z). All rights reserved.
+ * Copyright (c) 2015 Annaliese McDermond (NH6Z). All rights reserved.
  *
  */
 

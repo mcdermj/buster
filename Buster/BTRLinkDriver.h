@@ -1,7 +1,7 @@
 //
 //  BTRLinkDriver.h
 //
-//  Copyright (c) 2015 - Jeremy C. McDermond (NH6Z)
+//  Copyright (c) 2015 - Annaliese C. McDermond (NH6Z)
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License

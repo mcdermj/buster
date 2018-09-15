@@ -2,7 +2,7 @@
 //  BTRDCSLink.m
 //  Buster
 //
-//  Created by Jeremy McDermond on 10/2/15.
+//  Created by Annaliese McDermond on 10/2/15.
 //  Copyright © 2015 NH6Z. All rights reserved.
 //
 
