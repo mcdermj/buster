@@ -72,7 +72,6 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
     dispatch_source_t authTimerSource;
 }
 
-@property (nonatomic) NSHost *authenticationHost;
 @property (nonatomic, readwrite) NSDictionary *reflectorList;
 @property (nonatomic, getter=isAuthenticated, readwrite) BOOL authenticated;
 @property (nonatomic, readonly) char suffix;
@@ -87,7 +86,6 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
 - (id) init {
     self = [super init];
     if(self) {
-        _authenticationHost = [NSHost hostWithName:@"opendstar.org"];
         _reflectorList = nil;
         _authCall = @"";
         _suffix = '2';
@@ -99,7 +97,6 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
             [weakSelf authenticate];
         }];
         [self bind:@"authCall" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.myCall" options:nil];
-        [self startAuthTimer];
     }
     return self;
 }
@@ -117,14 +114,15 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
     if(authTimerSource)
         dispatch_source_cancel(authTimerSource);
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self startAuthTimer];
-    });
+    [self startAuthTimer];
 }
 
 - (void) startAuthTimer {
-    [self authenticate];
     BTRDPlusAuthenticator __weak *weakSelf = self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [weakSelf authenticate];
+    });
+
     authTimerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
     dispatch_source_set_timer(authTimerSource, dispatch_walltime(NULL, 6ull * NSEC_PER_HOUR), 6ull * NSEC_PER_HOUR, 60ull * NSEC_PER_SEC);
     dispatch_source_set_event_handler(authTimerSource, ^{
@@ -135,6 +133,10 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
 }
 
 -(void) authenticate {
+    CFStreamError error;
+    Boolean resolved;
+    CFHostRef authHost;
+
     self.authenticated = NO;
     
     NSLog(@"Performing DPlus authentication");
@@ -148,15 +150,54 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
         return;
     }
     
-    struct sockaddr_in addr = {
-        .sin_len = sizeof(struct sockaddr_in),
-        .sin_family = AF_INET,
-        .sin_port = htons(20001),
-        .sin_addr.s_addr = inet_addr([self.authenticationHost.address cStringUsingEncoding:NSUTF8StringEncoding])
-    };
+    if ((authHost = CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef) @"auth.dstargateway.org")) == NULL) {
+        NSLog(@"Could not create host object");
+        return;
+    }
+    if(CFHostStartInfoResolution(authHost, kCFHostAddresses, &error) == FALSE) {
+        NSLog(@"Error resolving auth.dstargateway.org");
+        return;
+    }
     
-    if(connect(authSocket, (const struct sockaddr *) &addr, (socklen_t) sizeof(addr))) {
-        NSLog(@"Couldn't connect socket: %s\n", strerror(errno));
+    NSArray *addresses = (__bridge NSArray *) (CFHostGetAddressing(authHost, &resolved));
+    if(!resolved) {
+        NSLog(@"Cannot lookup auth.dstargateway.org");
+        return;
+    }
+    
+    bool connected = NO;
+    for(NSData *addressData in addresses) {
+        struct sockaddr_in *dNSAddr = (struct sockaddr_in *)[addressData bytes];
+        char *addressString = inet_ntoa(dNSAddr->sin_addr);
+
+        NSLog(@"Trying to connect to D-Plus authentication server at %s", addressString);
+        struct sockaddr_in addr = {
+            .sin_len = sizeof(struct sockaddr_in),
+            .sin_family = AF_INET,
+            .sin_port = htons(20001),
+            .sin_addr.s_addr = dNSAddr->sin_addr.s_addr
+        };
+        
+        if(connect(authSocket, (const struct sockaddr *) &addr, (socklen_t) sizeof(addr)) == -1) {
+            NSLog(@"Couldn't connect to %s: %s\n", addressString, strerror(errno));
+            close(authSocket);
+            
+            authSocket = socket(PF_INET, SOCK_STREAM, 0);
+            if(authSocket == -1) {
+                NSLog(@"Couldn't create socket: %s", strerror(errno));
+                return;
+            }
+        } else {
+            NSLog(@"Connected to D-Plus authentication server at %s", addressString);
+            connected = YES;
+            break;
+        }
+    }
+    
+    CFRelease(authHost);
+    
+    if(!connected) {
+        NSLog(@"Couldn't connect to any D-Plus authentication servers");
         return;
     }
     
