@@ -261,8 +261,8 @@
 }
 
 -(void)destinationDidError:(NSString *)destination error:(NSError *)error {
-    NSAlert *alert = [NSAlert alertWithError:error];
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSAlert *alert = [NSAlert alertWithError:error];
         [alert beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse response){}];
     });
 }
