@@ -178,7 +178,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     if(classesToMatch == NULL) {
         NSLog(@"IOServiceMatching returned a NULL dictionary.\n");
     } else {
-        [classesToMatch setValue:[NSString stringWithCString:kIOSerialBSDRS232Type encoding:NSUTF8StringEncoding]
+        [classesToMatch setValue:[NSString stringWithCString:kIOSerialBSDAllTypes encoding:NSUTF8StringEncoding]
                           forKey:[NSString stringWithCString:kIOSerialBSDTypeKey encoding:NSUTF8StringEncoding]];
     }
     
@@ -236,7 +236,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
             NSLog(@"IOServiceMatching returned a NULL dictionary.\n");
             return nil;
         } else {
-            [matchingDict setValue:[NSString stringWithCString:kIOSerialBSDRS232Type encoding:NSUTF8StringEncoding]
+            [matchingDict setValue:[NSString stringWithCString:kIOSerialBSDAllTypes encoding:NSUTF8StringEncoding]
                             forKey:[NSString stringWithCString:kIOSerialBSDTypeKey encoding:NSUTF8StringEncoding]];
         }
         
