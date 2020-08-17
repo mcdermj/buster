@@ -150,12 +150,14 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
         return;
     }
     if(CFHostStartInfoResolution(authHost, kCFHostAddresses, &error) == FALSE) {
+        CFRelease(authHost);
         NSLog(@"Error resolving auth.dstargateway.org");
         return;
     }
     
     NSArray *addresses = (__bridge NSArray *) (CFHostGetAddressing(authHost, &resolved));
     if(!resolved) {
+        CFRelease(authHost);
         NSLog(@"Cannot lookup auth.dstargateway.org");
         return;
     }

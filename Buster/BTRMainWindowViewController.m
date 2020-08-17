@@ -478,7 +478,7 @@
 
 - (NSIndexSet *) tableView:(NSTableView *)tableView selectionIndexesForProposedSelection:(NSIndexSet *)proposedSelectionIndexes {
     if(tableView == self.heardTableView)
-        return nil;
+        return [[NSIndexSet alloc] init];
     
     return proposedSelectionIndexes;
 }
