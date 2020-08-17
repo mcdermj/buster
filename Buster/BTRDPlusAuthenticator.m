@@ -22,6 +22,7 @@
 
 #import <arpa/inet.h>
 #import <sys/ioctl.h>
+#import <netinet/tcp.h>
 
 struct dplus_authentication_request {
     char length;
@@ -143,13 +144,7 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
     
     if(!self.authCall)
         return;
-    
-    int authSocket = socket(PF_INET, SOCK_STREAM, 0);
-    if(authSocket == -1) {
-        NSLog(@"Couldn't create socket: %s", strerror(errno));
-        return;
-    }
-    
+        
     if ((authHost = CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef) @"auth.dstargateway.org")) == NULL) {
         NSLog(@"Could not create host object");
         return;
@@ -164,13 +159,29 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
         NSLog(@"Cannot lookup auth.dstargateway.org");
         return;
     }
-    
+ 
+    const int timeout = 8;
+    int authSocket = 0;
     bool connected = NO;
     for(NSData *addressData in addresses) {
         struct sockaddr_in *dNSAddr = (struct sockaddr_in *)[addressData bytes];
         char *addressString = inet_ntoa(dNSAddr->sin_addr);
 
         NSLog(@"Trying to connect to D-Plus authentication server at %s", addressString);
+
+        authSocket = socket(PF_INET, SOCK_STREAM, 0);
+        if(authSocket == -1) {
+            CFRelease(authHost);
+            NSLog(@"Couldn't create socket: %s", strerror(errno));
+            return;
+        }
+        
+        if (setsockopt(authSocket, IPPROTO_TCP, TCP_CONNECTIONTIMEOUT, &timeout, sizeof(timeout)) == -1) {
+            NSLog(@"Couldn't set connect timeout: %s", strerror(errno));
+            return;
+            
+        }
+
         struct sockaddr_in addr = {
             .sin_len = sizeof(struct sockaddr_in),
             .sin_family = AF_INET,
@@ -182,11 +193,6 @@ static const unsigned long long NSEC_PER_HOUR = 3600ull * NSEC_PER_SEC;
             NSLog(@"Couldn't connect to %s: %s\n", addressString, strerror(errno));
             close(authSocket);
             
-            authSocket = socket(PF_INET, SOCK_STREAM, 0);
-            if(authSocket == -1) {
-                NSLog(@"Couldn't create socket: %s", strerror(errno));
-                return;
-            }
         } else {
             NSLog(@"Connected to D-Plus authentication server at %s", addressString);
             connected = YES;
