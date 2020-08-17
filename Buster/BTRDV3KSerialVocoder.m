@@ -251,7 +251,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
         // Clean out the device iterator so the notification will arm.
         while(IOIteratorNext(deviceAddedIterator));
         
-        IOServiceAddMatchingNotification(gNotifyPort, kIOTerminatedNotification, (__bridge CFDictionaryRef)(matchingDict), VocoderRemoved, (__bridge void *)(self), &deviceRemovedIterator);
+        IOServiceAddMatchingNotification(gNotifyPort, kIOWillTerminateNotification, (__bridge CFDictionaryRef)(matchingDict), VocoderRemoved, (__bridge void *)(self), &deviceRemovedIterator);
         // Clean out the device iterator so the notification will arm.
         while(IOIteratorNext(deviceRemovedIterator));
         
@@ -362,7 +362,7 @@ static void VocoderRemoved(void *refCon, io_iterator_t iterator) {
     packet->start_byte = 0x00;
     
     int i;
-    int tries = self.started ? sizeof(struct dv3k_packet) : 10;
+    int tries = self.started ? sizeof(struct dv3k_packet) : 20;
     for(i = 0; i < tries; ++i) {
         bytes = read(self.descriptor, packet, 1);
         if(bytes == -1 && errno != EAGAIN) {
